@@ -72,6 +72,7 @@
 (global-set-key (kbd "M-/") 'hippie-expand)
 
 ;; midnight mode kills unused buffers at midnight
+(require 'midnight)
 (setq midnight-mode t)
 
 ;; AUCTeX
