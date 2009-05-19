@@ -1,5 +1,7 @@
 ;;;; my .emacs file
 
+(setq inhibit-splash-screen t)
+
 ;; add path
 (add-to-list 'load-path "~/.emacs.d/site-lisp/")
 
