@@ -2,6 +2,9 @@
 
 (setq inhibit-splash-screen t)
 
+;; start server
+(server-start)
+
 ;; add path
 (add-to-list 'load-path "~/.emacs.d/site-lisp/")
 
