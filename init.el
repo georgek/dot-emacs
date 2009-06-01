@@ -15,8 +15,13 @@
 (setq c-default-style '((java-mode . "java") (awk-mode
       . "awk") (c++-mode . "stroustrup") (other . "gnu")))
 
-;; disable tool bar
-(tool-bar-mode -1)
+;; set window title, turn toolbars and stuff off
+(when window-system
+  (setq frame-title-format '("%b" " - GNU Emacs"))
+  (tooltip-mode -1)
+  (tool-bar-mode -1)
+  (blink-cursor-mode 1))
+
 ;; column and line number
 (column-number-mode 1)
 (line-number-mode 1)
