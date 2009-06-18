@@ -2,6 +2,15 @@
 
 (setq inhibit-splash-screen t)
 
+;; set window title, turn toolbars and stuff off
+(when window-system
+  (setq frame-title-format '("%b" " - GNU Emacs"))
+  (tooltip-mode -1)
+  (tool-bar-mode -1)
+  (menu-bar-mode -1)
+  (scroll-bar-mode -1)
+  (blink-cursor-mode 1))
+
 ;; start server
 (server-start)
 
@@ -14,13 +23,6 @@
 ;; set some default styles
 (setq c-default-style '((java-mode . "java") (awk-mode
       . "awk") (c++-mode . "stroustrup") (other . "gnu")))
-
-;; set window title, turn toolbars and stuff off
-(when window-system
-  (setq frame-title-format '("%b" " - GNU Emacs"))
-  (tooltip-mode -1)
-  (tool-bar-mode -1)
-  (blink-cursor-mode 1))
 
 ;; column and line number
 (column-number-mode 1)
