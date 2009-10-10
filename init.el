@@ -131,9 +131,9 @@
 (defun select-current-line ()
   "sets the region to the current line"
   (interactive)
-  (move-beginning-of-line nil)
-  (set-mark-command nil)
-  (move-end-of-line nil))
+  (beginning-of-line)
+  (push-mark nil 1 1)
+  (end-of-line))
 
 (global-set-key (kbd "C-;") 'select-current-line)
 
