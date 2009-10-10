@@ -22,7 +22,8 @@
 
 ;; set some default styles
 (setq c-default-style '((java-mode . "java") (awk-mode
-      . "awk") (c++-mode . "stroustrup") (other . "gnu")))
+      . "awk") (c-mode . "k&r") (c++-mode . "stroustrup") (other
+      . "gnu")))
 
 ;; column and line number
 (column-number-mode 1)
@@ -31,6 +32,8 @@
 ;; set some default modes
 ;; for C++ headers
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+;; lex
+(add-to-list 'auto-mode-alist '("\\.l\\'" . c-mode))
 ;; matlab
 (add-to-list 'auto-mode-alist '("\\.m\\'" . matlab-mode))
 ;; XML
@@ -86,8 +89,10 @@
 (setq midnight-mode t)
 
 ;; AUCTeX
+(load "auctex.el" nil t t)
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
+(add-hook 'LaTeX-mode-hook 'TeX-PDF-mode) ; set PDF mode by default
 
 ;; aligns the current block of code
 (global-set-key (kbd "C-|") 'align-current)
@@ -105,6 +110,8 @@
 
 ;; ido mode
 (ido-mode t)
+;; disable annoying buffer list
+(global-set-key (kbd "\C-x\C-b") 'ido-switch-buffer)
 
 ;; yasnippet
 (require 'yasnippet)
