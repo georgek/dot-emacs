@@ -134,6 +134,14 @@
   (beginning-of-line)
   (push-mark nil 1 1)
   (end-of-line))
-
 (global-set-key (kbd "C-;") 'select-current-line)
+
+;; comment or uncomment current line
+(defun comment-current-line ()
+  "comments out the current line"
+  (interactive)
+  (select-current-line)
+  (comment-dwim nil))
+(global-set-key (kbd "C-M-;") 'comment-current-line)
+
 
