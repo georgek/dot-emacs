@@ -126,3 +126,14 @@
 
 ;; change yes or no to y or n
 (fset 'yes-or-no-p 'y-or-n-p)
+
+;; selects current line
+(defun select-current-line ()
+  "sets the region to the current line"
+  (interactive)
+  (move-beginning-of-line nil)
+  (set-mark-command nil)
+  (move-end-of-line nil))
+
+(global-set-key (kbd "C-;") 'select-current-line)
+
