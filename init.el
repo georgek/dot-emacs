@@ -54,6 +54,13 @@
 (setq org-blank-before-new-entry 
       '((heading . t) (plain-list-item . nil)))
 (setq org-todo-keywords (quote ((sequence "TODO" "IN PROGRESS" "DONE"))))
+;; stuff for remember
+(org-remember-insinuate)
+(setq org-directory "~/notes")
+(setq org-default-notes-file (concat org-directory "/notes.org"))
+(define-key global-map "\C-cr" 'org-remember)
+;; make org table mode come on for some modes
+(add-hook 'LaTeX-mode-hook 'turn-on-orgtbl)
 
 ;; function keys
 (define-key global-map [f11] 'ecb-minor-mode)
@@ -90,9 +97,14 @@
 
 ;; AUCTeX
 (load "auctex.el" nil t t)
+(load "preview-latex.el" nil t t)
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
 (add-hook 'LaTeX-mode-hook 'TeX-PDF-mode) ; set PDF mode by default
+(add-hook 'LaTeX-mode-hook 'auto-fill-mode)
+;; RefTeX
+(require 'reftex)
+(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
 
 ;; aligns the current block of code
 (global-set-key (kbd "C-|") 'align-current)
