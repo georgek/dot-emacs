@@ -105,6 +105,7 @@
 ;; RefTeX
 (require 'reftex)
 (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+(setq reftex-plug-into-AUCTeX t)        ;AUCTeX-RefTeX interface
 
 ;; aligns the current block of code
 (global-set-key (kbd "C-|") 'align-current)
