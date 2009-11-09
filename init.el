@@ -62,9 +62,15 @@
 ;; make org table mode come on for some modes
 (add-hook 'LaTeX-mode-hook 'turn-on-orgtbl)
 
-;; function keys
-(define-key global-map [f11] 'ecb-minor-mode)
-(define-key global-map [f12] 'compile)
+;; c mode key bindings
+(defun my-c-initialization-hook ()
+  (define-key c-mode-base-map "\C-c\C-c" 'compile))
+(add-hook 'c-initialization-hook 'my-c-initialization-hook)
+
+;; makefile mode make key
+(add-hook 'makefile-mode-hook
+          (function (lambda ()
+                      (define-key makefile-mode-map "\C-c\C-c" 'compile))))
 
 ;; auto new line and hungry delete modes
 (setq c-auto-newline 1)
