@@ -30,8 +30,6 @@
 (line-number-mode 1)
 
 ;; set some default modes
-;; for C++ headers
-(add-to-list 'auto-mode-alist '("\\.h\\'" . c-c++-header))
 ;; lex
 (add-to-list 'auto-mode-alist '("\\.l\\'" . c-mode))
 ;; matlab
@@ -174,4 +172,5 @@
     (if (file-exists-p c-file)
         (c-mode)
       (c++-mode))))
+(add-to-list 'auto-mode-alist '("\\.h\\'" . c-c++-header))
 
