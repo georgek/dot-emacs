@@ -39,9 +39,9 @@
 
 ;; stuff for SLIME
 (setq inferior-lisp-program "/usr/bin/sbcl") ; your Lisp system
-;; (add-to-list 'load-path "~/.emacs.d/site-lisp/slime/")  ; your SLIME directory
-(require 'slime)
-(slime-setup)
+(add-to-list 'load-path "~/.emacs.d/site-lisp/slime/")  ; your SLIME directory
+(require 'slime-autoloads)
+(slime-setup '(slime-fancy slime-banner))
 
 ;; org-mode settings
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))

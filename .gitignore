@@ -3,3 +3,8 @@
 \#*\#
 .~/
 auto-save-list
+
+# CVS stuff
+CVS/
+.cvsignore
+/tramp
