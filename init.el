@@ -60,11 +60,6 @@
 ;; make org table mode come on for some modes
 (add-hook 'LaTeX-mode-hook 'turn-on-orgtbl)
 
-;; c mode key bindings
-(defun my-c-initialization-hook ()
-  (define-key c-mode-base-map "\C-c\C-c" 'compile))
-(add-hook 'c-initialization-hook 'my-c-initialization-hook)
-
 ;; makefile mode make key
 (add-hook 'makefile-mode-hook
           (function (lambda ()
@@ -174,3 +169,18 @@
       (c++-mode))))
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c-c++-header))
 
+;; and if that doesn't work, a function to toggle between c-mode and
+;; c++-mode
+(defun c-c++-toggle ()
+  "toggles between c-mode and c++-mode"
+  (interactive)
+  (cond ((string= major-mode "c-mode")
+         (c++-mode))
+        ((string= major-mode "c++-mode")
+         (c-mode))))
+
+;; cc mode key bindings - applies to all CC modes (C, C++ etc.)
+(defun my-c-initialization-hook ()
+  (define-key c-mode-base-map "\C-c\C-c" 'compile)
+  (define-key c-mode-base-map "\C-c\C-h" 'c-c++-toggle))
+(add-hook 'c-initialization-hook 'my-c-initialization-hook)
