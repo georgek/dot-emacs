@@ -182,5 +182,6 @@
 ;; cc mode key bindings - applies to all CC modes (C, C++ etc.)
 (defun my-c-initialization-hook ()
   (define-key c-mode-base-map "\C-c\C-c" 'compile)
-  (define-key c-mode-base-map "\C-c\C-h" 'c-c++-toggle))
+  (define-key c-mode-base-map "\C-c\C-h" 'c-c++-toggle)
+  (define-key c-mode-base-map "\C-m" 'c-context-line-break))
 (add-hook 'c-initialization-hook 'my-c-initialization-hook)
