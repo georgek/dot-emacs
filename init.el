@@ -10,6 +10,7 @@
   (menu-bar-mode -1)
   (scroll-bar-mode -1)
   (blink-cursor-mode 1))
+(mouse-avoidance-mode 'banish)
 
 ;; start server
 (server-start)
