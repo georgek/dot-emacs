@@ -102,6 +102,7 @@
 (setq TeX-parse-self t)
 (add-hook 'LaTeX-mode-hook 'TeX-PDF-mode) ; set PDF mode by default
 (add-hook 'LaTeX-mode-hook 'auto-fill-mode)
+(setq TeX-electric-sub-and-superscript t)
 ;; RefTeX
 (require 'reftex)
 (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
