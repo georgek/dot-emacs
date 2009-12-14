@@ -187,3 +187,7 @@
   (define-key c-mode-base-map "\C-c\C-h" 'c-c++-toggle)
   (define-key c-mode-base-map "\C-m" 'c-context-line-break))
 (add-hook 'c-initialization-hook 'my-c-initialization-hook)
+;; enable windmove
+(when (fboundp 'windmove-default-keybindings)
+  (windmove-default-keybindings))
+(setq windmove-wrap-around t)
