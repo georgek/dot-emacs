@@ -4,7 +4,7 @@
 
 ;; set window title, turn toolbars and stuff off
 (when window-system
-  (setq frame-title-format '("%b" " - GNU Emacs"))
+  (setq frame-title-format '("%b - GNU Emacs"))
   (tooltip-mode -1)
   (menu-bar-mode -1)
   (scroll-bar-mode -1)
@@ -41,6 +41,10 @@
 (add-to-list 'auto-mode-alist '("\\.m\\'" . matlab-mode))
 ;; XML
 (add-to-list 'auto-mode-alist '("\\.xml\\'" . nxml-mode))
+
+;; emacs lisp
+(add-hook 'emacs-lisp-mode-hook 
+          '(lambda () (local-set-key (kbd "C-m") 'newline-and-indent)))
 
 ;; stuff for SLIME
 (setq inferior-lisp-program "/usr/bin/sbcl") ; your Lisp system
@@ -104,6 +108,7 @@
 (load "preview-latex.el" nil t t)
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
+(setq TeX-newline-function 'newline-and-indent)
 (add-hook 'LaTeX-mode-hook 'TeX-PDF-mode) ; set PDF mode by default
 (add-hook 'LaTeX-mode-hook 'auto-fill-mode)
 (setq TeX-electric-sub-and-superscript t)
@@ -206,3 +211,9 @@
 (when (fboundp 'windmove-default-keybindings)
   (windmove-default-keybindings))
 (setq windmove-wrap-around t)
+
+;; assembly
+;; (require 'gas-mode)
+;; (add-to-list 'auto-mode-alist '("\\.S\\'" . asm-mode))
+(add-hook 'asm-mode-set-comment-hook
+          (lambda () (setq asm-comment-char ?#)))
