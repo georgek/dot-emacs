@@ -15,8 +15,12 @@
 ;; start server
 (server-start)
 
-;; add path
+;; add paths
+(add-to-list 'load-path "~/.emacs.d/")
 (add-to-list 'load-path "~/.emacs.d/site-lisp/")
+
+;; load stuff in other files
+(load-library "gk-gtags")
 
 ;; turn off tabs
 (setq-default indent-tabs-mode nil)
@@ -187,6 +191,11 @@
   (define-key c-mode-base-map "\C-c\C-h" 'c-c++-toggle)
   (define-key c-mode-base-map "\C-m" 'c-context-line-break))
 (add-hook 'c-initialization-hook 'my-c-initialization-hook)
+
+;; use tags with C modes
+(add-hook 'c-mode-common-hook
+  (lambda ()
+    (gtags-mode t)))
 
 ;; stuff for debugging with gdb
 ;; sr-speedbar runs speedbar in the same frame
