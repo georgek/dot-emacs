@@ -11,10 +11,14 @@
             (topdir (read-directory-name  
                      "gtags: top of source tree:" default-directory)))
         (cd topdir)
+        (message "Creating tags table...")
         (shell-command "gtags")
+        (message "Creating tags table... Done")
         (cd olddir)) ;; restore   
     ;;  tagfile already exists; update it
-    (shell-command "global -u")))
+    (message "Updating tags table...")
+    (shell-command "global -u")
+    (message "Updating tags table... Done")))
 
 ;; goto tag's point - modified version which returns t if a match was
 ;; found or nil otherwise
@@ -111,9 +115,7 @@
     (gtags-push-context)
     (if (not (gk-gtags-goto-tag tagname ""))
         (progn
-          (message "Updating tags table...")
           (djcb-gtags-create-or-update)
-          (message "Updating tags table... Done")
           (gk-gtags-goto-tag tagname "")))))
 
 (add-hook 'gtags-mode-hook 
