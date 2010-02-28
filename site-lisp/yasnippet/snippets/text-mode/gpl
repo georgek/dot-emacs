@@ -1,4 +1,6 @@
-# the GPL
+# -*- mode: snippet -*-
+# name: gpl (plain)
+# key: gpl
 # --
 This file is part of ${1:<program name>}.
 

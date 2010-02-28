@@ -18,6 +18,8 @@
 ;; add paths
 (add-to-list 'load-path "~/.emacs.d/")
 (add-to-list 'load-path "~/.emacs.d/site-lisp/")
+(progn (cd "~/.emacs.d/site-lisp/")
+       (normal-top-level-add-subdirs-to-load-path))
 
 ;; load stuff in other files
 (load-library "gk-gtags")
@@ -48,7 +50,6 @@
 
 ;; stuff for SLIME
 (setq inferior-lisp-program "/usr/bin/sbcl") ; your Lisp system
-(add-to-list 'load-path "~/.emacs.d/site-lisp/slime/")  ; your SLIME directory
 (require 'slime-autoloads)
 (slime-setup '(slime-fancy slime-banner))
 
@@ -139,7 +140,9 @@
 ;; yasnippet
 (require 'yasnippet)
 (yas/initialize)
-(yas/load-directory "~/.emacs.d/site-lisp/snippets/")
+(setq yas/root-directory "~/.emacs.d/site-lisp/yasnippet/snippets/")
+(yas/load-directory yas/root-directory)
+(setq yas/prompt-functions '(yas/dropdown-prompt))
 
 ;; keep backup files neatly out of the way in .~/
 (setq backup-directory-alist '(("." . ".~")))

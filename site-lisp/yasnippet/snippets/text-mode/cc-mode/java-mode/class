@@ -1,0 +1,11 @@
+#name: public class { ... }
+# --
+public class ${1:classname}
+{
+public $1($2)
+{
+$3
+}
+
+$0
+}
