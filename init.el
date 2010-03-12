@@ -36,6 +36,11 @@
 (column-number-mode 1)
 (line-number-mode 1)
 
+;; enable auto fill mode globally
+(setq auto-fill-mode 1)
+;; default fill length
+(setq-default fill-column 78)
+
 ;; set some default modes
 ;; lex
 (add-to-list 'auto-mode-alist '("\\.l\\'" . c-mode))
@@ -220,3 +225,12 @@
 ;; (add-to-list 'auto-mode-alist '("\\.S\\'" . asm-mode))
 (add-hook 'asm-mode-set-comment-hook
           (lambda () (setq asm-comment-char ?#)))
+
+;; prolog
+(autoload 'run-prolog "prolog" "Start a Prolog sub-process." t)
+(autoload 'prolog-mode "prolog" "Major mode for editing Prolog programs." t)
+(autoload 'mercury-mode "prolog" "Major mode for editing Mercury programs." t)
+(setq prolog-system 'swi)
+(setq auto-mode-alist (append '(("\\.pl$" . prolog-mode)
+                                ("\\.m$" . mercury-mode))
+                              auto-mode-alist))

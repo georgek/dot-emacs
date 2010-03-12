@@ -1,4 +1,11 @@
 ;;;; stuff for using GNU Global
+;;;;
+;;;; the gtags functions have been modified so that they automatically
+;;;; rescan source files if the tag cannot be found or the tag files
+;;;; do not exist yet
+;;;;
+;;;; issues: if the tag file is rebuilt the stack doesn't update
+;;;; properly
 (require 'gtags)
 
 ;; http://emacs-fu.blogspot.com/2009/01/navigating-through-source-code-using.html
