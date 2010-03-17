@@ -153,7 +153,7 @@
 (setq backup-directory-alist '(("." . ".~")))
 
 ;; scroll compilation buffer
-(setq compilation-scroll-output t)
+(setq compilation-scroll-output 'first-error)
 
 ;; change yes or no to y or n
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -234,3 +234,6 @@
 (setq auto-mode-alist (append '(("\\.pl$" . prolog-mode)
                                 ("\\.m$" . mercury-mode))
                               auto-mode-alist))
+
+;; for inserting greeked text
+(require 'lorem-ipsum)
