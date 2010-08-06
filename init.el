@@ -117,7 +117,6 @@
 (setq TeX-newline-function 'newline-and-indent)
 (add-hook 'LaTeX-mode-hook 'TeX-PDF-mode) ; set PDF mode by default
 (add-hook 'LaTeX-mode-hook 'auto-fill-mode)
-(setq TeX-electric-sub-and-superscript t)
 ;; RefTeX
 (require 'reftex)
 (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
@@ -225,6 +224,9 @@
 ;; (add-to-list 'auto-mode-alist '("\\.S\\'" . asm-mode))
 (add-hook 'asm-mode-set-comment-hook
           (lambda () (setq asm-comment-char ?#)))
+(add-hook 'asm-mode-hook
+          (function (lambda ()
+                      (define-key asm-mode-map "\C-c\C-c" 'compile))))
 
 ;; prolog
 (autoload 'run-prolog "prolog" "Start a Prolog sub-process." t)
