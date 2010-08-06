@@ -2465,7 +2465,7 @@ insert a line to tell how to insert more of them"
     (magit-git-section nil nil
 		       'magit-wash-commit
 		       "log"
-		       "--decorate"
+		       "--decorate=full"
 		       "--max-count=1"
 		       "--pretty=medium"
 		       "--cc"
@@ -3599,7 +3599,7 @@ With prefix argument, changes in staging area are kept.
 
 (defun magit-configure-have-decorate ()
   (if (eq magit-have-decorate 'unset)
-      (let ((res (magit-git-exit-code "log" "--decorate" "--max-count=0")))
+      (let ((res (magit-git-exit-code "log" "--decorate=full" "--max-count=0")))
 	(setq magit-have-decorate (eq res 0)))))
 
 (defun magit-log-show-more-entries (&optional arg)
@@ -3630,7 +3630,7 @@ With a non numeric prefix ARG, show all entries"
 	   `("log"
 	     ,(format "--max-count=%s" magit-log-cutoff-length)
 	     ,style
-	     ,@(if magit-have-decorate (list "--decorate"))
+	     ,@(if magit-have-decorate (list "--decorate=full"))
 	     ,@(if magit-have-graph (list "--graph"))
 	     ,@args
 	     "--"))))
