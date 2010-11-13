@@ -2,18 +2,23 @@
 
 (setq inhibit-splash-screen t)
 
+;; deletes the current frame, unless this is the last frame in which case it
+;; kills emacs
+(defun kill-client-or-daemon (&optional ARG)
+  (interactive)
+  (if (= (length (frame-list)) 2)
+      (save-buffers-kill-emacs ARG)
+    (delete-frame)))
+(global-set-key (kbd "C-x C-c") 'kill-client-or-daemon)
+
 ;; set window title, turn toolbars and stuff off
-(when window-system
-  (setq frame-title-format '("%b - GNU Emacs"))
-  (tooltip-mode -1)
-  (menu-bar-mode -1)
-  (scroll-bar-mode -1)
-  (blink-cursor-mode 1))
+(setq frame-title-format '("%b - GNU Emacs"))
+(tooltip-mode -1)
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
+(blink-cursor-mode 1)
 (tool-bar-mode -1)
 (mouse-avoidance-mode 'banish)
-
-;; start server
-(server-start)
 
 ;; add paths
 (add-to-list 'load-path "~/.emacs.d/")
