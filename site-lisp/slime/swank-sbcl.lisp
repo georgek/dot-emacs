@@ -155,11 +155,17 @@
 (defimplementation remove-fd-handlers (socket)
   (sb-sys:invalidate-descriptor (socket-fd socket)))
 
-(defun socket-fd (socket)
+(defimplementation socket-fd (socket)
   (etypecase socket
     (fixnum socket)
     (sb-bsd-sockets:socket (sb-bsd-sockets:socket-file-descriptor socket))
     (file-stream (sb-sys:fd-stream-fd socket))))
+
+(defimplementation command-line-args ()
+  sb-ext:*posix-argv*)
+
+(defimplementation dup (fd)
+  (sb-posix:dup fd))
 
 (defvar *wait-for-input-called*)
 
@@ -372,11 +378,11 @@
 
 ;;; Utilities
 
-#+#.(swank-backend::with-symbol 'function-lambda-list 'sb-introspect)
+#+#.(swank-backend:with-symbol 'function-lambda-list 'sb-introspect)
 (defimplementation arglist (fname)
   (sb-introspect:function-lambda-list fname))
 
-#-#.(swank-backend::with-symbol 'function-lambda-list 'sb-introspect)
+#-#.(swank-backend:with-symbol 'function-lambda-list 'sb-introspect)
 (defimplementation arglist (fname)
   (sb-introspect:function-arglist fname))
 
@@ -396,7 +402,7 @@
                                   flags :key #'ensure-list))
           (call-next-method)))))
 
-#+#.(swank-backend::with-symbol 'deftype-lambda-list 'sb-introspect)
+#+#.(swank-backend:with-symbol 'deftype-lambda-list 'sb-introspect)
 (defmethod type-specifier-arglist :around (typespec-operator)
   (multiple-value-bind (arglist foundp)
       (sb-introspect:deftype-lambda-list typespec-operator)
@@ -422,23 +428,24 @@ information."
     (when (typep condition 'warning)
       (signal condition))
     (setq *previous-compiler-condition* condition)
-    (signal-compiler-condition condition (sb-c::find-error-context nil))))
+    (signal-compiler-condition (real-condition condition)
+                               (sb-c::find-error-context nil))))
 
 (defun signal-compiler-condition (condition context)
   (signal (make-condition
            'compiler-condition
            :original-condition condition
            :severity (etypecase condition
-                       (sb-c:compiler-error  :error)
                        (sb-ext:compiler-note :note)
-                       #+#.(swank-backend::with-symbol redefinition-warning sb-kernel)
+                       (sb-c:compiler-error  :error)
+                       (reader-error         :read-error)
+                       (error                :error)
+                       #+#.(swank-backend:with-symbol redefinition-warning sb-kernel)
                        (sb-kernel:redefinition-warning
                                              :redefinition)
                        (style-warning        :style-warning)
-                       (warning              :warning)
-                       (reader-error         :read-error)
-                       (error                :error))
-           :references (condition-references (real-condition condition))
+                       (warning              :warning))
+           :references (condition-references condition)
            :message (brief-compiler-message-for-emacs condition)
            :source-context (compiler-error-context context)
            :location (compiler-note-location condition context))))
@@ -456,7 +463,8 @@ information."
 
 (defun compiler-note-location (condition context)
   (flet ((bailout ()
-           (list :error "No error location available")))
+           (return-from compiler-note-location
+             (make-error-location "No error location available"))))
     (cond (context
            (locate-compiler-note
             (sb-c::compiler-error-context-file-name context)
@@ -482,7 +490,10 @@ information."
           (t (bailout)))))
 
 (defun compiling-from-buffer-p (filename)
-  (and (not (eq filename :lisp)) *buffer-name*))
+  (and *buffer-name*
+       ;; The following is to trigger COMPILING-FROM-GENERATED-CODE-P
+       ;; in LOCATE-COMPILER-NOTE.
+       (not (eq filename :lisp))))
 
 (defun compiling-from-file-p (filename)
   (and (pathnamep filename) (null *buffer-name*)))
@@ -543,35 +554,54 @@ compiler state."
       ;; N.B. Even though these handlers are called HANDLE-FOO they
       ;; actually decline, i.e. the signalling of the original
       ;; condition continues upward.
-      ((sb-c:fatal-compiler-error #'handle-file-compiler-termination)
-       (sb-c:compiler-error  #'handle-notification-condition)
-       (sb-ext:compiler-note #'handle-notification-condition)
-       (warning              #'handle-notification-condition))
+      ((sb-c:fatal-compiler-error #'handle-notification-condition)
+       (sb-c:compiler-error       #'handle-notification-condition)
+       (sb-ext:compiler-note      #'handle-notification-condition)
+       (error                     #'handle-notification-condition)
+       (warning                   #'handle-notification-condition))
     (funcall function)))
 
-(defun handle-file-compiler-termination (condition)
-  "Handle a condition that caused the file compiler to terminate."
-  (handle-notification-condition
-   (sb-int:encapsulated-condition condition)))
 
 (defvar *trap-load-time-warnings* nil)
 
+(defun compiler-policy (qualities)
+  "Return compiler policy qualities present in the QUALITIES alist.
+QUALITIES is an alist with (quality . value)"
+  #+#.(swank-backend:with-symbol 'restrict-compiler-policy 'sb-ext)
+  (loop with policy = (sb-ext:restrict-compiler-policy)
+        for (quality) in qualities
+        collect (cons quality
+                      (or (cdr (assoc quality policy))
+                          0))))
+
+(defun (setf compiler-policy) (policy)
+  (declare (ignorable policy))
+  #+#.(swank-backend:with-symbol 'restrict-compiler-policy 'sb-ext)
+  (loop for (qual . value) in policy
+        do (sb-ext:restrict-compiler-policy qual value)))
+
+(defmacro with-compiler-policy (policy &body body)
+  (let ((current-policy (gensym)))
+    `(let ((,current-policy (compiler-policy ,policy)))
+       (setf (compiler-policy) ,policy)
+       (unwind-protect (progn ,@body)
+         (setf (compiler-policy) ,current-policy)))))
+
 (defimplementation swank-compile-file (input-file output-file 
-                                       load-p external-format)
-  (handler-case
-      (multiple-value-bind (output-file warnings-p failure-p)
-          (with-compilation-hooks ()
-            (compile-file input-file :output-file output-file
-                          :external-format external-format))
-        (values output-file warnings-p
-                (or failure-p
-                    (when load-p
-                      ;; Cache the latest source file for definition-finding.
-                      (source-cache-get input-file 
-                                        (file-write-date input-file))
-                      (not (load output-file))))))
-    ;; N.B. This comes through despite of WITH-COMPILATION-HOOKS.
-    (sb-c:fatal-compiler-error () (values nil nil t))))
+                                       load-p external-format
+                                       &key policy)
+  (multiple-value-bind (output-file warnings-p failure-p)
+      (with-compiler-policy policy
+        (with-compilation-hooks ()
+          (compile-file input-file :output-file output-file
+                        :external-format external-format)))
+    (values output-file warnings-p
+            (or failure-p
+                (when load-p
+                  ;; Cache the latest source file for definition-finding.
+                  (source-cache-get input-file 
+                                    (file-write-date input-file))
+                  (not (load output-file)))))))
 
 ;;;; compile-string
 
@@ -594,27 +624,12 @@ compiler state."
   "Return a temporary file name to compile strings into."
   (tempnam nil nil))
 
-(defun get-compiler-policy (default-policy)
-  (declare (ignorable default-policy))
-  #+#.(swank-backend::with-symbol 'restrict-compiler-policy 'sb-ext)
-  (remove-duplicates (append default-policy (sb-ext:restrict-compiler-policy))
-                     :key #'car))
-
-(defun set-compiler-policy (policy)
-  (declare (ignorable policy))
-  #+#.(swank-backend::with-symbol 'restrict-compiler-policy 'sb-ext)
-   (loop for (qual . value) in policy
-         do (sb-ext:restrict-compiler-policy qual value)))
-
 (defimplementation swank-compile-string (string &key buffer position filename
                                          policy)
   (let ((*buffer-name* buffer)
         (*buffer-offset* position)
         (*buffer-substring* string)
-        (temp-file-name (temp-file-name))
-        (saved-policy (get-compiler-policy '((debug . 0) (speed . 0)))))
-    (when policy
-      (set-compiler-policy policy))
+        (temp-file-name (temp-file-name)))
     (flet ((load-it (filename)
              (when filename (load filename)))
            (compile-it (cont)
@@ -632,19 +647,15 @@ compiler state."
       (with-open-file (s temp-file-name :direction :output :if-exists :error)
         (write-string string s))
       (unwind-protect
-           (if *trap-load-time-warnings*
-               (compile-it #'load-it)
-               (load-it (compile-it #'identity)))
+           (with-compiler-policy policy
+            (if *trap-load-time-warnings*
+                (compile-it #'load-it)
+                (load-it (compile-it #'identity))))
         (ignore-errors
-          (set-compiler-policy saved-policy)
           (delete-file temp-file-name)
           (delete-file (compile-file-pathname temp-file-name)))))))
 
 ;;;; Definitions
-
-(defvar *debug-definition-finding* nil
-  "When true don't handle errors while looking for definitions.
-This is useful when debugging the definition-finding code.")
 
 (defparameter *definition-types*
   '(:variable defvar
@@ -676,14 +687,27 @@ This is useful when debugging the definition-finding code.")
       :def-ir1-translator
       (getf *definition-types* type)))
 
+(defun make-dspec (type name source-location)
+  (let ((spec (definition-specifier type name))
+        (desc (sb-introspect::definition-source-description source-location)))
+    (if (eq :define-vop spec)
+        ;; The first part of the VOP description is the name of the template
+        ;; -- which is actually good information and often long. So elide the
+        ;; original name in favor of making the interesting bit more visible.
+        ;;
+        ;; The second part of the VOP description is the associated compiler note, or
+        ;; NIL -- which is quite uninteresting and confuses the eye when reading the actual
+        ;; name which usually has a worthwhile postfix. So drop the note.
+        (list spec (car desc))
+        (list* spec name desc))))
 
 (defimplementation find-definitions (name)
   (loop for type in *definition-types* by #'cddr
-        for locations = (sb-introspect:find-definition-sources-by-name
-                         name type)
-        append (loop for source-location in locations collect
-                     (make-source-location-specification type name
-                                                         source-location))))
+        for defsrcs = (sb-introspect:find-definition-sources-by-name name type)
+        append (loop for defsrc in defsrcs collect
+                     (list (make-dspec type name defsrc)
+                           (converting-errors-to-error-location
+                             (definition-source-for-emacs defsrc type name))))))
 
 (defimplementation find-source-location (obj)
   (flet ((general-type-of (obj)
@@ -695,7 +719,7 @@ This is useful when debugging the definition-finding code.")
              (class              :class)
              (method-combination :method-combination)
              (package            :package)
-             (condition          :condition)             
+             (condition          :condition)
              (structure-object   :structure-object)
              (standard-object    :standard-object)
              (t                  :thing)))
@@ -706,85 +730,80 @@ This is useful when debugging the definition-finding code.")
               (with-output-to-string (s)
                 (print-unreadable-object (obj s :type t :identity t))))
              (t (princ-to-string obj)))))
-    (handler-case
-        (make-definition-source-location
-         (sb-introspect:find-definition-source obj) (general-type-of obj) (to-string obj))
-      (error (e)
-        (list :error (format nil "Error: ~A" e))))))
+    (converting-errors-to-error-location
+      (let ((defsrc (sb-introspect:find-definition-source obj)))
+        (definition-source-for-emacs defsrc
+                                     (general-type-of obj)
+                                     (to-string obj))))))
 
 
-(defun make-source-location-specification (type name source-location)
-  (list (make-dspec type name source-location)
-        (if *debug-definition-finding*
-            (make-definition-source-location source-location type name)
-            (handler-case
-                (make-definition-source-location source-location type name)
-              (error (e)
-                (list :error (format nil "Error: ~A" e)))))))
+(defun categorize-definition-source (definition-source)
+  (with-struct (sb-introspect::definition-source-
+                   pathname form-path character-offset plist)
+      definition-source
+    (cond ((getf plist :emacs-buffer) :buffer)
+          ((and pathname (or form-path character-offset)) :file)
+          (pathname :file-without-position)
+          (t :invalid))))
 
-(defun make-dspec (type name source-location)
-  (list* (definition-specifier type name)
-         name
-         (sb-introspect::definition-source-description source-location)))
-
-(defun make-definition-source-location (definition-source type name)
+(defun definition-source-for-emacs (definition-source type name)
   (with-struct (sb-introspect::definition-source-
                    pathname form-path character-offset plist
                    file-write-date)
       definition-source
-    (destructuring-bind (&key emacs-buffer emacs-position emacs-directory
-                              emacs-string &allow-other-keys)
-        plist
-      (cond
-        (emacs-buffer
+    (ecase (categorize-definition-source definition-source)
+      (:buffer
+       (destructuring-bind (&key emacs-buffer emacs-position emacs-directory
+                                 emacs-string &allow-other-keys)
+           plist
          (let ((*readtable* (guess-readtable-for-filename emacs-directory)))
            (multiple-value-bind (start end)
                (if form-path
                    (with-debootstrapping
                      (source-path-string-position form-path emacs-string))
                    (values character-offset most-positive-fixnum))
-             (make-location `(:buffer ,emacs-buffer)
-                            `(:offset ,emacs-position ,start)
-                            `(:snippet
-                              ,(subseq emacs-string
-                                       start
-                                       (min end (+ start *source-snippet-size*))))))))
-        ((not pathname)
-         `(:error ,(format nil "Source definition of ~A ~A not found"
-                           (string-downcase type) name)))
-        (t
-         (let* ((namestring (namestring (translate-logical-pathname pathname)))
-                (pos (source-file-position namestring file-write-date form-path
-                                           character-offset))
-                (snippet (source-hint-snippet namestring file-write-date pos)))
-           (make-location `(:file ,namestring)
-                          ;; /file positions/ in Common Lisp start
-                          ;; from 0, in Emacs they start from 1.
-                          `(:position ,(1+ pos))
-                          `(:snippet ,snippet))))))))
+             (make-location
+              `(:buffer ,emacs-buffer)
+              `(:offset ,emacs-position ,start)
+              `(:snippet
+                ,(subseq emacs-string
+                         start
+                         (min end (+ start *source-snippet-size*)))))))))
+      (:file
+       (let* ((namestring (namestring (translate-logical-pathname pathname)))
+              (pos (if form-path
+                       (source-file-position namestring file-write-date form-path)
+                       character-offset))
+              (snippet (source-hint-snippet namestring file-write-date pos)))
+         (make-location `(:file ,namestring)
+                        ;; /file positions/ in Common Lisp start from
+                        ;; 0, buffer positions in Emacs start from 1.
+                        `(:position ,(1+ pos))
+                        `(:snippet ,snippet))))
+      (:file-without-position
+       (make-location `(:file ,(namestring (translate-logical-pathname pathname)))
+                      '(:position 1)
+                      (when (eql type :function)
+                        `(:snippet ,(format nil "(defun ~a " (symbol-name name))))))
+      (:invalid
+       (error "DEFINITION-SOURCE of ~A ~A did not contain ~
+               meaningful information."
+              (string-downcase type) name)))))
 
-(defun source-file-position (filename write-date form-path character-offset)
+(defun source-file-position (filename write-date form-path)
   (let ((source (get-source-code filename write-date))
         (*readtable* (guess-readtable-for-filename filename)))
     (with-debootstrapping
-      (if form-path
-          (source-path-string-position form-path source)
-          (or character-offset 0)))))
+      (source-path-string-position form-path source))))
 
 (defun source-hint-snippet (filename write-date position)
   (read-snippet-from-string (get-source-code filename write-date) position))
 
 (defun function-source-location (function &optional name)
   (declare (type function function))
-  (let ((location (sb-introspect:find-definition-source function)))
-    (make-definition-source-location location :function name)))
-
-(defun safe-function-source-location (fun name)
-  (if *debug-definition-finding*
-      (function-source-location fun name)
-      (handler-case (function-source-location fun name)
-        (error (e)
-          (list :error (format nil "Error: ~A" e))))))
+  (definition-source-for-emacs (sb-introspect:find-definition-source function)
+                               :function
+                               (or name (function-name function))))
 
 (defimplementation describe-symbol-for-emacs (symbol)
   "Return a plist describing SYMBOL.
@@ -834,29 +853,27 @@ Return NIL if the symbol is unbound."
   
 #+#.(swank-backend::sbcl-with-xref-p)
 (progn
-  (defmacro defxref (name)
+  (defmacro defxref (name &optional fn-name)
     `(defimplementation ,name (what)
        (sanitize-xrefs   
         (mapcar #'source-location-for-xref-data
-                (,(find-symbol (symbol-name name) "SB-INTROSPECT")
+                (,(find-symbol (symbol-name (if fn-name
+                                                fn-name
+                                                name))
+                               "SB-INTROSPECT")
                   what)))))
   (defxref who-calls)
   (defxref who-binds)
   (defxref who-sets)
   (defxref who-references)
   (defxref who-macroexpands)
-  #+#.(swank-backend::with-symbol 'who-specializes 'sb-introspect)
-  (defxref who-specializes))
+  #+#.(swank-backend:with-symbol 'who-specializes-directly 'sb-introspect)
+  (defxref who-specializes who-specializes-directly))
 
 (defun source-location-for-xref-data (xref-data)
-  (let ((name (car xref-data))
-        (source-location (cdr xref-data)))
-    (list name
-          (handler-case (make-definition-source-location source-location
-                                                         'function
-                                                         name)
-            (error (e)
-              (list :error (format nil "Error: ~A" e)))))))
+  (destructuring-bind (name . defsrc) xref-data
+    (list name (converting-errors-to-error-location
+                 (definition-source-for-emacs defsrc 'function name)))))
 
 (defimplementation list-callers (symbol)
   (let ((fn (fdefinition symbol)))
@@ -896,8 +913,9 @@ Return NIL if the symbol is unbound."
 (defun function-dspec (fn)
   "Describe where the function FN was defined.
 Return a list of the form (NAME LOCATION)."
-  (let ((name (sb-kernel:%fun-name fn)))
-    (list name (safe-function-source-location fn name))))
+  (let ((name (function-name fn)))
+    (list name (converting-errors-to-error-location
+                 (function-source-location fn name)))))
 
 ;;; macroexpansion
 
@@ -908,20 +926,30 @@ Return a list of the form (NAME LOCATION)."
 
 ;;; Debugging
 
-(defvar *sldb-stack-top*)
+;;; Notice that SB-EXT:*INVOKE-DEBUGGER-HOOK* is slightly stronger
+;;; than just a hook into BREAK. In particular, it'll make
+;;; (LET ((*DEBUGGER-HOOK* NIL)) ..error..) drop into SLDB rather
+;;; than the native debugger. That should probably be considered a
+;;; feature.
 
 (defun make-invoke-debugger-hook (hook)
-  #'(lambda (condition old-hook)
-      ;; Notice that *INVOKE-DEBUGGER-HOOK* is tried before
-      ;; *DEBUGGER-HOOK*, so we have to make sure that the latter gets
-      ;; run when it was established locally by a user (i.e. changed meanwhile.)
-      (if *debugger-hook*
-          (funcall *debugger-hook* condition old-hook)
-          (funcall hook condition old-hook))))
+  (when hook
+    #'(sb-int:named-lambda swank-invoke-debugger-hook
+          (condition old-hook)
+        (if *debugger-hook*
+            nil         ; decline, *DEBUGGER-HOOK* will be tried next.
+            (funcall hook condition old-hook)))))
+
+(defun set-break-hook (hook)
+  (setq sb-ext:*invoke-debugger-hook* (make-invoke-debugger-hook hook)))
+
+(defun call-with-break-hook (hook continuation)
+  (let ((sb-ext:*invoke-debugger-hook* (make-invoke-debugger-hook hook)))
+    (funcall continuation)))
 
 (defimplementation install-debugger-globally (function)
   (setq *debugger-hook* function)
-  (setq sb-ext:*invoke-debugger-hook* (make-invoke-debugger-hook function)))
+  (set-break-hook function))
 
 (defimplementation condition-extras (condition)
   (cond #+#.(swank-backend::sbcl-with-new-stepper-p)
@@ -943,9 +971,13 @@ Return a list of the form (NAME LOCATION)."
             ref)
            (t (symbol-name ref))))))
 
+(defvar *sldb-stack-top*)
+
 (defimplementation call-with-debugging-environment (debugger-loop-fn)
   (declare (type function debugger-loop-fn))
-  (let* ((*sldb-stack-top* (or sb-debug:*stack-top-hint* (sb-di:top-frame)))
+  (let* ((*sldb-stack-top* (if *debug-swank-backend*
+                               (sb-di:top-frame)
+                               (or sb-debug:*stack-top-hint* (sb-di:top-frame))))
          (sb-debug:*stack-top-hint* nil))
     (handler-bind ((sb-di:debug-condition
 		    (lambda (condition)
@@ -970,7 +1002,6 @@ Return a list of the form (NAME LOCATION)."
 
 (defimplementation call-with-debugger-hook (hook fun)
   (let ((*debugger-hook* hook)
-        (sb-ext:*invoke-debugger-hook* (and hook (make-invoke-debugger-hook hook)))
         #+#.(swank-backend::sbcl-with-new-stepper-p)
         (sb-ext:*stepper-hook*
          (lambda (condition)
@@ -980,7 +1011,7 @@ Return a list of the form (NAME LOCATION)."
                 (sb-impl::invoke-debugger condition)))))))
     (handler-bind (#+#.(swank-backend::sbcl-with-new-stepper-p)
                    (sb-ext:step-condition #'sb-impl::invoke-stepper))
-      (funcall fun))))
+      (call-with-break-hook hook fun))))
 
 (defun nth-frame (index)
   (do ((frame *sldb-stack-top* (sb-di:frame-down frame))
@@ -1003,6 +1034,19 @@ stack."
   #+#.(swank-backend::sbcl-with-restart-frame)
   (not (null (sb-debug:frame-has-debug-tag-p frame))))
 
+(defimplementation frame-call (frame-number)
+  (multiple-value-bind (name args)
+      (sb-debug::frame-call (nth-frame frame-number))
+    (with-output-to-string (stream)
+      (pprint-logical-block (stream nil :prefix "(" :suffix ")")
+        (let ((*print-length* nil)
+              (*print-level* nil))
+          (prin1 (sb-debug::ensure-printable-object name) stream))
+        (let ((args (sb-debug::ensure-printable-object args)))
+          (if (listp args)
+              (format stream "~{ ~_~S~}" args)
+              (format stream " ~S" args)))))))
+
 ;;;; Code-location -> source-location translation
 
 ;;; If debug-block info is avaibale, we determine the file position of
@@ -1016,11 +1060,11 @@ stack."
          (plist (sb-c::debug-source-plist dsource)))
     (if (getf plist :emacs-buffer)
         (emacs-buffer-source-location code-location plist)
-        #+#.(swank-backend::with-symbol 'debug-source-from 'sb-di)
+        #+#.(swank-backend:with-symbol 'debug-source-from 'sb-di)
         (ecase (sb-di:debug-source-from dsource)
           (:file (file-source-location code-location))
           (:lisp (lisp-source-location code-location)))
-        #-#.(swank-backend::with-symbol 'debug-source-from 'sb-di)
+        #-#.(swank-backend:with-symbol 'debug-source-from 'sb-di)
         (if (sb-di:debug-source-namestring dsource)
             (file-source-location code-location)
             (lisp-source-location code-location)))))
@@ -1076,10 +1120,10 @@ stack."
                          `(:snippet ,snippet)))))))
 
 (defun code-location-debug-source-name (code-location)
-  (namestring (truename (#+#.(swank-backend::with-symbol
+  (namestring (truename (#+#.(swank-backend:with-symbol
                               'debug-source-name 'sb-di)
                              sb-c::debug-source-name
-                             #-#.(swank-backend::with-symbol
+                             #-#.(swank-backend:with-symbol
                                   'debug-source-name 'sb-di)
                              sb-c::debug-source-namestring
                          (sb-di::code-location-debug-source code-location)))))
@@ -1116,15 +1160,10 @@ stack."
 
 ;;; source-path-file-position and friends are in swank-source-path-parser
 
-(defun safe-source-location-for-emacs (code-location)
-  (if *debug-definition-finding*
-      (code-location-source-location code-location)
-      (handler-case (code-location-source-location code-location)
-        (error (c) (list :error (format nil "~A" c))))))
-
 (defimplementation frame-source-location (index)
-  (safe-source-location-for-emacs
-   (sb-di:frame-code-location (nth-frame index))))
+  (converting-errors-to-error-location
+    (code-location-source-location
+     (sb-di:frame-code-location (nth-frame index)))))
 
 (defun frame-debug-vars (frame)
   "Return a vector of debug-variables in frame."
@@ -1139,10 +1178,11 @@ stack."
   (let* ((frame (nth-frame index))
 	 (loc (sb-di:frame-code-location frame))
 	 (vars (frame-debug-vars frame)))
-    (loop for v across vars collect
-          (list :name (sb-di:debug-var-symbol v)
-                :id (sb-di:debug-var-id v)
-                :value (debug-var-value v frame loc)))))
+    (when vars
+      (loop for v across vars collect
+            (list :name (sb-di:debug-var-symbol v)
+                  :id (sb-di:debug-var-id v)
+                  :value (debug-var-value v frame loc))))))
 
 (defimplementation frame-var-value (frame var)
   (let* ((frame (nth-frame frame))
@@ -1244,11 +1284,13 @@ stack."
          (label-value-line* (:value (sb-kernel:value-cell-ref o))))
 	(t
 	 (multiple-value-bind (text label parts) (sb-impl::inspected-parts o)
-           (list* (format nil "~a~%" text)
+           (list* (string-right-trim '(#\Newline) text)
+                  '(:newline)
                   (if label
                       (loop for (l . v) in parts
                             append (label-value-line l v))
-                      (loop for value in parts  for i from 0
+                      (loop for value in parts
+                            for i from 0
                             append (label-value-line i value))))))))
 
 (defmethod emacs-inspect ((o function))
@@ -1318,7 +1360,7 @@ stack."
 ;;;; Multiprocessing
 
 #+(and sb-thread
-       #.(cl:if (cl:find-symbol "THREAD-NAME" "SB-THREAD") '(and) '(or)))
+       #.(swank-backend:with-symbol "THREAD-NAME" "SB-THREAD"))
 (progn
   (defvar *thread-id-counter* 0)
 
@@ -1425,10 +1467,25 @@ stack."
         (setf (mailbox.queue mbox)
               (nconc (mailbox.queue mbox) (list message)))
         (sb-thread:condition-broadcast (mailbox.waitqueue mbox)))))
+  #-sb-lutex
+  (defun condition-timed-wait (waitqueue mutex timeout)
+    (handler-case 
+        (let ((*break-on-signals* nil))
+          (sb-sys:with-deadline (:seconds timeout :override t)
+            (sb-thread:condition-wait waitqueue mutex) t))
+      (sb-ext:timeout ()
+        nil)))
 
+  ;; FIXME: with-timeout doesn't work properly on Darwin
+  #+sb-lutex
+  (defun condition-timed-wait (waitqueue mutex timeout)
+    (declare (ignore timeout))
+    (sb-thread:condition-wait waitqueue mutex))
+  
   (defimplementation receive-if (test &optional timeout)
     (let* ((mbox (mailbox (current-thread)))
-           (mutex (mailbox.mutex mbox)))
+           (mutex (mailbox.mutex mbox))
+           (waitq (mailbox.waitqueue mbox)))
       (assert (or (not timeout) (eq timeout t)))
       (loop
        (check-slime-interrupts)
@@ -1439,24 +1496,13 @@ stack."
              (setf (mailbox.queue mbox) (nconc (ldiff q tail) (cdr tail)))
              (return (car tail))))
          (when (eq timeout t) (return (values nil t)))
-         ;; FIXME: with-timeout doesn't work properly on Darwin
-         #+linux
-         (handler-case 
-             (let ((*break-on-signals* nil))
-               (sb-ext:with-timeout 0.2
-                 (sb-thread:condition-wait (mailbox.waitqueue mbox)
-                                           mutex)))
-           (sb-ext:timeout ()))
-         #-linux  
-         (sb-thread:condition-wait (mailbox.waitqueue mbox)
-                                   mutex)))))
+         (condition-timed-wait waitq mutex 0.2)))))
   )
 
 (defimplementation quit-lisp ()
   #+sb-thread
   (dolist (thread (remove (current-thread) (all-threads)))
-    (ignore-errors (sb-thread:interrupt-thread
-                    thread (lambda () (sb-ext:quit :recklessly-p t)))))
+    (ignore-errors (sb-thread:terminate-thread thread)))
   (sb-ext:quit))
 
 
@@ -1518,14 +1564,103 @@ stack."
 
 #-win32
 (defimplementation save-image (filename &optional restart-function)
-  (let ((pid (sb-posix:fork)))
-    (cond ((= pid 0) 
-           (let ((args `(,filename 
-                         ,@(if restart-function
-                               `((:toplevel ,restart-function))))))
-             (apply #'sb-ext:save-lisp-and-die args)))
-          (t
-           (multiple-value-bind (rpid status) (sb-posix:waitpid pid 0)
-             (assert (= pid rpid))
-             (assert (and (sb-posix:wifexited status)
-                          (zerop (sb-posix:wexitstatus status)))))))))
+  (flet ((restart-sbcl ()
+           (sb-debug::enable-debugger)
+           (setf sb-impl::*descriptor-handlers* nil)
+           (funcall restart-function)))
+    (let ((pid (sb-posix:fork)))
+      (cond ((= pid 0)
+             (sb-debug::disable-debugger)
+             (apply #'sb-ext:save-lisp-and-die filename
+                    (when restart-function
+                      (list :toplevel #'restart-sbcl))))
+            (t
+             (multiple-value-bind (rpid status) (sb-posix:waitpid pid 0)
+               (assert (= pid rpid))
+               (assert (and (sb-posix:wifexited status)
+                            (zerop (sb-posix:wexitstatus status))))))))))
+
+#+unix
+(progn
+  (sb-alien:define-alien-routine ("execv" sys-execv) sb-alien:int 
+    (program sb-alien:c-string)
+    (argv (* sb-alien:c-string)))
+  
+  (defun execv (program args)
+    "Replace current executable with another one."
+    (let ((a-args (sb-alien:make-alien sb-alien:c-string
+                                       (+ 1 (length args)))))
+      (unwind-protect
+           (progn
+             (loop for index from 0 by 1
+                   and item in (append args '(nil))
+                   do (setf (sb-alien:deref a-args index)
+                            item))
+             (when (minusp
+                    (sys-execv program a-args))
+               (sb-posix:syscall-error)))
+        (sb-alien:free-alien a-args))))
+
+  (defun runtime-pathname ()
+    #+#.(swank-backend:with-symbol
+            '*runtime-pathname* 'sb-ext)
+    sb-ext:*runtime-pathname*
+    #-#.(swank-backend:with-symbol
+            '*runtime-pathname* 'sb-ext)
+    (car sb-ext:*posix-argv*))
+
+  (defimplementation exec-image (image-file args)
+    (loop with fd-arg =
+          (loop for arg in args
+                and key = "" then arg
+                when (string-equal key "--swank-fd")
+                return (parse-integer arg))
+          for my-fd from 3 to 1024
+          when (/= my-fd fd-arg)
+          do (ignore-errors (sb-posix:fcntl my-fd sb-posix:f-setfd 1)))
+    (let* ((self-string (pathname-to-filename (runtime-pathname))))
+      (execv
+       self-string
+       (apply 'list self-string "--core" image-file args)))))
+
+(defimplementation make-fd-stream (fd external-format)
+  (sb-sys:make-fd-stream fd :input t :output t
+                         :element-type 'character
+                         :buffering :full
+                         :dual-channel-p t                         
+                         :external-format external-format))
+
+#-win32
+(defimplementation background-save-image (filename &key restart-function
+                                                   completion-function)
+  (flet ((restart-sbcl ()
+           (sb-debug::enable-debugger)
+           (setf sb-impl::*descriptor-handlers* nil)
+           (funcall restart-function)))
+    (multiple-value-bind (pipe-in pipe-out) (sb-posix:pipe)
+      (let ((pid (sb-posix:fork)))
+        (cond ((= pid 0)
+               (sb-posix:close pipe-in)
+               (sb-debug::disable-debugger)
+               (apply #'sb-ext:save-lisp-and-die filename
+                      (when restart-function
+                        (list :toplevel #'restart-sbcl))))
+              (t
+               (sb-posix:close pipe-out)
+               (sb-sys:add-fd-handler
+                pipe-in :input
+                (lambda (fd)
+                  (sb-sys:invalidate-descriptor fd)
+                  (sb-posix:close fd)
+                  (multiple-value-bind (rpid status) (sb-posix:waitpid pid 0)
+                    (assert (= pid rpid))
+                    (assert (sb-posix:wifexited status))
+                    (funcall completion-function
+                             (zerop (sb-posix:wexitstatus status))))))))))))
+
+(defun deinit-log-output ()
+  ;; Can't hang on to an fd-stream from a previous session.
+  (setf (symbol-value (find-symbol "*LOG-OUTPUT*" 'swank))
+        nil))
+
+(pushnew 'deinit-log-output sb-ext:*save-hooks*)

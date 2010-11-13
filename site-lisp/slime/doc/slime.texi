@@ -12,7 +12,7 @@
 @set EDITION 3.0-alpha
 @set SLIMEVER 3.0-alpha
 @c @set UPDATED @today{}
-@set UPDATED @code{$Date: 2009-10-21 14:32:57 $}
+@set UPDATED @code{$Date: 2010-04-05 18:56:13 $}
 @set TITLE SLIME User Manual
 @settitle @value{TITLE}, version @value{EDITION}
 
@@ -676,9 +676,10 @@ the interactions.
 The buffer @code{*inferior-lisp*} contains the Lisp process's own
 top-level. This direct access to Lisp is useful for troubleshooting,
 and some degree of @SLIME{} integration is available using the
-@code{inferior-slime-mode}. However, in normal use we recommend using
-the fully-integrated @SLIME{} @REPL{} (@pxref{REPL}) and ignoring the
-@code{*inferior-lisp*} buffer.
+inferior-slime-mode.  Many people load the better integrated @SLIME{}
+@REPL{} contrib module (@pxref{REPL}) and ignore
+the @code{*inferior-lisp*} buffer.  (@pxref{Loading Contribs} for
+information on how to enable the REPL.)
 
 @c ----------------------- 
 @node Multithreading
@@ -865,8 +866,9 @@ Compile the top-level form at point.  The region blinks shortly to
 give some feedback which part was chosen.
 
 With (positive) prefix argument the form is compiled with maximal
-debug settings (@kbd{C-u C-c C-c}).  With negative prefix argument it is compiled for
-speed (@kbd{M-- C-c C-c}).
+debug settings (@kbd{C-u C-c C-c}). With negative prefix argument it is compiled for
+speed (@kbd{M-- C-c C-c}). If a numeric argument is passed set debug or speed settings
+to it depending on its sign.
 
 The code for the region is executed after compilation.  In principle,
 the command writes the region to a file, compiles that file, and loads
@@ -877,6 +879,11 @@ Compile and load the current buffer's source file.  If the compilation
 step fails, the file is not loaded.  It's not always easy to tell
 whether the compilation failed: occasionally you may end up in the
 debugger during the load step.
+
+With (positive) prefix argument the file is compiled with maximal
+debug settings (@kbd{C-u C-c C-k}). With negative prefix argument it is compiled for
+speed (@kbd{M-- C-c C-k}). If a numeric argument is passed set debug or speed settings
+to it depending on its sign.
 
 @kbditem{C-c M-k, slime-compile-file}
 Compile (but don't load) the current buffer's source file.
@@ -990,7 +997,7 @@ Describe the symbol at point.
 @kbditem{C-c C-d f, slime-describe-function}
 Describe the function at point.
 
-@kbditem{C-c C-d a, slime-apropos}
+@kbditem{C-c C-d A, slime-apropos}
 Perform an apropos search on Lisp symbol names for a regular expression
 match and display their documentation strings. By default the external
 symbols of all packages are searched. With a prefix argument you can choose a
@@ -1204,6 +1211,9 @@ value. If point is on an action then call that action.
 @kbditem{d, slime-inspector-describe}
 Describe the slot at point.
 
+@kbditem{e, slime-inspector-eval}
+Evaluate an expression in the context of the inspected object.
+
 @kbditem{v, slime-inspector-toggle-verbose}
 Toggle between verbose and terse mode. Default is determined by
 `swank:*inspector-verbose*'.
@@ -1395,9 +1405,11 @@ Recompile frame. @kbd{C-u C-c C-c} for recompiling with maximum debug settings.
 @kbditem{a, sldb-abort}
 Invoke the @code{ABORT} restart.
 
+@anchor{sldb-quit}
 @kbditem{q, sldb-quit}
-``Quit'' -- @code{THROW} to a tag that the top-level @SLIME{}
-request-loop catches.
+``Quit'' -- For @SLIME{} evaluation requests, invoke a restart which
+restores to a known program state. For errors in other threads, see
+@ref{SWANK:*SLDB-QUIT-RESTART*}.
 
 @kbditem{c, sldb-continue}
 Invoke the @code{CONTINUE} restart.
@@ -1477,6 +1489,8 @@ Inspect the condition currently being debugged.
 
 @kbditem{:, slime-interactive-eval}
 Evaluate an expression entered in the minibuffer.
+@kbditem{A, sldb-break-with-system-debugger}
+Attach debugger (e.g. gdb) to the current lisp process.
 
 @end table
 
@@ -1513,8 +1527,10 @@ The most recently visited @code{lisp-mode} source buffer.
 The @code{*slime-scratch*} buffer (@pxref{slime-scratch}).
 @item c
 SLIME connections buffer (@pxref{Multiple connections}).
+@item n
+Cycle to the next Lisp connection (@pxref{Multiple connections}).
 @item t
-SLIME threads buffer.
+SLIME threads buffer (@pxref{Multiple connections}).
 @end table
 
 @code{slime-selector} doesn't have a key binding by default but we
@@ -1585,11 +1601,18 @@ the ``connection list'' buffer:
 
 @table @kbd
 @kbditem{C-c C-x c, slime-list-connections}
-Pop up a buffer listing the established connections.
+Pop up a buffer listing the established connections.  It is also
+available by the typing @kbd{c} from the SLIME selector
+(@ref{slime-selector}).
+
+@kbditem{C-c C-x n, slime-cycle-connections}
+Change current Lisp connection by cycling through all connections.  It
+is also available by the typing @kbd{n} from the SLIME selector
+(@ref{slime-selector}).
 
 @kbditem{C-c C-x t, slime-list-threads}
-Pop up a buffer listing the current threads.
-
+Pop up a buffer listing the current threads.  It is also available by
+the typing @kbd{t} from the SLIME selector (@ref{slime-selector}).
 @end table
 
 The buffer displayed by @code{slime-list-connections} gives a one-line
@@ -1831,11 +1854,26 @@ globally set to @code{SWANK:SWANK-DEBUGGER-HOOK} and thus for @SLIME{}
 to handle all debugging in the Lisp image. This is for debugging
 multithreaded and callback-driven applications.
 
-@vindex SWANK:*SLDB-PRINTER-BINDINGS*
+@anchor{SWANK:*SLDB-QUIT-RESTART*}
+@vindex SWANK:*SLDB-QUIT-RESTART*
+@item SWANK:*SLDB-QUIT-RESTART*
+This variable names the restart that is invoked when pressing @kbd{q}
+(@pxref{sldb-quit}) in @SLDB{}. For @SLIME{} evaluation requests this
+is @emph{unconditionally} bound to a restart that returns to a safe
+point. This variable is supposed to customize what @kbd{q} does if an
+application's thread lands into the debugger (see
+@code{SWANK:*GLOBAL-DEBUGGER*}).
+@example
+(setf swank:*sldb-quit-restart* 'sb-thread:terminate-thread)
+@end example
+
+@vindex SWANK:*BACKTRACE-PRINTER-BINDINGS*
 @vindex SWANK:*MACROEXPAND-PRINTER-BINDINGS*
+@vindex SWANK:*SLDB-PRINTER-BINDINGS*
 @vindex SWANK:*SWANK-PPRINT-BINDINGS*
-@item SWANK:*SLDB-PRINTER-BINDINGS*
+@item SWANK:*BACKTRACE-PRINTER-BINDINGS*
 @itemx SWANK:*MACROEXPAND-PRINTER-BINDINGS*
+@itemx SWANK:*SLDB-PRINTER-BINDINGS*
 @itemx SWANK:*SWANK-PPRINT-BINDINGS*
 These variables can be used to customize the printer in various
 situations.  The values of the variables are association lists of
@@ -1911,13 +1949,13 @@ is that simple.
 @node Setting up the lisp image
 @subsection Setting up the lisp image
 
-
 When you want to load swank without going through the normal, Emacs
 based, process just load the @file{swank-loader.lisp} file. Just
 execute
 
 @example
 (load "/path/to/swank-loader.lisp")
+(swank-loader:init)
 @end example
 
 inside a running lisp image@footnote{@SLIME{} also provides an
@@ -2027,8 +2065,8 @@ and translate it into something that tramp can understand and access
 contrib to setup the proper translations by simply doing:
 
 @example
-(push (slime-create-filename-translator :machine-instance "remote.example.com"
-                                        :remote-host "remote"
+(push (slime-create-filename-translator :machine-instance "remote"
+                                        :remote-host "remote.example.com"
                                         :username "user")
       slime-filename-translations)
 @end example
@@ -2125,6 +2163,22 @@ looks like:
 
 After starting SLIME, the commands of both packages should be
 available.
+
+The REPL and @code{slime-fancy} modules deserve special mention.  Many
+users consider the REPL (@pxref{REPL}) essential
+while @code{slime-fancy} (@pxref{slime-fancy}) loads the REPL and
+almost all of the popular contribs.  So, if you aren't sure what to
+choose start with:
+
+@example
+(slime-setup '(slime-repl)) ; repl only
+@end example
+
+If you like what you see try this:
+
+@example
+(slime-setup '(slime-fancy)) ; almost everything
+@end example
 
 @c ----------------------- 
 @node REPL
@@ -2337,7 +2391,7 @@ also tracks the current directory of the Lisp process.
 To install it, add something like this to user @file{.emacs}:
 
 @example
-(slime-setup '(inferior-slime-mode))
+(slime-setup '(inferior-slime))
 @end example
 
 @table @kbd
@@ -2500,11 +2554,20 @@ Show the argument list of the function NAME.
 @cmditem{slime-autodoc-mode}
 Toggles autodoc-mode on or off according to the argument, and
 toggles the mode when invoked without argument.
+@kbditem{C-c C-d a, slime-autodoc-manually}
+Like slime-autodoc, but when called twice,
+or after slime-autodoc was already automatically called, 
+display multiline arglist.
 @end table
 
+@vindex slime-use-autodoc-mode
 If the variable @code{slime-use-autodoc-mode} is set (default), Emacs
 starts a timer, otherwise the information is only displayed after
 pressing SPC.
+
+@vindex slime-autodoc-use-multiline-p
+If @code{slime-autodoc-use-multiline-p} is set to non-nil,
+allow long autodoc messages to resize echo area display.
 
 @node ASDF
 @section ASDF
@@ -2520,17 +2583,28 @@ you will get errors about missing symbols.
 @cmditem{slime-load-system NAME}
 Compile and load an ASDF system.  The default system name is taken
 from the first file matching *.asd in the current directory.
+@cmditem{slime-reload-system NAME}
+Recompile and load an ASDF system without recompiling its dependencies.
 @cmditem{slime-open-system NAME &optional LOAD}
 Open all files in a system, optionally load it if LOAD is non-nil.
 @cmditem{slime-browse-system NAME}
 Browse files in a system using Dired.
+@cmditem{slime-delete-system-fasls NAME}
+Delete FASLs produced by compiling a system.
+@cmditem{slime-rgrep-system NAME REGEXP}
+Run @code{rgrep} on the base directory of an ASDF system.
+@cmditem{slime-isearch-system NAME}
+Run @code{isearch-forward} on the files of an ASDF system.
+@cmditem{slime-query-replace-system NAME FROM TO &OPTIONAL DELIMITED}
+Run @code{query-replace} on an ASDF system.
 @end table
-
 The package also installs some new REPL shortcuts (@pxref{Shortcuts}):
 
 @table @kbd
 @item load-system
 Compile (as needed) and load an ASDF system.
+@item reload-system
+Recompile and load an ASDF system.
 @item compile-system
 Compile (but not load) an ASDF system.
 @item force-compile-system
@@ -2541,6 +2615,8 @@ Recompile and load an ASDF system.
 Open all files in a system.
 @item browse-system
 Browse files in a system using Dired.
+@item delete-system-fasls
+Delete FASLs produced by compiling a system.
 @end table
 
 @node Banner
@@ -2644,8 +2720,23 @@ Using standard Emacs
 commands, the presentation can be copied to a new input in the REPL:
 
 @example
-CL-USER> (eql '@emph{#<STANDARD-CLASS STANDARD-CLASS>} '@emph{#<STANDARD-CLASS STANDARD-CLASS>})
+CL-USER> (eql '@emph{#<STANDARD-CLASS STANDARD-CLASS>} 
+              '@emph{#<STANDARD-CLASS STANDARD-CLASS>})
 @emph{T}
+@end example
+
+Note that standard evaluation and quoting rules still apply.  So if a
+presentation is a list, it needs to be quoted in an evaluated context to
+avoid treating it as a function call:
+
+@example
+CL-USER> (list (find-class 'standard-class) 2 3 4)
+@emph{(#<STANDARD-CLASS STANDARD-CLASS> 2 3 4)}
+CL-USER> @emph{(#<STANDARD-CLASS STANDARD-CLASS> 2 3 4)}
+; Funcall of #<STANDARD-CLASS STANDARD-CLASS> which is a non-function.
+; Evaluation aborted.
+CL-USER> '@emph{(#<STANDARD-CLASS STANDARD-CLASS> 2 3 4)}
+(#<STANDARD-CLASS STANDARD-CLASS> 2 3 4)
 @end example
 
 When you copy an incomplete presentation or edit the text within a

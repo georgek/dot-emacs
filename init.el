@@ -61,7 +61,14 @@
 ;; stuff for SLIME
 (setq inferior-lisp-program "/usr/bin/sbcl") ; your Lisp system
 (require 'slime-autoloads)
-(slime-setup '(slime-fancy slime-banner))
+(slime-setup '(slime-fancy slime-banner slime-asdf))
+(add-hook 'lisp-mode-hook 
+          '(lambda ()
+             (local-set-key (kbd "C-m") '(lambda ()
+                                           (interactive)
+                                           (newline-and-indent)
+                                           (slime-echo-arglist)))
+             (local-set-key (kbd "C-j") 'newline)))
 
 ;; org-mode settings
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))

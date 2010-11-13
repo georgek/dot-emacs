@@ -1,12 +1,10 @@
-;;; slime-package-fu.el --- Misc extensions for SBCL
-;;
-;; Author:  Tobias C. Rittweiler <tcr@freebits.de>
-;;
-;; License: GNU GPL (same license as Emacs)
-;;
 
-(require 'slime-autodoc)
-(require 'slime-references)
+(define-slime-contrib slime-sbcl-exts
+  "Misc extensions for SBCL"
+  (:authors "Tobias C. Rittweiler <tcr@freebits.de>")
+  (:license "GPL")
+  (:slime-dependencies slime-references)
+  (:swank-dependencies swank-sbcl-exts))
 
 (defun slime-sbcl-bug-at-point ()
   (save-excursion
@@ -30,14 +28,5 @@ symbol at point, or if QUERY is non-nil."
   (interactive (list (slime-read-sbcl-bug "Bug number (#nnnnnn): ")))
   (browse-url (format "http://bugs.launchpad.net/sbcl/+bug/%s" 
                       (substring bug 1))))
-
-(defun slime-enable-autodoc-for-sb-assem:inst ()
-  (push '("INST" . (slime-make-extended-operator-parser/look-ahead 1))
-        slime-extended-operator-name-parser-alist))
-
-(defun slime-sbcl-exts-init ()
-  (slime-enable-autodoc-for-sb-assem:inst))
-
-(slime-require :swank-sbcl-exts)
 
 (provide 'slime-sbcl-exts)
