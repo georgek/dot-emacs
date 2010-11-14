@@ -146,7 +146,7 @@
 (global-set-key (kbd "\C-ci") 'magit-status)
 
 ;; key for opening a shell
-(global-set-key (kbd "\C-cs") 'shell)
+(global-set-key (kbd "\C-cs") 'eshell)
 
 ;; ido mode
 (ido-mode t)
