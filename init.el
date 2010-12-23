@@ -149,6 +149,8 @@
 (global-set-key (kbd "\C-cs") 'eshell)
 
 ;; ido mode
+(setq ido-enable-flex-matching t)
+(setq ido-everywhere t)
 (ido-mode t)
 ;; disable annoying buffer list
 (global-set-key (kbd "\C-x\C-b") 'ido-switch-buffer)
