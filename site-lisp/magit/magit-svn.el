@@ -28,6 +28,8 @@
 ;;; Code:
 
 (require 'magit)
+(eval-when-compile
+  (require 'cl))
 
 ;; git svn commands
 
@@ -47,6 +49,10 @@
            (magit-set-section-info sha)
            sha))
       (error "Revision %s could not be mapped to a commit" rev))))
+
+(defun magit-svn-create-branch (name)
+  (interactive "sBranch name: ")
+  (magit-run-git "svn" "branch" name))
 
 (defun magit-svn-rebase ()
   (interactive)
@@ -91,7 +97,7 @@ doesn't repeatedly call it.")
 Return nil if there isn't one.  Keys of the alist are ref-path,
 trunk-ref-name and local-ref-name.
 If USE-CACHE is non-nil then return the value of `magit-get-svn-ref-info-cache'."
-  (if use-cache
+  (if (and use-cache magit-svn-get-ref-info-cache)
       magit-svn-get-ref-info-cache
     (let* ((fetch (magit-get "svn-remote" "svn" "fetch"))
            (url)
@@ -100,7 +106,8 @@ If USE-CACHE is non-nil then return the value of `magit-get-svn-ref-info-cache'.
         (let* ((ref (cadr (split-string fetch ":")))
                (ref-path (file-name-directory ref))
                (trunk-ref-name (file-name-nondirectory ref)))
-          (setq magit-svn-get-ref-info-cache
+          (set (make-local-variable
+                'magit-svn-get-ref-info-cache)
                 (list
                  (cons 'ref-path ref-path)
                  (cons 'trunk-ref-name trunk-ref-name)
@@ -128,14 +135,14 @@ If USE-CACHE is non nil, use the cached information."
     (cdr (assoc 'local-ref info))))
 
 (magit-define-inserter svn-unpulled (&optional use-cache)
-  (when (magit-svn-get-ref-info)
+  (when (magit-svn-get-ref-info t)
     (magit-git-section 'svn-unpulled
                        "Unpulled commits (SVN):" 'magit-wash-log
                        "log" "--pretty=format:* %H %s"
                        (format "HEAD..%s" (magit-svn-get-ref use-cache)))))
 
 (magit-define-inserter svn-unpushed (&optional use-cache)
-  (when (magit-svn-get-ref-info)
+  (when (magit-svn-get-ref-info t)
     (magit-git-section 'svn-unpushed
                        "Unpushed commits (SVN):" 'magit-wash-log
                        "log" "--pretty=format:* %H %s"
@@ -155,31 +162,42 @@ If USE-CACHE is non nil, use the cached information."
   (when (magit-svn-enabled)
     (magit-run-git-async "svn" "fetch")))
 
-(defvar magit-svn-extension-keys
-  `((,(kbd "N r") . magit-svn-rebase)
-    (,(kbd "N c") . magit-svn-dcommit)
-    (,(kbd "N f") . magit-svn-remote-update)
-    (,(kbd "N s") . magit-svn-find-rev)))
-
 (easy-menu-define magit-svn-extension-menu
   nil
   "Git SVN extension menu"
   '("Git SVN"
+    ["Create branch" magit-svn-create-branch (magit-svn-enabled)]
     ["Rebase" magit-svn-rebase (magit-svn-enabled)]
     ["Fetch" magit-svn-remote-update (magit-svn-enabled)]
     ["Commit" magit-svn-dcommit (magit-svn-enabled)]))
 
-(defvar magit-svn-extension-inserters
-  '((:after unpulled-commits (lambda () (magit-insert-svn-unpulled t)))
-    (:after unpushed-commits (lambda () (magit-insert-svn-unpushed t)))))
+(easy-menu-add-item 'magit-mode-menu
+                    '("Extensions")
+                    magit-svn-extension-menu)
 
-(defvar magit-svn-extension
-  (make-magit-extension :keys magit-svn-extension-keys
-                        :menu magit-svn-extension-menu
-                        :insert magit-svn-extension-inserters
-                        :remote-string 'magit-svn-remote-string))
+(add-hook 'magit-after-insert-unpulled-commits-hook
+          (lambda () (magit-insert-svn-unpulled t)))
 
-(magit-install-extension magit-svn-extension)
+(add-hook 'magit-after-insert-unpushed-commits-hook
+          (lambda () (magit-insert-svn-unpushed t)))
+
+(add-hook 'magit-remote-string-hook 'magit-svn-remote-string)
+
+;; add the group and its keys
+(progn
+  ;; (re-)create the group
+  (magit-key-mode-add-group 'svn)
+
+  (magit-key-mode-insert-action 'svn "r" "Rebase" 'magit-svn-rebase)
+  (magit-key-mode-insert-action 'svn "c" "DCommit" 'magit-svn-dcommit)
+  (magit-key-mode-insert-action 'svn "f" "Fetch" 'magit-svn-remote-update)
+  (magit-key-mode-insert-action 'svn "s" "Find rev" 'magit-svn-find-rev)
+  (magit-key-mode-insert-action 'svn "B" "Create branch" 'magit-svn-create-branch)
+
+  ;; generate and bind the menu popup function
+  (magit-key-mode-generate 'svn))
+
+(define-key magit-mode-map (kbd "N") 'magit-key-mode-popup-svn)
 
 (provide 'magit-svn)
 ;;; magit-svn.el ends here

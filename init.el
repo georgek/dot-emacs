@@ -192,6 +192,8 @@
 
 ;; magit for using git
 (require 'magit)
+(require 'magit-svn)
+(require 'magit-topgit)
 (global-set-key (kbd "\C-ci") 'magit-status)
 
 ;; key for opening a shell
