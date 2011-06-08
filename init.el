@@ -54,23 +54,72 @@
 ;; XML
 (add-to-list 'auto-mode-alist '("\\.xml\\'" . nxml-mode))
 
-;; emacs lisp
-(add-hook 'emacs-lisp-mode-hook 
-          '(lambda () (local-set-key (kbd "C-m") 'newline-and-indent)))
+;;; *** paredit ***
 
-;; stuff for SLIME
+;; electric return stuff
+(defvar electrify-return-match
+  "[\]}\)\"]"
+  "If this regexp matches the text after the cursor, do an \"electric\"
+  return.")
+
+(defun electrify-return-if-match (&optional arg)
+  "If the text after the cursor matches `electrify-return-match' then
+  open and indent an empty line between the cursor and the text.  Move the
+  cursor to the new line."
+  (interactive "P")
+  (let ((case-fold-search nil))
+    (if (looking-at electrify-return-match)
+        (save-excursion (newline-and-indent)))
+    (newline arg)
+    (indent-according-to-mode)))
+
+(defun paredit-with-electric-return ()
+  (paredit-mode +1)
+  (local-set-key (kbd "RET") 'electrify-return-if-match))
+
+(autoload 'paredit-mode "paredit"
+  "Minor mode for pseudo-structurally editing Lisp code." t)
+
+;; use with eldoc
+(require 'eldoc) ; if not already loaded
+(eldoc-add-command
+ 'paredit-backward-delete
+ 'paredit-close-round)
+
+;;; *** emacs lisp ***
+(add-hook 'emacs-lisp-mode-hook
+          (lambda ()
+            (paredit-mode t)
+
+            (turn-on-eldoc-mode)
+            (eldoc-add-command
+             'paredit-backward-delete
+             'paredit-close-round)
+
+            (local-set-key (kbd "RET") 'electrify-return-if-match)
+            (eldoc-add-command 'electrify-return-if-match)
+
+            (show-paren-mode t)))
+
+;;; *** SLIME ***
 (setq inferior-lisp-program "/usr/bin/sbcl") ; your Lisp system
 (require 'slime-autoloads)
 (slime-setup '(slime-fancy slime-banner slime-asdf))
-(add-hook 'lisp-mode-hook 
-          '(lambda ()
-             (local-set-key (kbd "C-m") '(lambda ()
-                                           (interactive)
-                                           (newline-and-indent)
-                                           (slime-echo-arglist)))
-             (local-set-key (kbd "C-j") 'newline)))
+(add-hook 'lisp-mode-hook
+          (lambda ()
+            (paredit-mode t)
 
-;; org-mode settings
+            (turn-on-eldoc-mode)
+            (eldoc-add-command
+             'paredit-backward-delete
+             'paredit-close-round)
+
+            (local-set-key (kbd "RET") 'electrify-return-if-match)
+            (eldoc-add-command 'electrify-return-if-match)
+
+            (show-paren-mode t)))
+
+;;; *** org-mode settings ***
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-ca" 'org-agenda)
