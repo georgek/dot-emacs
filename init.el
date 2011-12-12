@@ -308,3 +308,99 @@
 
 ;; for inserting greeked text
 (require 'lorem-ipsum)
+
+;;; *** ledger stuff ***
+(require 'ledger)
+
+;; modified ledger-accounts puts names in list rather than tree
+(defun find-all-ledger-accounts ()
+  (let ((origin (point)) accounts)
+    (save-excursion
+      (setq ledger-account-tree (list t))
+      (goto-char (point-min))
+      (while (re-search-forward
+              "^[ \t]+\\([*!]\\s-+\\)?[[(]?\\(.+?\\)\\(\t\\|\n\\| [ \t]\\)" nil t)
+        (unless (and (>= origin (match-beginning 0))
+                     (< origin (match-end 0)))
+          (setq accounts (cons (match-string-no-properties 2) accounts)))))
+    accounts))
+
+;; account specifier with completion
+(defun report-account-format-specifier ()
+  (let ((accounts (find-all-ledger-accounts)))
+    (completing-read "Account: " accounts)))
+
+;; interactive add
+(defun ledger-add-entry (title in out)
+  (interactive
+   (let (title (in nil) (out nil) numin numout count curr
+               (accounts (find-all-ledger-accounts)))
+     (setq title
+           (read-string
+            "Entry: "
+            (format-time-string "%Y/%m/%d " (current-time))))
+
+     (setq numin (string-to-number
+                  (read-string 
+                   "How many accounts is money going to? (1): "
+                   nil nil "1")))
+     ;; read in accounts
+     (setq count 1)
+     (while (<= count numin)
+       (setq curr
+             (cons
+              (completing-read
+               (concat "(" (number-to-string count) ") Which account? ")
+               accounts)
+              (read-string
+               (concat "(" (number-to-string count) ") How much? ") "£")))
+       (setq in (cons curr in))
+       (setq count (1+ count)))
+     (setq in (reverse in))
+
+     (setq numout (string-to-number
+                   (read-string 
+                    "How many accounts is money coming from? (1): "
+                    nil nil "1")))
+     ;; read out accounts
+     (if (> numout 1)
+         (progn
+           (setq count 1)
+           (while (<= count numout)
+             (setq curr
+                   (cons
+                    (completing-read
+                     (concat "(" (number-to-string count) ") Which account? ")
+                     accounts)
+                    (if (= numout count)
+                        nil
+                      (read-string
+                       (concat "(" (number-to-string count) ") How much? ") "£"))))
+             (setq out (cons curr out))
+             (setq count (1+ count)))
+           (setq out (reverse out)))
+       (setq out (completing-read "Where did the money come from? " accounts)))
+     (list title in out)))
+  (insert title)
+  (newline)
+  ;; print ins
+  (while in
+    (indent-to 4)
+    (insert (caar in) "  " (cdar in))
+    (newline)
+    (setq in (cdr in)))
+  ;; print outs
+  (if (stringp out)
+      (progn
+        (indent-to 4)
+        (insert out)
+        (newline))
+    (while out
+      (indent-to 4)
+      (if (null (cdar out))
+          (insert (caar out))
+        (insert (caar out) "  -" (cdar out))) ; negative inserted
+      (newline)
+      (setq out (cdr out))))
+  (newline)
+  (ledger-align-amounts))
