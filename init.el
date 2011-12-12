@@ -169,6 +169,10 @@
 ;; midnight mode kills unused buffers at midnight
 (require 'midnight)
 (setq midnight-mode t)
+;; some buffers that shouldn't be killed
+(add-to-list 'clean-buffer-list-kill-never-buffer-names
+             '("*slime-repl sbcl*"
+               "*R*"))
 
 ;; AUCTeX
 (load "auctex.el" nil t t)
