@@ -356,7 +356,7 @@
                (concat "(" (number-to-string count) ") How much? ") "£")))
        (setq in (cons curr in))
        (setq count (1+ count)))
-     (setq in (reverse in))
+     (setq in (nreverse in))
 
      (setq numout (string-to-number
                    (read-string 
@@ -378,7 +378,7 @@
                        (concat "(" (number-to-string count) ") How much? ") "£"))))
              (setq out (cons curr out))
              (setq count (1+ count)))
-           (setq out (reverse out)))
+           (setq out (nreverse out)))
        (setq out (completing-read "Where did the money come from? " accounts)))
      (list title in out)))
   (insert title)
