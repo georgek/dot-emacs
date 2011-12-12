@@ -290,7 +290,7 @@
 
 ;; assembly
 ;; (require 'gas-mode)
-;; (add-to-list 'auto-mode-alist '("\\.S\\'" . asm-mode))
+(add-to-list 'auto-mode-alist '("\\.S\\'" . asm-mode))
 (add-hook 'asm-mode-set-comment-hook
           (lambda () (setq asm-comment-char ?#)))
 (add-hook 'asm-mode-hook
