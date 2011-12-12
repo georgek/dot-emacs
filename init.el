@@ -404,3 +404,7 @@
       (setq out (cdr out))))
   (newline)
   (ledger-align-amounts))
+
+(defun report-account-format-specifier ()
+  (let ((accounts (find-all-ledger-accounts)))
+    (completing-read "Account: " accounts)))

@@ -91,7 +91,7 @@
   :group 'ledger)
 
 (defcustom ledger-reports
-  '(("bal" "ledger -f %(ledger-file) bal")
+  '(("bal" "ledger -f %(ledger-file) bal %(account)")
     ("reg" "ledger -f %(ledger-file) reg")
     ("payee" "ledger -f %(ledger-file) reg -- %(payee)")
     ("account" "ledger -f %(ledger-file) reg %(account)"))
