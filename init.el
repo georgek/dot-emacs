@@ -1,6 +1,8 @@
 ;;;; my .emacs file
 
 (setq inhibit-splash-screen t)
+;; ignore case in completion
+(setq completion-ignore-case t)
 
 ;; deletes the current frame, unless this is the last frame in which case it
 ;; kills emacs
