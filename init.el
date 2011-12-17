@@ -313,6 +313,8 @@
 
 ;;; *** ledger stuff ***
 (require 'ledger)
+(add-hook 'ledger-mode-hook
+          (lambda () (flyspell-mode -1)))
 
 ;; modified ledger-accounts puts names in list rather than tree
 (defun find-all-ledger-accounts ()
