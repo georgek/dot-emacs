@@ -10,8 +10,8 @@
   (interactive)
   (if (= (length (frame-list)) 2)
       (progn
-        (delete-frame)
         (save-some-buffers)
+        (delete-frame)
         (kill-emacs ARG))
     (delete-frame)))
 (global-set-key (kbd "C-x C-c") 'kill-client-or-daemon)
