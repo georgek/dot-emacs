@@ -9,7 +9,10 @@
 (defun kill-client-or-daemon (&optional ARG)
   (interactive)
   (if (= (length (frame-list)) 2)
-      (save-buffers-kill-emacs ARG)
+      (progn
+        (delete-frame)
+        (save-some-buffers)
+        (kill-emacs ARG))
     (delete-frame)))
 (global-set-key (kbd "C-x C-c") 'kill-client-or-daemon)
 
