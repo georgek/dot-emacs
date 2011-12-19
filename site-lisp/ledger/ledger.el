@@ -811,6 +811,12 @@ specified line, returns nil."
 (defvar ledger-report-cmd-prompt-history nil)
 (defvar ledger-original-window-cfg nil)
 
+(defconst ledger-report-font-lock-keywords
+  '(("^[=]+" . font-lock-constant-face)
+    ("[£$€]\-[0-9]+.?[0-9]*" . font-lock-comment-face)
+    ("[£$€][0-9]+.?[0-9]*" . font-lock-type-face))
+  "Expressions to highlight in Ledger report mode.")
+
 (defvar ledger-report-mode-abbrev-table)
 
 (defvar ledger-report-mode-map
@@ -833,7 +839,13 @@ specified line, returns nil."
     map))
 
 (define-derived-mode ledger-report-mode text-mode "Ledger-Report"
-  "A mode for viewing ledger reports.")
+  "A mode for viewing ledger reports."
+  (kill-all-local-variables)
+  (use-local-map ledger-report-mode-map)
+  (set (make-local-variable 'font-lock-defaults) '(ledger-report-font-lock-keywords))
+  (setq major-mode 'ledger-report-mode)
+  (setq mode-name "Ledger Report")
+  (run-hooks 'ledger-report-mode-hook))
 
 (defun ledger-report-read-name ()
   "Read the name of a ledger report to use, with completion.
