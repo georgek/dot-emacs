@@ -6,14 +6,22 @@
 
 ;; deletes the current frame, unless this is the last frame in which case it
 ;; kills emacs
-(defun kill-client-or-daemon (&optional ARG)
+(defun kill-client-or-daemon ()
+  "Kills emacs.  If running as daemon, the daemon is killed when
+  the last frame is killed."
   (interactive)
-  (if (= (length (frame-list)) 2)
-      (progn
-        (save-some-buffers)
-        (delete-frame)
-        (kill-emacs ARG))
-    (delete-frame)))
+  (if (> (length server-clients) 0)
+      ;; daemon
+      (if (<= (length (frame-list)) 2)
+          ;; this is the last frame
+          (progn
+            (save-some-buffers)
+            (delete-frame)
+            (kill-emacs))
+        ;; not the last frame so just delete it
+        (delete-frame))
+      ;; not daemon
+    (save-buffers-kill-emacs)))
 (global-set-key (kbd "C-x C-c") 'kill-client-or-daemon)
 
 ;; set window title, turn toolbars and stuff off
