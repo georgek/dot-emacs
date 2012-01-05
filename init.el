@@ -4,6 +4,27 @@
 ;; ignore case in completion
 (setq completion-ignore-case t)
 
+;; set window title, turn toolbars and stuff off
+(setq frame-title-format '("%b - GNU Emacs"))
+(tooltip-mode -1)
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
+(blink-cursor-mode 1)
+(tool-bar-mode -1)
+(mouse-avoidance-mode 'banish)
+
+;; add paths
+(add-to-list 'load-path "~/.emacs.d/")
+(add-to-list 'load-path "~/.emacs.d/site-lisp/")
+(progn (cd "~/.emacs.d/site-lisp/")
+       (normal-top-level-add-subdirs-to-load-path))
+
+;; load stuff in other files
+(load-library "gk-gtags")
+
+(require 'color-theme-zenburn)
+(color-theme-zenburn)
+
 ;; deletes the current frame, unless this is the last frame in which case it
 ;; kills emacs
 (defun kill-client-or-daemon ()
@@ -23,24 +44,6 @@
       ;; not daemon
     (save-buffers-kill-emacs)))
 (global-set-key (kbd "C-x C-c") 'kill-client-or-daemon)
-
-;; set window title, turn toolbars and stuff off
-(setq frame-title-format '("%b - GNU Emacs"))
-(tooltip-mode -1)
-(menu-bar-mode -1)
-(scroll-bar-mode -1)
-(blink-cursor-mode 1)
-(tool-bar-mode -1)
-(mouse-avoidance-mode 'banish)
-
-;; add paths
-(add-to-list 'load-path "~/.emacs.d/")
-(add-to-list 'load-path "~/.emacs.d/site-lisp/")
-(progn (cd "~/.emacs.d/site-lisp/")
-       (normal-top-level-add-subdirs-to-load-path))
-
-;; load stuff in other files
-(load-library "gk-gtags")
 
 ;; turn off tabs
 (setq-default indent-tabs-mode nil)
@@ -90,8 +93,7 @@
   (paredit-mode +1)
   (local-set-key (kbd "RET") 'electrify-return-if-match))
 
-(autoload 'paredit-mode "paredit"
-  "Minor mode for pseudo-structurally editing Lisp code." t)
+(require 'paredit)
 
 ;; use with eldoc
 (require 'eldoc) ; if not already loaded

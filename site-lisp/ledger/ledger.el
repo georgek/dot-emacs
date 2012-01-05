@@ -811,10 +811,15 @@ specified line, returns nil."
 (defvar ledger-report-cmd-prompt-history nil)
 (defvar ledger-original-window-cfg nil)
 
+(make-face 'negative)
+(set-face-foreground 'negative "salmon")
+(make-face 'positive)
+(set-face-foreground 'positive "light green")
+
 (defconst ledger-report-font-lock-keywords
   '(("^[=]+" . font-lock-constant-face)
-    ("[£$€]\-[0-9]+.?[0-9]*" . font-lock-comment-face)
-    ("[£$€][0-9]+.?[0-9]*" . font-lock-type-face))
+    ("[£$€]\-[0-9]+.?[0-9]*" . 'negative)
+    ("[£$€][0-9]+.?[0-9]*" . 'positive))
   "Expressions to highlight in Ledger report mode.")
 
 (defvar ledger-report-mode-abbrev-table)
