@@ -812,12 +812,12 @@ specified line, returns nil."
 (defvar ledger-original-window-cfg nil)
 
 (make-face 'negative)
-(set-face-foreground 'negative "salmon")
+(set-face-foreground 'negative zenburn-red)
 (make-face 'positive)
-(set-face-foreground 'positive "light green")
+(set-face-foreground 'positive zenburn-green)
 
 (defconst ledger-report-font-lock-keywords
-  '(("^[=]+" . font-lock-constant-face)
+  '(("^[=]+" . 'compilation-message-face)
     ("[£$€]\-[0-9]+.?[0-9]*" . 'negative)
     ("[£$€][0-9]+.?[0-9]*" . 'positive))
   "Expressions to highlight in Ledger report mode.")
