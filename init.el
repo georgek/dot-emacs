@@ -20,7 +20,7 @@
        (normal-top-level-add-subdirs-to-load-path))
 
 ;; load stuff in other files
-(load-library "gk-gtags")
+;; (load-library "gk-gtags")
 
 (require 'color-theme-zenburn)
 (color-theme-zenburn)
@@ -31,7 +31,8 @@
   "Kills emacs.  If running as daemon, the daemon is killed when
   the last frame is killed."
   (interactive)
-  (if (> (length server-clients) 0)
+  (if (and (boundp 'server-clients)
+           (> (length server-clients) 0))
       ;; daemon
       (if (<= (length (frame-list)) 2)
           ;; this is the last frame
@@ -191,7 +192,7 @@
 
 ;; AUCTeX
 (load "auctex.el" nil t t)
-(load "preview-latex.el" nil t t)
+;; (load "preview-latex.el" nil t t)
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
 (setq TeX-newline-function 'newline-and-indent)
