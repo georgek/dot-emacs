@@ -8,3 +8,8 @@ auto-save-list
 CVS/
 .cvsignore
 /tramp
+
+#auctex
+site-lisp/auctex.el
+site-lisp/tex-site.el
+site-lisp/auctex/*
