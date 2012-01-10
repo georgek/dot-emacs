@@ -423,3 +423,24 @@
   (newline)
   (ledger-align-amounts))
 
+;; a better command to be bound to C-x o
+(defun other-window-repeat (COUNT &optional no-repeat)
+  "Calls other-window.  If a multiple key sequence was used to
+  call this then the last key can be used on its own to repeat
+  this, like kmacro-call-macro."
+  (interactive (list 1))
+  (let ((repeat-key (and (null no-repeat)
+                         (> (length (this-single-command-keys)) 1)
+                         last-input-event)))
+    (other-window COUNT)
+    (while repeat-key
+      (if (equal repeat-key (read-event))
+          (progn
+            (clear-this-command-keys t)
+            (other-window COUNT)
+            (setq last-input-event nil))
+        (setq repeat-key nil)))
+    (when last-input-event
+      (clear-this-command-keys t)
+      (setq unread-command-events (list last-input-event)))))
+(global-set-key (kbd "C-x o") 'other-window-repeat)
