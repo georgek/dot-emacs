@@ -428,7 +428,7 @@
   "Calls other-window.  If a multiple key sequence was used to
   call this then the last key can be used on its own to repeat
   this, like kmacro-call-macro."
-  (interactive (list 1))
+  (interactive "p")
   (let ((repeat-key (and (null no-repeat)
                          (> (length (this-single-command-keys)) 1)
                          last-input-event)))
