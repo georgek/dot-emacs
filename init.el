@@ -118,9 +118,9 @@
             (show-paren-mode t)))
 
 ;;; *** SLIME ***
-(setq inferior-lisp-program "/usr/bin/clisp") ; your Lisp system
+(setq inferior-lisp-program "/usr/bin/sbcl") ; your Lisp system
 (require 'slime-autoloads)
-(slime-setup '(slime-fancy slime-banner))
+(slime-setup '(slime-fancy slime-banner slime-asdf))
 (add-hook 'lisp-mode-hook
           (lambda ()
             (paredit-mode t)
