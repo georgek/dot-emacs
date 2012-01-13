@@ -13,6 +13,10 @@
 (tool-bar-mode -1)
 (mouse-avoidance-mode 'banish)
 
+;; remove old org from load path
+(require 'cl)
+(setq load-path (remove-if (lambda (x) (string-match-p "org$" x)) load-path))
+
 ;; add paths
 (add-to-list 'load-path "~/.emacs.d/")
 (add-to-list 'load-path "~/.emacs.d/site-lisp/")
