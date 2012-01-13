@@ -136,9 +136,14 @@
             (show-paren-mode t)))
 
 ;;; *** org-mode settings ***
+(require 'org-install)
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-ca" 'org-agenda)
+(setq org-agenda-files (list "~/org/"))
+(setq org-agenda-include-diary t)
+(setq org-agenda-span 14)
+;; (setq org-agenda-ndays 14)              ;old version of span
 (global-font-lock-mode 1)
 (setq org-log-done 'time)
 (setq org-blank-before-new-entry 
