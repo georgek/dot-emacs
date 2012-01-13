@@ -423,6 +423,10 @@
   (newline)
   (ledger-align-amounts))
 
+(defvar prev-window (selected-window)
+  "Holds the previous window which was selected before a switch
+  using other-window-repeat.")
+
 ;; a better command to be bound to C-x o
 (defun other-window-repeat (COUNT &optional no-repeat)
   "Calls other-window.  If a multiple key sequence was used to
@@ -432,6 +436,8 @@
   (let ((repeat-key (and (null no-repeat)
                          (> (length (this-single-command-keys)) 1)
                          last-input-event)))
+    ;; save current window
+    (setq prev-window (selected-window))
     (other-window COUNT)
     (while repeat-key
       (if (equal repeat-key (read-event))
@@ -444,3 +450,12 @@
       (clear-this-command-keys t)
       (setq unread-command-events (list last-input-event)))))
 (global-set-key (kbd "C-x o") 'other-window-repeat)
+
+(defun switch-prev-window ()
+  "Switchs back to previous window that was selected before last
+call to other-window-repeat or switch-prev-window."
+  (interactive)
+  (let ((wind prev-window))
+    (setq prev-window (selected-window))
+    (select-window wind)))
+(global-set-key (kbd "M-'") 'switch-prev-window)
