@@ -16,3 +16,6 @@ site-lisp/auctex/*
 
 share
 var
+
+#org
+site-lisp/org/*
