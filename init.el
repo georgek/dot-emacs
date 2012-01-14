@@ -4,6 +4,8 @@
 ;; ignore case in completion
 (setq completion-ignore-case t)
 
+(global-font-lock-mode 1)
+
 ;; set window title, turn toolbars and stuff off
 (setq frame-title-format '("%b - GNU Emacs"))
 (tooltip-mode -1)
@@ -148,7 +150,9 @@
 (setq org-agenda-include-diary t)
 (setq org-agenda-span 14)
 ;; (setq org-agenda-ndays 14)              ;old version of span
-(global-font-lock-mode 1)
+(setq org-agenda-time-grid '((daily today remove-match)
+                             ""
+                             (0800 1000 1200 1400 1600 1800 2000)))
 (setq org-log-done 'time)
 (setq org-blank-before-new-entry 
       '((heading . t) (plain-list-item . nil)))
@@ -160,6 +164,16 @@
 (define-key global-map "\C-cr" 'org-remember)
 ;; make org table mode come on for some modes
 (add-hook 'LaTeX-mode-hook 'turn-on-orgtbl)
+
+(defun diary-limited-cyclic (recurrences interval y m d)
+  "For use in emacs diary. Cyclic item with limited number of recurrences.
+Occurs every INTERVAL days, starting on YYYY-MM-DD, for a total of
+RECURRENCES occasions."
+  (let ((startdate (calendar-absolute-from-gregorian (list m d y)))
+        (today (calendar-absolute-from-gregorian date)))
+    (and (not (minusp (- today startdate)))
+         (zerop (% (- today startdate) interval))
+         (< (floor (- today startdate) interval) recurrences))))
 
 ;; makefile mode make key
 (add-hook 'makefile-mode-hook
