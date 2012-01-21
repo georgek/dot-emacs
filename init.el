@@ -373,15 +373,22 @@ RECURRENCES occasions."
     (completing-read "Account: " accounts)))
 
 ;; interactive add
-(defun ledger-add-entry (title in out)
+(defun ledger-add-entry (date title in out)
   (interactive
-   (let (title (in nil) (out nil) numin numout count curr
-               (accounts (find-all-ledger-accounts)))
-     (setq title
-           (read-string
-            "Entry: "
-            (format-time-string "%Y/%m/%d " (current-time))))
-
+   (let (date title (in nil) (out nil) numin numout count curr
+              (accounts (find-all-ledger-accounts)) last-date)
+     ;; get the last date in the buffer to be used as default for get date
+     (save-excursion
+       (if (re-search-backward
+            "^\\([0-9]\\{4\\}\\)-\\([0-9]\\{2\\}\\)-\\([0-9]\\{2\\}\\)" nil t)
+           (setq last-date 
+                 (encode-time 0 0 0
+                              (string-to-number (match-string-no-properties 3))
+                              (string-to-number (match-string-no-properties 2))
+                              (string-to-number (match-string-no-properties 1))))))
+     
+     (setq date (org-read-date nil nil nil nil last-date))
+     (setq title (read-string "Payee: "))
      (setq numin (string-to-number
                   (read-string 
                    "How many accounts is money going to? (1): "
@@ -422,8 +429,8 @@ RECURRENCES occasions."
              (setq count (1+ count)))
            (setq out (nreverse out)))
        (setq out (completing-read "Where did the money come from? " accounts)))
-     (list title in out)))
-  (insert title)
+     (list date title in out)))
+  (insert date " " title)
   (newline)
   ;; print ins
   (while in
