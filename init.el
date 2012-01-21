@@ -351,9 +351,6 @@ RECURRENCES occasions."
 
 ;;; *** ledger stuff ***
 (require 'ledger)
-(add-hook 'ledger-mode-hook
-          (lambda () (flyspell-mode -1)
-            (local-set-key (kbd "C-c C-c") 'ledger-report)))
 
 ;; modified ledger-accounts puts names in list rather than tree
 (defun find-all-ledger-accounts ()
@@ -454,6 +451,25 @@ RECURRENCES occasions."
       (setq out (cdr out))))
   (newline)
   (ledger-align-amounts))
+
+(defun ledger-indent-and-pcomplete (&optional interactively)
+  (interactive "P")
+  (save-excursion
+    (back-to-indentation)
+    (when (> (current-column) 4)
+      (kill-line 0))
+    (indent-to 4))
+  (when (< (current-column) 4)
+    (back-to-indentation))
+  (when (eq (point) (line-end-position))
+   (pcomplete interactively))
+  
+  )
+
+(add-hook 'ledger-mode-hook
+          (lambda () (flyspell-mode -1)
+            (local-set-key (kbd "C-c C-c") 'ledger-report)
+            (local-set-key (kbd "<tab>") 'ledger-indent-and-pcomplete)))
 
 ;;; *** ERC ***
 (setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
