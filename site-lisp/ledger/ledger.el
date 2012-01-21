@@ -1128,7 +1128,7 @@ the default."
       (setq ledger-account-tree (list t))
       (goto-char (point-min))
       (while (re-search-forward
-              "^[ \t]+\\([*!]\\s-+\\)?[[(]?\\(.+?\\)\\(\t\\|\n\\| [ \t]\\)" nil t)
+              "^[ \t]+\\([*!]\\s-+\\)?[[(]?\\([^; ]+?\\)\\(\t\\|\n\\| [ \t]\\)" nil t)
         (unless (and (>= origin (match-beginning 0))
                      (< origin (match-end 0)))
           (setq account-path (match-string-no-properties 2))
