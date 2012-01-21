@@ -351,7 +351,8 @@ RECURRENCES occasions."
 ;;; *** ledger stuff ***
 (require 'ledger)
 (add-hook 'ledger-mode-hook
-          (lambda () (flyspell-mode -1)))
+          (lambda () (flyspell-mode -1)
+            (local-set-key (kbd "C-c C-c") 'ledger-report)))
 
 ;; modified ledger-accounts puts names in list rather than tree
 (defun find-all-ledger-accounts ()
