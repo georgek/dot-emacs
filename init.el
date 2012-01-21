@@ -3,6 +3,7 @@
 (setq inhibit-splash-screen t)
 ;; ignore case in completion
 (setq completion-ignore-case t)
+(setq pcomplete-ignore-case t)
 
 (global-font-lock-mode 1)
 
