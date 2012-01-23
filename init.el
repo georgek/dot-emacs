@@ -154,6 +154,7 @@
 (setq org-agenda-time-grid '((daily today remove-match)
                              ""
                              (0800 1000 1200 1400 1600 1800 2000)))
+(setq org-time-stamp-custom-formats '("<%A, %e %B %Y>" . "<%A, %e %B %Y %H:%M>"))
 (setq org-log-done 'time)
 (setq org-blank-before-new-entry 
       '((heading . t) (plain-list-item . nil)))
