@@ -582,3 +582,47 @@ call to other-window-repeat or switch-prev-window."
 
 (global-set-key (kbd "M-i") 'ido-goto-symbol)
 
+;;; mail stuff
+
+;;; ~/.gnus.el tells gnus how to get messages
+;; (setq imap-shell-program "~/libexec/dovecot/imap -u user")
+;; (setq gnus-select-method
+;;       '(nnimap "Mail"
+;;                (nnimap-stream shell)))
+
+;; (setq user-mail-address "addr")
+
+;;; .mail.el tells emacs how to send messages
+;; (setq user-mail-address "addr"
+;;       user-full-name "name")
+;; (setq smtpmail-smtp-server "smtp.")
+
+;; message mode
+(setq mail-user-agent 'message-user-agent)
+(load "mail.el")
+(setq message-send-mail-function 'message-smtpmail-send-it)
+;; report problems with the smtp server
+(setq smtpmail-debug-info t)
+;; add Cc and Bcc headers to the message buffer
+(setq message-default-mail-headers "Cc: \nBcc: \n")
+
+;; gnus
+;; all mails should be always displayed in the mailbox
+(setq gnus-permanently-visible-groups ".*INBOX")
+
+;; default Pine ordered header list when displaying mail
+(setq gnus-sorted-header-list '( "^Date:" "^From:" "^To:" "^Followup-To:" "^Cc:" "Bcc:" "^Newsgroups:" "Fcc:" "^Subject:" ))
+
+(setq gnus-visual t)
+
+(setq-default
+ gnus-summary-line-format "%U%R%z %(%&user-date;  %-15,15f  %B%s%)\n"
+ gnus-user-date-format-alist '((t . "%Y-%m-%d %H:%M"))
+ gnus-summary-thread-gathering-function 'gnus-gather-threads-by-references
+ gnus-thread-sort-functions '(gnus-thread-sort-by-date)
+ gnus-sum-thread-tree-false-root ""
+ gnus-sum-thread-tree-indent " "
+ gnus-sum-thread-tree-leaf-with-other "├► "
+ gnus-sum-thread-tree-root ""
+ gnus-sum-thread-tree-single-leaf "╰► "
+ gnus-sum-thread-tree-vertical "│")

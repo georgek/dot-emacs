@@ -9,6 +9,9 @@ CVS/
 .cvsignore
 /tramp
 
+#mail
+mail.el
+
 #auctex
 site-lisp/auctex.el
 site-lisp/tex-site.el
@@ -19,3 +22,4 @@ var
 
 #org
 site-lisp/org/*
+
