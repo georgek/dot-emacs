@@ -627,3 +627,6 @@ call to other-window-repeat or switch-prev-window."
  gnus-sum-thread-tree-root ""
  gnus-sum-thread-tree-single-leaf "╰► "
  gnus-sum-thread-tree-vertical "│")
+
+(global-set-key (kbd "C-x g") 'gnus)
+
