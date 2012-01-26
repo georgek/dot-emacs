@@ -614,6 +614,7 @@ call to other-window-repeat or switch-prev-window."
 (setq gnus-sorted-header-list '( "^Date:" "^From:" "^To:" "^Followup-To:" "^Cc:" "Bcc:" "^Newsgroups:" "Fcc:" "^Subject:" ))
 
 (setq gnus-visual t)
+(setq gnus-use-full-window nil)
 
 (setq-default
  gnus-summary-line-format "%U%R%z %(%&user-date;  %-15,15f  %B%s%)\n"
