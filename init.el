@@ -630,3 +630,12 @@ call to other-window-repeat or switch-prev-window."
 
 (global-set-key (kbd "C-x g") 'gnus)
 
+;; runs the oimaptime script which runs offlineimap and prints the sync times
+(defun run-offlineimap ()
+  (interactive)
+  (let ((buf-name "*offlineimap*"))
+    (set-buffer (get-buffer-create buf-name))
+    (erase-buffer)
+    (start-process-shell-command "offlineimap" buf-name
+                                 "~/.emacs.d/oimaptime")))
+(gnus-demon-add-handler 'run-offlineimap 10 nil)
