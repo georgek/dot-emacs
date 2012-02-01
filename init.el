@@ -639,4 +639,6 @@ call to other-window-repeat or switch-prev-window."
     (start-process-shell-command "offlineimap" buf-name
                                  "~/.emacs.d/oimaptime")))
 (run-offlineimap)
-(gnus-demon-add-handler 'run-offlineimap 10 nil)
+;; (gnus-demon-add-handler 'run-offlineimap 10 nil)
+;; (gnus-demon-init)
+(run-at-time 600 600 'run-offlineimap)
