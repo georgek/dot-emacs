@@ -251,8 +251,8 @@ RECURRENCES occasions."
 ;; disable annoying buffer list
 (global-set-key (kbd "\C-x\C-b") 'ido-switch-buffer)
 ;; some buffers to ignore
-(setq ido-ignore-buffers '("\\\` " "*Group*" "*Article*" "*Messages*"
-                           "\\\`*magit" "*Completions*" "*Help*"
+(setq ido-ignore-buffers '("\\` " "*Group*" "*Article*" "*Messages*"
+                           "\\`*magit" "*Completions*" "*Help*"
                            ".newsrc-dribble"))
 
 ;; yasnippet
