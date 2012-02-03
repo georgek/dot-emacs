@@ -253,7 +253,7 @@ RECURRENCES occasions."
 ;; some buffers to ignore
 (setq ido-ignore-buffers '("\\` " "*Group*" "*Article*" "*Messages*"
                            "\\`*magit" "*Completions*" "*Help*"
-                           ".newsrc-dribble"))
+                           ".newsrc-dribble" "\\`*trace"))
 
 ;; yasnippet
 (require 'yasnippet)
