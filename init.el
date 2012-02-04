@@ -645,3 +645,5 @@ call to other-window-repeat or switch-prev-window."
 (run-offlineimap)
 ;; run again every 10 minutes from now
 (run-at-time 600 600 'run-offlineimap)
+;; also run when we exit emacs
+(add-hook 'kill-emacs-hook 'run-offlineimap)
