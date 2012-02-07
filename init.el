@@ -154,7 +154,8 @@
 (setq org-agenda-time-grid '((daily today remove-match)
                              ""
                              (0800 1000 1200 1400 1600 1800 2000)))
-(setq org-time-stamp-custom-formats '("<%A, %e %B %Y>" . "<%A, %e %B %Y %H:%M>"))
+(setq org-time-stamp-custom-formats
+      '("<%A, %e %B %Y>" . "<%A, %e %B %Y %H:%M>"))
 (setq org-log-done 'time)
 (setq org-blank-before-new-entry 
       '((heading . t) (plain-list-item . nil)))
@@ -364,7 +365,8 @@ RECURRENCES occasions."
       (setq ledger-account-tree (list t))
       (goto-char (point-min))
       (while (re-search-forward
-              "^[ \t]+\\([*!]\\s-+\\)?[[(]?\\([^ ;]+?\\)\\(\t\\|\n\\| [ \t]\\)" nil t)
+             "^[ \t]+\\([*!]\\s-+\\)?[[(]?\\([^ ;]+?\\)\\(\t\\|\n\\| [ \t]\\)"
+             nil t)
         (unless (and (>= origin (match-beginning 0))
                      (< origin (match-end 0)))
           (setq accounts (cons (match-string-no-properties 2) accounts)))))
@@ -386,9 +388,12 @@ RECURRENCES occasions."
             "^\\([0-9]\\{4\\}\\)-\\([0-9]\\{2\\}\\)-\\([0-9]\\{2\\}\\)" nil t)
            (setq last-date 
                  (encode-time 0 0 0
-                              (string-to-number (match-string-no-properties 3))
-                              (string-to-number (match-string-no-properties 2))
-                              (string-to-number (match-string-no-properties 1))))))
+                              (string-to-number
+                               (match-string-no-properties 3))
+                              (string-to-number
+                               (match-string-no-properties 2))
+                              (string-to-number
+                               (match-string-no-properties 1))))))
      
      (setq date (org-read-date nil nil nil nil last-date))
      (setq title (read-string "Payee: "))
@@ -427,11 +432,13 @@ RECURRENCES occasions."
                     (if (= numout count)
                         nil
                       (read-string
-                       (concat "(" (number-to-string count) ") How much? ") "£"))))
+                       (concat
+                        "(" (number-to-string count) ") How much? ") "£"))))
              (setq out (cons curr out))
              (setq count (1+ count)))
            (setq out (nreverse out)))
-       (setq out (completing-read "Where did the money come from? " accounts)))
+       (setq out (completing-read
+                  "Where did the money come from? " accounts)))
      (list date title in out)))
   (insert date " " title)
   (newline)
@@ -615,7 +622,9 @@ call to other-window-repeat or switch-prev-window."
 (setq gnus-permanently-visible-groups ".*INBOX")
 
 ;; default Pine ordered header list when displaying mail
-(setq gnus-sorted-header-list '( "^Date:" "^From:" "^To:" "^Followup-To:" "^Cc:" "Bcc:" "^Newsgroups:" "Fcc:" "^Subject:" ))
+(setq gnus-sorted-header-list
+      '("^Date:" "^From:" "^To:" "^Followup-To:"
+        "^Cc:" "Bcc:" "^Newsgroups:" "Fcc:" "^Subject:"))
 
 (setq gnus-visual t)
 (setq gnus-use-full-window nil)
