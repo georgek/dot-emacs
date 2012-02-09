@@ -610,12 +610,20 @@ call to other-window-repeat or switch-prev-window."
 
 ;; message mode
 (setq mail-user-agent 'message-user-agent)
-(load "mail.el")
 (setq message-send-mail-function 'message-smtpmail-send-it)
 ;; report problems with the smtp server
 (setq smtpmail-debug-info t)
 ;; add Cc and Bcc headers to the message buffer
-(setq message-default-mail-headers "Cc: \nBcc: \n")
+(setq message-default-mail-headers (concat "Cc: \nBcc: \n"))
+
+;; gnus alias
+(require 'gnus-alias)
+(gnus-alias-init)
+
+(add-hook 'message-load-hook (lambda () (gnus-alias-init)))
+(define-key message-mode-map (kbd "C-c C-p") 'gnus-alias-select-identity)
+
+(load "mail.el")
 
 ;; gnus
 ;; all mails should be always displayed in the mailbox
@@ -641,6 +649,8 @@ call to other-window-repeat or switch-prev-window."
  gnus-sum-thread-tree-single-leaf "╰► "
  gnus-sum-thread-tree-vertical "│")
 
+(setq message-citation-line-function 'message-insert-formatted-citation-line)
+
 (global-set-key (kbd "C-x g") 'gnus)
 
 ;; runs the oimaptime script which runs offlineimap and prints the sync times
@@ -656,3 +666,10 @@ call to other-window-repeat or switch-prev-window."
 (run-at-time 600 600 'run-offlineimap)
 ;; also run when we exit emacs
 (add-hook 'kill-emacs-hook 'run-offlineimap)
+
+;; insidious big brother database
+(when (require 'bbdb nil t)
+  (bbdb-initialize 'gnus 'message)
+
+  (add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus)
+  (bbdb-insinuate-message))

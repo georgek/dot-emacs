@@ -23,3 +23,5 @@ var
 #org
 site-lisp/org/*
 
+#bbdb
+site-lisp/bbdb/*
