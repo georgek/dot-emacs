@@ -534,7 +534,8 @@ RECURRENCES occasions."
   "Switchs back to previous window that was selected before last
 call to other-window-repeat or switch-prev-window."
   (interactive)
-  (when (eq prev-window (selected-window))
+  (when (or (eq prev-window (selected-window))
+            (not (window-live-p prev-window)))
     ;; previous window is best guess
     (setq prev-window (previous-window)))
   (let ((wind prev-window))
