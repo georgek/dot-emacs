@@ -614,8 +614,6 @@ call to other-window-repeat or switch-prev-window."
 (setq message-send-mail-function 'message-smtpmail-send-it)
 ;; report problems with the smtp server
 (setq smtpmail-debug-info t)
-;; add Cc and Bcc headers to the message buffer
-(setq message-default-mail-headers (concat "Cc: \nBcc: \n"))
 
 ;; gnus alias
 (require 'gnus-alias)
