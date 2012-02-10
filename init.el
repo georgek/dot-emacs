@@ -624,7 +624,8 @@ call to other-window-repeat or switch-prev-window."
 (add-hook 'message-load-hook (lambda () (gnus-alias-init)))
 (define-key message-mode-map (kbd "C-c C-p") 'gnus-alias-select-identity)
 
-(load "mail.el")
+;; message-x for auto-completion (using bbdb) in message-mode
+(require 'message-x)
 
 ;; gnus
 ;; all mails should be always displayed in the mailbox
@@ -670,7 +671,10 @@ call to other-window-repeat or switch-prev-window."
 
 ;; insidious big brother database
 (when (require 'bbdb nil t)
-  (bbdb-initialize 'gnus 'message)
-
+  (bbdb-initialize 'gnus)
   (add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus)
-  (bbdb-insinuate-message))
+  (setq bbdb-use-pop-up nil)
+  (setq bbdb-completion-display-record nil))
+
+;; this file sets up the mail accounts
+(load "mail.el")
