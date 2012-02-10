@@ -654,18 +654,21 @@ call to other-window-repeat or switch-prev-window."
 (global-set-key (kbd "C-x g") 'gnus)
 
 ;; runs the oimaptime script which runs offlineimap and prints the sync times
-(defun run-offlineimap ()
+;; with arg it does it synchronously
+(defun run-offlineimap (&optional synchronous)
   (interactive)
   (let ((buf-name "*offlineimap*"))
     (set-buffer (get-buffer-create buf-name))
     (erase-buffer)
-    (start-process-shell-command "offlineimap" buf-name
-                                 "~/.emacs.d/oimaptime")))
+    (if synchronous
+        (call-process "~/.emacs.d/oimaptime" nil buf-name nil)
+        (start-process-shell-command "offlineimap" buf-name
+                                     "~/.emacs.d/oimaptime"))))
 (run-offlineimap)
 ;; run again every 10 minutes from now
 (run-at-time 600 600 'run-offlineimap)
 ;; also run when we exit emacs
-(add-hook 'kill-emacs-hook 'run-offlineimap)
+(add-hook 'kill-emacs-hook (lambda () (run-offlineimap t)))
 
 ;; insidious big brother database
 (when (require 'bbdb nil t)
