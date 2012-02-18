@@ -93,7 +93,7 @@
 (defcustom ledger-reports
   '(("bal" "ledger -f %(ledger-file) bal %(account)")
     ("reg" "ledger -f %(ledger-file) reg")
-    ("payee" "ledger -f %(ledger-file) reg -- %(payee)")
+    ("payee" "ledger -f %(ledger-file) reg payee \"%(payee)\"")
     ("account" "ledger -f %(ledger-file) reg %(account)"))
   "Definition of reports to run.
 
@@ -112,7 +112,7 @@ specifier."
 
 (defcustom ledger-report-format-specifiers
   '(("ledger-file" . ledger-report-ledger-file-format-specifier)
-    ("payee" . ledger-report-payee-format-specifier)
+    ("payee" . report-payee-format-specifier)
     ("account" . report-account-format-specifier))
   "Alist mapping ledger report format specifiers to implementing functions
 

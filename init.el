@@ -377,6 +377,9 @@ RECURRENCES occasions."
   (let ((accounts (find-all-ledger-accounts)))
     (completing-read "Account: " accounts)))
 
+(defun report-payee-format-specifier ()
+  (read-from-minibuffer "Payee: "))
+
 ;; interactive add
 (defun ledger-add-entry (date title in out)
   (interactive
