@@ -150,7 +150,7 @@
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-ca" 'org-agenda)
 (global-set-key (kbd "C-~") 'org-agenda-list)
-(setq org-agenda-files (list "~/org/"))
+(setq org-agenda-files (list "~/org/" "~/org/personal/"))
 (setq org-agenda-include-diary t)
 (setq org-agenda-span 14)
 ;; (setq org-agenda-ndays 14)              ;old version of span
