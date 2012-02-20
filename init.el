@@ -145,8 +145,11 @@
 ;;; *** org-mode settings ***
 (require 'org-install)
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+
+;; agenda stuff
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-ca" 'org-agenda)
+(global-set-key (kbd "C-~") 'org-agenda-list)
 (setq org-agenda-files (list "~/org/"))
 (setq org-agenda-include-diary t)
 (setq org-agenda-span 14)
@@ -154,6 +157,9 @@
 (setq org-agenda-time-grid '((daily today remove-match)
                              ""
                              (0800 1000 1200 1400 1600 1800 2000)))
+(setq org-agenda-window-setup 'current-window)
+(setq org-agenda-restore-windows-after-quit t)
+
 (setq org-time-stamp-custom-formats
       '("<%A, %e %B %Y>" . "<%A, %e %B %Y %H:%M>"))
 (setq org-log-done 'time)
