@@ -10,13 +10,12 @@
 
 ;; If you want customize the source- or fasl-directory you can set
 ;; swank-loader:*source-directory* resp. swank-loader:*fasl-directory*
-;; before loading this files. (you also need to create the
-;; swank-loader package.)
+;; before loading this files. 
 ;; E.g.:
 ;;
-;;   (make-package :swank-loader)
-;;   (defparameter swank-loader::*fasl-directory* "/tmp/fasl/")
 ;;   (load ".../swank-loader.lisp")
+;;   (setq swank-loader::*fasl-directory* "/tmp/fasl/")
+;;   (swank-loader:init)
 
 (cl:defpackage :swank-loader
   (:use :cl)
@@ -56,7 +55,7 @@
 
 (defparameter *architecture-features*
   '(:powerpc :ppc :x86 :x86-64 :x86_64 :amd64 :i686 :i586 :i486 :pc386 :iapx386
-    :sparc64 :sparc :hppa64 :hppa
+    :sparc64 :sparc :hppa64 :hppa :arm
     :pentium3 :pentium4
     :java-1.4 :java-1.5 :java-1.6 :java-1.7))
 
@@ -74,7 +73,11 @@
 (defun lisp-version-string ()
   #+(or clozure cmu) (substitute-if #\_ (lambda (x) (find x " /"))
                                     (lisp-implementation-version))
-  #+(or cormanlisp scl sbcl) (lisp-implementation-version)
+  #+(or cormanlisp scl) (lisp-implementation-version)
+  #+sbcl (format nil "~a~:[~;-no-threads~]"
+                 (lisp-implementation-version)
+                 #+sb-thread nil
+                 #-sb-thread t)
   #+lispworks (lisp-implementation-version)
   #+allegro   (format nil "~A~A~A~A"
                       excl::*common-lisp-version-number*
@@ -124,22 +127,12 @@ Return nil if nothing appropriate is available."
     (and s (symbol-name (read s)))))
 
 (defun default-fasl-dir ()
-  (or
-   ;; If ASDF is available then store Slime's fasl's where ASDF stores them.
-   (let ((translate-fn (and (find-package :asdf)
-                            (find-symbol "COMPILE-FILE-PATHNAME*" :asdf))))
-     (when translate-fn
-       (make-pathname
-        :name nil :type nil
-        :defaults (funcall translate-fn
-                           (make-pathname :name "foo"
-                                          :defaults *source-directory*)))))
-   (merge-pathnames
-    (make-pathname
-     :directory `(:relative ".slime" "fasl"
-                            ,@(if (slime-version-string) (list (slime-version-string)))
-                            ,(unique-dir-name)))
-    (user-homedir-pathname))))
+  (merge-pathnames
+   (make-pathname
+    :directory `(:relative ".slime" "fasl"
+                 ,@(if (slime-version-string) (list (slime-version-string)))
+                 ,(unique-dir-name)))
+   (user-homedir-pathname)))
 
 (defvar *fasl-directory* (default-fasl-dir)
   "The directory where fasl files should be placed.")
@@ -224,13 +217,15 @@ If LOAD is true, load the fasl file."
   `(swank-backend ,@*sysdep-files* swank-match swank-rpc swank))
 
 (defvar *contribs*
-  '(swank-c-p-c swank-arglists swank-fuzzy
+  '(swank-util swank-repl
+    swank-c-p-c swank-arglists swank-fuzzy
     swank-fancy-inspector
     swank-presentations swank-presentation-streams
     #+(or asdf sbcl ecl) swank-asdf
     swank-package-fu
     swank-hyperdoc
     #+sbcl swank-sbcl-exts
+    swank-mrepl
     )
   "List of names for contrib modules.")
 
@@ -244,27 +239,30 @@ If LOAD is true, load the fasl file."
 
 (defun load-swank (&key (src-dir *source-directory*)
                         (fasl-dir *fasl-directory*))
-  (when (find-package :asdf)
-    ;; Make sure our swank.asd is visible to ASDF.
-    (eval
-     (let ((*package* (find-package :swank-loader)))
-       (read-from-string
-        "(let ((swank-system (asdf:find-system :swank nil)))
-          (unless (and swank-system
-                       (equal (asdf:component-pathname swank-system)
-                              (merge-pathnames \"swank.asd\" *source-directory*)))
-            (push *source-directory* asdf:*central-registry*)))"))))
   (compile-files (src-files *swank-files* src-dir) fasl-dir t)
   (funcall (q "swank::before-init")
            (slime-version-string)
            (list (contrib-dir fasl-dir)
                  (contrib-dir src-dir))))
 
+(defun delete-stale-contrib-fasl-files (swank-files contrib-files fasl-dir)
+  (let ((newest (reduce #'max (mapcar #'file-write-date swank-files))))
+    (dolist (src contrib-files)
+      (let ((fasl (binary-pathname src fasl-dir)))
+        (when (and (probe-file fasl)
+                   (<= (file-write-date fasl) newest))
+          (delete-file fasl))))))
+
 (defun compile-contribs (&key (src-dir (contrib-dir *source-directory*))
-                         (fasl-dir (contrib-dir *fasl-directory*))
-                         load)
-  (compile-files (src-files *contribs* src-dir) fasl-dir load))
-  
+                           (fasl-dir (contrib-dir *fasl-directory*))
+                           (swank-src-dir *source-directory*)
+                           load)
+  (let* ((swank-src-files (src-files *swank-files* swank-src-dir))
+         (contrib-src-files (src-files *contribs* src-dir)))
+    (delete-stale-contrib-fasl-files swank-src-files contrib-src-files 
+                                     fasl-dir)
+    (compile-files contrib-src-files fasl-dir load)))
+
 (defun loadup ()
   (load-swank)
   (compile-contribs :load t))

@@ -6,6 +6,9 @@
 
 (in-package :swank)
 
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (swank-require :swank-util))
+
 (defmethod emacs-inspect ((symbol symbol))
   (let ((package (symbol-package symbol)))
     (multiple-value-bind (_symbol status) 
@@ -412,23 +415,25 @@ See `methods-by-applicability'.")
       (all-slots-for-inspector gf))))
 
 (defmethod emacs-inspect ((method standard-method))
+  `(,@(if (swank-mop:method-generic-function method)
           `("Method defined on the generic function " 
-	    (:value ,(swank-mop:method-generic-function method)
-		    ,(inspector-princ
-		      (swank-mop:generic-function-name
-		       (swank-mop:method-generic-function method))))
-            (:newline)
-	    ,@(docstring-ispec "Documentation" method t)
-            "Lambda List: " (:value ,(swank-mop:method-lambda-list method))
-            (:newline)
-            "Specializers: " (:value ,(swank-mop:method-specializers method)
-                                     ,(inspector-princ (method-specializers-for-inspect method)))
-            (:newline)
-            "Qualifiers: " (:value ,(swank-mop:method-qualifiers method))
-            (:newline)
-            "Method function: " (:value ,(swank-mop:method-function method))
-            (:newline)
-            ,@(all-slots-for-inspector method)))
+            (:value ,(swank-mop:method-generic-function method)
+                    ,(inspector-princ
+                      (swank-mop:generic-function-name
+                       (swank-mop:method-generic-function method)))))
+          '("Method without a generic function"))
+      (:newline)
+      ,@(docstring-ispec "Documentation" method t)
+      "Lambda List: " (:value ,(swank-mop:method-lambda-list method))
+      (:newline)
+      "Specializers: " (:value ,(swank-mop:method-specializers method)
+                               ,(inspector-princ (method-specializers-for-inspect method)))
+      (:newline)
+      "Qualifiers: " (:value ,(swank-mop:method-qualifiers method))
+      (:newline)
+      "Method function: " (:value ,(swank-mop:method-function method))
+      (:newline)
+      ,@(all-slots-for-inspector method)))
 
 (defmethod emacs-inspect ((class standard-class))
           `("Name: " (:value ,(class-name class))
@@ -826,7 +831,7 @@ SPECIAL-OPERATOR groups."
     (:newline) "  "
     ,@(when position
         `((:action "[visit file and show current position]"
-                   ,(lambda () (ed-in-emacs `(,pathname :charpos ,position)))
+                   ,(lambda () (ed-in-emacs `(,pathname :position ,position :bytep t)))
                    :refreshp nil)
           (:newline)))))
 
