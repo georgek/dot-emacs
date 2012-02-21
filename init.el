@@ -174,6 +174,12 @@
 ;; make org table mode come on for some modes
 (add-hook 'LaTeX-mode-hook 'turn-on-orgtbl)
 
+(add-to-list 'org-modules 'org-timer)
+(setq org-timer-default-timer 25)
+(add-hook 'org-clock-in-hook '(lambda () 
+                                (if (not org-timer-current-timer) 
+                                    (org-timer-set-timer '(16)))))
+
 (defun diary-limited-cyclic (recurrences interval y m d)
   "For use in emacs diary. Cyclic item with limited number of recurrences.
 Occurs every INTERVAL days, starting on YYYY-MM-DD, for a total of
