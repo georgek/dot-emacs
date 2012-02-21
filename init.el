@@ -168,7 +168,7 @@
 (setq org-todo-keywords (quote ((sequence "TODO" "IN PROGRESS" "DONE"))))
 ;; stuff for remember
 (org-remember-insinuate)
-(setq org-directory "~/notes")
+(setq org-directory "~/org")
 (setq org-default-notes-file (concat org-directory "/notes.org"))
 (define-key global-map "\C-cr" 'org-remember)
 ;; make org table mode come on for some modes
