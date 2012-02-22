@@ -180,6 +180,7 @@
 (add-hook 'org-clock-in-hook '(lambda () 
                                 (if (not org-timer-current-timer) 
                                     (org-timer-set-timer '(16)))))
+(add-hook 'org-clock-cancel-hook 'org-timer-cancel-timer)
 
 ;; use log drawer
 (setq org-log-into-drawer t)
