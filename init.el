@@ -175,10 +175,14 @@
 (add-hook 'LaTeX-mode-hook 'turn-on-orgtbl)
 
 (add-to-list 'org-modules 'org-timer)
+(add-to-list 'org-modules 'org-clock)
 (setq org-timer-default-timer 25)
 (add-hook 'org-clock-in-hook '(lambda () 
                                 (if (not org-timer-current-timer) 
                                     (org-timer-set-timer '(16)))))
+
+;; use log drawer
+(setq org-log-into-drawer t)
 
 (defun diary-limited-cyclic (recurrences interval y m d)
   "For use in emacs diary. Cyclic item with limited number of recurrences.
