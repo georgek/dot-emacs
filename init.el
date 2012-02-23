@@ -165,7 +165,7 @@
 (setq org-log-done 'time)
 (setq org-blank-before-new-entry 
       '((heading . t) (plain-list-item . nil)))
-(setq org-todo-keywords (quote ((sequence "TODO" "IN PROGRESS" "DONE"))))
+(setq org-todo-keywords (quote ((sequence "TODO" "DONE"))))
 ;; stuff for remember
 (org-remember-insinuate)
 (setq org-directory "~/org")
