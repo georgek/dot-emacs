@@ -192,7 +192,9 @@
                                       " :: Clocked in: "
                                       (org-clock-get-clock-string)
                                       " :: Pomodoro:"
-                                      org-timer-mode-line-string)))
+                                      (if org-timer-current-timer
+                                          org-timer-mode-line-string
+                                        " FINISHED!"))))
     (setq frame-title-format plain-frame-title-format)))
 
 (defun clock-in-frame-title ()
