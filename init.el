@@ -182,6 +182,22 @@
                                     (org-timer-set-timer '(16)))))
 (add-hook 'org-clock-cancel-hook 'org-timer-cancel-timer)
 
+;; show clock and timer stuff in the frame title
+(defvar plain-frame-title-format frame-title-format)
+(defun clock-in-frame-title ()
+  (if (org-clocking-p)
+      (setq frame-title-format (list (concat 
+                                      (car plain-frame-title-format)
+                                      " :: Clocked in: "
+                                      (org-clock-get-clock-string)
+                                      " :: Pomodoro:"
+                                      org-timer-mode-line-string)))
+    (setq frame-title-format plain-frame-title-format)))
+(run-at-time t 1 'clock-in-frame-title)
+(add-hook 'org-clock-in-hook 'clock-in-frame-title)
+(add-hook 'org-clock-out-hook 'clock-in-frame-title)
+(add-hook 'org-clock-cancel-hook 'clock-in-frame-title)
+
 ;; use log drawer
 (setq org-log-into-drawer t)
 
