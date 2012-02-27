@@ -760,7 +760,8 @@ call to other-window-repeat or switch-prev-window."
 ;; run again every 10 minutes from now
 (run-at-time 600 600 'run-offlineimap)
 ;; also run when we exit emacs
-(add-hook 'kill-emacs-hook (lambda () (run-offlineimap t)))
+(add-hook 'gnus-after-exiting-gnus-hook
+          (lambda () (run-offlineimap t)))
 
 ;; insidious big brother database
 (when (require 'bbdb nil t)
