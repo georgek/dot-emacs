@@ -94,7 +94,7 @@
   '(("bal" "ledger -f %(ledger-file) bal %(account)")
     ("reg" "ledger -f %(ledger-file) reg")
     ("payee" "ledger -f %(ledger-file) reg payee \"%(payee)\"")
-    ("account" "ledger -f %(ledger-file) reg %(account)"))
+    ("account" "ledger --sort d -f %(ledger-file) reg %(account)"))
   "Definition of reports to run.
 
 Each element has the form (NAME CMDLINE).  The command line can
