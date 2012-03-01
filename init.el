@@ -756,12 +756,23 @@ call to other-window-repeat or switch-prev-window."
         (call-process "~/.emacs.d/oimaptime" nil buf-name nil)
         (start-process-shell-command "offlineimap" buf-name
                                      "~/.emacs.d/oimaptime"))))
-(run-offlineimap)
-;; run again every 10 minutes from now
-(run-at-time 600 600 'run-offlineimap)
-;; also run when we exit emacs
+(defvar offlineimap-timer nil)
+
+;; run offlineimap when we start gnus, then do it on a timer while gnus is
+;; running
+(add-hook 'gnus-before-startup-hook
+          (lambda ()
+            (when offlineimap-timer
+              (cancel-timer offlineimap-timer))
+            (run-offlineimap t)
+            (setq offlineimap-timer
+                  (run-with-timer 600 600 'run-offlineimap))))
 (add-hook 'gnus-after-exiting-gnus-hook
-          (lambda () (run-offlineimap t)))
+          (lambda ()
+            (when offlineimap-timer
+              (cancel-timer offlineimap-timer)
+              (setq offlineimap-timer nil))
+            (run-offlineimap t)))
 
 ;; insidious big brother database
 (when (require 'bbdb nil t)
