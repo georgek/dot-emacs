@@ -733,7 +733,7 @@ call to other-window-repeat or switch-prev-window."
  gnus-summary-line-format "%U%R%z %(%&user-date;  %-15,15f  %B%s%)\n"
  gnus-user-date-format-alist '((t . "%Y-%m-%d %H:%M"))
  gnus-summary-thread-gathering-function 'gnus-gather-threads-by-references
- gnus-thread-sort-functions '((not gnus-thread-sort-by-most-recent-number))
+ gnus-thread-sort-functions '((not gnus-thread-sort-by-most-recent-date))
  gnus-sum-thread-tree-false-root ""
  gnus-sum-thread-tree-indent " "
  gnus-sum-thread-tree-leaf-with-other "├► "
