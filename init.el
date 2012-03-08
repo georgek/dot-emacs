@@ -70,6 +70,9 @@
 ;; default fill length
 (setq-default fill-column 78)
 
+;; enable auto revert globally
+(global-auto-revert-mode 1)
+
 ;; set some default modes
 ;; lex
 (add-to-list 'auto-mode-alist '("\\.l\\'" . c-mode))
