@@ -338,6 +338,9 @@
      (magit-diff-del ((t (:foreground ,zenburn-red+1))))
      (magit-diff-add ((t (:foreground ,zenburn-green+3))))
      (magit-item-highlight ((t (:background ,zenburn-bg+1))))
+     
+     ;; slime
+     (slime-repl-inputed-output-face ((t (:foreground ,zenburn-green))))
 
      ;; message-mode
      (message-cited-text-face ((t (:inherit font-lock-comment))))
