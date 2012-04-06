@@ -748,11 +748,13 @@ call to other-window-repeat or switch-prev-window."
 
 (global-set-key (kbd "C-x g") 'gnus)
 
+(defvar offlineimap-buffer "*offlineimap*")
+
 ;; runs the oimaptime script which runs offlineimap and prints the sync times
 ;; with arg it does it synchronously
 (defun run-offlineimap (&optional synchronous)
   (interactive)
-  (let ((buf-name "*offlineimap*"))
+  (let ((buf-name offlineimap-buffer))
     (set-buffer (get-buffer-create buf-name))
     (erase-buffer)
     (if synchronous
@@ -775,7 +777,8 @@ call to other-window-repeat or switch-prev-window."
             (when offlineimap-timer
               (cancel-timer offlineimap-timer)
               (setq offlineimap-timer nil))
-            (run-offlineimap t)))
+            (run-offlineimap)
+            (switch-to-buffer offlineimap-buffer)))
 
 ;; insidious big brother database
 (when (require 'bbdb nil t)
