@@ -53,6 +53,14 @@
     (save-buffers-kill-emacs)))
 (global-set-key (kbd "C-x C-c") 'kill-client-or-daemon)
 
+;; files ignored when saving all buffers
+(defvar save-ignored-files
+  '(".newsrc-dribble"))
+(defun save-all-considered ()
+  (not (member (buffer-name) save-ignored-files)))
+(global-set-key (kbd "C-x s") (lambda () (interactive)
+                                (save-some-buffers nil 'save-all-considered)))
+
 ;; turn off tabs
 (setq-default indent-tabs-mode nil)
 
