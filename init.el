@@ -1,5 +1,8 @@
 ;;;; my .emacs file
 
+;; visit this file at startup for convenience
+(find-file load-file-name)
+
 (setq inhibit-splash-screen t)
 ;; ignore case in completion
 (setq completion-ignore-case t)
@@ -314,7 +317,8 @@ RECURRENCES occasions."
 ;; some buffers that shouldn't be killed
 (add-to-list 'clean-buffer-list-kill-never-buffer-names
              '("*slime-repl sbcl*"
-               "*R*"))
+               "*R*"
+               "init.el"))
 
 ;; AUCTeX
 (load "auctex.el" nil t t)
