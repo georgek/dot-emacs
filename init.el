@@ -138,6 +138,9 @@
 
             (show-paren-mode t)))
 
+;;; *** ielm ***
+(add-hook 'ielm-mode-hook (lambda () (paredit-mode 1)))
+
 ;;; *** SLIME ***
 (setq inferior-lisp-program "/usr/bin/sbcl") ; your Lisp system
 (require 'slime-autoloads)
