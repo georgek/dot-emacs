@@ -1,9 +1,7 @@
 ;;;; my .emacs file
 
-;; visit this file at startup for convenience
-(find-file load-file-name)
-
 (setq inhibit-splash-screen t)
+(setq inhibit-default-init t)
 ;; ignore case in completion
 (setq completion-ignore-case t)
 (setq pcomplete-ignore-case t)
@@ -804,3 +802,8 @@ call to other-window-repeat or switch-prev-window."
 
 ;; this file sets up the mail accounts
 (load "mail.el")
+
+
+
+;; *** visit this file at startup for convenience ***
+(find-file load-file-name)
