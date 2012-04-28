@@ -782,7 +782,8 @@ call to other-window-repeat or switch-prev-window."
           (lambda ()
             (when offlineimap-timer
               (cancel-timer offlineimap-timer))
-            (run-offlineimap t)
+            (run-offlineimap)
+            (switch-to-buffer-other-window offlineimap-buffer)
             (setq offlineimap-timer
                   (run-with-timer 600 600 'run-offlineimap))))
 (add-hook 'gnus-after-exiting-gnus-hook
@@ -791,7 +792,7 @@ call to other-window-repeat or switch-prev-window."
               (cancel-timer offlineimap-timer)
               (setq offlineimap-timer nil))
             (run-offlineimap)
-            (switch-to-buffer offlineimap-buffer)))
+            (switch-to-buffer-other-window offlineimap-buffer)))
 
 ;; insidious big brother database
 (when (require 'bbdb nil t)
