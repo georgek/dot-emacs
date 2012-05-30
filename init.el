@@ -121,41 +121,35 @@
  'paredit-backward-delete
  'paredit-close-round)
 
+(defun nice-paredit-on ()
+  (paredit-mode t)
+
+  (turn-on-eldoc-mode)
+  (eldoc-add-command
+   'paredit-backward-delete
+   'paredit-close-round)
+
+  (local-set-key (kbd "RET") 'electrify-return-if-match)
+  (eldoc-add-command 'electrify-return-if-match)
+
+  (show-paren-mode t))
+
 ;;; *** emacs lisp ***
 (add-hook 'emacs-lisp-mode-hook
-          (lambda ()
-            (paredit-mode t)
-
-            (turn-on-eldoc-mode)
-            (eldoc-add-command
-             'paredit-backward-delete
-             'paredit-close-round)
-
-            (local-set-key (kbd "RET") 'electrify-return-if-match)
-            (eldoc-add-command 'electrify-return-if-match)
-
-            (show-paren-mode t)))
+          'nice-paredit-on)
 
 ;;; *** ielm ***
 (add-hook 'ielm-mode-hook (lambda () (paredit-mode 1)))
+
+;;; *** scheme ***
+(add-hook 'scheme-mode-hook 'nice-paredit-on)
 
 ;;; *** SLIME ***
 (setq inferior-lisp-program "/usr/bin/sbcl") ; your Lisp system
 (require 'slime-autoloads)
 (slime-setup '(slime-fancy slime-banner slime-asdf))
 (add-hook 'lisp-mode-hook
-          (lambda ()
-            (paredit-mode t)
-
-            (turn-on-eldoc-mode)
-            (eldoc-add-command
-             'paredit-backward-delete
-             'paredit-close-round)
-
-            (local-set-key (kbd "RET") 'electrify-return-if-match)
-            (eldoc-add-command 'electrify-return-if-match)
-
-            (show-paren-mode t)))
+          'nice-paredit-on)
 
 ;;; *** org-mode settings ***
 (require 'org-install)
