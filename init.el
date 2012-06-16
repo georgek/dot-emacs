@@ -136,7 +136,9 @@
 
 ;;; *** emacs lisp ***
 (add-hook 'emacs-lisp-mode-hook
-          'nice-paredit-on)
+          (lambda ()
+            (nice-paredit-on)
+            (local-set-key (kbd "C-c C-c") 'eval-defun)))
 
 ;;; *** ielm ***
 (add-hook 'ielm-mode-hook (lambda () (paredit-mode 1)))
