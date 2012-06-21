@@ -151,7 +151,9 @@
 (require 'slime-autoloads)
 (slime-setup '(slime-fancy slime-banner slime-asdf))
 (add-hook 'lisp-mode-hook
-          'nice-paredit-on)
+          (lambda ()
+            (nice-paredit-on)
+            (local-set-key (kbd "C-c z") 'slime-switch-to-output-buffer)))
 
 ;;; *** org-mode settings ***
 (require 'org-install)
