@@ -213,6 +213,11 @@ Otherwise NIL is returned."
 
 ;;;; Arglist Printing
 
+(defun undummy (x)
+  (if (typep x 'arglist-dummy)
+      (arglist-dummy.string-representation x)
+      (prin1-to-string x)))
+
 (defun print-decoded-arglist (arglist &key operator provided-args highlight)
   (macrolet ((space ()
                ;; Kludge: When OPERATOR is not given, we don't want to
@@ -257,7 +262,8 @@ Otherwise NIL is returned."
                  (with-highlighting (:index index)
                    (if (null init-value)
                        (print-arg arg)
-                       (format t "~:@<~A ~S~@:>" arg init-value))))
+                       (format t "~:@<~A ~A~@:>"
+                               (undummy arg) (undummy init-value)))))
              (incf index))
           (&key :initially
              (when (arglist.key-p arglist)
@@ -271,9 +277,10 @@ Otherwise NIL is returned."
                    (print-arglist-recursively arg :index keyword))
                  (with-highlighting (:index keyword)
                    (cond ((and init (keywordp keyword))
-                          (format t "~:@<~A ~S~@:>" keyword init))
+                          (format t "~:@<~A ~A~@:>" keyword (undummy init)))
                          (init
-                          (format t "~:@<(~S ..) ~S~@:>" keyword init))
+                          (format t "~:@<(~A ..) ~A~@:>"
+                                  (undummy keyword) (undummy init)))
                          ((not (keywordp keyword))
                           (format t "~:@<(~S ..)~@:>" keyword))
                          (t
@@ -911,6 +918,10 @@ If the arglist is not available, return :NOT-AVAILABLE."))
                       t)))))))
   (call-next-method))
 
+(defmethod compute-enriched-decoded-arglist
+    ((operator-form (eql 'multiple-value-call)) argument-forms)
+  (compute-enriched-decoded-arglist 'apply argument-forms))
+
 (defun delete-given-args (decoded-arglist args)
   "Delete given ARGS from DECODED-ARGLIST."
   (macrolet ((pop-or-return (list)
@@ -1493,8 +1504,8 @@ datum for subsequent logics to rely on."
                          :quoted-symbol)
                         ((search "#'" string :end2 (min length 2))
                          :sharpquoted-symbol)
-                        ((and (eql (aref string 0) #\")
-                              (eql (aref string (1- length)) #\"))
+                        ((char= (char string 0) (char string (1- length))
+                                #\")
                          :string)
                         (t
                          :symbol))))
@@ -1510,7 +1521,9 @@ datum for subsequent logics to rely on."
             (:symbol             symbol)
             (:quoted-symbol      `(quote ,symbol))
             (:sharpquoted-symbol `(function ,symbol))
-            (:string             string))
+            (:string             (if (> length 1)
+                                     (subseq string 1 (1- length))
+                                     string)))
 	  (make-arglist-dummy string)))))
   
 (defun test-print-arglist ()

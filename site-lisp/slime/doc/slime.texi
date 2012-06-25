@@ -12,7 +12,7 @@
 @set EDITION 3.0-alpha
 @set SLIMEVER 3.0-alpha
 @c @set UPDATED @today{}
-@set UPDATED @code{$Date: 2011/08/30 15:34:10 $}
+@set UPDATED @code{$Date: 2011-08-30 15:34:10 $}
 @set TITLE SLIME User Manual
 @settitle @value{TITLE}, version @value{EDITION}
 

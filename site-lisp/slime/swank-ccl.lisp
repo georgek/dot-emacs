@@ -23,7 +23,9 @@
 (import-from :ccl *gray-stream-symbols* :swank-backend)
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
-  (require 'xref))
+  (multiple-value-bind (ok err) (ignore-errors (require 'xref))
+    (unless ok
+      (warn "~a~%" err))))
 
 ;;; swank-mop
 
@@ -205,7 +207,7 @@
       (unwind-protect
            (progn
              (with-open-file (s temp-file-name :direction :output 
-                                :if-exists :error)
+                                :if-exists :error :external-format :utf-8)
                (write-string string s))
              (let ((binary-filename (compile-temp-file
                                      temp-file-name filename buffer position)))
@@ -224,7 +226,8 @@
                       (setf (gethash temp-file-name *temp-file-map*)
                             buffer-name)
                       temp-file-name))
-                :compile-file-original-buffer-offset (1- offset)))
+                :compile-file-original-buffer-offset (1- offset)
+                :external-format :utf-8))
 
 (defimplementation save-image (filename &optional restart-function)
   (ccl:save-application filename :toplevel-function restart-function))
@@ -235,8 +238,8 @@
   (delete-duplicates
    (mapcan #'find-definitions
            (if inverse 
-             (ccl:get-relation relation name :wild :exhaustive t)
-             (ccl:get-relation relation :wild name :exhaustive t)))
+             (ccl::get-relation relation name :wild :exhaustive t)
+             (ccl::get-relation relation :wild name :exhaustive t)))
    :test 'equal))
 
 (defimplementation who-binds (name)
