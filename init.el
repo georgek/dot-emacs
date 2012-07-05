@@ -90,6 +90,26 @@
 ;; XML
 (add-to-list 'auto-mode-alist '("\\.xml\\'" . nxml-mode))
 
+;;; info
+(require 'info)
+(require 'info-look)
+
+(if Info-directory-list
+    (add-to-list 'Info-directory-list "~/.emacs.d/info/ansicl/")
+  (add-to-list 'Info-default-directory-list "~/.emacs.d/info/ansicl/"))
+
+(info-lookup-add-help
+ :mode 'lisp-mode
+ :regexp "[^][()'\" \t\n]+"
+ :ignore-case t
+ :doc-spec '(("(ansicl)Symbol Index" nil nil nil)))
+
+(info-lookup-add-help
+ :mode 'slime-repl-mode
+ :regexp "[^][()'\" \t\n]+"
+ :ignore-case t
+ :doc-spec '(("(ansicl)Symbol Index" nil nil nil)))
+
 ;;; *** paredit ***
 
 ;; electric return stuff
