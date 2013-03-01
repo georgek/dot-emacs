@@ -802,7 +802,7 @@ call to other-window-repeat or switch-prev-window."
   (setq bbdb-completion-display-record nil))
 
 ;; this file sets up the mail accounts
-(load "mail.el")
+(load "mail.el" t)
 
 
 
