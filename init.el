@@ -33,6 +33,17 @@
 (require 'color-theme-zenburn)
 (color-theme-zenburn)
 
+;; ido mode
+(setq ido-enable-flex-matching t)
+(setq ido-everywhere t)
+(ido-mode t)
+;; disable annoying buffer list
+(global-set-key (kbd "\C-x\C-b") 'ido-switch-buffer)
+;; some buffers to ignore
+(setq ido-ignore-buffers '("\\` " "*Group*" "*Article*" "*Messages*"
+                           "\\`*magit" "*Completions*" "*Help*"
+                           ".newsrc-dribble" "\\`*trace"))
+
 ;; deletes the current frame, unless this is the last frame in which case it
 ;; kills emacs
 (defun kill-client-or-daemon ()
@@ -349,17 +360,6 @@ RECURRENCES occasions."
 
 ;; key for opening a shell
 (global-set-key (kbd "\C-cs") 'eshell)
-
-;; ido mode
-(setq ido-enable-flex-matching t)
-(setq ido-everywhere t)
-(ido-mode t)
-;; disable annoying buffer list
-(global-set-key (kbd "\C-x\C-b") 'ido-switch-buffer)
-;; some buffers to ignore
-(setq ido-ignore-buffers '("\\` " "*Group*" "*Article*" "*Messages*"
-                           "\\`*magit" "*Completions*" "*Help*"
-                           ".newsrc-dribble" "\\`*trace"))
 
 ;; yasnippet
 (require 'yasnippet)
