@@ -19,7 +19,7 @@
 
 ;; remove old org from load path
 (require 'cl)
-(setq load-path (remove-if (lambda (x) (string-match-p "org$" x)) load-path))
+;; (setq load-path (remove-if (lambda (x) (string-match-p "org$" x)) load-path))
 
 ;; add paths
 (add-to-list 'load-path "~/.emacs.d/")
@@ -27,11 +27,16 @@
 (progn (cd "~/.emacs.d/site-lisp/")
        (normal-top-level-add-subdirs-to-load-path))
 
+;; org development version
+;; (add-to-list 'load-path "~/src/org-mode/lisp/")
+
 ;; load stuff in other files
 ;; (load-library "gk-gtags")
 
-(require 'color-theme-zenburn)
-(color-theme-zenburn)
+;; (require 'color-theme-zenburn)
+;; (color-theme-zenburn)
+(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
+(load-theme 'zenburn t)
 
 ;; ido mode
 (setq ido-enable-flex-matching t)
@@ -223,16 +228,11 @@
 (setq org-blank-before-new-entry 
       '((heading . t) (plain-list-item . nil)))
 (setq org-todo-keywords (quote ((sequence "TODO" "DONE"))))
-;; stuff for remember
-(org-remember-insinuate)
-(setq org-directory "~/org")
-(setq org-default-notes-file (concat org-directory "/notes.org"))
-(define-key global-map "\C-cr" 'org-remember)
 ;; make org table mode come on for some modes
 (add-hook 'LaTeX-mode-hook 'turn-on-orgtbl)
 
-(add-to-list 'org-modules 'org-timer)
-(add-to-list 'org-modules 'org-clock)
+;; (add-to-list 'org-modules 'org-timer)
+;; (add-to-list 'org-modules 'org-clock)
 (setq org-timer-default-timer 25)
 (add-hook 'org-clock-in-hook '(lambda () 
                                 (if (not org-timer-current-timer) 
@@ -267,7 +267,7 @@ RECURRENCES occasions."
 (defadvice org-agenda-add-time-grid-maybe (around mde-org-agenda-grid-tweakify
                                                   (list ndays todayp))
   (if (member 'remove-match (car org-agenda-time-grid))
-      (flet ((extract-window
+      (cl-flet ((extract-window
               (line)
               (let ((start (get-text-property 1 'time-of-day line))
                     (dur (get-text-property 1 'duration line)))
@@ -429,9 +429,9 @@ RECURRENCES occasions."
 (add-hook 'c-initialization-hook 'my-c-initialization-hook)
 
 ;; use tags with C modes
-(add-hook 'c-mode-common-hook
-  (lambda ()
-    (gtags-mode t)))
+;; (add-hook 'c-mode-common-hook
+;;   (lambda ()
+;;     (gtags-mode t)))
 
 ;; stuff for debugging with gdb
 ;; sr-speedbar runs speedbar in the same frame
@@ -444,13 +444,17 @@ RECURRENCES occasions."
 (setq windmove-wrap-around t)
 
 ;; assembly
-;; (require 'gas-mode)
-(add-to-list 'auto-mode-alist '("\\.S\\'" . asm-mode))
+(require 'gas-mode)
+(setq gas-comment-char ?\@)
+(add-to-list 'auto-mode-alist '("\\.s\\'" . asm-mode))
 (add-hook 'asm-mode-set-comment-hook
-          (lambda () (setq asm-comment-char ?#)))
+          (lambda () (setq asm-comment-char ?\#)))
 (add-hook 'asm-mode-hook
           (function (lambda ()
                       (define-key asm-mode-map "\C-c\C-c" 'compile))))
+(add-hook 'gas-mode-hook
+          (function (lambda ()
+                      (define-key gas-mode-map "\C-c\C-c" 'compile))))
 
 ;; prolog
 (autoload 'run-prolog "prolog" "Start a Prolog sub-process." t)
@@ -812,3 +816,16 @@ call to other-window-repeat or switch-prev-window."
 
 ;; *** visit this file at startup for convenience ***
 (find-file load-file-name)
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes (quote ("f5e56ac232ff858afb08294fc3a519652ce8a165272e3c65165c42d6fe0262a0" default))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
