@@ -367,10 +367,7 @@ RECURRENCES occasions."
 
 ;; yasnippet
 (require 'yasnippet)
-(yas/initialize)
-(setq yas/root-directory "~/.emacs.d/site-lisp/yasnippet/snippets/")
-(yas/load-directory yas/root-directory)
-(setq yas/prompt-functions '(yas/dropdown-prompt))
+(yas-global-mode 1)
 
 ;; keep backup files neatly out of the way in .~/
 (setq backup-directory-alist '(("." . ".~")))
