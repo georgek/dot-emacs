@@ -91,6 +91,7 @@
    mop::class-direct-superclasses
    mop::eql-specializer
    mop::class-finalized-p 
+   mop:finalize-inheritance
    cl:class-name
    mop::class-precedence-list
    class-prototype ;;dummy
@@ -414,24 +415,23 @@
     ;; filter condition signaled more than once.
     (unless (member condition *abcl-signaled-conditions*) 
       (push condition *abcl-signaled-conditions*) 
-      (signal (make-condition
-               'compiler-condition
-               :original-condition condition
-               :severity :warning
-               :message (format nil "~A" condition)
-               :location (cond (*buffer-name*
-                                (make-location 
-                                 (list :buffer *buffer-name*)
-                                 (list :offset *buffer-start-position* 0)))
-                               (loc
-                                (destructuring-bind (file . pos) loc
-                                  (make-location
-                                   (list :file (namestring (truename file)))
-                                   (list :position (1+ pos)))))
-                               (t  
-                                (make-location
-                                 (list :file (namestring *compile-filename*))
-                                 (list :position 1)))))))))
+      (signal 'compiler-condition
+              :original-condition condition
+              :severity :warning
+              :message (format nil "~A" condition)
+              :location (cond (*buffer-name*
+                               (make-location 
+                                (list :buffer *buffer-name*)
+                                (list :offset *buffer-start-position* 0)))
+                              (loc
+                               (destructuring-bind (file . pos) loc
+                                 (make-location
+                                  (list :file (namestring (truename file)))
+                                  (list :position (1+ pos)))))
+                              (t  
+                               (make-location
+                                (list :file (namestring *compile-filename*))
+                                (list :position 1))))))))
 
 (defimplementation swank-compile-file (input-file output-file
                                        load-p external-format
@@ -595,6 +595,7 @@
                  if (try dir) return it)))))
 
 (defimplementation find-definitions (symbol)
+  (ext:resolve symbol)
   (let ((srcloc (source-location symbol)))
     (and srcloc `((,symbol ,srcloc)))))
 
