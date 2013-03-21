@@ -46,7 +46,7 @@
 ;;   - Peter J Weisberg
 ;;   - Yann Hodique
 ;;   - Rémi Vanicat
-;; Version: 1.2.0
+;; Version: @GIT_DEV_VERSION@
 ;; Keywords: tools
 
 ;;
@@ -680,7 +680,7 @@ operation after commit).")
 (defvar magit-bug-report-url
   "http://github.com/magit/magit/issues")
 
-(defconst magit-version "1.2.0"
+(defconst magit-version "@GIT_DEV_VERSION@"
   "The version of Magit that you're using.")
 
 (defun magit-bug-report (str)
