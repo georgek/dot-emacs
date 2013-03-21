@@ -514,7 +514,7 @@ replaced by variable `gas-comment-char' before use.")
 
 (defconst gas-builtin-keywords (concat "^\\(\\(\\sw\\|\\s_\\)+:?\\)?[ \t]+\\(" 
                                        (regexp-opt '(
-               ".Abort" ".ABORT" ".Align" ".Altmacro" ".Ascii" ".Asciz" 
+               ".Abort" ".ABORT" ".Align" ".Altmacro" ".Ascii" ".Asciz" ".Arm"
                ".Balign" ".Byte" ".Comm" 
                ".Data" ".Def" ".Desc" ".Dim" ".Double" ".Eject" 
                ".Else" ".Elseif" ".End" ".Endef" ".Endfunc" ".Endif" 
