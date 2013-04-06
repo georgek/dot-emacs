@@ -368,6 +368,8 @@ RECURRENCES occasions."
 ;; yasnippet
 (require 'yasnippet)
 (yas-global-mode 1)
+(setq yas-prompt-functions
+      '(yas-dropdown-prompt yas-completing-prompt yas-ido-prompt))
 
 ;; keep backup files neatly out of the way in .~/
 (setq backup-directory-alist '(("." . ".~")))
