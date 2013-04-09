@@ -375,17 +375,30 @@
    `(jabber-title-large ((t (:height 1.3 :weight bold))))
 
    ;; ledger
-   `(ledger-font-uncleared-face ((t (:foreground ,zenburn-red :weight bold))))
-   `(ledger-font-cleared-face
+   `(ledger-font-payee-uncleared-face
+     ((t (:foreground ,zenburn-red :weight bold))))
+   `(ledger-font-payee-cleared-face
      ((t (:foreground ,zenburn-blue-2 :weight normal))))
-   `(ledger-font-xact-highlight-face ((t (:background ,zenburn-bg+1))))
-   `(ledger-font-pending-face ((t (:foreground ,zenburn-red :weight normal))))
-   `(ledger-font-other-face ((t (:foreground ,zenburn-yellow))))
-   `(ledger-font-posting-account-face ((t (:foreground ,zenburn-yellow))))
-   `(ledger-font-posting-amount-face ((t (:foreground ,zenburn-green+2))))
-   `(ledger-font-posting-negative-amount-face ((t (:foreground ,zenburn-red+1))))
-   `(ledger-occur-narrowed-face ((t (:foreground ,zenburn-fg-1 :invisible t))))
-   `(ledger-occur-xact-face ((t (:background ,zenburn-bg+1))))
+   `(ledger-font-xact-highlight-face
+     ((t (:background ,zenburn-bg+1))))
+   `(ledger-font-pending-face
+     ((t (:foreground ,zenburn-red :weight normal))))
+   `(ledger-font-other-face
+     ((t (:foreground ,zenburn-yellow))))
+   `(ledger-font-posting-account-face
+     ((t (:foreground ,zenburn-orange))))
+   `(ledger-font-posting-account-cleared-face
+     ((t (:foreground ,zenburn-yellow))))
+   `(ledger-font-posting-account-pending-face
+     ((t (:foreground ,zenburn-red))))
+   `(ledger-font-posting-amount-face
+     ((t (:foreground ,zenburn-green+2))))
+   `(ledger-font-posting-negative-amount-face
+     ((t (:foreground ,zenburn-red+1))))
+   `(ledger-occur-narrowed-face
+     ((t (:foreground ,zenburn-fg-1 :invisible t))))
+   `(ledger-occur-xact-face
+     ((t (:background ,zenburn-bg+1))))
    `(ledger-font-comment-face
      ((t (:foreground ,zenburn-green-1 :slant italic))))
    `(ledger-font-reconciler-uncleared-face
