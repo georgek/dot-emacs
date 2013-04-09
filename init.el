@@ -205,7 +205,7 @@
 (add-hook 'slime-repl-mode-hook 'override-slime-repl-bindings-with-paredit)
 
 ;;; *** org-mode settings ***
-(require 'org-install)
+(require 'org)
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 
 ;; agenda stuff
