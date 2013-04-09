@@ -373,10 +373,29 @@
    `(jabber-title-small ((t (:height 1.1 :weight bold))))
    `(jabber-title-medium ((t (:height 1.2 :weight bold))))
    `(jabber-title-large ((t (:height 1.3 :weight bold))))
-   
+
    ;; ledger
-   `(ledger-positive ((t (:foreground ,zenburn-green))))
-   `(ledger-negative ((t (:foreground ,zenburn-red))))
+   `(ledger-font-uncleared-face ((t (:foreground ,zenburn-red :weight bold))))
+   `(ledger-font-cleared-face
+     ((t (:foreground ,zenburn-blue-2 :weight normal))))
+   `(ledger-font-xact-highlight-face ((t (:background ,zenburn-bg+1))))
+   `(ledger-font-pending-face ((t (:foreground ,zenburn-red :weight normal))))
+   `(ledger-font-other-face ((t (:foreground ,zenburn-yellow))))
+   `(ledger-font-posting-account-face ((t (:foreground ,zenburn-yellow))))
+   `(ledger-font-posting-amount-face ((t (:foreground ,zenburn-green+2))))
+   `(ledger-font-posting-negative-amount-face ((t (:foreground ,zenburn-red+1))))
+   `(ledger-occur-narrowed-face ((t (:foreground ,zenburn-fg-1 :invisible t))))
+   `(ledger-occur-xact-face ((t (:background ,zenburn-bg+1))))
+   `(ledger-font-comment-face
+     ((t (:foreground ,zenburn-green-1 :slant italic))))
+   `(ledger-font-reconciler-uncleared-face
+     ((t (:foreground ,zenburn-red :weight bold))))
+   `(ledger-font-reconciler-cleared-face
+     ((t (:foreground ,zenburn-fg :weight normal))))
+   `(ledger-font-reconciler-pending-face
+     ((t (:foreground ,zenburn-red :weight normal))))
+   `(ledger-font-report-clickable-face
+     ((t (:foreground ,zenburn-red :weight normal))))
 
    ;; linum-mode
    `(linum ((t (:foreground ,zenburn-green+2 :background ,zenburn-bg))))
