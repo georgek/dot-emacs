@@ -595,6 +595,10 @@ RECURRENCES occasions."
   
   )
 
+(defun insert-bitcoin-symbol ()
+  (interactive)
+  (insert ?\฿))
+
 (add-hook 'ledger-mode-hook
           (lambda ()
             (flyspell-mode -1)
