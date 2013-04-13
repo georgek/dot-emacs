@@ -83,6 +83,7 @@
                                   :background ,zenburn-bg-1
                                   :box (:line-width -1 :style released-button)))))
    `(highlight ((t (:background ,zenburn-bg-05))))
+   `(paren-face ((t (:foreground ,zenburn-fg-1))))
 
    ;;; compilation
    `(compilation-column-face ((t (:foreground ,zenburn-yellow))))

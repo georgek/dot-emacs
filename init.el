@@ -207,6 +207,10 @@
     (read-kbd-macro paredit-backward-delete-key) nil))
 (add-hook 'slime-repl-mode-hook 'override-slime-repl-bindings-with-paredit)
 
+;;; Lisp pretty things
+;;; dim parens
+(require 'parenface)
+
 ;;; *** org-mode settings ***
 (require 'org)
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
