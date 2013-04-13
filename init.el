@@ -177,6 +177,7 @@
   (show-paren-mode t))
 
 ;;; *** emacs lisp ***
+(require 'elisp-slime-nav)
 (add-hook 'emacs-lisp-mode-hook
           (lambda ()
             (nice-paredit-on)
