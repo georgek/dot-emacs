@@ -596,9 +596,13 @@ RECURRENCES occasions."
   )
 
 (add-hook 'ledger-mode-hook
-          (lambda () (flyspell-mode -1)
+          (lambda ()
+            (flyspell-mode -1)
+            (yas-minor-mode -1)
             (local-set-key (kbd "C-c C-c") 'ledger-report)
-            (local-set-key (kbd "<tab>") 'ledger-indent-and-pcomplete)))
+            (local-set-key (kbd "C-c C-q") 'ledger-toggle-current)
+            ;; (local-set-key (kbd "<tab>") 'ledger-indent-and-pcomplete)
+            (local-set-key (kbd "C-c C-a") 'ledger-add-entry)))
 
 ;;; *** ERC ***
 (setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
