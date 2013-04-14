@@ -17,3 +17,4 @@
 (gk-dim-min "yasnippet" yas-minor-mode "Y")
 (gk-dim-min "eldoc" eldoc-mode "E")
 (gk-dim-min "paredit" paredit-mode "P")
+(gk-dim-min "macrostep" macrostep-mode "M")
