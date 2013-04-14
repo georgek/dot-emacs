@@ -190,7 +190,7 @@
             (local-set-key (kbd "C-c e") 'macrostep-expand)))
 
 ;;; *** ielm ***
-(add-hook 'ielm-mode-hook (lambda () (paredit-mode 1)))
+(add-hook 'ielm-mode-hook 'nice-paredit-on)
 
 ;;; *** scheme ***
 (add-hook 'scheme-mode-hook 'nice-paredit-on)
