@@ -178,10 +178,12 @@
 
 ;;; *** emacs lisp ***
 (require 'elisp-slime-nav)
+(require 'macrostep)
 (add-hook 'emacs-lisp-mode-hook
           (lambda ()
             (nice-paredit-on)
-            (local-set-key (kbd "C-c C-c") 'eval-defun)))
+            (local-set-key (kbd "C-c C-c") 'eval-defun)
+            (local-set-key (kbd "C-c e") 'macrostep-expand)))
 
 ;;; *** ielm ***
 (add-hook 'ielm-mode-hook (lambda () (paredit-mode 1)))
