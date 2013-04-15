@@ -257,6 +257,8 @@
 
 (setq org-clock-clocked-in-display 'frame-title)
 (setq org-timer-display 'frame-title)
+(setq org-clock-frame-title-format (append frame-title-format
+                                           '(" " org-mode-line-string)))
 
 ;; use log drawer
 (setq org-log-into-drawer t)
