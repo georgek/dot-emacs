@@ -376,7 +376,9 @@ RECURRENCES occasions."
 (require 'magit)
 (require 'magit-svn)
 (require 'magit-topgit)
+(require 'magit-blame)
 (global-set-key (kbd "\C-ci") 'magit-status)
+(global-set-key (kbd "\C-cb") 'magit-blame-mode)
 
 ;; key for opening a shell
 (global-set-key (kbd "\C-cs") 'eshell)
