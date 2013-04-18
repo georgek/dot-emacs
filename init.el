@@ -131,6 +131,8 @@
 ;;; ace jump mode
 (require 'ace-jump-mode)
 (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
+(ace-jump-mode-enable-mark-sync)
+(define-key global-map (kbd "C-x SPC") 'ace-jump-mode-pop-mark)
 
 ;;; *** paredit ***
 
