@@ -40,10 +40,6 @@
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
 (load-theme 'zenburn t)
 
-;;; diminish modeline
-(require 'diminish)
-(load "gk-diminish.el" t)
-
 ;; ido mode
 (setq ido-enable-flex-matching t)
 (setq ido-everywhere t)
@@ -843,7 +839,9 @@ call to other-window-repeat or switch-prev-window."
 (load "mail.el" t)
 
 
-
+;;; diminish modeline
+(require 'diminish)
+(load "gk-diminish.el" t)
 ;; *** visit this file at startup for convenience ***
 (find-file load-file-name)
 
