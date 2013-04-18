@@ -10,11 +10,13 @@
   `(eval-after-load ,name
      '(diminish ',mode ,diminished-name)))
 
-;;; emacs-lisp-mode
 (gk-dim-maj emacs-lisp-mode "Elisp")
+(gk-dim-maj org-mode "Org")
+(gk-dim-maj ielm-mode "IELM")
 
 (gk-dim-min "elisp-slime-nav" elisp-slime-nav-mode "S")
 (gk-dim-min "yasnippet" yas-minor-mode "Y")
 (gk-dim-min "eldoc" eldoc-mode "E")
 (gk-dim-min "paredit" paredit-mode "P")
 (gk-dim-min "macrostep" macrostep-mode "M")
+(gk-dim-min "flyspell" flyspell-mode "F")
