@@ -221,12 +221,26 @@
 ;;; *** org-mode settings ***
 (require 'org)
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+(setq org-directory "~/org/")
+(defmacro orgdr (&optional filename)
+  (if filename
+   `(concat org-directory ,filename)
+   org-directory))
+
+;; capture
+(setq org-default-notes-file (orgdr "notes.org"))
+(global-set-key (kbd "C-c c") 'org-capture)
+(setq org-capture-templates
+      '(("t" "Todo" entry (file+headline (orgdr "todo.org") "Captured")
+         "* TODO %?\n %U\n %a")
+        ("j" "Journal" entry (file+datetree (orgdr "journal.org"))
+         "* %?\nEntered on %U\n %i")))
 
 ;; agenda stuff
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-ca" 'org-agenda)
 (global-set-key (kbd "C-~") 'org-agenda-list)
-(setq org-agenda-files (list "~/org/" "~/org/personal/"))
+(setq org-agenda-files (list (orgdr) (orgdr "personal/")))
 (setq org-agenda-include-diary t)
 (setq org-agenda-span 14)
 ;; (setq org-agenda-ndays 14)              ;old version of span
