@@ -402,6 +402,7 @@ RECURRENCES occasions."
 
 ;; yasnippet
 (require 'yasnippet)
+(setq yas-snippet-dirs "~/.emacs.d/site-lisp/yasnippet/snippets/")
 (yas-global-mode 1)
 (setq yas-prompt-functions
       '(yas-dropdown-prompt yas-completing-prompt yas-ido-prompt))
