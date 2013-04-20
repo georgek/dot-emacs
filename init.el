@@ -226,6 +226,7 @@
   (if filename
    `(concat org-directory ,filename)
    org-directory))
+(setq org-return-follows-link t)
 
 ;; capture
 (setq org-default-notes-file (orgdr "notes.org"))
@@ -234,7 +235,9 @@
       '(("t" "Todo" entry (file+headline (orgdr "todo.org") "Captured")
          "* TODO %?\n %U\n %a")
         ("j" "Journal" entry (file+datetree (orgdr "journal.org"))
-         "* %?\nEntered on %U\n %i")))
+         "* %?\nEntered on %U\n %i")
+        ("i" "Idea" entry (file (orgdr "ideas.org"))
+         "* %?\n %U\n %a")))
 
 ;; agenda stuff
 (global-set-key "\C-cl" 'org-store-link)
