@@ -233,7 +233,7 @@
 (setq org-default-notes-file (orgdr "notes.org"))
 (global-set-key (kbd "C-c c") 'org-capture)
 (setq org-capture-templates
-      '(("t" "Todo" entry (file+headline (orgdr "todo.org") "Captured")
+      '(("t" "Todo" entry (file+headline (orgdr "todo.org") "Misc (Captured)")
          "* TODO %?\n %U\n %a")
         ("j" "Journal" entry (file+datetree (orgdr "journal.org"))
          "* %?\nEntered on %U\n %i")
