@@ -28,6 +28,7 @@
        (normal-top-level-add-subdirs-to-load-path))
 ;; this adds stuff that I'm currently working on
 (load "working.el" t)
+(load "gk-utils.el")
 
 ;; org development version
 ;; (add-to-list 'load-path "~/src/org-mode/lisp/")
