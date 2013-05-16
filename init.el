@@ -757,6 +757,30 @@ call to other-window-repeat or switch-prev-window."
 
 (global-set-key (kbd "M-i") 'ido-goto-symbol)
 
+;;; Go
+(require 'go-mode-load)
+
+(setq go-mode-gopath "~/code/go")
+(defun go-mode-electric-return (&optional arg)
+  (interactive "P")
+  (newline arg)
+  (go-mode-indent-line))
+(defun go-mode-electric-brace (&optional arg)
+  (interactive "P")
+  (insert-char ?{ arg)
+  (go-mode-electric-return))
+(defun go-mode-compile ()
+  (interactive)
+  (let ((str (concat "export GOPATH=" go-mode-gopath "; go install")))
+    (compile str)))
+
+(defun go-mode-keys ()
+  (local-set-key (kbd "C-c C-c") #'go-mode-compile)
+  (local-set-key (kbd "RET") #'go-mode-electric-return)
+  (local-set-key (kbd "{") #'go-mode-electric-brace))
+
+(add-hook 'go-mode-hook #'go-mode-keys)
+
 ;;; mail stuff
 
 ;;; ~/.gnus.el tells gnus how to get messages
