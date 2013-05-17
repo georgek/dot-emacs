@@ -182,13 +182,21 @@
 ;;; *** emacs lisp ***
 (require 'elisp-slime-nav)
 (require 'macrostep)
-(add-hook 'emacs-lisp-mode-hook
-          (lambda ()
-            (nice-paredit-on)
-            (local-set-key (kbd "C-c C-c") 'eval-defun)
-            (local-set-key (kbd "C-c e") 'macrostep-expand)))
+(defun elisp-init ()
+  (nice-paredit-on)
+  (local-set-key (kbd "C-c C-c") #'eval-defun)
+  (local-set-key (kbd "C-c C-z") #'ielm-switch-to-buffer)
+  (local-set-key (kbd "C-c e") #'macrostep-expand))
+(add-hook 'emacs-lisp-mode-hook #'elisp-init)
 
 ;;; *** ielm ***
+(defun ielm-switch-to-buffer ()
+  (interactive)
+  (let ((ielm-buffer (get-buffer "*ielm*")))
+    (if ielm-buffer
+        (pop-to-buffer ielm-buffer)
+      (ielm))))
+
 (add-hook 'ielm-mode-hook (lambda ()
                             (nice-paredit-on)
                             (local-set-key (kbd "C-<return>")
