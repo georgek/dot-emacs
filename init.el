@@ -197,10 +197,12 @@
         (pop-to-buffer ielm-buffer)
       (ielm))))
 
-(add-hook 'ielm-mode-hook (lambda ()
-                            (nice-paredit-on)
-                            (local-set-key (kbd "C-<return>")
-                                           'ielm-send-input)))
+(defun ielm-init ()
+  (nice-paredit-on)
+  (local-set-key (kbd "C-<return>")
+                 'ielm-send-input))
+
+(add-hook 'ielm-mode-hook #'ielm-init)
 
 ;;; *** scheme ***
 (add-hook 'scheme-mode-hook 'nice-paredit-on)
@@ -209,13 +211,18 @@
 (setq inferior-lisp-program "/usr/bin/sbcl") ; your Lisp system
 (require 'slime-autoloads)
 (slime-setup '(slime-fancy slime-banner slime-asdf))
-(add-hook 'lisp-mode-hook
-          (lambda ()
-            (nice-paredit-on)
-            (local-set-key (kbd "C-c z") 'slime-switch-to-output-buffer)))
+
+(defun lisp-init ()
+  (nice-paredit-on)
+  (local-set-key (kbd "C-c z") 'slime-switch-to-output-buffer))
+
+(add-hook 'lisp-mode-hook #'lisp-init)
 
 ;;; REPL
-(add-hook 'slime-repl-mode-hook (lambda () (paredit-mode +1)))
+(defun slime-repl-init ()
+  (paredit-mode +1))
+
+(add-hook 'slime-repl-mode-hook '#slime-repl-init)
 ;; Stop SLIME's REPL from grabbing DEL,
 ;; which is annoying when backspacing over a '('
 (defun override-slime-repl-bindings-with-paredit ()
@@ -343,9 +350,10 @@ RECURRENCES occasions."
 ;; *** end org-mode stuff ***
 
 ;; makefile mode make key
-(add-hook 'makefile-mode-hook
-          (function (lambda ()
-                      (define-key makefile-mode-map "\C-c\C-c" 'compile))))
+(defun makefile-init ()
+  (define-key makefile-mode-map "\C-c\C-c" 'compile))
+
+(add-hook 'makefile-mode-hook #'makefile-init)
 
 ;; auto new line and hungry delete modes
 (setq c-auto-newline 1)
@@ -469,11 +477,12 @@ RECURRENCES occasions."
          (c-mode))))
 
 ;; cc mode key bindings - applies to all CC modes (C, C++ etc.)
-(defun my-c-initialization-hook ()
+(defun c-init ()
   (define-key c-mode-base-map "\C-c\C-c" 'compile)
   (define-key c-mode-base-map "\C-c\C-h" 'c-c++-toggle)
-  (define-key c-mode-base-map "\C-m" 'c-context-line-break))
-(add-hook 'c-initialization-hook 'my-c-initialization-hook)
+  (define-key c-mode-base-map "\C-m" 'c-context-line-break)
+  (abbrev-mode -1))
+(add-hook 'c-initialization-hook 'c-init)
 
 ;; use tags with C modes
 ;; (add-hook 'c-mode-common-hook
@@ -645,14 +654,15 @@ RECURRENCES occasions."
   (interactive)
   (insert ?\฿))
 
-(add-hook 'ledger-mode-hook
-          (lambda ()
-            (flyspell-mode -1)
-            (yas-minor-mode -1)
-            (local-set-key (kbd "C-c C-c") 'ledger-report)
-            (local-set-key (kbd "C-c C-q") 'ledger-toggle-current)
-            ;; (local-set-key (kbd "<tab>") 'ledger-indent-and-pcomplete)
-            (local-set-key (kbd "C-c C-a") 'ledger-add-entry)))
+(defun ledger-init ()
+  (flyspell-mode -1)
+  (yas-minor-mode -1)
+  (local-set-key (kbd "C-c C-c") 'ledger-report)
+  (local-set-key (kbd "C-c C-q") 'ledger-toggle-current)
+  ;; (local-set-key (kbd "<tab>") 'ledger-indent-and-pcomplete)
+  (local-set-key (kbd "C-c C-a") 'ledger-add-entry))
+
+(add-hook 'ledger-mode-hook #'ledger-init)
 
 ;;; *** ERC ***
 (setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
