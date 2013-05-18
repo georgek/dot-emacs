@@ -222,7 +222,7 @@
 (defun slime-repl-init ()
   (paredit-mode +1))
 
-(add-hook 'slime-repl-mode-hook '#slime-repl-init)
+(add-hook 'slime-repl-mode-hook #'slime-repl-init)
 ;; Stop SLIME's REPL from grabbing DEL,
 ;; which is annoying when backspacing over a '('
 (defun override-slime-repl-bindings-with-paredit ()
