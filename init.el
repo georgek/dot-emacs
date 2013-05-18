@@ -17,8 +17,9 @@
 (tool-bar-mode -1)
 (mouse-avoidance-mode 'banish)
 
+(require 'cl-lib)
+
 ;; remove old org from load path
-(require 'cl)
 ;; (setq load-path (remove-if (lambda (x) (string-match-p "org$" x)) load-path))
 
 ;; add paths
