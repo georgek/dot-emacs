@@ -197,7 +197,7 @@
       (end-of-defun)
       (beginning-of-defun)
       (setq beg (point))
-      (read (current-buffer))
+      (end-of-defun)
       (setq ol (make-overlay beg (point))))
     (overlay-put ol 'face 'highlight)
     (eval-defun edebug-it)
