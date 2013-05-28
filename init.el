@@ -183,9 +183,31 @@
 ;;; *** emacs lisp ***
 (require 'elisp-slime-nav)
 (require 'macrostep)
+
+(defun eval-buffer-key ()
+  (interactive)
+  (message "Evaluating buffer...")
+  (eval-buffer)
+  (message "Buffer evaluated."))
+
+(defun eval-defun-key (edebug-it)
+  (interactive "P")
+  (let (beg ol)
+    (save-excursion
+      (end-of-defun)
+      (beginning-of-defun)
+      (setq beg (point))
+      (read (current-buffer))
+      (setq ol (make-overlay beg (point))))
+    (overlay-put ol 'face 'highlight)
+    (eval-defun edebug-it)
+    (sit-for 0.1)
+    (delete-overlay ol)))
+
 (defun elisp-init ()
   (nice-paredit-on)
-  (local-set-key (kbd "C-c C-c") #'eval-defun)
+  (local-set-key (kbd "C-c C-b") #'eval-buffer-key)
+  (local-set-key (kbd "C-c C-c") #'eval-defun-key)
   (local-set-key (kbd "C-c C-z") #'ielm-switch-to-buffer)
   (local-set-key (kbd "C-c e") #'macrostep-expand))
 (add-hook 'emacs-lisp-mode-hook #'elisp-init)
