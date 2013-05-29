@@ -209,6 +209,7 @@
   (local-set-key (kbd "C-c C-b") #'eval-buffer-key)
   (local-set-key (kbd "C-c C-c") #'eval-defun-key)
   (local-set-key (kbd "C-c C-z") #'ielm-switch-to-buffer)
+  (local-set-key (kbd "C-c C-l") #'paredit-recentre-on-sexp)
   (local-set-key (kbd "C-c e") #'macrostep-expand))
 (add-hook 'emacs-lisp-mode-hook #'elisp-init)
 
