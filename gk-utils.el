@@ -18,3 +18,8 @@
         (puthash (car pair) (cdr pair) ,tbl-sym))
       ,tbl-sym)))
 
+(defun file-to-string (filename)
+  (with-temp-buffer
+    (insert-file-contents filename)
+    (buffer-string)))
+
