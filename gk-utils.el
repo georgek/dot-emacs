@@ -23,3 +23,11 @@
     (insert-file-contents filename)
     (buffer-string)))
 
+(defmacro makehookedfun (hook &rest body)
+  (declare (indent 1))
+  (let ((function (intern (concat (symbol-name hook) "-function"))))
+    `(progn
+       (defun ,function ()
+         ,@body)
+       (add-hook ',hook #',function))))
+

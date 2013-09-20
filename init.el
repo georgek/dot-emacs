@@ -205,14 +205,13 @@
     (sit-for 0.1)
     (delete-overlay ol)))
 
-(defun elisp-init ()
+(makehookedfun emacs-lisp-mode-hook
   (nice-paredit-on)
   (local-set-key (kbd "C-c C-b") #'eval-buffer-key)
   (local-set-key (kbd "C-c C-c") #'eval-defun-key)
   (local-set-key (kbd "C-c C-z") #'ielm-switch-to-buffer)
   (local-set-key (kbd "C-c C-l") #'paredit-recentre-on-sexp)
   (local-set-key (kbd "C-c e") #'macrostep-expand))
-(add-hook 'emacs-lisp-mode-hook #'elisp-init)
 
 ;;; *** ielm ***
 (defun ielm-switch-to-buffer ()
@@ -222,12 +221,10 @@
         (pop-to-buffer ielm-buffer)
       (ielm))))
 
-(defun ielm-init ()
+(makehookedfun ielm-mode-hook
   (nice-paredit-on)
   (local-set-key (kbd "C-<return>")
                  'ielm-send-input))
-
-(add-hook 'ielm-mode-hook #'ielm-init)
 
 ;;; *** scheme ***
 (add-hook 'scheme-mode-hook 'nice-paredit-on)
@@ -237,20 +234,17 @@
 (require 'slime-autoloads)
 (slime-setup '(slime-fancy slime-banner slime-asdf))
 
-(defun lisp-init ()
+(makehookedfun lisp-mode-hook
   (nice-paredit-on)
   (local-set-key (kbd "C-c z") 'slime-switch-to-output-buffer))
 
-(add-hook 'lisp-mode-hook #'lisp-init)
-
 ;;; REPL
-(defun slime-repl-init ()
+(makehookedfun slime-repl-mode-hook
   (nice-paredit-on)
   ;; Stop SLIME's REPL from grabbing DEL,
   ;; which is annoying when backspacing over a '('
   (define-key slime-repl-mode-map
     (read-kbd-macro paredit-backward-delete-key) nil))
-(add-hook 'slime-repl-mode-hook #'slime-repl-init)
 
 ;;; Lisp pretty things
 ;;; dim parens
@@ -372,10 +366,8 @@ RECURRENCES occasions."
 ;; *** end org-mode stuff ***
 
 ;; makefile mode make key
-(defun makefile-init ()
+(makehookedfun makefile-mode-hook
   (define-key makefile-mode-map "\C-c\C-c" 'compile))
-
-(add-hook 'makefile-mode-hook #'makefile-init)
 
 ;; auto new line and hungry delete modes
 (setq c-auto-newline 1)
@@ -499,12 +491,11 @@ RECURRENCES occasions."
          (c-mode))))
 
 ;; cc mode key bindings - applies to all CC modes (C, C++ etc.)
-(defun c-init ()
+(makehookedfun c-initialization-hook
   (define-key c-mode-base-map "\C-c\C-c" 'compile)
   (define-key c-mode-base-map "\C-c\C-h" 'c-c++-toggle)
   (define-key c-mode-base-map "\C-m" 'c-context-line-break)
   (abbrev-mode -1))
-(add-hook 'c-initialization-hook 'c-init)
 
 ;; use tags with C modes
 ;; (add-hook 'c-mode-common-hook
@@ -676,15 +667,13 @@ RECURRENCES occasions."
   (interactive)
   (insert ?\฿))
 
-(defun ledger-init ()
+(makehookedfun ledger-mode-hook
   (flyspell-mode -1)
   (yas-minor-mode -1)
   (local-set-key (kbd "C-c C-c") 'ledger-report)
   (local-set-key (kbd "C-c C-q") 'ledger-toggle-current)
   ;; (local-set-key (kbd "<tab>") 'ledger-indent-and-pcomplete)
   (local-set-key (kbd "C-c C-a") 'ledger-add-entry))
-
-(add-hook 'ledger-mode-hook #'ledger-init)
 
 ;;; *** ERC ***
 (setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
@@ -814,12 +803,10 @@ call to other-window-repeat or switch-prev-window."
   (let ((str (concat "export GOPATH=" go-mode-gopath "; go install")))
     (compile str)))
 
-(defun go-mode-keys ()
+(makehookedfun go-mode-hook
   (local-set-key (kbd "C-c C-c") #'go-mode-compile)
   (local-set-key (kbd "RET") #'go-mode-electric-return)
   (local-set-key (kbd "{") #'go-mode-electric-brace))
-
-(add-hook 'go-mode-hook #'go-mode-keys)
 
 ;;; mail stuff
 
