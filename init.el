@@ -928,7 +928,8 @@ call to other-window-repeat or switch-prev-window."
 (require 'diminish)
 (load "gk-diminish.el" t)
 ;; *** visit this file at startup for convenience ***
-(find-file load-file-name)
+(when load-file-name
+  (find-file load-file-name))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
