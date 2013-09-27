@@ -201,9 +201,11 @@
       (end-of-defun)
       (setq ol (make-overlay beg (point))))
     (overlay-put ol 'face 'highlight)
-    (eval-defun edebug-it)
-    (sit-for 0.1)
-    (delete-overlay ol)))
+    (unwind-protect
+        (progn
+          (eval-defun edebug-it)
+          (sit-for 0.1))
+      (delete-overlay ol))))
 
 (makehookedfun emacs-lisp-mode-hook
   (nice-paredit-on)
