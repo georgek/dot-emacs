@@ -1,6 +1,13 @@
 ;;; magit-bisect.el --- bisect support for Magit
 
-;; Copyright (C) 2011  Moritz Bunkus
+;; Copyright (C) 2011-2013  The Magit Project Developers.
+;;
+;; For a full list of contributors, see the AUTHORS.md file
+;; at the top-level directory of this distribution and at
+;; https://raw.github.com/magit/magit/master/AUTHORS.md
+
+;; Author: Moritz Bunkus <moritz@bunkus.org>
+;; Package: magit
 
 ;; Magit is free software; you can redistribute it and/or modify it
 ;; under the terms of the GNU General Public License as published by
@@ -23,24 +30,24 @@
 
 (require 'magit)
 
-(defvar magit--bisect-last-pos)
-(defvar magit--bisect-tmp-file)
-(defvar magit--bisect-info nil)
-(make-variable-buffer-local 'magit--bisect-info)
+(defvar-local magit--bisect-last-pos nil)
+(put 'magit--bisect-last-pos 'permanent-local t)
+
+(defvar-local magit--bisect-info nil)
 (put 'magit--bisect-info 'permanent-local t)
 
 (defun magit--bisecting-p (&optional required-status)
   "Return t if a bisect session is running.
 If REQUIRED-STATUS is not nil then the current status must also
 match REQUIRED-STATUS."
-  (and (file-exists-p (concat (magit-git-dir) "BISECT_LOG"))
+  (and (file-exists-p (magit-git-dir "BISECT_LOG"))
        (or (not required-status)
            (eq (plist-get (magit--bisect-info) :status)
                required-status))))
 
 (defun magit--bisect-info ()
   (with-current-buffer (magit-find-status-buffer)
-    (or (if (local-variable-p 'magit--bisect-info) magit--bisect-info)
+    (or (and (local-variable-p 'magit--bisect-info) magit--bisect-info)
         (list :status (if (magit--bisecting-p) 'running 'not-running)))))
 
 (defun magit--bisect-cmd (&rest args)
@@ -54,7 +61,8 @@ match REQUIRED-STATUS."
               (cond ((string= cmd "reset")
                      (list :status 'not-running))
                     ;; Bisecting: 78 revisions left to test after this (roughly 6 steps)
-                    ((string-match "^Bisecting:\\s-+\\([0-9]+\\).+roughly\\s-+\\([0-9]+\\)" first-line)
+                    ((string-match "^Bisecting:\\s-+\\([0-9]+\\).+roughly\\s-+\\([0-9]+\\)"
+                                   first-line)
                      (list :status 'running
                            :revs (match-string 1 first-line)
                            :steps (match-string 2 first-line)))
@@ -66,26 +74,24 @@ match REQUIRED-STATUS."
                      (list :status 'error)))))))
   (magit-refresh))
 
-(defun magit--bisect-info-for-status (branch)
+(defun magit--bisect-info-for-status ()
   "Return bisect info suitable for display in the status buffer."
-  (let* ((info (magit--bisect-info))
-         (status (plist-get info :status)))
-    (cond ((eq status 'not-running)
-           (or branch "(detached)"))
-          ((eq status 'running)
-           (format "(bisecting; %s revisions & %s steps left)"
-                   (or (plist-get info :revs) "unknown number of")
-                   (or (plist-get info :steps) "unknown number of")))
-          ((eq status 'finished)
-           (format "(bisected: first bad revision is %s)" (plist-get info :bad)))
-          (t
-           "(bisecting; unknown error occured)"))))
+  (let ((info (magit--bisect-info)))
+    (cl-case (plist-get info :status)
+      (running
+       (format "(bisecting; %s revisions & %s steps left)"
+               (or (plist-get info :revs) "unknown number of")
+               (or (plist-get info :steps) "unknown number of")))
+      (finished
+       (format "(bisected: first bad revision is %s)" (plist-get info :bad)))
+      (t
+       "(bisecting; unknown error occured)"))))
 
 (defun magit-bisect-start ()
   "Start a bisect session."
   (interactive)
-  (if (magit--bisecting-p)
-      (error "Already bisecting"))
+  (when (magit--bisecting-p)
+    (error "Already bisecting"))
   (let ((bad (magit-read-rev "Start bisect with known bad revision" "HEAD"))
         (good (magit-read-rev "Good revision" (magit-default-rev))))
     (magit--bisect-cmd "start" bad good)))
@@ -154,20 +160,22 @@ match REQUIRED-STATUS."
                           'magit-bisect-mode-history)))
   (unless (magit--bisecting-p)
     (error "Not bisecting"))
-  (let ((file (make-temp-file "magit-bisect-run"))
-        buffer)
+  (let ((file (magit-git-dir "magit-bisect-run"))
+        process buffer)
     (with-temp-buffer
       (insert "#!/bin/sh\n" command "\n")
       (write-region (point-min) (point-max) file))
     (set-file-modes file #o755)
     (magit-run-git-async "bisect" "run" file)
+    (setq buffer  (get-buffer magit-process-buffer-name)
+          process (get-buffer-process buffer))
     (magit-display-process)
-    (setq buffer (get-buffer magit-process-buffer-name))
     (with-current-buffer buffer
-      (set (make-local-variable 'magit--bisect-last-pos) 0)
-      (set (make-local-variable 'magit--bisect-tmp-file) file))
-    (set-process-filter (get-buffer-process buffer) 'magit--bisect-run-filter)
-    (set-process-sentinel (get-buffer-process buffer) 'magit--bisect-run-sentinel)))
+      (setq magit--bisect-last-pos 0))
+    (set-process-filter process 'magit--bisect-run-filter)
+    (set-process-sentinel process
+                          (apply-partially 'magit--bisect-run-sentinel
+                                           buffer))))
 
 (defun magit--bisect-run-filter (process output)
   (with-current-buffer (process-buffer process)
@@ -178,42 +186,35 @@ match REQUIRED-STATUS."
         (goto-char magit--bisect-last-pos)
         (beginning-of-line)
         (while (< (point) (point-max))
-          (cond ( ;; Bisecting: 78 revisions left to test after this (roughly 6 steps)
-                 (looking-at "^Bisecting:\\s-+\\([0-9]+\\).+roughly\\s-+\\([0-9]+\\)")
-                 (setq new-info (list :status 'running
-                                      :revs (match-string 1)
-                                      :steps (match-string 2))))
-                ( ;; e2596955d9253a80aec9071c18079705597fa102 is the first bad commit
-                 (looking-at "^\\([a-f0-9]+\\)\\s-.*first bad commit")
-                 (setq new-info (list :status 'finished
-                                      :bad (match-string 1)))))
+          (cond
+           ( ;; Bisecting: 78 revisions left to test after this (roughly 6 steps)
+            (looking-at "^Bisecting:\\s-+\\([0-9]+\\).+roughly\\s-+\\([0-9]+\\)")
+            (setq new-info (list :status 'running
+                                 :revs (match-string 1)
+                                 :steps (match-string 2))))
+           ( ;; e2596955d9253a80aec9071c18079705597fa102 is the first bad commit
+            (looking-at "^\\([a-f0-9]+\\)\\s-.*first bad commit")
+            (setq new-info (list :status 'finished
+                                 :bad (match-string 1)))))
           (forward-line 1))
         (goto-char (point-max))
         (setq magit--bisect-last-pos (point))
-        (if new-info
-            (with-current-buffer (magit-find-status-buffer)
-              (setq magit--bisect-info new-info)
-              (magit--bisect-update-status-buffer)))))))
+        (when new-info
+          (with-current-buffer (magit-find-status-buffer)
+            (setq magit--bisect-info new-info)
+            (save-excursion
+              (let ((inhibit-read-only t))
+                (goto-char (point-min))
+                (when (re-search-forward "^Local:" nil t)
+                  (beginning-of-line)
+                  (kill-line)
+                  (magit-insert-status-local-line))))))))))
 
-(defun magit--bisect-run-sentinel (process event)
-  (if (string-match-p "^finish" event)
-      (with-current-buffer (process-buffer process)
-        (delete-file magit--bisect-tmp-file)))
-  (magit-process-sentinel process event))
-
-(defun magit--bisect-update-status-buffer ()
-  (with-current-buffer (magit-find-status-buffer)
-    (save-excursion
-      (save-match-data
-        (let ((inhibit-read-only t))
-          (goto-char (point-min))
-          (when (search-forward-regexp "Local:" nil t)
-            (beginning-of-line)
-            (kill-line)
-            (insert (format "Local:    %s %s"
-                            (propertize (magit--bisect-info-for-status (magit-get-current-branch))
-                                        'face 'magit-branch)
-                            (abbreviate-file-name default-directory)))))))))
+(defun magit--bisect-run-sentinel (command-buf process event)
+  (when (string-match-p "^finish" event)
+    (with-current-buffer (process-buffer process)
+      (delete-file (magit-git-dir "magit-bisect-run"))))
+  (magit-process-sentinel command-buf process event))
 
 (provide 'magit-bisect)
 ;;; magit-bisect.el ends here

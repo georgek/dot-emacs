@@ -1,7 +1,15 @@
 ;;; magit-topgit.el --- topgit plug-in for Magit
 
-;; Copyright (C) 2010  Nathan Weizenbaum
-;; Copyright (C) 2010  Yann Hodique
+;; Copyright (C) 2010-2013  The Magit Project Developers.
+;;
+;; For a full list of contributors, see the AUTHORS.md file
+;; at the top-level directory of this distribution and at
+;; https://raw.github.com/magit/magit/master/AUTHORS.md
+
+;; Author: Yann Hodique <yann.hodique@gmail.com>
+;; Keywords: vc tools
+;; Package: magit-topgit
+;; Package-Requires: ((cl-lib "0.3") (magit "1.3.0"))
 
 ;; Magit is free software; you can redistribute it and/or modify it
 ;; under the terms of the GNU General Public License as published by
@@ -41,7 +49,11 @@
   "Face for section titles."
   :group 'magit-faces)
 
-;;; Topic branches (using topgit)
+
+(defun magit-run-topgit (nowait &rest args)
+  (magit-with-refresh
+    (magit-run* (cons magit-topgit-executable args)
+                nil nil nil nowait)))
 
 (defun magit-topgit-in-topic-p ()
   (and (file-exists-p ".topdeps")
@@ -49,16 +61,11 @@
 
 (defun magit-topgit-create-branch (branch parent)
   (when (zerop (or (string-match magit-topgit-branch-prefix branch) -1))
-    (magit-run* (list magit-topgit-executable "create"
-                      branch (magit-rev-to-git parent))
-                nil nil nil t)
-    t))
+    (magit-run-topgit t "create" branch (magit-rev-to-git parent))))
 
 (defun magit-topgit-pull ()
   (when (magit-topgit-in-topic-p)
-    (magit-run* (list magit-topgit-executable "update")
-                nil nil nil t)
-    t))
+    (magit-run-topgit t "update")))
 
 (defun magit-topgit-push ()
   (when (magit-topgit-in-topic-p)
@@ -71,25 +78,22 @@
       (when (and (not remote)
                  (not current-prefix-arg))
         (magit-set push-remote "topgit" "remote"))
-      (magit-run magit-topgit-executable "push" "-r" push-remote))
-    t))
+      (magit-run-topgit nil "push" "-r" push-remote))))
 
 (defun magit-topgit-remote-update (&optional remote)
   (when (magit-topgit-in-topic-p)
     (let* ((remote (magit-get "topgit" "remote"))
            (remote-update (if (or current-prefix-arg (not remote))
-                              (magit-read-remote)
+                              (magit-read-remote "Update remote")
                             remote)))
-      (if (and (not remote)
-               (not current-prefix-arg))
-          (progn
-            (magit-set remote-update "topgit" "remote")
-            (magit-run magit-topgit-executable "remote"
-                       "--populate" remote-update)))
-      (magit-run magit-topgit-executable "remote" remote-update))
-    ;; We return nil anyway, as we also want regular "git remote update" to
-    ;; happen
-    nil))
+      (when (and (not remote)
+                 (not current-prefix-arg))
+        (magit-set remote-update "topgit" "remote")
+        (magit-run-topgit nil "remote" "--populate" remote-update))
+      (magit-run-topgit nil "remote" remote-update)))
+  ;; We always return nil, as we also want
+  ;; regular "git remote update" to happen.
+  nil)
 
 (defun magit-topgit-parse-flags (flags-string)
   (let ((flags (string-to-list flags-string))
@@ -113,7 +117,9 @@
               (when (plist-get flags :current)
                 (put-text-property beg end 'face 'magit-topgit-current))
               (when (plist-get flags :empty)
-                (put-text-property beg end 'face `(:strike-through t :inherit ,(get-text-property beg 'face)))))
+                (put-text-property
+                 beg end 'face
+                 `(:strike-through t :inherit ,(get-text-property beg 'face)))))
             (forward-line)))
       (delete-region (line-beginning-position) (1+ (line-end-position))))
     t))
@@ -128,18 +134,18 @@
           (magit-git-standard-options nil))
       (apply 'magit-git-section section title washer args))))
 
-(magit-define-inserter topics ()
-  (magit-topgit-section 'topics
+(magit-define-inserter topgit-topics ()
+  (magit-topgit-section 'topgit-topics
                         "Topics:" 'magit-topgit-wash-topics
                         "summary"))
 
-(magit-add-action (item info "discard")
+(magit-add-action-clauses (item info "discard")
   ((topic)
    (when (yes-or-no-p "Discard topic? ")
      (magit-run* (list magit-topgit-executable "delete" "-f" info)
                  nil nil nil t))))
 
-(magit-add-action (item info "visit")
+(magit-add-action-clauses (item info "visit")
   ((topic)
    (magit-checkout info)))
 
@@ -158,27 +164,25 @@
   :lighter " Topgit" :require 'magit-topgit
   (or (derived-mode-p 'magit-mode)
       (error "This mode only makes sense with magit"))
-  (if magit-topgit-mode
-      (progn
-        (add-hook 'magit-after-insert-stashes-hook 'magit-insert-topics nil t)
-        (add-hook 'magit-create-branch-command-hook 'magit-topgit-create-branch nil t)
-        (add-hook 'magit-pull-command-hook 'magit-topgit-pull nil t)
-        (add-hook 'magit-remote-update-command-hook 'magit-topgit-remote-update nil t)
-        (add-hook 'magit-push-command-hook 'magit-topgit-push nil t)
-        ;; hide refs for top-bases namespace in any remote
-        (add-hook 'magit-log-remotes-color-hook
-                  'magit-topgit-get-remote-top-bases-color)
-        ;; hide refs in the top-bases namespace, as they're not meant for the user
-        (add-to-list 'magit-refs-namespaces magit-topgit-ignored-namespace))
-    (progn
-        (remove-hook 'magit-after-insert-stashes-hook 'magit-insert-topics t)
-        (remove-hook 'magit-create-branch-command-hook 'magit-topgit-create-branch t)
-        (remove-hook 'magit-pull-command-hook 'magit-topgit-pull t)
-        (remove-hook 'magit-remote-update-command-hook 'magit-topgit-remote-update t)
-        (remove-hook 'magit-push-command-hook 'magit-topgit-push t)
-        (remove-hook 'magit-log-remotes-color-hook
-                     'magit-topgit-get-remote-top-bases-color)
-        (delete magit-topgit-ignored-namespace magit-refs-namespaces)))
+  (cond
+   (magit-topgit-mode
+    (add-hook 'magit-after-insert-stashes-hook 'magit-insert-topgit-topics nil t)
+    (add-hook 'magit-create-branch-command-hook 'magit-topgit-create-branch nil t)
+    (add-hook 'magit-pull-command-hook 'magit-topgit-pull nil t)
+    (add-hook 'magit-remote-update-command-hook 'magit-topgit-remote-update nil t)
+    (add-hook 'magit-push-command-hook 'magit-topgit-push nil t)
+    ;; hide refs for top-bases namespace in any remote
+    (add-hook 'magit-log-remotes-color-hook 'magit-topgit-get-remote-top-bases-color)
+    ;; hide refs in the top-bases namespace, as they're not meant for the user
+    (add-to-list 'magit-refs-namespaces magit-topgit-ignored-namespace))
+   (t
+    (remove-hook 'magit-after-insert-stashes-hook 'magit-insert-topgit-topics t)
+    (remove-hook 'magit-create-branch-command-hook 'magit-topgit-create-branch t)
+    (remove-hook 'magit-pull-command-hook 'magit-topgit-pull t)
+    (remove-hook 'magit-remote-update-command-hook 'magit-topgit-remote-update t)
+    (remove-hook 'magit-push-command-hook 'magit-topgit-push t)
+    (remove-hook 'magit-log-remotes-color-hook 'magit-topgit-get-remote-top-bases-color)
+    (delete magit-topgit-ignored-namespace magit-refs-namespaces)))
   (when (called-interactively-p 'any)
     (magit-refresh)))
 

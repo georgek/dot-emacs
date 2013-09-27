@@ -426,8 +426,6 @@ RECURRENCES occasions."
 
 ;; magit for using git
 (require 'magit)
-(require 'magit-svn)
-(require 'magit-topgit)
 (require 'magit-blame)
 (global-set-key (kbd "\C-ci") 'magit-status)
 (global-set-key (kbd "\C-cb") 'magit-blame-mode)
