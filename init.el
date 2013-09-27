@@ -426,6 +426,11 @@ RECURRENCES occasions."
 (when (fboundp 'winner-mode)
   (winner-mode 1))
 
+;;; git stuff
+(require 'gitconfig-mode)
+(require 'gitignore-mode)
+(require 'gitattributes-mode)
+
 ;; magit for using git
 (require 'magit)
 (require 'magit-blame)
