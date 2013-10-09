@@ -237,10 +237,16 @@
 (require 'slime-autoloads)
 (slime-setup '(slime-fancy slime-banner slime-asdf))
 
+(defun slime-magic-tab ()
+  (interactive)
+  (if (member (char-before) '(?\s ?\t ?\n))
+      (indent-for-tab-command)
+    (slime-complete-symbol)))
+
 (makehookedfun lisp-mode-hook
   (nice-paredit-on)
   (yas/minor-mode -1)
-  (local-set-key (kbd "TAB") #'slime-complete-symbol)
+  (local-set-key (kbd "TAB") #'slime-magic-tab)
   (local-set-key (kbd "C-c z") #'slime-switch-to-output-buffer))
 
 ;;; REPL
