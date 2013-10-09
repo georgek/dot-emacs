@@ -239,7 +239,9 @@
 
 (makehookedfun lisp-mode-hook
   (nice-paredit-on)
-  (local-set-key (kbd "C-c z") 'slime-switch-to-output-buffer))
+  (yas/minor-mode -1)
+  (local-set-key (kbd "TAB") #'slime-complete-symbol)
+  (local-set-key (kbd "C-c z") #'slime-switch-to-output-buffer))
 
 ;;; REPL
 (makehookedfun slime-repl-mode-hook
