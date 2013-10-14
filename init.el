@@ -153,6 +153,7 @@
   (let ((case-fold-search nil))
     (if (looking-at electrify-return-match)
         (save-excursion (newline-and-indent)))
+    (delete-horizontal-space t)
     (newline arg)
     (indent-according-to-mode)))
 
