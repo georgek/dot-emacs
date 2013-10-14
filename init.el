@@ -208,8 +208,16 @@
           (sit-for 0.1))
       (delete-overlay ol))))
 
+(defun elisp-magic-tab ()
+  (interactive)
+  (if (member (char-before) '(?\s ?\t ?\n))
+      (indent-for-tab-command)
+    (lisp-complete-symbol)))
+
 (makehookedfun emacs-lisp-mode-hook
   (nice-paredit-on)
+  (yas/minor-mode -1)
+  (local-set-key (kbd "TAB") #'elisp-magic-tab)
   (local-set-key (kbd "C-c C-b") #'eval-buffer-key)
   (local-set-key (kbd "C-c C-c") #'eval-defun-key)
   (local-set-key (kbd "C-c C-z") #'ielm-switch-to-buffer)
