@@ -695,9 +695,7 @@ RECURRENCES occasions."
   (when (< (current-column) 4)
     (back-to-indentation))
   (when (eq (point) (line-end-position))
-   (pcomplete interactively))
-  
-  )
+   (pcomplete interactively)))
 
 (defun insert-bitcoin-symbol ()
   (interactive)
