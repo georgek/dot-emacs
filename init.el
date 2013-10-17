@@ -669,8 +669,21 @@ RECURRENCES occasions."
         (insert (caar out) "  -" (cdar out))) ; negative inserted
       (newline)
       (setq out (cdr out))))
-  (newline)
-  (ledger-align-amounts))
+  (newline))
+
+(defun ledger-add-loads (in out)
+  (interactive
+   (let (in out (accounts (find-all-ledger-accounts)))
+     (setq in (completing-read "Account to: " accounts))
+     (setq out (completing-read "Account from: " accounts))
+     (list in out)))
+  (let (date title amount)
+   (while t
+     (setq date (org-read-date))
+     (setq title (read-string "Payee: "))
+     (setq amount (read-string "Amount: " "£"))
+     (ledger-add-entry date title
+                       (list (cons in amount)) (list (cons out nil))))))
 
 (defun ledger-indent-and-pcomplete (&optional interactively)
   (interactive "P")
