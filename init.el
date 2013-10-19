@@ -38,10 +38,15 @@
 ;; load stuff in other files
 ;; (load-library "gk-gtags")
 
-;; (require 'color-theme-zenburn)
-;; (color-theme-zenburn)
+;;; Zenburn
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
 (load-theme 'zenburn t)
+;;; my modifications
+(zenburn-with-color-variables
+  (custom-theme-set-faces
+   'zenburn
+   `(font-lock-builtin-face ((t (:foreground ,zenburn-cyan))))
+   `(paren-face ((t (:foreground "#989888"))))))
 
 ;; ido mode
 (setq ido-enable-flex-matching t)
