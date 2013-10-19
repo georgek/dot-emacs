@@ -3787,8 +3787,9 @@ Perform completion more similar to Emacs' complete-symbol."
                    (when (member partial completions)
                      (slime-minibuffer-respecting-message
                       "Complete but not unique"))
-                   (slime-display-or-scroll-completions completions
-                                                        partial))))))))
+                   ;; (slime-display-or-scroll-completions completions
+                   ;;                                      partial)
+                   )))))))
 
 (defun slime-maybe-complete-as-filename ()
   "If point is at a string starting with \", complete it as filename.

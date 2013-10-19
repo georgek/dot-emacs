@@ -251,6 +251,7 @@
 (require 'slime-autoloads)
 (slime-setup '(slime-fancy slime-banner slime-asdf))
 
+(setf slime-complete-symbol-function #'slime-simple-complete-symbol)
 (defun slime-magic-tab ()
   (interactive)
   (if (member (char-before) '(?\s ?\t ?\n))
