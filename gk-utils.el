@@ -8,7 +8,7 @@
   (mapconcat #'identity strings "\n"))
 
 (defmacro hash-table (test &rest contents)
-  (let ((tbl-sym (gensym "tbl"))
+  (let ((tbl-sym (cl-gensym "tbl"))
         (conts (mapcar
                 #'(lambda (c)
                     (cons (eval (car c)) (eval (cadr c))))
@@ -30,4 +30,3 @@
        (defun ,function ()
          ,@body)
        (add-hook ',hook #',function))))
-
