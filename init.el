@@ -1,5 +1,10 @@
 ;;;; my .emacs file
 
+(or (boundp 'init-path)
+    (setq init-path (file-name-directory load-file-name)))
+(defmacro load-init (filename &optional noerror)
+  `(load (expand-file-name ,filename init-path) ,noerror))
+
 (setq inhibit-splash-screen t)
 (setq inhibit-default-init t)
 ;; ignore case in completion
@@ -29,8 +34,8 @@
 (progn (cd "~/.emacs.d/site-lisp/")
        (normal-top-level-add-subdirs-to-load-path))
 ;; this adds stuff that I'm currently working on
-(load "working.el" t)
-(load "gk-utils.el")
+(load-init "working" t)
+(load-init "gk-utils")
 
 ;; org development version
 ;; (add-to-list 'load-path "~/src/org-mode/lisp/")
@@ -39,7 +44,7 @@
 ;; (load-library "gk-gtags")
 
 ;;; Zenburn
-(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
+(add-to-list 'custom-theme-load-path (expand-file-name "themes/" init-path))
 (load-theme 'zenburn t)
 ;;; my modifications
 (zenburn-with-color-variables
@@ -983,12 +988,12 @@ call to other-window-repeat or switch-prev-window."
   (setq bbdb-completion-display-record nil))
 
 ;; this file sets up the mail accounts
-(load "mail.el" t)
+(load-init "mail" t)
 
 
 ;;; diminish modeline
 (require 'diminish)
-(load "gk-diminish.el" t)
+(load-init "gk-diminish" t)
 ;; *** visit this file at startup for convenience ***
 (when load-file-name
   (find-file load-file-name))
