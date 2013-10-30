@@ -238,6 +238,10 @@
         (pop-to-buffer ielm-buffer)
       (ielm))))
 
+;;; for printing to buffer
+(defun p (x)
+  (move-end-of-line 0) (insert (format "\n%s" x)))
+
 (makehookedfun ielm-mode-hook
   (nice-paredit-on)
   (local-set-key (kbd "C-<return>")
