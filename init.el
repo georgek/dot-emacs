@@ -39,10 +39,10 @@
 ;; (setq load-path (remove-if (lambda (x) (string-match-p "org$" x)) load-path))
 
 ;; add paths
-(add-to-list 'load-path "~/.emacs.d/")
-(add-to-list 'load-path "~/.emacs.d/site-lisp/")
-(progn (cd "~/.emacs.d/site-lisp/")
-       (normal-top-level-add-subdirs-to-load-path))
+(add-to-path-init load-path ".")
+(add-to-path-init load-path "site-lisp")
+(add-subdirs-to-load-path "site-lisp" init-path)
+(add-to-path-init load-path "lisp")
 ;; this adds stuff that I'm currently working on
 (load-init "working" t)
 (load-init "gk-utils")
@@ -54,7 +54,7 @@
 ;; (load-library "gk-gtags")
 
 ;;; Zenburn
-(add-to-list 'custom-theme-load-path (expand-file-name "themes/" init-path))
+(add-to-path-init custom-theme-load-path "themes")
 (load-theme 'zenburn t)
 (load-init "themes/zenburn-mods")
 
@@ -134,8 +134,8 @@
 (require 'info-look)
 
 (if Info-directory-list
-    (add-to-list 'Info-directory-list "~/.emacs.d/info/ansicl/")
-  (add-to-list 'Info-default-directory-list "~/.emacs.d/info/ansicl/"))
+    (add-to-path-init Info-directory-list "info/ansicl")
+  (add-to-path-init Info-default-directory-list "info/ansicl"))
 
 (info-lookup-add-help
  :mode 'lisp-mode
@@ -482,7 +482,8 @@ RECURRENCES occasions."
 
 ;; yasnippet
 (require 'yasnippet)
-(setq yas-snippet-dirs "~/.emacs.d/site-lisp/yasnippet/snippets/")
+(setq yas-snippet-dirs
+      (expand-file-name "site-lisp/yasnippet/snippets" init-path))
 (yas-global-mode 1)
 (setq yas-prompt-functions
       '(yas-dropdown-prompt yas-completing-prompt yas-ido-prompt))
@@ -934,9 +935,10 @@ call to other-window-repeat or switch-prev-window."
     (set-buffer (get-buffer-create buf-name))
     (erase-buffer)
     (if synchronous
-        (call-process "~/.emacs.d/oimaptime" nil buf-name nil)
+        (call-process (expand-file-name "oimaptime" init-path) nil buf-name nil)
         (start-process-shell-command "offlineimap" buf-name
-                                     "~/.emacs.d/oimaptime"))))
+                                     (expand-file-name "oimaptime"
+                                                       init-path)))))
 (defvar offlineimap-timer nil)
 
 ;; run offlineimap when we start gnus, then do it on a timer while gnus is
