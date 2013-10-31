@@ -251,9 +251,7 @@
         (pop-to-buffer ielm-buffer)
       (ielm))))
 
-;;; for printing to buffer
-(defun p (x)
-  (move-end-of-line 0) (insert (format "\n%s" x)))
+(defalias 'p #'princ)
 
 (makehookedfun ielm-mode-hook
   (nice-paredit-on)
