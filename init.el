@@ -1,9 +1,19 @@
 ;;;; my .emacs file
 
+;;; init path stuff
 (or (boundp 'init-path)
     (setq init-path (file-name-directory load-file-name)))
 (defmacro load-init (filename &optional noerror)
   `(load (expand-file-name ,filename init-path) ,noerror))
+(defmacro add-to-path-init (path directory)
+  `(add-to-list ',path (expand-file-name ,directory init-path)))
+(defun add-subdirs-to-load-path (directory init-path)
+  (let* ((default-directory (expand-file-name directory init-path))
+         (files (directory-files default-directory)))
+    (dolist (file files)
+      (when (and (file-directory-p file)
+                 (string-match "\\`[[:alnum:]]" file))
+        (add-to-list 'load-path (expand-file-name file default-directory))))))
 
 (setq inhibit-splash-screen t)
 (setq inhibit-default-init t)
