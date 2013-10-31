@@ -12,11 +12,6 @@ CVS/
 #mail
 mail.el
 
-#auctex
-site-lisp/auctex.el
-site-lisp/tex-site.el
-site-lisp/auctex/*
-
 share
 var
 
