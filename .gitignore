@@ -15,9 +15,6 @@ mail.el
 share
 var
 
-#org
-site-lisp/org/*
-
 #bbdb
 site-lisp/bbdb/*
 /working.el
