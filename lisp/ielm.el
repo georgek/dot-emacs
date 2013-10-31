@@ -333,7 +333,11 @@ simply inserts a newline."
 	ielm-error-type			; string, nil if no error
 	(ielm-output "")		; result to display
 	(ielm-wbuf ielm-working-buffer)	; current buffer after evaluation
-	(ielm-pmark (ielm-pm)))
+	(ielm-pmark (ielm-pm))
+        (standard-output (get-buffer-create "*ielm-standard-output*"))
+        ielm-standard-output)
+    (with-current-buffer standard-output
+      (erase-buffer))
     (unless (ielm-is-whitespace-or-comment ielm-string)
       (condition-case err
 	  (let ((rout (read-from-string ielm-string)))
@@ -423,7 +427,13 @@ simply inserts a newline."
 	(setq ** *)
 	(setq * ielm-result))
       (setq ielm-output (concat ielm-output "\n")))
-    (setq ielm-output (concat ielm-output ielm-prompt-internal))
+    (with-current-buffer standard-output
+      (setq ielm-standard-output (buffer-string)))
+    (setq ielm-output (concat (propertize ielm-standard-output
+                                          'font-lock-face 'font-lock-string-face)
+                              (propertize ielm-output
+                                          'font-lock-face 'font-lock-comment-face)
+                              ielm-prompt-internal))
     (comint-output-filter (ielm-process) ielm-output)))
 
 ;;; Process and marker utilities
