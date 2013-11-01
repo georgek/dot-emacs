@@ -586,17 +586,20 @@ RECURRENCES occasions."
 (require 'ledger)
 
 ;; modified ledger-accounts puts names in list rather than tree
-(defun find-all-ledger-accounts ()
-  (let ((origin (point)) accounts)
+(defun ledger-find-all-accounts ()
+  "Returns list of all account names in file."
+  (let ((origin (point))
+        (accounts (list))
+        (prefix ""))
     (save-excursion
-      (setq ledger-account-tree (list t))
       (goto-char (point-min))
       (while (re-search-forward
               ledger-account-any-status-regex
               nil t)
-        (unless (and (>= origin (match-beginning 0))
-                     (< origin (match-end 0)))
-          (setq accounts (cons (match-string-no-properties 2) accounts)))))
+        (dolist (s (split-string (match-string-no-properties 2) ":" t))
+          (add-to-list 'accounts (concat prefix s))
+          (setq prefix (concat prefix s ":")))
+        (setq prefix "")))
     accounts))
 
 ;; account specifier with completion
