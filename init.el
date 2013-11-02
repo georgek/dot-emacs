@@ -277,7 +277,8 @@
   (nice-paredit-on)
   (yas/minor-mode -1)
   (local-set-key (kbd "TAB") #'slime-magic-tab)
-  (local-set-key (kbd "C-c z") #'slime-switch-to-output-buffer))
+  (local-set-key (kbd "C-c z") #'slime-switch-to-output-buffer)
+  (local-set-key (kbd "C-c e") #'slime-macroexpand-1))
 
 ;;; REPL
 (makehookedfun slime-repl-mode-hook
