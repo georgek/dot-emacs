@@ -280,6 +280,13 @@
   (local-set-key (kbd "C-c z") #'slime-switch-to-output-buffer)
   (local-set-key (kbd "C-c e") #'slime-macroexpand-1))
 
+(define-key slime-macroexpansion-minor-mode-map
+  (kbd "e") #'slime-expand-1-inplace)
+(define-key slime-macroexpansion-minor-mode-map
+  (kbd "n") #'next-line)
+(define-key slime-macroexpansion-minor-mode-map
+  (kbd "p") #'previous-line)
+
 ;;; REPL
 (makehookedfun slime-repl-mode-hook
   (nice-paredit-on)
