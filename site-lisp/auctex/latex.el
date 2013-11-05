@@ -417,7 +417,7 @@ the name of the sectioning command inserted with `\\[LaTeX-section]'."
   (let ((string (completing-read
 		 (concat "Level: (default " name ") ")
 		 LaTeX-section-list
-		 nil nil nil)))
+		 nil nil nil nil name)))
     ; Update name
     (if (not (zerop (length string)))
 	(setq name string))
