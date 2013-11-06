@@ -264,7 +264,6 @@
 ;;; *** SLIME ***
 (setq inferior-lisp-program "/usr/bin/sbcl") ; your Lisp system
 (require 'slime-autoloads)
-(require 'slime)
 (slime-setup '(slime-fancy slime-banner slime-asdf))
 
 (setf slime-complete-symbol-function #'slime-simple-complete-symbol)
@@ -281,12 +280,13 @@
   (local-set-key (kbd "C-c z") #'slime-switch-to-output-buffer)
   (local-set-key (kbd "C-c e") #'slime-macroexpand-1))
 
-(define-key slime-macroexpansion-minor-mode-map
-  (kbd "e") #'slime-expand-1-inplace)
-(define-key slime-macroexpansion-minor-mode-map
-  (kbd "n") #'next-line)
-(define-key slime-macroexpansion-minor-mode-map
-  (kbd "p") #'previous-line)
+(makehookedfun slime-load-hook
+  (define-key slime-macroexpansion-minor-mode-map
+   (kbd "e") #'slime-expand-1-inplace)
+ (define-key slime-macroexpansion-minor-mode-map
+   (kbd "n") #'next-line)
+ (define-key slime-macroexpansion-minor-mode-map
+   (kbd "p") #'previous-line))
 
 ;;; REPL
 (makehookedfun slime-repl-mode-hook
