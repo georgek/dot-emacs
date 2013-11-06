@@ -609,7 +609,7 @@ RECURRENCES occasions."
           (add-to-list 'accounts (concat prefix s))
           (setq prefix (concat prefix s ":")))
         (setq prefix "")))
-    accounts))
+    (cons " " accounts)))
 
 ;; account specifier with completion
 (defun report-account-format-specifier ()
