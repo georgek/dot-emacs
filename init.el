@@ -264,6 +264,7 @@
 ;;; *** SLIME ***
 (setq inferior-lisp-program "/usr/bin/sbcl") ; your Lisp system
 (require 'slime-autoloads)
+(require 'slime)
 (slime-setup '(slime-fancy slime-banner slime-asdf))
 
 (setf slime-complete-symbol-function #'slime-simple-complete-symbol)
