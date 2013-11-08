@@ -310,6 +310,9 @@
    org-directory))
 (setq org-return-follows-link t)
 
+;; src
+(setq org-src-fontify-natively t)
+
 ;; capture
 (setq org-default-notes-file (orgdr "notes.org"))
 (global-set-key (kbd "C-c c") 'org-capture)
