@@ -312,6 +312,10 @@
 
 ;; src
 (setq org-src-fontify-natively t)
+;; add lisp
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((lisp . t)))
 
 ;; capture
 (setq org-default-notes-file (orgdr "notes.org"))
