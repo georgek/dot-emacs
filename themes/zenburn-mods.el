@@ -41,4 +41,6 @@
      ((t (:foreground ,zenburn-red :weight normal))))
    ;; macrostep
    `(macrostep-expansion-highlight-face
-     ((t (:inherit highlight))))))
+     ((t (:inherit highlight))))
+   ;; eldoc
+   `(eldoc-highlight-function-argument ((t (:weight bold))))))
