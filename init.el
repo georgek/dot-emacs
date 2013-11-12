@@ -329,8 +329,8 @@
          "* %?\n %U\n %a")))
 
 ;; agenda stuff
-(global-set-key "\C-cl" 'org-store-link)
-(global-set-key "\C-ca" 'org-agenda)
+(global-set-key (kbd "C-c l") 'org-store-link)
+(global-set-key (kbd "C-c a") 'org-agenda)
 (global-set-key (kbd "C-~") 'org-agenda-list)
 (setq org-agenda-files (list (orgdr) (orgdr "personal/")))
 (setq org-agenda-include-diary t)
@@ -424,7 +424,7 @@ RECURRENCES occasions."
 
 ;; makefile mode make key
 (makehookedfun makefile-mode-hook
-  (define-key makefile-mode-map "\C-c\C-c" 'compile))
+  (define-key makefile-mode-map (kbd "C-c C-c") 'compile))
 
 ;; auto new line and hungry delete modes
 (setq c-auto-newline 1)
@@ -488,11 +488,11 @@ RECURRENCES occasions."
 ;; magit for using git
 (require 'magit)
 (require 'magit-blame)
-(global-set-key (kbd "\C-ci") 'magit-status)
-(global-set-key (kbd "\C-cb") 'magit-blame-mode)
+(global-set-key (kbd "C-c i") 'magit-status)
+(global-set-key (kbd "C-c b") 'magit-blame-mode)
 
 ;; key for opening a shell
-(global-set-key (kbd "\C-cs") 'eshell)
+(global-set-key (kbd "C-c s") 'eshell)
 
 ;; yasnippet
 (require 'yasnippet)
@@ -553,9 +553,9 @@ RECURRENCES occasions."
 
 ;; cc mode key bindings - applies to all CC modes (C, C++ etc.)
 (makehookedfun c-initialization-hook
-  (define-key c-mode-base-map "\C-c\C-c" 'compile)
-  (define-key c-mode-base-map "\C-c\C-h" 'c-c++-toggle)
-  (define-key c-mode-base-map "\C-m" 'c-context-line-break)
+  (define-key c-mode-base-map (kbd "C-c C-c") 'compile)
+  (define-key c-mode-base-map (kbd "C-c C-h") 'c-c++-toggle)
+  (define-key c-mode-base-map (kbd "C-m") 'c-context-line-break)
   (abbrev-mode -1))
 
 ;; use tags with C modes
@@ -579,12 +579,10 @@ RECURRENCES occasions."
 (add-to-list 'auto-mode-alist '("\\.s\\'" . asm-mode))
 (add-hook 'asm-mode-set-comment-hook
           (lambda () (setq asm-comment-char ?\#)))
-(add-hook 'asm-mode-hook
-          (function (lambda ()
-                      (define-key asm-mode-map "\C-c\C-c" 'compile))))
-(add-hook 'gas-mode-hook
-          (function (lambda ()
-                      (define-key gas-mode-map "\C-c\C-c" 'compile))))
+(makehookedfun asm-mode-hook
+  (define-key asm-mode-map (kbd "C-c C-c") 'compile))
+(makehookedfun gas-mode-hook
+  (define-key gas-mode-map (kbd "C-c C-c") 'compile))
 
 ;; prolog
 (autoload 'run-prolog "prolog" "Start a Prolog sub-process." t)
