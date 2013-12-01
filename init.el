@@ -618,7 +618,7 @@ RECURRENCES occasions."
 
 ;; account specifier with completion
 (defun report-account-format-specifier ()
-  (let ((accounts (find-all-ledger-accounts)))
+  (let ((accounts (ledger-find-all-accounts)))
     (completing-read "Account: " accounts)))
 
 (defun report-payee-format-specifier ()
@@ -628,7 +628,7 @@ RECURRENCES occasions."
 (defun ledger-add-entry (date title in out)
   (interactive
    (let (date title (in nil) (out nil) numin numout count curr
-              (accounts (find-all-ledger-accounts)) last-date)
+              (accounts (ledger-find-all-accounts)) last-date)
      ;; get the last date in the buffer to be used as default for get date
      (save-excursion
        (if (re-search-backward
@@ -712,7 +712,7 @@ RECURRENCES occasions."
 
 (defun ledger-add-loads (in out)
   (interactive
-   (let (in out (accounts (find-all-ledger-accounts)))
+   (let (in out (accounts (ledger-find-all-accounts)))
      (setq in (completing-read "Account to: " accounts))
      (setq out (completing-read "Account from: " accounts))
      (list in out)))
