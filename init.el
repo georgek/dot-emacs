@@ -633,7 +633,7 @@ RECURRENCES occasions."
      (save-excursion
        (if (re-search-backward
             "^\\([0-9]\\{4\\}\\)-\\([0-9]\\{2\\}\\)-\\([0-9]\\{2\\}\\)" nil t)
-           (setq last-date 
+           (setq last-date
                  (encode-time 0 0 0
                               (string-to-number
                                (match-string-no-properties 3))
@@ -716,13 +716,24 @@ RECURRENCES occasions."
      (setq in (completing-read "Account to: " accounts))
      (setq out (completing-read "Account from: " accounts))
      (list in out)))
-  (let (date title amount)
-   (while t
-     (setq date (org-read-date))
-     (setq title (read-string "Payee: "))
-     (setq amount (read-string "Amount: " "£"))
-     (ledger-add-entry date title
-                       (list (cons in amount)) (list (cons out nil))))))
+  (let (last-date date title amount)
+    (save-excursion
+      (if (re-search-backward
+           "^\\([0-9]\\{4\\}\\)-\\([0-9]\\{2\\}\\)-\\([0-9]\\{2\\}\\)" nil t)
+          (setq last-date
+                (encode-time 0 0 0
+                             (string-to-number
+                              (match-string-no-properties 3))
+                             (string-to-number
+                              (match-string-no-properties 2))
+                             (string-to-number
+                              (match-string-no-properties 1))))))
+    (while t
+      (setq date (org-read-date nil nil nil nil last-date))
+      (setq title (read-string "Payee: "))
+      (setq amount (read-string "Amount: " "£"))
+      (ledger-add-entry date title
+                        (list (cons in amount)) (list (cons out nil))))))
 
 (defun ledger-indent-and-pcomplete (&optional interactively)
   (interactive "P")
