@@ -331,7 +331,7 @@
 ;; agenda stuff
 (global-set-key (kbd "C-c l") 'org-store-link)
 (global-set-key (kbd "C-c a") 'org-agenda)
-(global-set-key (kbd "C-~") 'org-agenda-list)
+(global-set-key (kbd "C-~") (lambda () (interactive) (org-agenda nil "n")))
 (setq org-agenda-files (list (orgdr) (orgdr "personal/")))
 (setq org-agenda-include-diary t)
 (setq org-agenda-span 14)
