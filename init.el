@@ -710,29 +710,23 @@ RECURRENCES occasions."
       (setq out (cdr out))))
   (newline))
 
-(defun ledger-add-loads (in out)
+(defun ledger-add-loads (in out year month)
   (interactive
-   (let (in out (accounts (ledger-find-all-accounts)))
+   (let (in out year month (accounts (ledger-find-all-accounts)))
      (setq in (completing-read "Account to: " accounts))
      (setq out (completing-read "Account from: " accounts))
-     (list in out)))
-  (let (last-date date title amount)
-    (save-excursion
-      (if (re-search-backward
-           "^\\([0-9]\\{4\\}\\)-\\([0-9]\\{2\\}\\)-\\([0-9]\\{2\\}\\)" nil t)
-          (setq last-date
-                (encode-time 0 0 0
-                             (string-to-number
-                              (match-string-no-properties 3))
-                             (string-to-number
-                              (match-string-no-properties 2))
-                             (string-to-number
-                              (match-string-no-properties 1))))))
+     (setq year (parse-integer (read-from-minibuffer "Year: ")))
+     (setq month (parse-integer (read-from-minibuffer "Month: ")))
+     (list in out year month)))
+  (let ((default-date
+         (encode-time 0 0 0 1 month year))
+        date title amount)
     (while t
-      (setq date (org-read-date nil nil nil nil last-date))
+      (setq day (parse-integer (read-from-minibuffer "Day: ")))
       (setq title (read-string "Payee: "))
       (setq amount (read-string "Amount: " "£"))
-      (ledger-add-entry date title
+      (ledger-add-entry (format "%04d-%02d-%02d" year month day)
+                        title
                         (list (cons in amount)) (list (cons out nil))))))
 
 (defun ledger-indent-and-pcomplete (&optional interactively)
