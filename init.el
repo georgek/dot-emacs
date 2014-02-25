@@ -420,6 +420,10 @@ RECURRENCES occasions."
 ;;     ad-do-it))
 ;; (ad-activate 'org-agenda-add-time-grid-maybe)
 
+;;; setup default file readers
+(eval-after-load "org"
+  '(setcdr (assoc "\\.pdf\\'" org-file-apps) "evince %s"))
+
 ;; *** end org-mode stuff ***
 
 ;; makefile mode make key
