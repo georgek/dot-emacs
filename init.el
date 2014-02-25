@@ -323,6 +323,7 @@
 (setq org-capture-templates
       '(("t" "Todo" entry (file+headline (orgdr "todo.org") "Misc (Captured)")
          "* TODO %?\n %U\n %a")
+        ("d" "Diary" entry (file+headline (orgdr "diary.org") "Captured"))
         ("j" "Journal" entry (file+datetree (orgdr "journal.org"))
          "* %?\nEntered on %U\n %i")
         ("i" "Idea" entry (file (orgdr "ideas.org"))
