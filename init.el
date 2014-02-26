@@ -32,6 +32,8 @@
 (tool-bar-mode -1)
 (mouse-avoidance-mode 'banish)
 (global-unset-key (kbd "C-z"))
+;;; disable this as it ruins keyboard macros
+(setq line-move-visual nil)
 
 (require 'cl-lib)
 
