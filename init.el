@@ -893,6 +893,10 @@ call to other-window-repeat or switch-prev-window."
   (local-set-key (kbd "RET") #'go-mode-electric-return)
   (local-set-key (kbd "{") #'go-mode-electric-brace))
 
+;;; ESS (R)
+(add-to-path-init load-path "site-lisp/ess/lisp")
+(require 'ess-site)
+
 ;;; mail stuff
 
 ;;; ~/.gnus.el tells gnus how to get messages
