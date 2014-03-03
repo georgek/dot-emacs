@@ -722,14 +722,14 @@ RECURRENCES occasions."
    (let (in out year month (accounts (ledger-find-all-accounts)))
      (setq in (completing-read "Account to: " accounts))
      (setq out (completing-read "Account from: " accounts))
-     (setq year (parse-integer (read-from-minibuffer "Year: ")))
-     (setq month (parse-integer (read-from-minibuffer "Month: ")))
+     (setq year (string-to-number (read-from-minibuffer "Year: ")))
+     (setq month (string-to-number (read-from-minibuffer "Month: ")))
      (list in out year month)))
   (let ((default-date
          (encode-time 0 0 0 1 month year))
         date title amount)
     (while t
-      (setq day (parse-integer (read-from-minibuffer "Day: ")))
+      (setq day (string-to-number (read-from-minibuffer "Day: ")))
       (setq title (read-string "Payee: "))
       (setq amount (read-string "Amount: " "£"))
       (ledger-add-entry (format "%04d-%02d-%02d" year month day)
