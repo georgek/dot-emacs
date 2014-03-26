@@ -896,6 +896,8 @@ call to other-window-repeat or switch-prev-window."
 ;;; ESS (R)
 (add-to-path-init load-path "site-lisp/ess/lisp")
 (require 'ess-site)
+(makehookedfun ess-mode-hook
+  (local-set-key (kbd "C-c z") #'ess-switch-to-inferior-or-script-buffer))
 
 ;;; mail stuff
 
