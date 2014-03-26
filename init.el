@@ -327,7 +327,7 @@
          "* TODO %?\n %U\n %a")
         ("d" "Diary" entry (file+headline (orgdr "diary.org") "Captured"))
         ("j" "Journal" entry (file+datetree (orgdr "journal.org"))
-         "* %?\nEntered on %U\n %i")
+         "* %? %^g\nEntered on %U\n %i")
         ("i" "Idea" entry (file (orgdr "ideas.org"))
          "* %?\n %U\n %a")))
 
