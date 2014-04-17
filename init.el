@@ -110,7 +110,7 @@
 (require 'sublimity)
 (require 'sublimity-scroll)
 (sublimity-mode 1)
-(setq sublimity-scroll-weight 2
+(setq sublimity-scroll-weight 3
       sublimity-scroll-drift-length 2)
 
 ;; set some default styles
