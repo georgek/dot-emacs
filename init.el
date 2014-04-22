@@ -113,6 +113,13 @@
 ;; turn off tabs
 (setq-default indent-tabs-mode nil)
 
+;;; sublimity (smooth scrolling)
+(require 'sublimity)
+(require 'sublimity-scroll)
+(sublimity-mode 1)
+(setq sublimity-scroll-weight 3
+      sublimity-scroll-drift-length 2)
+
 ;; set some default styles
 (setq c-default-style '((java-mode . "java") (awk-mode
       . "awk") (c-mode . "k&r") (c++-mode . "stroustrup") (other
