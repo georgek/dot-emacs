@@ -60,6 +60,13 @@
 (load-theme 'zenburn t)
 (load-init "themes/zenburn-mods")
 
+;;; desktop save
+(defun save-desktop ()
+  (desktop-save "~")
+  (message "Desktop saved."))
+(setq desktop-timer
+ (run-with-timer 0 (* 10 60) #'save-desktop))
+
 ;; ido mode
 (require 'ido)
 (require 'ido-hacks)
