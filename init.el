@@ -905,6 +905,11 @@ call to other-window-repeat or switch-prev-window."
 (require 'ess-site)
 (makehookedfun ess-mode-hook
   (local-set-key (kbd "C-c z") #'ess-switch-to-inferior-or-script-buffer))
+;;; DNA
+(require 'dna-mode)
+(add-to-list
+ 'auto-mode-alist
+ '("\\.\\(fasta\\|fa\\|exp\\|ace\\|gb\\)\\'" . dna-mode))
 
 ;;; mail stuff
 
