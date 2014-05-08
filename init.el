@@ -907,6 +907,16 @@ call to other-window-repeat or switch-prev-window."
 (require 'ess-site)
 (makehookedfun ess-mode-hook
   (local-set-key (kbd "C-c z") #'ess-switch-to-inferior-or-script-buffer))
+;;; iESS
+(defun clear-shell ()
+   (interactive)
+   (let ((old-max comint-buffer-maximum-size))
+     (setq comint-buffer-maximum-size 0)
+     (comint-truncate-buffer)
+     (setq comint-buffer-maximum-size old-max)))
+(makehookedfun inferior-ess-mode-hook
+  (local-set-key (kbd "C-c M-o") #'clear-shell))
+
 ;;; DNA
 (require 'dna-mode)
 (add-to-list
