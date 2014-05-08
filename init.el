@@ -324,7 +324,9 @@
 ;; add lisp
 (org-babel-do-load-languages
  'org-babel-load-languages
- '((lisp . t)))
+ '((lisp . t)
+   (sqlite . t)
+   (R . t)))
 
 ;; capture
 (setq org-default-notes-file (orgdr "notes.org"))
