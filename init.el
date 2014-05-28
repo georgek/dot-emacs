@@ -127,6 +127,12 @@
 ;; default fill length
 (setq-default fill-column 78)
 
+(defun unfill-paragraph ()
+  "Unfill paragraph at or after point."
+  (interactive "*")
+  (let ((fill-column most-positive-fixnum))
+    (fill-paragraph nil (region-active-p))))
+
 ;; enable auto revert globally
 (global-auto-revert-mode 1)
 
