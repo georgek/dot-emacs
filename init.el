@@ -335,7 +335,8 @@
  'org-babel-load-languages
  '((lisp . t)
    (sqlite . t)
-   (R . t)))
+   (R . t)
+   (sh . t)))
 
 ;; capture
 (setq org-default-notes-file (orgdr "notes.org"))
