@@ -325,6 +325,9 @@
    org-directory))
 (setq org-return-follows-link t)
 
+(makehookedfun org-mode-hook
+  (auto-fill-mode))
+
 ;; src
 (setq org-src-fontify-natively t)
 ;; add lisp
