@@ -338,6 +338,24 @@
    (R . t)
    (sh . t)))
 
+;;; change wasysym include to stop clashing with amsmath's \iint symbol
+(setq org-export-latex-default-packages-alist
+      '(("AUTO" "inputenc" t)
+        ("T1" "fontenc" t)
+        ("" "fixltx2e" nil)
+        ("" "graphicx" t)
+        ("" "longtable" nil)
+        ("" "float" nil)
+        ("" "wrapfig" nil)
+        ("" "soul" t)
+        ("" "textcomp" t)
+        ("" "marvosym" t)
+        ("nointegrals" "wasysym" t)
+        ("" "latexsym" t)
+        ("" "amssymb" t)
+        ("" "hyperref" nil)
+        "\\tolerance=1000"))
+
 ;; capture
 (setq org-default-notes-file (orgdr "notes.org"))
 (global-set-key (kbd "C-c c") 'org-capture)
