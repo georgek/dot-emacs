@@ -499,10 +499,11 @@ RECURRENCES occasions."
 (require 'midnight)
 (setq midnight-mode t)
 ;; some buffers that shouldn't be killed
-(add-to-list 'clean-buffer-list-kill-never-buffer-names
-             '("*slime-repl sbcl*"
-               "*R*"
-               "init.el"))
+(setq clean-buffer-list-kill-never-buffer-names
+      (append clean-buffer-list-kill-never-buffer-names
+              '("*slime-repl sbcl*"
+                "*R*"
+                "init.el")))
 
 ;; AUCTeX
 (load "auctex.el" t t t)
