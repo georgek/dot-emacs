@@ -389,7 +389,6 @@
       '((heading . t) (plain-list-item . nil)))
 (setq org-todo-keywords (quote ((sequence "TODO" "DONE"))))
 ;; make org table mode come on for some modes
-(add-hook 'LaTeX-mode-hook 'turn-on-orgtbl)
 
 ;; (add-to-list 'org-modules 'org-timer)
 ;; (add-to-list 'org-modules 'org-clock)
@@ -511,19 +510,19 @@ RECURRENCES occasions."
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
 (setq TeX-newline-function 'newline-and-indent)
-(add-hook 'LaTeX-mode-hook 'TeX-PDF-mode) ; set PDF mode by default
-(add-hook 'LaTeX-mode-hook 'auto-fill-mode)
+;; RefTeX
+(require 'reftex)
+(setq reftex-plug-into-AUCTeX t)        ;AUCTeX-RefTeX interface
+
 (makehookedfun LaTeX-mode-hook
   (TeX-PDF-mode)
-  (auto-fill-mode))
+  (auto-fill-mode)
+  (turn-on-orgtbl)
+  (turn-on-reftex))
 (makehookedfun TeX-mode-hook
   (TeX-PDF-mode)
   (auto-fill-mode)
   (setq tab-stop-list (number-sequence 3 45 3)))
-;; RefTeX
-(require 'reftex)
-(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-(setq reftex-plug-into-AUCTeX t)        ;AUCTeX-RefTeX interface
 
 ;; aligns the current block of code
 (global-set-key (kbd "C-|") 'align-current)
