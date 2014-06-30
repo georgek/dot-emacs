@@ -513,6 +513,13 @@ RECURRENCES occasions."
 (setq TeX-newline-function 'newline-and-indent)
 (add-hook 'LaTeX-mode-hook 'TeX-PDF-mode) ; set PDF mode by default
 (add-hook 'LaTeX-mode-hook 'auto-fill-mode)
+(makehookedfun LaTeX-mode-hook
+  (TeX-PDF-mode)
+  (auto-fill-mode))
+(makehookedfun TeX-mode-hook
+  (TeX-PDF-mode)
+  (auto-fill-mode)
+  (setq tab-stop-list (number-sequence 3 45 3)))
 ;; RefTeX
 (require 'reftex)
 (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
