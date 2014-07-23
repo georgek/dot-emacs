@@ -958,6 +958,11 @@ call to other-window-repeat or switch-prev-window."
  'auto-mode-alist
  '("\\.\\(fasta\\|fa\\|exp\\|ace\\|gb\\)\\'" . dna-mode))
 
+;;; Python
+(makehookedfun python-mode-hook
+  (local-set-key (kbd "C-c C-c") #'python-shell-send-defun)
+  (local-set-key (kbd "C-c C-z") #'python-shell-switch-to-shell))
+
 ;;; mail stuff
 
 ;;; ~/.gnus.el tells gnus how to get messages
