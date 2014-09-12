@@ -608,11 +608,17 @@ RECURRENCES occasions."
         ((string= major-mode "c++-mode")
          (c-mode))))
 
+(defun my-c-electric-brace (arg)
+  (interactive "P")
+  (delete-horizontal-space t)
+  (c-electric-brace arg))
+
 ;; cc mode key bindings - applies to all CC modes (C, C++ etc.)
 (makehookedfun c-initialization-hook
   (define-key c-mode-base-map (kbd "C-c C-c") 'compile)
   (define-key c-mode-base-map (kbd "C-c C-h") 'c-c++-toggle)
   (define-key c-mode-base-map (kbd "C-m") 'c-context-line-break)
+  (define-key c-mode-base-map (kbd "{") 'my-c-electric-brace)
   (abbrev-mode -1))
 
 ;; use tags with C modes
