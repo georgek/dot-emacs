@@ -164,6 +164,9 @@
  :ignore-case t
  :doc-spec '(("(ansicl)Symbol Index" nil nil nil)))
 
+;;; ediff
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+
 ;;; ace jump mode
 (require 'ace-jump-mode)
 (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
