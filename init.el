@@ -341,6 +341,9 @@
    (R . t)
    (sh . t)))
 
+;;; export
+(setq org-latex-to-pdf-process '("latexmk -pdf %f")) ;use latexmk to do pdfs
+
 ;;; change wasysym include to stop clashing with amsmath's \iint symbol
 (setq org-export-latex-default-packages-alist
       '(("AUTO" "inputenc" t)
