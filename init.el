@@ -41,7 +41,7 @@
 ;; (setq load-path (remove-if (lambda (x) (string-match-p "org$" x)) load-path))
 
 ;; add paths
-(add-to-path-init load-path ".")
+;; (add-to-path-init load-path ".")
 (add-to-path-init load-path "site-lisp")
 (add-subdirs-to-load-path "site-lisp" init-path)
 (add-to-path-init load-path "lisp")
@@ -538,15 +538,14 @@ RECURRENCES occasions."
   (winner-mode 1))
 
 ;;; git stuff
-(require 'gitconfig-mode)
-(require 'gitignore-mode)
-(require 'gitattributes-mode)
+;; (require 'gitconfig-mode)
+;; (require 'gitignore-mode)
+;; (require 'gitattributes-mode)
 
 ;; magit for using git
 (require 'magit)
-(require 'magit-blame)
 (global-set-key (kbd "C-c i") 'magit-status)
-(global-set-key (kbd "C-c b") 'magit-blame-mode)
+(global-set-key (kbd "C-c b") 'magit-blame)
 
 ;; key for opening a shell
 (global-set-key (kbd "C-c s") 'eshell)
@@ -628,8 +627,8 @@ RECURRENCES occasions."
 
 ;; stuff for debugging with gdb
 ;; sr-speedbar runs speedbar in the same frame
-(require 'sr-speedbar)
-(global-set-key (kbd "s-s") 'sr-speedbar-toggle)
+;; (require 'sr-speedbar)
+;; (global-set-key (kbd "s-s") 'sr-speedbar-toggle)
 
 ;; enable windmove
 (when (fboundp 'windmove-default-keybindings)
@@ -652,8 +651,11 @@ RECURRENCES occasions."
 (autoload 'prolog-mode "prolog" "Major mode for editing Prolog programs." t)
 (autoload 'mercury-mode "prolog" "Major mode for editing Mercury programs." t)
 (setq prolog-system 'swi)
-(setq auto-mode-alist (append '(("\\.pl$" . prolog-mode)
-                                ("\\.m$" . mercury-mode))
+(setq auto-mode-alist (append '(("\\.m$" . mercury-mode))
+                              auto-mode-alist))
+
+;;; perl
+(setq auto-mode-alist (append '(("\\.pl$" . perl-mode))
                               auto-mode-alist))
 
 ;; for inserting greeked text
@@ -971,8 +973,38 @@ call to other-window-repeat or switch-prev-window."
  '("\\.\\(fasta\\|fa\\|exp\\|ace\\|gb\\)\\'" . dna-mode))
 
 ;;; Python
+(require 'python)
+(setq
+  python-shell-interpreter "ipython"
+  python-shell-interpreter-args "--pylab"
+  python-shell-prompt-regexp "In \\[[0-9]+\\]: "
+  python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
+  python-shell-completion-setup-code
+  "from IPython.core.completerlib import module_completion"
+  python-shell-completion-module-string-code
+  "';'.join(module_completion('''%s'''))\n"
+  python-shell-completion-string-code
+  "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
+
+(defun python-eval-defun-key (arg)
+     (interactive "P")
+     (let (beg ol)
+       (save-excursion
+         (end-of-defun)
+         (beginning-of-defun)
+         (setq beg (point))
+         (end-of-defun)
+         (setq ol (make-overlay beg (point))))
+       (overlay-put ol 'face 'highlight)
+       (unwind-protect
+           (progn
+             (python-shell-send-defun arg)
+             (sit-for 0.1))
+         (delete-overlay ol))))
+
 (makehookedfun python-mode-hook
-  (local-set-key (kbd "C-c C-c") #'python-shell-send-defun)
+  (local-set-key (kbd "C-c C-c") #'python-eval-defun-key)
+  (local-set-key (kbd "C-c C-k") #'python-shell-send-buffer)
   (local-set-key (kbd "C-c C-z") #'python-shell-switch-to-shell))
 
 ;;; mail stuff
@@ -1091,7 +1123,8 @@ call to other-window-repeat or switch-prev-window."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-safe-themes (quote ("f5e56ac232ff858afb08294fc3a519652ce8a165272e3c65165c42d6fe0262a0" default))))
+ '(custom-safe-themes (quote ("f5e56ac232ff858afb08294fc3a519652ce8a165272e3c65165c42d6fe0262a0" default)))
+ '(org-agenda-files (quote ("~/work/ferrets/writeup/paper.org" "/usr/users/ga002/kettlebg/org/appt.org" "/usr/users/ga002/kettlebg/org/diary.org" "/usr/users/ga002/kettlebg/org/holiday.org" "/usr/users/ga002/kettlebg/org/ideas.org" "/usr/users/ga002/kettlebg/org/journal.org" "/usr/users/ga002/kettlebg/org/tgac.org" "/usr/users/ga002/kettlebg/org/todo.org" "/usr/users/ga002/kettlebg/org/tools.org"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
