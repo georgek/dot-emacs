@@ -27,10 +27,12 @@
 (setq frame-title-format '("%b - GNU Emacs"))
 (tooltip-mode -1)
 (menu-bar-mode -1)
-(scroll-bar-mode -1)
 (blink-cursor-mode -1)
-(tool-bar-mode -1)
 (mouse-avoidance-mode 'banish)
+(if (display-graphic-p)
+    (progn
+      (tool-bar-mode -1)
+      (scroll-bar-mode -1)))
 (global-unset-key (kbd "C-z"))
 ;;; disable this as it ruins keyboard macros
 (setq line-move-visual nil)
