@@ -29,7 +29,8 @@
 (menu-bar-mode -1)
 (blink-cursor-mode -1)
 (mouse-avoidance-mode 'banish)
-(if (display-graphic-p)
+(if (or (display-graphic-p)
+        (daemonp))
     (progn
       (tool-bar-mode -1)
       (scroll-bar-mode -1)))
