@@ -880,6 +880,7 @@ call to other-window-repeat or switch-prev-window."
     (setq prev-window (selected-window))
     (select-window wind)))
 (global-set-key (kbd "M-'") 'switch-prev-window)
+(global-set-key (kbd "C-M-'") 'other-frame)
 
 ;; ido imenu from emacswiki
 (defun ido-goto-symbol (&optional symbol-list)
