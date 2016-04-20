@@ -1,0 +1,5 @@
+# name: shebang
+# key: #!
+# --
+#!/usr/bin/env python
+
