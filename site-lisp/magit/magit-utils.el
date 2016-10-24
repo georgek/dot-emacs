@@ -1,6 +1,6 @@
-;;; magit-utils.el --- various utilities
+;;; magit-utils.el --- various utilities  -*- lexical-binding: t -*-
 
-;; Copyright (C) 2010-2015  The Magit Project Contributors
+;; Copyright (C) 2010-2016  The Magit Project Contributors
 ;;
 ;; You should have received a copy of the AUTHORS.md file which
 ;; lists all contributors.  If not, see http://magit.vc/authors.
@@ -49,12 +49,57 @@
 ;;; Options
 
 (defcustom magit-completing-read-function 'magit-builtin-completing-read
-  "Function to be called when requesting input from the user."
+  "Function to be called when requesting input from the user.
+
+For Helm users, the simplest way to get Helm completion is to
+turn on `helm-mode' and leave this option set to the default
+value.  However, if you prefer to not use `helm-mode' but still
+want Magit to use Helm for completion, you can set this option to
+`helm--completing-read-default'."
   :group 'magit
   :type '(radio (function-item magit-builtin-completing-read)
                 (function-item magit-ido-completing-read)
-                (function-item helm-completing-read-with-cands-in-buffer)
+                (function-item helm--completing-read-default)
                 (function :tag "Other")))
+
+(defcustom magit-no-confirm-default nil
+  "A list of commands which should just use the default choice.
+
+Many commands let the user choose the target they act on offering
+a sensible default as default choice.  If you think that that
+default is so sensible that it should always be used without even
+offering other choices, then add that command here.
+
+Commands have to explicitly support this option.  Currently only
+these commands do:
+  `magit-branch'
+  `magit-branch-and-checkout'
+  `magit-branch-orphan'
+  `magit-worktree-branch'
+    For these four commands `magit-branch-read-upstream-first'
+    must be non-nil, or adding them here has no effect.
+  `magit-branch-rename'
+  `magit-tag'"
+  :package-version '(magit . "2.9.0")
+  :group 'magit-commands
+  :type '(list :convert-widget custom-hook-convert-widget)
+  :options '(magit-branch
+             magit-branch-and-checkout
+             magit-branch-orphan
+             magit-branch-rename
+             magit-worktree-branch
+             magit-tag))
+
+(defconst magit--confirm-actions
+  '((const reverse)           (const discard)
+    (const rename)            (const resurrect)
+    (const trash)             (const delete)
+    (const abort-rebase)
+    (const abort-merge)       (const merge-dirty)
+    (const drop-stashes)      (const resect-bisect)
+    (const kill-process)      (const delete-unmerged-branch)
+    (const stage-all-changes) (const unstage-all-changes)
+    (const safe-with-wip)))
 
 (defcustom magit-no-confirm nil
   "A list of symbols for actions Magit should not confirm, or t.
@@ -103,6 +148,10 @@ Sequences:
   `reset-bisect' Aborting (known to Git as \"resetting\") a
   bisect operation loses all information collected so far.
 
+  `abort-rebase' Aborting a rebase throws away all already
+  modified commits, but it's possible to restore those from the
+  reflog.
+
   `abort-merge' Aborting a merge throws away all conflict
   resolutions which has already been carried out by the user.
 
@@ -119,11 +168,12 @@ References:
   not been merged yet, also make sure the user is aware of that.
 
   `drop-stashes' Dropping a stash is dangerous because Git stores
-  them in the reflog, once it is removed there is no going back
-  without using low-level recovery tools provided by Git.  When a
-  single stash is dropped, then the user always has to confirm by
-  accepting the default (or selecting another).  This action only
-  concerns the deletion of multiple stages at once.
+  stashes in the reflog.  Once a stash is removed, there is no
+  going back without using low-level recovery tools provided by
+  Git.  When a single stash is dropped, then the user always has
+  to confirm by accepting the default (or selecting another).
+  This action only concerns the deletion of multiple stashes at
+  once.
 
 Various:
 
@@ -146,21 +196,73 @@ Global settings:
   as adding all of these symbols individually."
   :package-version '(magit . "2.1.0")
   :group 'magit
-  :type '(choice (const :tag "No confirmation needed" t)
-                 (set (const reverse)           (const discard)
-                      (const rename)            (const resurrect)
-                      (const trash)             (const delete)
-                      (const abort-merge)       (const merge-dirty)
-                      (const drop-stashes)      (const resect-bisect)
-                      (const kill-process)      (const delete-unmerged-branch)
-                      (const stage-all-changes) (const unstage-all-changes)
-                      (const safe-with-wip))))
+  :group 'magit-commands
+  :type `(choice (const :tag "Always require confirmation" nil)
+                 (const :tag "Never require confirmation" t)
+                 (set   :tag "Require confirmation only for"
+                        ,@magit--confirm-actions)))
+
+(defcustom magit-slow-confirm '(drop-stashes)
+  "Whether to ask user \"y or n\" or \"yes or no\" questions.
+
+When this is nil, then `y-or-n-p' is used when the user has to
+confirm a potentially destructive action.  When this is t, then
+`yes-or-no-p' is used instead.  If this is a list of symbols
+identifying actions, then `yes-or-no-p' is used for those,
+`y-or-no-p' for all others.  The list of actions is the same as
+for `magit-no-confirm' (which see)."
+  :package-version '(magit . "2.9.0")
+  :group 'magit-commands
+  :type `(choice (const :tag "Always ask \"yes or no\" questions" t)
+                 (const :tag "Always ask \"y or n\" questions" nil)
+                 (set   :tag "Ask yes or no questions only for"
+                        ,@magit--confirm-actions)))
+
+(defcustom magit-no-message nil
+  "A list of messages Magit should not display.
+
+Magit displays most echo area messages using `message', but a few
+are displayed using `magit-message' instead, which takes the same
+arguments as the former, FORMAT-STRING and ARGS.  `magit-message'
+forgoes printing a message if any member of this list is a prefix
+of the respective FORMAT-STRING.
+
+If Magit prints a message which causes you grief, then please
+first investigate whether there is another option which can be
+used to suppress it.  If that is not the case, then ask the Magit
+maintainers to start using `magit-message' instead of `message'
+in that case.  We are not proactively replacing all uses of
+`message' with `magit-message', just in case someone *might* find
+some of these messages useless.
+
+Messages which can currently be suppressed using this option are:
+* \"Turning on magit-auto-revert-mode...\""
+  :package-version '(magit . "2.8.0")
+  :group 'magit
+  :type '(repeat string))
 
 (defcustom magit-ellipsis ?…
-  "Character used to abreviate text."
+  "Character used to abbreviate text."
   :package-version '(magit . "2.1.0")
-  :group 'magit
+  :group 'magit-modes
   :type 'character)
+
+(defcustom magit-update-other-window-delay 0.2
+  "Delay before automatically updating the other window.
+
+When moving around in certain buffers certain other buffers,
+which are being displayed in another window, may optionally be
+updated to display information about the section at point.
+
+When holding down a key to move by more than just one section,
+then that would update that buffer for each section on the way.
+To prevent that, updating the revision buffer is delayed, and
+this option controls for how long.  For optimal experience you
+might have to adjust this delay and/or the keyboard repeat rate
+and delay of your graphical environment or operating system."
+  :package-version '(magit . "2.3.0")
+  :group 'magit-modes
+  :type 'number)
 
 ;;; User Input
 
@@ -232,16 +334,54 @@ back to built-in `completing-read' for now." :error)
       (format "%s (default %s): " (substring prompt 0 -2) def)
     prompt))
 
-(defun magit-read-string (prompt &optional initial-input history default-value)
-  "Like `read-string' but require non-empty input.
-Empty input is only allowed if DEFAULT-VALUE is non-nil in
-which case that is returned.  Also append \": \" to PROMPT."
-  (let ((reply (read-string (magit-prompt-with-default
-                             (concat prompt ": ") default-value)
-                            initial-input history default-value)))
-    (if (string= reply "")
-        (user-error "Need non-empty input")
-      reply)))
+(defvar magit-minibuffer-local-ns-map
+  (let ((map (make-sparse-keymap)))
+    (set-keymap-parent map minibuffer-local-map)
+    (define-key map "\s" 'magit-whitespace-disallowed)
+    (define-key map "\t" 'magit-whitespace-disallowed)
+    map))
+
+(defun magit-whitespace-disallowed ()
+  "Beep to tell the user that whitespace is not allowed."
+  (interactive)
+  (ding)
+  (message "Whitespace isn't allowed here")
+  (setq defining-kbd-macro nil)
+  (force-mode-line-update))
+
+(defun magit-read-string (prompt &optional initial-input history default-value
+                                 inherit-input-method no-whitespace)
+  "Read a string from the minibuffer, prompting with string PROMPT.
+
+This is similar to `read-string', but
+* empty input is only allowed if DEFAULT-VALUE is non-nil in
+  which case that is returned,
+* whitespace is not allowed if NO-WHITESPACE is non-nil,
+* \": \" is appended to PROMPT, and
+* an invalid DEFAULT-VALUE is silently ignored."
+  (when default-value
+    (when (consp default-value)
+      (setq default-value (car default-value)))
+    (unless (stringp default-value)
+      (setq default-value nil)))
+  (let* ((minibuffer-completion-table nil)
+         (val (read-from-minibuffer
+               (magit-prompt-with-default (concat prompt ": ") default-value)
+               initial-input (and no-whitespace magit-minibuffer-local-ns-map)
+               nil history default-value inherit-input-method)))
+    (when (and (string= val "") default-value)
+      (setq val default-value))
+    (cond ((string= val "")
+           (user-error "Need non-empty input"))
+          ((and no-whitespace (string-match-p "[\s\t\n]" val))
+           (user-error "Input contains whitespace"))
+          (t val))))
+
+(defun magit-read-string-ns (prompt &optional initial-input history
+                                    default-value inherit-input-method)
+  "Call `magit-read-string' with non-nil NO-WHITESPACE."
+  (magit-read-string prompt initial-input history default-value
+                     inherit-input-method t))
 
 (defmacro magit-read-char-case (prompt verbose &rest clauses)
   (declare (indent 2)
@@ -252,6 +392,15 @@ which case that is returned.  Also append \": \" to PROMPT."
                             (and verbose ", or [C-g] to abort") " "))
            ',(mapcar 'car clauses))
      ,@(--map `(,(car it) ,@(cddr it)) clauses)))
+
+(defun magit-y-or-n-p (prompt &optional action)
+  "Ask user a \"y or n\" or a \"yes or no\" question using PROMPT.
+Which kind of question is used depends on whether
+ACTION is a member of option `magit-slow-confirm'."
+  (if (or (eq magit-slow-confirm t)
+          (and action (member action magit-slow-confirm)))
+      (yes-or-no-p prompt)
+    (y-or-n-p prompt)))
 
 (cl-defun magit-confirm (action &optional prompt prompt-n (items nil sitems))
   (declare (indent defun))
@@ -270,9 +419,9 @@ which case that is returned.  Also append \": \" to PROMPT."
                                    unstage-all-changes))))))
          (or (not sitems) items))
         ((not sitems)
-         (y-or-n-p prompt))
+         (magit-y-or-n-p prompt action))
         ((= (length items) 1)
-         (and (y-or-n-p prompt) items))
+         (and (magit-y-or-n-p prompt action) items))
         ((> (length items) 1)
          (let ((buffer (get-buffer-create " *Magit Confirm*")))
            (with-current-buffer buffer
@@ -281,7 +430,7 @@ which case that is returned.  Also append \": \" to PROMPT."
                            '((window-height . fit-window-to-buffer)))
               (lambda (window _value)
                 (with-selected-window window
-                  (unwind-protect (and (y-or-n-p prompt-n) items)
+                  (unwind-protect (and (magit-y-or-n-p prompt-n action) items)
                     (when (window-live-p window)
                       (quit-restore-window window 'kill)))))
               (dolist (item items)
@@ -304,7 +453,7 @@ which case that is returned.  Also append \": \" to PROMPT."
 ;;; Text Utilities
 
 (defmacro magit-bind-match-strings (varlist string &rest body)
-  "Bind varibles to submatches accoring to VARLIST then evaluate BODY.
+  "Bind variables to submatches according to VARLIST then evaluate BODY.
 Bind the symbols in VARLIST to submatches of the current match
 data, starting with 1 and incrementing by 1 for each symbol.  If
 the last match was against a string then that has to be provided
@@ -342,6 +491,39 @@ Unless optional argument KEEP-EMPTY-LINES is t, trim all empty lines."
     (with-temp-buffer
       (insert-file-contents file)
       (split-string (buffer-string) "\n" (not keep-empty-lines)))))
+
+;;; Kludges
+
+(defun magit-file-accessible-directory-p (filename)
+  "Like `file-accessible-directory-p' but work around an Apple bug.
+See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=21573#17
+and https://github.com/magit/magit/issues/2295."
+  (and (file-directory-p filename)
+       (file-accessible-directory-p filename)))
+
+(defun magit-message (format-string &rest args)
+  "Display a message at the bottom of the screen, or not.
+Like `message', except that if the users configured option
+`magit-no-message' to prevent the message corresponding to
+FORMAT-STRING to be displayed, then don't."
+  (unless (--first (string-prefix-p it format-string) magit-no-message)
+    (apply #'message format-string args)))
+
+(defvar whitespace-mode)
+
+(defun whitespace-dont-turn-on-in-magit-mode ()
+  "Prevent `whitespace-mode' from being turned on in Magit buffers.
+Because `whitespace-mode' uses font-lock and Magit does not,
+they are not compatible.  See `magit-diff-paint-whitespace'
+for an alternative."
+  (when (derived-mode-p 'magit-mode)
+    (setq whitespace-mode nil)
+    (user-error
+     "Whitespace-Mode isn't compatible with Magit.  %s"
+     "See `magit-diff-paint-whitespace' for an alternative.")))
+
+(advice-add 'whitespace-turn-on :before
+            'whitespace-dont-turn-on-in-magit-mode)
 
 ;;; magit-utils.el ends soon
 (provide 'magit-utils)
