@@ -550,7 +550,7 @@ RECURRENCES occasions."
 (global-set-key (kbd "C-c i") 'magit-status)
 (global-set-key (kbd "C-c b") 'magit-blame)
 (define-key ido-common-completion-map
-  (kbd "i") 'ido-enter-magit-status)
+  (kbd "C-i") 'ido-enter-magit-status)
 
 ;; key for opening a shell
 (global-set-key (kbd "C-c s") 'eshell)
