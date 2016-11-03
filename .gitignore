@@ -19,3 +19,5 @@ var
 site-lisp/bbdb/*
 /working.el
 /bookmarks
+/ido.last
+eshell/
