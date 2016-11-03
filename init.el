@@ -35,8 +35,11 @@
       (tool-bar-mode -1)
       (scroll-bar-mode -1)))
 (global-unset-key (kbd "C-z"))
-;;; disable this as it ruins keyboard macros
+;; disable this as it ruins keyboard macros
 (setq line-move-visual nil)
+;; prefer to split windows vertically even on tall monitor
+(setq split-height-threshold 160)
+(setq split-width-threshold 160)
 
 (require 'cl-lib)
 
