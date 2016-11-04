@@ -349,6 +349,9 @@
 
 ;;; export
 (setq org-latex-to-pdf-process '("latexmk -pdf %f")) ;use latexmk to do pdfs
+;;; org-reveal
+(require 'ox-reveal)
+(setq org-reveal-root "../misc/reveal.js")
 
 ;;; change wasysym include to stop clashing with amsmath's \iint symbol
 (setq org-export-latex-default-packages-alist
