@@ -73,6 +73,9 @@
 ;; (setq desktop-timer
 ;;  (run-with-timer 0 (* 10 60) #'save-desktop))
 
+;; global keys
+(global-set-key (kbd "C-M-/") 'indent-region)
+
 ;; ido mode
 (require 'ido)
 (require 'ido-hacks)
