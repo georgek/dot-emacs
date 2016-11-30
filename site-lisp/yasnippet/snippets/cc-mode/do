@@ -1,6 +1,7 @@
-# name: do { ... } while (...)
+#name : do { ... } while (...)
 # key: do
 # --
-do {
+do
+{
     $0
 } while (${1:condition});
