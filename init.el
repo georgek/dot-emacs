@@ -397,7 +397,7 @@
 (setq org-log-done 'time)
 (setq org-blank-before-new-entry 
       '((heading . t) (plain-list-item . nil)))
-(setq org-todo-keywords (quote ((sequence "TODO" "DONE"))))
+(setq org-todo-keywords (quote((sequence "TODO" "WAITING" "|" "DONE"))))
 ;; make org table mode come on for some modes
 
 ;; (add-to-list 'org-modules 'org-timer)
