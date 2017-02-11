@@ -1128,8 +1128,9 @@ call to other-window-repeat or switch-prev-window."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-safe-themes (quote ("f5e56ac232ff858afb08294fc3a519652ce8a165272e3c65165c42d6fe0262a0" default)))
- '(org-agenda-files (quote ("~/work/ferrets/writeup/paper.org" "/usr/users/ga002/kettlebg/org/appt.org" "/usr/users/ga002/kettlebg/org/diary.org" "/usr/users/ga002/kettlebg/org/holiday.org" "/usr/users/ga002/kettlebg/org/ideas.org" "/usr/users/ga002/kettlebg/org/journal.org" "/usr/users/ga002/kettlebg/org/tgac.org" "/usr/users/ga002/kettlebg/org/todo.org" "/usr/users/ga002/kettlebg/org/tools.org"))))
+ '(custom-safe-themes
+   (quote
+    ("f5e56ac232ff858afb08294fc3a519652ce8a165272e3c65165c42d6fe0262a0" default))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
