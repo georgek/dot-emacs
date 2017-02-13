@@ -343,6 +343,7 @@
    (sh . t)))
 
 ;;; export
+(setq org-export-allow-bind-keywords t)
 (setq org-latex-to-pdf-process '("latexmk -pdf %f")) ;use latexmk to do pdfs
 (require 'htmlize)
 ;;; org-reveal
@@ -350,6 +351,16 @@
 (setq org-reveal-root "../misc/reveal.js")
 ;;; twbs
 (require 'ox-twbs)
+
+;;; export with CSS classes instead of explicit colours
+(setq org-html-htmlize-output-type 'css)
+(setq org-html-htmlize-font-prefix "org-")
+
+(setq org-twbs-htmlize-output-type 'css)
+(setq org-twbs-htmlize-font-prefix "org-")
+
+;;; use bash to evaluate shell code
+(setq org-babel-sh-command "bash")
 
 ;;; change wasysym include to stop clashing with amsmath's \iint symbol
 (setq org-export-latex-default-packages-alist
