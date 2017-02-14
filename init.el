@@ -278,7 +278,8 @@
                  'ielm-send-input))
 
 ;;; *** scheme ***
-(add-hook 'scheme-mode-hook 'nice-paredit-on)
+(makehookedfun scheme-mode-hook
+  (nice-paredit-on))
 
 ;;; *** SLIME ***
 (setq inferior-lisp-program "/usr/bin/sbcl") ; your Lisp system
@@ -329,8 +330,7 @@
    org-directory))
 (setq org-return-follows-link t)
 
-(makehookedfun org-mode-hook
-  (auto-fill-mode))
+(require 'org-bullets)
 
 ;; src
 (setq org-src-fontify-natively t)
@@ -361,24 +361,6 @@
 
 ;;; use bash to evaluate shell code
 (setq org-babel-sh-command "bash")
-
-;;; change wasysym include to stop clashing with amsmath's \iint symbol
-(setq org-export-latex-default-packages-alist
-      '(("AUTO" "inputenc" t)
-        ("T1" "fontenc" t)
-        ("" "fixltx2e" nil)
-        ("" "graphicx" t)
-        ("" "longtable" nil)
-        ("" "float" nil)
-        ("" "wrapfig" nil)
-        ("" "soul" t)
-        ("" "textcomp" t)
-        ("" "marvosym" t)
-        ("nointegrals" "wasysym" t)
-        ("" "latexsym" t)
-        ("" "amssymb" t)
-        ("" "hyperref" nil)
-        "\\tolerance=1000"))
 
 ;; capture
 (setq org-default-notes-file (orgdr "notes.org"))
@@ -487,6 +469,11 @@ RECURRENCES occasions."
 (eval-after-load "org"
   '(setcdr (assoc "\\.pdf\\'" org-file-apps) "evince %s"))
 
+(makehookedfun org-mode-hook
+  (auto-fill-mode)
+  (org-bullets-mode 1)
+  (flyspell-mode 1))
+
 ;; *** end org-mode stuff ***
 
 ;; makefile mode make key
@@ -497,8 +484,8 @@ RECURRENCES occasions."
 (setq c-auto-newline 1)
 (setq c-hungry-delete-key 1)
 
-;; turn on flyspell for text and org-mode
-(dolist (hook '(text-mode-hook org-mode-hook))
+;; turn on flyspell for some modes
+(dolist (hook '(text-mode-hook))
   (add-hook hook (lambda () (flyspell-mode 1))))
 (dolist (hook '(change-log-mode-hook log-edit-mode-hook))
   (add-hook hook (lambda () (flyspell-mode -1))))
