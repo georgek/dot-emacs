@@ -43,4 +43,23 @@
    `(macrostep-expansion-highlight-face
      ((t (:inherit highlight))))
    ;; eldoc
-   `(eldoc-highlight-function-argument ((t (:weight bold))))))
+   `(eldoc-highlight-function-argument ((t (:weight bold))))
+   ;; org-mode
+   `(org-document-title ((t (:inherit variable-pitch :foreground ,zenburn-blue
+                                      :height 1.2 :weight bold))))
+   `(org-level-1 ((t (:inherit variable-pitch :foreground ,zenburn-orange
+                               :height 1.1 :weight bold))))
+   `(org-level-2 ((t (:inherit variable-pitch :foreground ,zenburn-green+4
+                               :height 1.0 :weight bold))))
+   `(org-level-3 ((t (:inherit variable-pitch :foreground ,zenburn-blue-1
+                               :height 1.0))))
+   `(org-level-4 ((t (:inherit variable-pitch :foreground ,zenburn-yellow-2
+                               :height 1.0))))
+   `(org-level-5 ((t (:inherit variable-pitch :foreground ,zenburn-cyan
+                               :height 1.0))))
+   `(org-level-6 ((t (:inherit variable-pitch :foreground ,zenburn-green+2
+                               :height 1.0))))
+   `(org-level-7 ((t (:inherit variable-pitch :foreground ,zenburn-red-4
+                               :height 1.0))))
+   `(org-level-8 ((t (:inherit variable-pitch :foreground ,zenburn-blue-4
+                               :height 1.0))))))
