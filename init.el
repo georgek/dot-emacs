@@ -340,11 +340,11 @@
  '((lisp . t)
    (sqlite . t)
    (R . t)
-   (shell . t)))
+   (shell . t)
+   (python . t)))
 
 ;;; export
 (setq org-export-allow-bind-keywords t)
-(setq org-latex-to-pdf-process '("latexmk -pdf %f")) ;use latexmk to do pdfs
 (require 'htmlize)
 ;;; org-reveal
 (require 'ox-reveal)
@@ -353,6 +353,11 @@
 
 ;;; twbs
 (require 'ox-twbs)
+;;; latex
+(require 'ox-latex)
+(setq org-latex-to-pdf-process '("latexmk -pdf %f")) ;use latexmk to do pdfs
+(setq org-export-latex-listings 'minted)
+;(add-to-list 'org-export-latex-default-packages-alist '("" "minted"))
 
 ;;; export with CSS classes instead of explicit colours
 (setq org-html-htmlize-output-type 'css)
@@ -553,6 +558,9 @@ RECURRENCES occasions."
 (require 'magit)
 (global-set-key (kbd "C-c i") 'magit-status)
 (global-set-key (kbd "C-c b") 'magit-blame)
+
+;; smerge-mode
+(setq smerge-command-prefix (kbd "C-c v"))
 
 ;; key for opening a shell
 (global-set-key (kbd "C-c s") 'eshell)
