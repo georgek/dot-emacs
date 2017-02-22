@@ -44,7 +44,7 @@
 (require 'cl-lib)
 
 ;; remove old org from load path
-;; (setq load-path (remove-if (lambda (x) (string-match-p "org$" x)) load-path))
+(setq load-path (cl-remove-if (lambda (x) (string-match-p "org$" x)) load-path))
 
 ;; add paths
 ;; (add-to-path-init load-path ".")
@@ -340,7 +340,7 @@
  '((lisp . t)
    (sqlite . t)
    (R . t)
-   (sh . t)))
+   (shell . t)))
 
 ;;; export
 (setq org-export-allow-bind-keywords t)
@@ -348,7 +348,9 @@
 (require 'htmlize)
 ;;; org-reveal
 (require 'ox-reveal)
-(setq org-reveal-root "../misc/reveal.js")
+(setq org-reveal-root (concat "file://" init-path "/misc/reveal.js"))
+(setq org-reveal-init-script "zoomKey: 'shift'")
+
 ;;; twbs
 (require 'ox-twbs)
 
