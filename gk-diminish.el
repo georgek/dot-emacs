@@ -16,9 +16,9 @@
 (gk-dim-maj ielm-mode "IELM")
 
 ;;; all
-(gk-dim-min "yasnippet" yas-minor-mode "Y")
-(gk-dim-min "flyspell" flyspell-mode "F")
-(gk-dim-min "abbrev" abbrev-mode "A")
+(gk-dim-min "yasnippet" yas-minor-mode "Yas")
+(gk-dim-min "flyspell" flyspell-mode "Fly")
+(gk-dim-min "abbrev" abbrev-mode "Abr")
 
 ;;; lisp
 (gk-dim-min "paredit" paredit-mode "P")
@@ -30,3 +30,6 @@
 
 ;;; common lisp
 (gk-dim-min "slime" slime-mode "S")
+
+;;; SMerge
+(gk-dim-min "smerge-mode" smerge-mode "Mrg")
