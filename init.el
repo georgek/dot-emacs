@@ -615,6 +615,7 @@ RECURRENCES occasions."
 (defun my-c-electric-brace (arg)
   (interactive "P")
   (delete-horizontal-space t)
+  (insert " ")
   (c-electric-brace arg))
 
 ;; cc mode key bindings - applies to all CC modes (C, C++ etc.)
