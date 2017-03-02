@@ -366,9 +366,6 @@
 (setq org-twbs-htmlize-output-type 'css)
 (setq org-twbs-htmlize-font-prefix "org-")
 
-;;; use bash to evaluate shell code
-(setq org-babel-sh-command "bash")
-
 ;; capture
 (setq org-default-notes-file (orgdr "notes.org"))
 (global-set-key (kbd "C-c c") 'org-capture)
