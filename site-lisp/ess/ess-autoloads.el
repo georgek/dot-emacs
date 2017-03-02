@@ -1,6 +1,7 @@
 ;;; ess-autoloads.el --- Emacs Speaks Statistics: statistical programming within Emacs
 
 ;; Copyright (C) 2012 Donald E. Curtis
+;; Copyright (C) 2014 The ESS Core Team
 
 ;; Original Author: Donald E. Curtis
 ;; Created: March 5, 2012
@@ -21,9 +22,8 @@
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 ;; GNU General Public License for more details.
 ;;
-;; You should have received a copy of the GNU General Public License
-;; along with GNU Emacs; see the file COPYING.	If not, write to
-;; the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+;; A copy of the GNU General Public License is available at
+;; http://www.r-project.org/Licenses/
 ;;
 ;; In short: you may use this code any way you like, as long as you
 ;; don't charge money for it, remove this notice, or hold anyone liable
@@ -53,6 +53,9 @@ Optional prefix (C-u) allows to set command line arguments, such as
 --vsize.  This should be OS agnostic.
 If you have certain command line arguments that should always be passed
 to R, put them in the variable `inferior-R-args'." t)
+
+(autoload 'R-mode "ess-site.el" "Major mode for editing R source." t)
+(add-to-list 'auto-mode-alist '("\\.R$" . R-mode))
 
 (autoload 'S "ess-site" "Call 'S'." t)
 

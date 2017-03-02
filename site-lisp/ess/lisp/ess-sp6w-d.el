@@ -24,9 +24,8 @@
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
 
-;; You should have received a copy of the GNU General Public License
-;; along with GNU Emacs; see the file COPYING.  If not, write to
-;; the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+;; A copy of the GNU General Public License is available at
+;; http://www.r-project.org/Licenses/
 
 ;;; Commentary:
 
@@ -58,6 +57,7 @@ connects it to the '(ddeESS [S+])' window.")
      (ess-dialect                . S+-dialect-name)
      (ess-loop-timeout          . ess-S-loop-timeout);fixme: dialect spec.
      (ess-object-name-db-file    . "ess-sp6-namedb.el" )
+     (ess-display-help-on-object-function . #'ess-chm-display-help-on-object)
      (inferior-ess-program       . inferior-S+-program-name)
      (inferior-ess-help-command  . "help(\"%s\")\n")
      (inferior-ess-help-filetype . "chm")
@@ -86,6 +86,7 @@ connects it to the '(ddeESS [S+])' window.")
      (ess-dialect                . S+-dialect-name)
      (ess-loop-timeout           . 500000 );fixme: dialect specific custom.var
      (ess-object-name-db-file    . "ess-sp6-namedb.el" )
+     (ess-display-help-on-object-function . #'ess-chm-display-help-on-object)
      (inferior-ess-program       . inferior-Sqpe+-program-name)
      (inferior-ess-help-command  . "help(\"%s\")\n")
      (inferior-ess-help-filetype . "chm")

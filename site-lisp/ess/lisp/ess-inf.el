@@ -24,9 +24,8 @@
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
 
-;; You should have received a copy of the GNU General Public License
-;; along with GNU Emacs; see the file COPYING.  If not, write to
-;; the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+;; A copy of the GNU General Public License is available at
+;; http://www.r-project.org/Licenses/
 
 ;;; Commentary:
 
@@ -36,44 +35,16 @@
 
  ; Requires and autoloads
 
-;;*;; Requires
-;; (require 'ess-site)
-
-;; Byte-compiler, SHUT-UP!
-(eval-and-compile
-  (require 'ess-utils))
-(unless (featurep 'xemacs)
-  (require 'newcomment nil t))
+;; Silence byte-compiler
+(require 'ess-generics)
+(require 'ess-utils)
+(require 'tramp)
+(require 'newcomment nil t)
 (require 'comint)
 (require 'overlay)
-
-;;; VS: These autoloads are not needed. See coments in ess-mode.el.
-;;*;; Autoloads
-;; (autoload 'ess-parse-errors                 "ess-mode"  "(autoload).")
-;; (autoload 'ess-dump-object-into-edit-buffer "ess-mode"  "(autoload).")
-;; (autoload 'ess-beginning-of-function        "ess-mode"  "(autoload).")
-;; (autoload 'ess-end-of-function              "ess-mode"  "(autoload).")
-;; (autoload 'ess-display-help-on-object       "ess-help"  "(autoload).")
-
-;; (autoload 'ess-extract-word-name            "ess-utils" "(autoload).")
-;; (autoload 'ess-uniq-list                    "ess-utils" "(autoload).")
-
-;; (autoload 'ess-transcript-send-command-and-move "ess-trns" "(autoload).")
-
-;; (autoload 'ess-R-complete-object-name       "ess-r-d"   "(autoload).")
-
-(autoload 'ess-eval-region-ddeclient        "ess-dde"   "(autoload).")
-(autoload 'ess-eval-linewise-ddeclient      "ess-dde"   "(autoload).")
-(autoload 'ess-load-file-ddeclient          "ess-dde"   "(autoload).")
-(autoload 'ess-command-ddeclient            "ess-dde"   "(autoload).")
-
-(autoload 'tramp-tramp-file-p           "tramp" "(autoload).")
-(autoload 'tramp-file-name-localname    "tramp" "(autoload).")
-(autoload 'tramp-dissect-file-name      "tramp" "(autoload).")
-
-;; not really needed as tracebug and developer are loaded in r-d.el
-(autoload 'ess-tracebug-send-region       "ess-tracebug"      "(autoload).")
-(autoload 'ess-developer-send-function      "ess-developer"     "(autoload).")
+(require 'compile)
+(require 'format-spec)
+(require 'ess-tracebug)
 
  ;;*;; Process handling
 
@@ -96,7 +67,7 @@ If ess-plain-first-buffername, then initial process is number-free."
                         (= n 1))) ; if not both first and plain-first add number
               (concat ":" (number-to-string n)))))
 
-(defun inferior-ess (&optional ess-start-args)
+(defun inferior-ess (&optional ess-start-args customize-alist no-wait)
   "Start inferior ESS process.
 
 Without a prefix argument, starts a new ESS process, or switches
@@ -107,7 +78,7 @@ or `ess-transcript-mode' buffer.
 
 If `ess-ask-about-transfile' is non-nil, you will be asked for a
 transcript file to use. If there is no transcript file, the buffer
-name will be like *S* or *S2*.
+name will be like *R* or *R2*, determined by `ess-gen-proc-buffer-name-function'.
 
 Takes the program name from the variable `inferior-ess-program'.
 An initialization file (dumped into the process) is specified by
@@ -133,10 +104,12 @@ Alternatively, it can appear in its own frame if
 
   (interactive)
 
-  (let ((temp-ess-dialect (eval (cdr (assoc 'ess-dialect
-                                            ess-customize-alist))))
-        (temp-ess-lang (eval (cdr (assoc 'ess-language
-                                         ess-customize-alist)))))
+  (let* ((ess-customize-alist (or customize-alist
+                                  ess-customize-alist))
+         (temp-ess-dialect (eval (cdr (assoc 'ess-dialect
+                                             ess-customize-alist))))
+         (temp-ess-lang (eval (cdr (assoc 'ess-language
+                                          ess-customize-alist)))))
 
     (run-hooks 'ess-pre-run-hook)
     (ess-write-to-dribble-buffer
@@ -205,7 +178,7 @@ Alternatively, it can appear in its own frame if
               method    3)))
 
       (ess-write-to-dribble-buffer
-       (format "(inferior-ess) Method #%d start=%s buf=%s\n" method startdir buf))
+       (format "(inf-ess 2.0) Method #%d start=%s buf=%s\n" method startdir buf))
 
       (set-buffer buf)
       ;; Now that we have the buffer, set buffer-local variables.
@@ -232,8 +205,9 @@ Alternatively, it can appear in its own frame if
             (setq special-display-regexps '(".")))
         ;; If ESS process NAME is running, switch to it
         (if (and proc (comint-check-proc (process-buffer proc)))
-            ;; fixme: when does this happen?
-            (pop-to-buffer (process-buffer proc))
+            (progn ;; fixme: when does this happen? -> log:
+              (ess-write-to-dribble-buffer (format "(inf-ess ..): popping to proc\n"))
+              (pop-to-buffer (process-buffer proc)))
 
           ;; Otherwise, crank up a new process
           (let* ((symbol-string
@@ -245,8 +219,8 @@ Alternatively, it can appear in its own frame if
             (set-buffer buf)
             (inferior-ess-mode)
             (ess-write-to-dribble-buffer
-             (format "(inferior-ess (post inf-ess): start-args=%s, comint-echoes=%s\n"
-                     infargs comint-process-echoes))
+             (format "(inf-ess 3.0): prog=%s, start-args=%s, echoes=%s\n"
+                     inferior-ess-program infargs comint-process-echoes))
             (setq ess-local-process-name procname)
             (goto-char (point-max))
             ;; load past history
@@ -254,7 +228,7 @@ Alternatively, it can appear in its own frame if
             ;; Set up history file
             (if ess-history-file
                 (if (eq t ess-history-file)
-                    (set (make-variable-buffer-local 'ess-history-file)
+                    (set (make-local-variable 'ess-history-file)
                          (concat "." ess-dialect "history"))
                   ;; otherwise must be a string "..."
                   (unless (stringp ess-history-file)
@@ -294,8 +268,9 @@ Alternatively, it can appear in its own frame if
             ;; (inferior-ess-wait-for-prompt)
             (inferior-ess-mark-as-busy (get-process procname))
             (process-send-string (get-process procname) "\n") ;; to be sure we catch the prompt if user comp is super-duper fast.
-            (ess-write-to-dribble-buffer "(inferior-ess: waiting for process to start (before hook)\n")
-            (ess-wait-for-process (get-process procname) nil 0.01)
+            (unless no-wait
+              (ess-write-to-dribble-buffer "(inferior-ess: waiting for process to start (before hook)\n")
+              (ess-wait-for-process (get-process procname) nil 0.01))
 
             ;; arguments cache
             (ess-process-put 'funargs-cache (make-hash-table :test 'equal))
@@ -317,8 +292,9 @@ Alternatively, it can appear in its own frame if
             ;; EXTRAS
             (ess-load-extras t)
             ;; user initialization can take some time ...
-            (ess-write-to-dribble-buffer "(inferior-ess 3): waiting for process after hook")
-            (ess-wait-for-process (get-process procname)))
+            (unless no-wait
+              (ess-write-to-dribble-buffer "(inferior-ess 3): waiting for process after hook")
+              (ess-wait-for-process (get-process procname))))
 
           (with-current-buffer buf
             (rename-buffer buf-name-str t))
@@ -355,21 +331,27 @@ Default depends on the ESS language/dialect and hence made buffer local")
 ;;; be accessed with the function ess-get-process-variable
 
 
-(defun inferior-ess-goto-last-prompt-if-close ()
-  "If any prompt has been found on current line, go to previous primary prompt and return the position.
-Otherwise stay at current position and return nil "
+(defun inferior-ess-goto-last-prompt-if-close (&optional pos)
+  "Staging from POS go to previous primary prompt and return the position.
+Look only for primary or secondary prompt on the current line. If
+found, return the starting position of the prompt, otherwise stay
+at current position and return nil. POS defaults to `point'."
 
-  (let ((new-point (save-excursion
-                     (beginning-of-line)
-                     (if (looking-at inferior-ess-primary-prompt)
-                         (point)
-                       (when  (and inferior-ess-secondary-prompt
-                                   (looking-at inferior-ess-secondary-prompt))
-                         (re-search-backward (concat "^" inferior-ess-primary-prompt))
-                         (point))))))
-    (when new-point
-      (goto-char new-point))))
+  (let* ((pos (or pos (point)))
+         (new-pos (save-excursion
+                    (beginning-of-line)
+                    (if (looking-at inferior-ess-primary-prompt)
+                        pos
+                      (when  (and inferior-ess-secondary-prompt
+                                  (looking-at inferior-ess-secondary-prompt))
+                        (re-search-backward (concat "^" inferior-ess-primary-prompt))
+                        pos)))))
+    (when new-pos
+      (goto-char new-pos))))
 
+(defvar compilation--parsed)
+(defvar ess--tb-last-input)
+(defvar compilation--parsed)
 (defun inferior-ess-fontify-region (beg end &optional verbose)
   "Fontify output by output within the beg-end region to avoid
 fontification spilling over prompts."
@@ -377,40 +359,80 @@ fontification spilling over prompts."
 	 (inhibit-point-motion-hooks t)
          (font-lock-dont-widen t)
          (buff (current-buffer))
-         (pos (or (inferior-ess-goto-last-prompt-if-close)
-                  beg))
-         (pos2))
-    (with-silent-modifications
-      ;; (dbg pos end)
-      (font-lock-unfontify-region pos end)
-      (while (< pos end)
-        (goto-char pos)
-        (comint-next-prompt 1)
-        (setq pos2 (min (point) end))
-        (save-restriction
-          (narrow-to-region pos pos2)
-          ;; (redisplay)
-          ;; (sit-for 1)
-          (font-lock-default-fontify-region pos pos2 verbose))
-        (setq pos pos2)))))
+         (pos0 (or (inferior-ess-goto-last-prompt-if-close beg)
+                   beg))
+         (pos1 pos0) pos2)
+    (when (< pos0 end)
+      (with-silent-modifications
+        ;; fontify chunks from prompt to prompt
+        (while (< pos1 end)
+          (goto-char pos1)
+          (comint-next-prompt 1)
+          (setq pos2 (min (point) end))
+          (save-restriction
+            (narrow-to-region pos1 pos2)
+            (font-lock-default-fontify-region pos1 pos2 verbose))
+          (setq pos1 pos2))
+        ;; highlight errors
+        (setq compilation--parsed beg)
+        ;; emacs 23 doesn't have this function
+        (when (fboundp 'compilation--ensure-parse)
+          ;; this line is a workaround for occasional incomplete highlighting of
+          ;; compilation errors on remotes, but it causes an incredible
+          ;; slowdown. See https://github.com/emacs-ess/ESS/issues/258.
+          ;; (compilation--ensure-parse end)
+          )
+        `(jit-lock-bounds ,pos0 . ,end)))))
 
 (defun ess-gen-proc-buffer-name:simple (proc-name)
-  "Function to generate buffer name by wrapping PROC-NAME in *proc-name*"
+  "Function to generate buffer name by wrapping PROC-NAME in *proc-name*.
+See `ess-gen-proc-buffer-name-function'."
   (format "*%s*" proc-name))
 
 (defun ess-gen-proc-buffer-name:directory (proc-name)
-  "Function to generate buffer name by wrapping PROC-NAME in
-*proc-name:dir-name* where dir-name is a short directory name."
+  "Function to generate buffer name by wrapping PROC-NAME in *PROC-NAME:DIR-NAME*.
+DIR-NAME is a short directory name. See
+`ess-gen-proc-buffer-name-function'."
   (format "*%s:%s*" proc-name (file-name-nondirectory
                                (directory-file-name default-directory))))
 
 (defun ess-gen-proc-buffer-name:abbr-long-directory (proc-name)
-  "Function to generate buffer name by wrapping PROC-NAME in
-*proc-name:abbreviated-long-dir-name*, where
-abbreviated-long-dir-name is an abbreviated full directory name.
-Abbreviation performed by `abbreviate-file-name'.
-"
+  "Function to generate buffer name in the form *PROC-NAME:ABBREVIATED-LONG-DIR-NAME*.
+PROC-NAME is a string representing an internal process
+name. ABBREVIATED-LONG-DIR-NAME is an abbreviated full directory
+name. Abbreviation is performed by `abbreviate-file-name'. See
+`ess-gen-proc-buffer-name-function'."
   (format "*%s:%s*" proc-name (abbreviate-file-name default-directory)))
+
+(defun ess-gen-proc-buffer-name:projectile-or-simple (proc-name)
+  "Function to generate buffer name in the form *PROC-NAME:PROJECTILE-ROOT*.
+PROC-NAME is a string representing an internal process
+name. PROJECTILE-ROOT is directory name returned by
+`projectile-project-root' if defined. If
+`projectile-project-root' is undefined or no project directory
+has been found use `ess-gen-proc-buffer-name:simple'. See
+`ess-gen-proc-buffer-name-function'."
+  (let ((proj (and (fboundp 'projectile-project-root)
+		   (projectile-project-p))))
+    (if proj
+	(format "*%s:%s*" proc-name (file-name-nondirectory
+				     (directory-file-name proj)))
+      (ess-gen-proc-buffer-name:simple proc-name))))
+
+(defun ess-gen-proc-buffer-name:projectile-or-directory (proc-name)
+  "Function to generate buffer name in the form *PROC-NAME:PROJECTILE-ROOT*.
+PROC-NAME is a string representing an internal process
+name. PROJECTILE-ROOT is directory name returned by
+`projectile-project-root' if defined. If
+`projectile-project-root' is undefined, or no project directory
+has been found, use `ess-gen-proc-buffer-name:directory'. See
+`ess-gen-proc-buffer-name-function'."
+  (let ((proj (and (fboundp 'projectile-project-root)
+		   (projectile-project-p))))
+    (if proj
+	(format "*%s:%s*" proc-name (file-name-nondirectory
+				     (directory-file-name proj)))
+      (ess-gen-proc-buffer-name:directory proc-name))))
 
 (defun inferior-ess-set-status (proc string &optional no-timestamp)
   "Internal function to set the satus of the PROC
@@ -420,32 +442,42 @@ Return the 'busy state."
   (let ((busy (not (string-match (concat "\\(" inferior-ess-primary-prompt "\\)\\'") string))))
     (process-put proc 'busy-end? (and (not busy)
                                       (process-get proc 'busy)))
-    (if (not busy) (process-put proc 'running-async? nil))
+    (when (not busy)
+      (process-put proc 'running-async? nil))
     (process-put proc 'busy busy)
     (process-put proc 'sec-prompt
                  (when inferior-ess-secondary-prompt
                    (string-match (concat "\\(" inferior-ess-secondary-prompt "\\)\\'") string)))
     (unless no-timestamp
       (process-put proc 'last-eval (current-time)))
-    busy
-    ))
+    busy))
 
 (defun inferior-ess-mark-as-busy (proc)
   (process-put proc 'busy t)
   (process-put proc 'sec-prompt nil))
 
-(defun inferior-ess-run-callback (proc)
-  (when (process-get proc 'busy-end?)
-    (let ((cb (car (process-get proc 'callbacks))))
+(defun inferior-ess-run-callback (proc string)
+  ;; callback is stored in 'callbacks proc property. Callbacks is a list that
+  ;; can contain either functions to be called with two artuments PROC and
+  ;; STRING, or cons cells of the form (func . suppress). If SUPPRESS is non-nil
+  ;; next process output will be suppressed.
+  (unless (process-get proc 'busy)
+    ;; only one callback is implemented for now
+    (let* ((cb (car (process-get proc 'callbacks)))
+           (listp (not (functionp cb)))
+           (suppress (and listp (consp cb) (cdr cb)))
+           (cb (if (and listp (consp cb))
+                   (car cb)
+                 cb)))
       (when cb
-        (if ess-verbose
-            (ess-write-to-dribble-buffer "executing callback ...\n")
+        (when ess-verbose
+            (ess-write-to-dribble-buffer "executing callback ...\n"))
+        (when suppress
           (process-put proc 'suppress-next-output? t))
         (process-put proc 'callbacks nil)
         (condition-case err
-            (funcall cb proc)
-          (error (message "%s" (error-message-string err))))
-        ))))
+            (funcall cb proc string)
+          (error (message "%s" (error-message-string err))))))))
 
 (defun ess--if-verbose-write-process-state (proc string &optional filter)
   (ess-if-verbose-write
@@ -475,7 +507,7 @@ the rest to `comint-output-filter'.
 Taken from octave-mod.el."
   (inferior-ess-set-status proc string)
   (ess--if-verbose-write-process-state proc string)
-  (inferior-ess-run-callback proc) ;; protected
+  (inferior-ess-run-callback proc string)
   (if (process-get proc 'suppress-next-output?)
       ;; works only for surpressing short output, for time being is enough (for callbacks)
       (process-put proc 'suppress-next-output? nil)
@@ -589,10 +621,11 @@ This marks the process with a message, at a particular time point."
 ;;*;; General process handling code
 (defmacro with-ess-process-buffer (no-error &rest body)
   "Execute BODY with current-buffer set to the process buffer of ess-current-process-name.
-If NO-ERROR is t don't trigger an error when there is not current process.
+If NO-ERROR is t don't trigger error when there is not current
+process.
 
 Symbol *proc* is bound to the current process during the evaluation of BODY."
-  (declare (indent 1))
+  (declare (indent 1) (debug t))
   `(let ((*proc* (and ess-local-process-name (get-process ess-local-process-name))))
      (if *proc*
          (with-current-buffer (process-buffer *proc*)
@@ -603,7 +636,7 @@ Symbol *proc* is bound to the current process during the evaluation of BODY."
 (defmacro ess-with-current-buffer (buffer &rest body)
   "Like `with-current-buffer' but with transfer of some essential
 local ESS vars like `ess-local-process-name'"
-  (declare (indent 1))
+  (declare (indent 1) (debug t))
   (let ((lpn (make-symbol "lpn"))
         (alist (make-symbol "alist")))
     `(let ((,lpn ess-local-process-name)
@@ -654,7 +687,7 @@ process happens interactively (when possible)."
             (ess-get-process other-name))
         ;; else
         (ding)
-        (if (yes-or-no-p
+        (if (y-or-n-p
              (format "Process %s is not running, but others are. Switch? " name))
             (progn
               (ess-force-buffer-current
@@ -789,12 +822,12 @@ Returns the name of the selected process."
   (ess-write-to-dribble-buffer "ess-request-a-process: {beginning}\n")
   (update-ess-process-name-list)
 
-  (setq ess-dialect
-    (or ess-dialect (ess-completing-read
-                     "Set `ess-dialect'"
-                     (delete-dups (list "R" "S+" S+-dialect-name
-                                        "stata" STA-dialect-name
-                                        "julia" "SAS" "XLS"  "ViSta")))))
+  (setq ess-dialect (or ess-dialect
+                        (ess-completing-read
+                         "Set `ess-dialect'"
+                         (delete-dups (list "R" "S+" S+-dialect-name
+                                            "stata" STA-dialect-name
+                                            "julia" "SAS" "XLS"  "ViSta")))))
 
   (let* ((pname-list (delq nil ;; keep only those mathing dialect
                            (append
@@ -862,7 +895,6 @@ Returns the name of the selected process."
         (pop-to-buffer (buffer-name (process-buffer (get-process proc))) t))
       proc)))
 
-
 (defun ess-force-buffer-current (&optional prompt force no-autostart ask-if-1)
   "Make sure the current buffer is attached to an ESS process.
 If not, or FORCE (prefix argument) is non-nil, prompt for a
@@ -888,8 +920,9 @@ there is only one process running."
           (with-current-buffer (process-buffer (get-process proc))
             (setq temp-ess-help-filetype inferior-ess-help-filetype))
           (setq ess-local-process-name proc)
-          (setq inferior-ess-help-filetype temp-ess-help-filetype)
-          )))))
+          (setq inferior-ess-help-filetype temp-ess-help-filetype))))))
+
+(defalias 'inferior-ess-force #'ess-force-buffer-current)
 
 (defun ess-switch-process ()
   "Force a switch to a new underlying process."
@@ -897,7 +930,7 @@ there is only one process running."
   (ess-force-buffer-current "Process to use: " 'force nil 'ask-if-1))
 
 (defun ess-get-next-available-process (&optional dialect ignore-busy)
-  "Return first availabe (aka not busy) process of dialect DIALECT.
+  "Return first available (aka not busy) process of dialect DIALECT.
 DIALECT defaults to the local value of ess-dialect. Return nil if
 no such process has been found."
   (setq dialect (or dialect ess-dialect))
@@ -975,18 +1008,19 @@ If TOGGLE-EOB is given, the value of
                 (blist (cdr (buffer-list))))
             (while (and blist
                         (with-current-buffer (car blist)
-                          (not (or (and (eq major-mode 'ess-mode)
-                                        (equal dialect ess-dialect)
-                                        (null ess-local-process-name))
-                                   (and (eq major-mode 'ess-mode)
-                                        (equal loc-proc-name ess-local-process-name))
+                          (not (or (and
+                                    (memq major-mode '(ess-mode ess-julia-mode))
+                                    (equal dialect ess-dialect)
+                                    (null ess-local-process-name))
+                                   (and
+                                    (memq major-mode '(ess-mode ess-julia-mode))
+                                    (equal loc-proc-name ess-local-process-name))
                                    ))))
               (pop blist))
             (if blist
                 (ess-show-buffer (car blist) t)
               (message "Found no buffers for ess-dialect %s associated with process %s"
-                       dialect loc-proc-name)))
-          )))
+                       dialect loc-proc-name))))))
     (ess--execute-electric-command map nil nil nil EOB)))
 
 
@@ -1020,6 +1054,11 @@ If TOGGLE-EOB is given, the value of
 ;;       (display-buffer buf nil (get-frame-for-buffer buf))
 ;;     (display-buffer buf nil t)))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defcustom ess-show-buffer-action
+  '((display-buffer-pop-up-window display-buffer-use-some-window))
+  "Actions for `ess-show-buffer', passed to `display-buffer'."
+  :group 'ess
+  :type 'list)
 (defun ess-show-buffer (buf &optional visit)
   "Ensure the ESS buffer BUF is visible.
 The buffer, specified as a string, is typically an iESS (e.g. *R*) buffer.
@@ -1034,7 +1073,7 @@ in the current frame.
 
 If VISIT is non-nil, as well as making BUF visible, we also select it
 as the current buffer."
-  (let ( (frame))
+  (let ((frame))
     (if (ess-buffer-visible-this-frame buf)
         ;;1. Nothing to do, BUF visible in this frame; just return window
         ;; where this buffer is.
@@ -1049,7 +1088,7 @@ as the current buffer."
               (raise-frame frame))
         ;; 3. else BUF not visible in any frame, so show it (but do
         ;; not select it) in another window in current frame.
-        (display-buffer buf)))
+        (display-buffer buf ess-show-buffer-action)))
     ;; At this stage, the buffer should now be visible on screen,
     ;; although it won't have been made current.
     (when visit
@@ -1096,34 +1135,28 @@ Assumes that buffer has not already been in found in current frame."
 
  ; Functions for evaluating code
 
-(defun ess-ddeclient-p ()
-  "Returns t iff `ess-local-process-name' is associated with an
-inferior-ess-ddeclient, and nil if the ess-process is running as an
-ordinary inferior process.  Alway nil on Unix machines."
-  (interactive)
-  (if ess-microsoft-p
-      (progn
-        ;; Debug: C-c C-l fails (to start R or give good message) in Windows
-        (ess-write-to-dribble-buffer
-         (format "*ddeclient-p: ess-loc-proc-name is '%s'" ess-local-process-name))
-        (ess-force-buffer-current "Process to load into: ")
-        (not (equal (ess-get-process-variable 'inferior-ess-ddeclient)
-                    (default-value 'inferior-ess-ddeclient))))))
+;;*;; Utils for evaluation
 
-;; (defun ess-prompt-wait (proc prompt-reg &optional sleep )
-;;   "Wait for a prompt to appear at the end of current buffer.
-;; PROC is the ESS process. PROMPT-REG is a regexp of the process
-;; prompt to look for. Does not change point. Not to be used in
-;; inferior-process buffer. Use `inferior-ess-wait-for-prompt'
-;; instead. "
-;;   (if sleep (sleep-for sleep)); we sleep here, *and* wait below
-;;   (save-excursion
-;;       (while (or (accept-process-output proc 0 100)
-;;               (progn ;; if no more output, check for prompt
-;;                 (goto-char (marker-position (process-mark proc)))
-;;                 (beginning-of-line)
-;;                 (not (re-search-forward prompt-reg nil t))
-;;                 )))))
+(ess-defgeneric ess-build-eval-command (string &optional visibly output file &rest args)
+  "Format an evaluation command.
+Wrap STRING with `ess-quote-special-chars' and dispatch on the
+dialect-specific `ess-build-eval-command' function and
+`ess-eval-command', in that order. If none of the above is
+defined, return nil."
+  (setq string (ess-quote-special-chars string))
+  (:override
+   (and ess-eval-command
+        (format-spec ess-eval-command
+                     `((?s . ,string)
+                       (?f . ,file))))))
+
+(ess-defgeneric ess-build-load-command (file &optional visibly output &rest args)
+  "Format a loading command.
+Dispatches on the dialect-specific `ess-build-load-command'
+and `ess-load-command', in that order."
+  (:override
+   (and ess-load-command
+        (format ess-load-command file))))
 
 (defun ess-wait-for-process (&optional proc sec-prompt wait force-redisplay)
   "Wait for 'busy property of the process to become nil.
@@ -1136,7 +1169,7 @@ FORCE-REDISPLAY to avoid excesive redisplay."
   (setq proc (or proc (get-process ess-local-process-name)))
   (unless (eq (process-status proc) 'run)
     (ess-error "ESS process has died unexpectedly."))
-  (setq wait (or wait 0.001)) ;;xemacs is stuck if it's 0 here
+  (setq wait (or wait 0.002)) ;;xemacs is stuck if it's 0 here
   (let ((start-time (float-time)))
     (save-excursion
       (while (or (accept-process-output proc wait)
@@ -1147,28 +1180,13 @@ FORCE-REDISPLAY to avoid excesive redisplay."
         (if (> (- (float-time) start-time) .5)
             (setq wait .5))))))
 
-;; (defun inferior-ess-ordinary-filter (proc string)
-;;   (let ((old-buffer (current-buffer)))
-;;     (unwind-protect
-;;      (let (moving)
-;;        (set-buffer (process-buffer proc))
-;;        (setq moving (= (point) (process-mark proc)))
-;;        (save-excursion
-;;          ;; Insert the text, moving the process-marker.
-;;          (goto-char (process-mark proc))
-;;          (insert string)
-;;          (set-marker (process-mark proc) (point)))
-;;        (if moving (goto-char (process-mark proc))))
-;;       (set-buffer old-buffer))))
-
 (defun inferior-ess-ordinary-filter (proc string)
   (inferior-ess-set-status proc string t)
   (ess--if-verbose-write-process-state proc string "ordinary-filter")
-  (inferior-ess-run-callback proc)
+  (inferior-ess-run-callback proc string)
   (with-current-buffer (process-buffer proc)
     ;; (princ (format "%s:" string))
     (insert string)))
-
 
 (defvar ess-presend-filter-functions nil
   "List of functions to call before sending the input string to the process.
@@ -1186,72 +1204,10 @@ globally or locally.
 
 The hook is executed in current buffer. Before execution, the
 local value of this hook in the process buffer is appended to the
-hook from the current buffer.
-")
-
-(defun ess-send-region (process start end &optional visibly message)
-  "Low level ESS version of `process-send-region'.
-If VISIBLY call `ess-eval-linewise', else call `ess-send-string'.
-If MESSAGE is supplied, display it at the end.
-
-Run `comint-input-filter-functions' and curent buffer's and
-associated with PROCESS `ess-presend-filter-functions'  hooks.
-"
-  (if (ess-ddeclient-p)
-      (ess-eval-region-ddeclient start end 'even-empty)
-    ;; else: "normal", non-DDE behavior:
-    (ess-send-string process (buffer-substring start end) visibly message)
-    ))
-
-(defvar ess-send-string-function  nil)
-(make-variable-buffer-local 'ess-send-string-function)
-
-(defun ess-send-string (process string &optional visibly message)
-  "ESS wrapper for `process-send-string'.
-STRING  need not end with \\n.
-
-Run `comint-input-filter-functions' and current buffer's and
-PROCESS' `ess-presend-filter-functions' hooks on the input
-STRING.
-
-VISIBLY can be nil, t, 'nowait or a string. If string the
-behavior is as with 'nowait with the differences that inserted
-string is VISIBLY instead of STRING (evaluated command is still
-STRING). In all other cases the behavior is as described in
-`ess-eval-visibly'.
-"
-  (setq string (ess--run-presend-hooks process string))
-  (inferior-ess--interrupt-subjob-maybe process)
-  (inferior-ess-mark-as-busy process)
-  (if (fboundp (buffer-local-value 'ess-send-string-function
-                                   (current-buffer)))
-      ;; overloading
-      (funcall ess-send-string-function process string visibly)
-    (when (and (eq visibly t)
-               (null inferior-ess-secondary-prompt)) ; cannot evaluate visibly
-      (setq visibly 'nowait))
-    (cond ((eq visibly t) ;; wait after each line
-           (let ((ess--inhibit-presend-hooks t))
-             (ess-eval-linewise string)))
-          ((or (stringp visibly)
-               (eq visibly 'nowait)) ;; insert command and eval invisibly .
-           (with-current-buffer (process-buffer process)
-             (save-excursion
-               (goto-char (process-mark process))
-               (insert-before-markers
-                (propertize (format "%s\n"
-                                    (replace-regexp-in-string
-                                     "\n[ \t]" "\n+ "
-                                     (if (stringp visibly) visibly string)))
-                            'font-lock-face 'comint-highlight-input)))
-             (process-send-string process (ess--concat-new-line-maybe string))))
-          (t
-           (process-send-string process (ess--concat-new-line-maybe string)))))
-  (if message (message message)))
+hook from the current buffer.")
 
 (defvar ess--inhibit-presend-hooks nil
   "If non-nil don't run presend hooks.")
-
 
 (defun ess--run-presend-hooks (process string)
   ;; run ess-presend-filter-functions and comint-input-filter-functions
@@ -1287,7 +1243,6 @@ STRING). In all other cases the behavior is as described in
       string
     (concat string "\n")))
 
-
 (defvar ess--dbg-del-empty-p t
   "Internal variable to control removal of empty lines during the
 debugging.  Let-bind it to nil before calling
@@ -1321,8 +1276,255 @@ Hide all the junk output in temporary buffer."
             (ess-if-verbose-write "interrupting subjob ... finished")
             )
         (set-process-buffer proc old-buff)
-        (set-process-filter proc old-filter)
-        ))))
+        (set-process-filter proc old-filter)))))
+
+
+;;*;; Evaluation primitives
+
+(ess-defgeneric ess-send-string (process string &optional visibly message type)
+  "ESS wrapper for `process-send-string'.
+Run `comint-input-filter-functions' and current buffer's and
+PROCESS' `ess-presend-filter-functions' hooks on the input
+STRING. VISIBLY can be nil, t, 'nowait or a string.  If string
+the behavior is as with 'nowait with the differences that
+inserted string is VISIBLY instead of STRING (evaluated command
+is still STRING).  In all other cases the behavior is as
+described in `ess-eval-visibly'. STRING need not end with
+\\n. TYPE is a symbol indicating type of the string."
+  ;; No support of `visibly' when there's no secondary prompt
+  (let ((visibly (if (and (eq visibly t)
+                          (null inferior-ess-secondary-prompt))
+                     'nowait
+                   visibly))
+        (string (ess--run-presend-hooks process string)))
+    (inferior-ess--interrupt-subjob-maybe process)
+    (inferior-ess-mark-as-busy process)
+    (:override
+     (cond
+      ;; Wait after each line
+      ((eq visibly t)
+       (let ((ess--inhibit-presend-hooks t))
+         (ess-eval-linewise string)))
+      ;; Insert command and eval invisibly
+      ((or (stringp visibly)
+           (eq visibly 'nowait))
+       (with-current-buffer (process-buffer process)
+         (save-excursion
+           (goto-char (process-mark process))
+           (insert-before-markers
+            (propertize (format "%s\n"
+                                (replace-regexp-in-string
+                                 "\n[ \t]" "\n+ "
+                                 (if (stringp visibly) visibly string)))
+                        'font-lock-face 'comint-highlight-input)))
+         (process-send-string process (ess--concat-new-line-maybe string))))
+      (t
+       (process-send-string process (ess--concat-new-line-maybe string))))
+     (when message
+       (message message)))))
+
+(ess-defgeneric ess-send-region (process start end &optional visibly message type)
+  "Low level ESS version of `process-send-region'.
+If VISIBLY call `ess-eval-linewise', else call
+`ess-send-string'. If MESSAGE is supplied, display it at the
+end. Run current buffer's and PROCESS'
+`ess-presend-filter-functions' hooks. TYPE is a symbol indicating
+type of the region."
+  (cond
+   ((ess-tracebug-p)
+    (ess-tracebug-send-region proc start end visibly message type))
+   (t (:override
+       (ess-send-string process (buffer-substring start end) visibly message type)))))
+
+;;*;; Evaluation commands
+
+(defun ess-load-file--normalise-file (file)
+  "Handle Tramp and system peculiarities."
+  (let* ((file (if (and (fboundp 'tramp-tramp-file-p)
+                        (tramp-tramp-file-p file))
+                   (tramp-file-name-localname (tramp-dissect-file-name file))
+                 file))
+         (file (if ess-microsoft-p
+                   (ess-replace-in-string file "[\\]" "/")
+                 file)))
+    file))
+
+(defun ess-load-file--normalise-buffer (file)
+  (when (ess-check-source file)
+      (error "Buffer %s has not been saved" (buffer-name file)))
+  (let ((source-buffer (get-file-buffer file)))
+    (if source-buffer
+        (with-current-buffer source-buffer
+          (when (buffer-modified-p) (save-buffer))
+          (ess-force-buffer-current "Process to load into: ")
+          (ess-check-modifications))
+      (ess-force-buffer-current "Process to load into: "))))
+
+(ess-defgeneric ess-load-file (&optional filename)
+  "Load a source file into an inferior ESS process.
+
+This handles Tramp when working on a remote."
+  (interactive (list (or (and (memq major-mode '(ess-mode ess-julia-mode))
+                              (buffer-file-name))
+                         (expand-file-name
+                          (read-file-name "Load source file: " nil nil t)))))
+  (ess-load-file--normalise-buffer filename)
+  ;; Pop up an inferior window
+  (save-selected-window
+    (ess-switch-to-ESS t))
+  (:override
+   (let ((file (ess-load-file--normalise-file filename)))
+     (let ((command (ess-build-load-command file nil t)))
+       (ess-send-string (ess-get-process) command t)))))
+
+;; C-c C-l  *used to* eval code:
+(defun ess-msg-and-comint-dynamic-list-input-ring ()
+ "Display a list of recent inputs entered into the current buffer."
+  (interactive)
+  (message "C-c C-l  no longer loads a source file in [iESS], rather use C-c M-l instead")
+  (comint-dynamic-list-input-ring))
+
+;; ;;; VS[03-09-2012]: Test Cases:
+;; (ess-command "a<-0\n" nil nil nil nil (get-process "R"))
+;; (ess-async-command-delayed "Sys.sleep(5);a<-a+1;cat(1:10)\n" nil
+;;                            (get-process "R") (lambda (proc) (message "done")))
+
+;; (ess-async-command-delayed "Sys.sleep(5)\n" nil (get-process "R")
+;;                            (lambda (proc) (message "done")))
+
+;; (process-get (get-process "R") 'running-async?)
+
+(defun ess-command--normalise-proc (proc no-prompt-check)
+  (let ((proc (cond
+               (proc
+                ;; This lets external functions call this command
+                (unless ess-local-process-name
+                  (setq ess-local-process-name (process-name proc)))
+                proc)
+               (t
+                (ess-get-process ess-local-process-name)))))
+    (unless no-prompt-check
+      (when (process-get proc 'busy)
+        (ess-error
+         "ESS process not ready. Finish your command before trying again.")))
+    proc))
+
+(ess-defgeneric ess-command (cmd &optional out-buffer sleep no-prompt-check wait proc force-redisplay)
+  "Send the ESS process command CMD and delete the output from
+the ESS process buffer.  If an optional second argument
+OUT-BUFFER exists save the output in that buffer.  OUT-BUFFER is
+erased before use.  CMD should have a terminating newline.
+Guarantees that the value of `.Last.value' will be preserved.
+When optional third arg SLEEP is non-nil, `(sleep-for (* a
+SLEEP))' will be used in a few places where `a' is proportional
+to `ess-cmd-delay'.  WAIT and FORCE-REDISPLAY are as in
+`ess-wait-for-process' and are passed to `ess-wait-for-process'.
+
+PROC should be a process, if nil the process name is taken from
+`ess-local-process-name'.  This command doesn't set 'last-eval
+process variable.
+
+Note: for critical, or error prone code you should consider
+wrapping the code into:
+
+ local({
+    olderr <- options(error=NULL)
+    on.exit(options(olderr))
+    ...
+ })"
+  (:override
+   (let ((out-buffer (or out-buffer (get-buffer-create " *ess-command-output*")))
+         (proc (ess-command--normalise-proc proc no-prompt-check)))
+     (with-current-buffer (process-buffer proc)
+       (let ((primary-prompt inferior-ess-primary-prompt)
+             (oldpb (process-buffer proc))
+             (oldpf (process-filter proc))
+             (oldpm (marker-position (process-mark proc))))
+         (ess-if-verbose-write (format "(ess-command %s ..)" cmd))
+         ;; Swap the process buffer with the output buffer before
+         ;; sending the command
+         (unwind-protect
+             (progn
+               (set-process-buffer proc out-buffer)
+               (set-process-filter proc 'inferior-ess-ordinary-filter)
+               (with-current-buffer out-buffer
+                 (setq inferior-ess-primary-prompt primary-prompt)
+                 (setq buffer-read-only nil)
+                 (erase-buffer)
+                 (set-marker (process-mark proc) (point-min))
+                 (inferior-ess-mark-as-busy proc)
+                 (process-send-string proc cmd)
+                 ;; Need time for ess-create-object-name-db on PC
+                 (if no-prompt-check
+                     (sleep-for 0.02)   ; 0.1 is noticeable!
+                   (ess-wait-for-process proc nil wait force-redisplay)
+                   (ess-mpi-handle-messages (current-buffer))
+                   ;; Remove prompt
+                   ;; If output is cat(..)ed this deletes the output
+                   (goto-char (point-max))
+                   (delete-region (point-at-bol) (point-max)))
+                 (ess-if-verbose-write " .. ok{ess-command}")))
+           (ess-if-verbose-write " .. exiting{ess-command}\n")
+           ;; Restore the process buffer in its previous state
+           (set-process-buffer proc oldpb)
+           (set-process-filter proc oldpf)
+           (set-marker (process-mark proc) oldpm))))
+     out-buffer)))
+
+(defun ess-boolean-command (com &optional buf wait)
+  "Like `ess-command' but expects COM to print TRUE or FALSE.
+If TRUE (or true) is found return non-nil otherwise nil.
+
+Example: (ess-boolean-command \"2>1\n\")"
+  (with-current-buffer (ess-command com buf nil nil wait)
+    (goto-char (point-min))
+    (let ((case-fold-search t))
+      (re-search-forward "true" nil t))))
+
+(defun ess-string-command (com &optional buf wait)
+  "Returns the output of COM as a string."
+  (with-current-buffer (ess-command com buf nil nil wait)
+    (ess-kill-last-line)
+    (buffer-substring (point-min) (point-max))))
+
+;; (ess-async-command "{cat(1:5);Sys.sleep(5);cat(2:6)}\n" nil (get-process "R")
+;;                    (lambda (proc) (message "done")))
+;; (ess-async-command "{cat(1:5);Sys.sleep(5);cat(2:6)}\n" nil (get-process "R")
+;;                    (lambda (proc) (message "done"))
+;;                    t)
+;; (ess-async-command "{cat(1:5);Sys.sleep(5);cat(2:6)}\n" nil (get-process "R")
+;;                    (lambda (proc) (message "done"))
+;;                    (lambda (proc2) (message "name: %s" (process-name proc2))))
+
+(defun ess-async-command (com &optional buf proc callback interrupt-callback )
+  "Asynchronous version of ess-command.
+COM, BUF, WAIT and PROC are as in `ess-command'.
+
+CALLBACK is a function of two arguments (PROC STRING) to run
+after the successful execution. When INTERRUPT-CALLBACK is
+non-nil, user evaluation can interrupt the
+job. INTERRUPT-CALLBACK should be either t or a function of one
+argument (PROC) to be called on interruption.
+
+NOTE: Currently this function should be used only for background
+jobs like caching. ESS tries to suppress any output from the
+asynchronous command, but long output of COM will most likely end
+up in user's main buffer.
+"
+  (let ((proc (or proc (get-process ess-local-process-name))))
+    (if (not (and proc
+                  (eq (process-status proc) 'run)))
+        (error "Process %s is dead" ess-local-process-name)
+      (if (or (process-get proc 'busy)
+              (process-get proc 'running-async?))
+          (error "Process %s is busy or already running an async command." ess-local-process-name)
+        (when (eq interrupt-callback t)
+          (setq interrupt-callback (lambda (proc))))
+        (process-put proc 'callbacks (list (cons callback 'suppress-output)
+                                           interrupt-callback))
+        (process-put proc 'interruptable? (and interrupt-callback t))
+        (process-put proc 'running-async? t)
+        (ess-command com buf nil 'no-prompt-check .01 proc)))))
 
 (defun ess-async-command-delayed (com &optional buf proc callback delay)
   "Delayed asynchronous ess-command.
@@ -1339,8 +1541,7 @@ current process might change, leading to unpredictable
 consequences.
 
 This function is a wrapper of `ess-async-command' with an
-explicit interrupt-callback.
-"
+explicit interrupt-callback."
   (unless proc
     (error "You must provide PROC argument to ess-async-command-delayed"))
   (let* ((timer (make-symbol "timer"))
@@ -1358,221 +1559,11 @@ explicit interrupt-callback.
                          (ess-async-command ,com ,buf ,proc ,callback ',int-cb)))))
     (run-with-idle-timer delay nil com-fun)))
 
-;; ;;; VS[03-09-2012]: Test Cases:
-;; (ess-command "a<-0\n" nil nil nil nil (get-process "R"))
-;; (ess-async-command-delayed "Sys.sleep(5);a<-a+1;cat(1:10)\n" nil
-;;                            (get-process "R") (lambda (proc) (message "done")))
-
-;; (ess-async-command-delayed "Sys.sleep(5)\n" nil (get-process "R")
-;;                            (lambda (proc) (message "done")))
-
-;; (process-get (get-process "R") 'running-async?)
-
-;; (ess-async-command "{cat(1:5);Sys.sleep(5);cat(2:6)}\n" nil (get-process "R")
-;;                    (lambda (proc) (message "done")))
-;; (ess-async-command "{cat(1:5);Sys.sleep(5);cat(2:6)}\n" nil (get-process "R")
-;;                    (lambda (proc) (message "done"))
-;;                    t)
-;; (ess-async-command "{cat(1:5);Sys.sleep(5);cat(2:6)}\n" nil (get-process "R")
-;;                    (lambda (proc) (message "done"))
-;;                    (lambda (proc2) (message "name: %s" (process-name proc2))))
-
-
-(defun ess-async-command (com &optional buf proc callback interrupt-callback)
-  "Asynchronous version of ess-command.
-COM, BUF, WAIT and PROC are as in `ess-command'.
-
-CALLBACK is a function of one argument (PROC) to run after the
-successful execution. When INTERRUPT-CALLBACK is non-nil, user
-evaluation can interrupt the job. INTERRUPT-CALLBACK should be
-either t or a function of one argument (PROC) to be called on
-interruption.
-
-NOTE: Currently this function should be used only for background
-jobs like caching. ESS tries to suppress any output from the
-asynchronous command, but long output of COM will most likely end
-up in user's main buffer.
-"
-  (let ((proc (or proc (get-process ess-local-process-name))))
-    (if (not (and proc
-                  (eq (process-status proc) 'run)))
-        (error "Process %s is dead" ess-local-process-name)
-      (if (or (process-get proc 'busy)
-              (process-get proc 'running-async?))
-          (error "Process %s is busy or already running an async command." ess-local-process-name)
-        (when (eq interrupt-callback t)
-          (setq interrupt-callback (lambda (proc))))
-        (process-put proc 'callbacks (list callback interrupt-callback))
-        (process-put proc 'interruptable? (and interrupt-callback t))
-        (process-put proc 'running-async? t)
-        (ess-command com buf nil 'no-prompt-check .02 proc)
-        ))))
-
-
-(defun ess-command (com &optional buf sleep no-prompt-check wait proc force-redisplay)
-  "Send the ESS process command COM and delete the output from
-the ESS process buffer.  If an optional second argument BUF
-exists save the output in that buffer. BUF is erased before
-use. COM should have a terminating newline.  Guarantees that the
-value of .Last.value will be preserved.  When optional third arg
-SLEEP is non-nil, `(sleep-for (* a SLEEP))' will be used in a few
-places where `a' is proportional to `ess-cmd-delay'.  WAIT and
-FORCE-REDISPLAY are as in `ess-wait-for-process' and are passed
-to `ess-wait-for-process'.
-
-PROC should be a process, if nil the process name is taken from
-`ess-local-process-name'. This command doesn't set 'last-eval
-process variable.
-
-Note: for critical, or error prone code you should consider
-wrapping the code into:
-
-local({
-    olderr <- options(error=NULL)
-    on.exit(options(olderr))
-    ...
-})
-"
-  ;; Use this function when you need to evaluate some S code, and the
-  ;; result is needed immediately. Waits until the output is ready
-
-  ;; the ddeclient-p checks needs to use the local-process-name
-  (unless buf
-    (setq buf (get-buffer-create " *ess-command-output*")))
-
-  (if (ess-ddeclient-p)
-      (ess-command-ddeclient com buf sleep)
-
-    ;; else: "normal", non-DDE behavior:
-
-    (let* ((sprocess (or proc (ess-get-process ess-local-process-name)))
-           sbuffer primary-prompt end-of-output oldpb oldpf oldpm
-           )
-
-      (unless sprocess
-        ;; should hardly happen, since (ess-get-process *)  already checked:
-        (error "Process %s is not running!" ess-current-process-name))
-      (setq sbuffer (process-buffer sprocess))
-      (with-current-buffer sbuffer
-        (unless ess-local-process-name
-          (setq ess-local-process-name (process-name sprocess))) ; let it be here (calling functions need not set it explicitly)
-        (setq primary-prompt  inferior-ess-primary-prompt)
-        (ess-if-verbose-write (format "n(ess-command %s ..)" com))
-        (unless no-prompt-check
-          (when (process-get sprocess 'busy) ;;(looking-at inferior-ess-primary-prompt)
-            (ess-error
-             "ESS process not ready. Finish your command before trying again.")))
-        (setq oldpf (process-filter sprocess))
-        (setq oldpb (process-buffer sprocess))
-        (setq oldpm (marker-position (process-mark sprocess)))
-        ;; need the buffer-local values in result buffer "buf":
-        (unwind-protect
-            (progn
-              (set-process-buffer sprocess buf)
-              (set-process-filter sprocess 'inferior-ess-ordinary-filter)
-              ;; Output is now going to BUF:
-              (with-current-buffer buf
-                (setq inferior-ess-primary-prompt primary-prompt) ;; set local value
-                (setq buffer-read-only nil)
-                (erase-buffer)
-                (set-marker (process-mark sprocess) (point-min))
-                (inferior-ess-mark-as-busy sprocess)
-                (process-send-string sprocess com)
-                ;; need time for ess-create-object-name-db on PC
-                (if no-prompt-check
-                    (sleep-for 0.020); 0.1 is noticeable!
-                  ;; else: default
-                  (ess-wait-for-process sprocess nil wait force-redisplay)
-                  (goto-char (point-max))
-                  ;; remove prompt
-                  ;; if output is cat(..)ed this deletes the output ...
-                  (delete-region (point-at-bol) (point-max)))
-              (ess-if-verbose-write " .. ok{ess-command}")
-              ))
-
-          (ess-if-verbose-write " .. exiting{ess-command}\n")
-          ;; Restore old values for process filter
-          (set-process-buffer sprocess oldpb)
-          (set-process-filter sprocess oldpf)
-          (set-marker (process-mark sprocess) oldpm))))
-    buf))
-
-(defun ess-boolean-command (com &optional buf)
-  "Like `ess-command' but expects COM to print TRUE or FALSE.
-If TRUE (or true) is found return non-nil otherwise nil.
-
-Example: (ess-boolean-command \"2>1\n\")"
-  (with-current-buffer (ess-command com buf)
-    (goto-char (point-min))
-    (let ((case-fold-search t))
-      (re-search-forward "true" nil t))))
-
-(defun ess-replace-in-string (str regexp newtext &optional literal)
-  "Replace all matches in STR for REGEXP with NEWTEXT string.
-Optional LITERAL non-nil means do a literal replacement.
-Otherwise treat \\ in NEWTEXT string as special:
-  \\& means substitute original matched text,
-  \\N means substitute match for \(...\) number N,
-  \\\\ means insert one \\."
-  (if (not (stringp str))
-      (error "(replace-in-string): First argument must be a string: %s" str))
-  (if (stringp newtext)
-      nil
-    (error "(replace-in-string): 3rd arg must be a string: %s"
-           newtext))
-  (let ((rtn-str "")
-        (start 0)
-        (special)
-        match prev-start)
-    (while (setq match (string-match regexp str start))
-      (setq prev-start start
-            start (match-end 0)
-            rtn-str
-            (concat
-             rtn-str
-             (substring str prev-start match)
-             (cond (literal newtext)
-                   (t (mapconcat
-                       (function
-                        (lambda (c)
-                          (if special
-                              (progn
-                                (setq special nil)
-                                (cond ((eq c ?\\) "\\")
-                                      ((eq c ?&)
-                                       (substring str
-                                                  (match-beginning 0)
-                                                  (match-end 0)))
-                                      ((and (>= c ?0) (<= c ?9))
-                                       (if (> c (+ ?0 (length
-                                                       (match-data))))
-                                           ;; Invalid match num
-                                           (error "(replace-in-string) Invalid match num: %c" c)
-                                         (setq c (- c ?0))
-                                         (substring str
-                                                    (match-beginning c)
-                                                    (match-end c))))
-                                      (t (char-to-string c))))
-                            (if (eq c ?\\) (progn (setq special t) nil)
-                              (char-to-string c)))))
-                       newtext ""))))))
-    (concat rtn-str (substring str start))))
-
-
-
+
 ;;*;;  Evaluating lines, paragraphs, regions, and buffers.
 
-;;--- The two basic building blocks [called by all other ess-eval..] are
-;;      (ess-eval-linewise ....)
-;; and
-;;      (ess-eval-region   ....)
-
-(defun ess-eval-linewise (text &optional invisibly eob even-empty
-                               wait-last-prompt sleep-sec wait-sec)
-  ;; RDB 28/8/92 added optional arg eob
-  ;; MM 2006-08-23: added 'timeout-ms' -- but the effect seems "nil"
-  ;; VS 2012-01-18 it was actually nil, replaced with wait-sec - 0.001 default
-  ;; MM 2007-01-05: added 'sleep-sec' VS:? this one seems redundant to wait-last-prompt
+(ess-defgeneric ess-eval-linewise
+  (text &optional invisibly eob even-empty wait-last-prompt sleep-sec wait-sec)
   "Evaluate TEXT in the ESS process buffer as if typed in w/o tabs.
 Waits for prompt after each line of input, so won't break on large texts.
 
@@ -1589,156 +1580,69 @@ will be used instead of the default .001s and be passed to
 
 Run `comint-input-filter-functions' and
 `ess-presend-filter-functions' of the associated PROCESS on the
-TEXT.
-"
+TEXT."
+  (unless (numberp wait-sec)
+    (setq wait-sec 0.001))
 
-  (if (ess-ddeclient-p)
-      (ess-eval-linewise-ddeclient text
-                                   invisibly eob even-empty
-                                   (if wait-last-prompt
-                                       ess-eval-ddeclient-sleep))
+  (ess-force-buffer-current "Process to use: ")
 
-    ;; else: "normal", non-DDE behavior:
-    (unless (numberp wait-sec)
-      (setq wait-sec 0.001))  ;;don't make it lower (0.); xemacs is stuck
+  (:override
+   ;; Use this to evaluate some code, but don't wait for output.
+   (let* ((deactivate-mark)           ; keep local {do *not* deactivate wrongly}
+          (cbuffer (current-buffer))
+          (sprocess (ess-get-process ess-current-process-name))
+          (sbuffer (process-buffer sprocess))
+          (win (get-buffer-window sbuffer t)))
 
-    (ess-force-buffer-current "Process to use: ")
+     (setq text (ess--concat-new-line-maybe
+                 (ess--run-presend-hooks sprocess text)))
 
-    ;; Use this to evaluate some code, but don't wait for output.
-    (let* ((deactivate-mark); keep local {do *not* deactivate wrongly}
-           (cbuffer (current-buffer))
-           (sprocess (ess-get-process ess-current-process-name))
-           (sbuffer (process-buffer sprocess))
-           (win (get-buffer-window sbuffer t))
-           ;; (text (ess-replace-in-string text "\t" " "))
-           com pos txt-gt-0)
+     (with-current-buffer sbuffer
+       (setq text (propertize text 'field 'input 'front-sticky t))
 
-      (setq text (ess--concat-new-line-maybe
-                    (ess--run-presend-hooks sprocess text)))
+       (goto-char (marker-position (process-mark sprocess)))
+       (if (stringp invisibly)
+           (insert-before-markers (concat "*** " invisibly " ***\n")))
+       ;; dbg:
+       ;; dbg (ess-write-to-dribble-buffer
+       ;; dbg  (format "(eval-visibly 2): text[%d]= '%s'\n" (length text) text))
+       (while (or (> (length text) 0) even-empty)
+         (setq even-empty nil)
+         (let* ((pos (string-match "\n\\|$" text))
+                (input (if (= (length text) 0)
+                           "\n"
+                         (concat (substring text 0 pos) "\n"))))
+           (setq text (substring text (min (length text) (1+ pos))))
+           (goto-char (marker-position (process-mark sprocess)))
+           (if win (set-window-point win (process-mark sprocess)))
+           (unless invisibly
+             ;; for consistency with comint :(
+             (insert (propertize input 'font-lock-face 'comint-highlight-input))
+             (set-marker (process-mark sprocess) (point)))
+           (inferior-ess-mark-as-busy sprocess)
+           (process-send-string sprocess input))
+         (when (or (> (length text) 0)
+                   wait-last-prompt)
+           (ess-wait-for-process sprocess t wait-sec)))
+       (if eob (ess-show-buffer (buffer-name sbuffer) nil))
+       (goto-char (marker-position (process-mark sprocess)))
+       (when win
+         (with-selected-window win
+           (goto-char (point))
+           ;; this is crucial to avoid reseting window-point
+           (recenter (- -1 scroll-margin)))))))
+  (if (numberp sleep-sec)
+      (sleep-for sleep-sec)))
 
-      (with-current-buffer sbuffer
-
-        ;; (when (and win
-        ;;            (null eob)
-        ;;            (<= (process-mark sprocess) (point)))
-        ;;   (setq eob t))
-        ;; (setq wait-last-prompt t)
-        ;; (dbg eob)
-
-        ;; the following is required to make sure things work!
-        (when (string= ess-language "STA")
-          (if ess-sta-delimiter-friendly;; RAS: mindless replacement of semi-colons
-              (setq text (ess-replace-in-string text ";" "\n")))
-          (setq invisibly t))
-        (setq text (propertize text 'field 'input 'front-sticky t))
-
-        (goto-char (marker-position (process-mark sprocess)))
-        (if (stringp invisibly)
-            (insert-before-markers (concat "*** " invisibly " ***\n")))
-        ;; dbg:
-        ;; dbg (ess-write-to-dribble-buffer
-        ;; dbg  (format "(eval-visibly 2): text[%d]= '%s'\n" (length text) text))
-        (while (or (setq txt-gt-0 (> (length text) 0))
-                   even-empty)
-          (setq even-empty nil)
-          (if txt-gt-0
-              (progn
-                (setq pos (string-match "\n\\|$" text))
-                (setq com (concat (substring text 0 pos) "\n"))
-                (setq text (substring text (min (length text) (1+ pos)))))
-            ;; else 0-length text
-            (setq com "\n"))
-          (goto-char (marker-position (process-mark sprocess)))
-          (if win (set-window-point win (process-mark sprocess)))
-          (when (not invisibly)
-            (insert (propertize com 'font-lock-face 'comint-highlight-input)) ;; for consistency with comint :(
-            (set-marker (process-mark sprocess) (point)))
-          (inferior-ess-mark-as-busy sprocess)
-          (process-send-string sprocess com)
-          (when (or wait-last-prompt
-                    (> (length text) 0))
-            (ess-wait-for-process sprocess t wait-sec))
-          )
-        (if eob (ess-show-buffer (buffer-name sbuffer) nil))
-        (goto-char (marker-position (process-mark sprocess)))
-        (when win
-          (with-selected-window win
-            (goto-char (point))
-            (recenter (- -1 scroll-margin))) ;; this recenter is crucial to avoid reseting window-point
-          )))
-
-    (if (numberp sleep-sec)
-        (sleep-for sleep-sec)))); in addition to timeout-ms
-
-
-;; VS[06-01-2013]: this how far I got in investingating the emacs reseting of
-;; window-point. It really happens out of the blue :(
-
-;; (defun test ()
-;;   (let* ((cbuffer (get-buffer "*R*"))
-;;          (proc (get-buffer-process cbuffer))
-;;          (win (get-buffer-window cbuffer t)))
-;;     (with-current-buffer cbuffer
-;;       (proc-send-test proc win "ls()\n")
-;;       (ess-wait-for-process proc t 0.005)
-;;       ;; (goto-char (marker-position (process-mark proc)))
-;;       ;; (set-window-point win (point))
-;;       (proc-send-test proc win "NA\n")
-;;       ;; (when win
-;;       ;;   (dbg (point))
-;;       ;;   (set-window-point win (point-max)))
-;;       )))
-
-
-;; (defun proc-send-test (proc win com)
-;;   (with-current-buffer (process-buffer proc)
-;;     (goto-char (marker-position (process-mark proc)))
-;;     (inferior-ess-mark-as-busy proc)
-;;     (insert com)
-;;     (set-marker (process-mark proc) (point))
-;;     (set-window-point win (point))
-;;     (process-send-string proc com)
-;;     (dbg (window-point win) (window-end win))
-;;     ))
 
 ;;;*;;; Evaluate only
 
-(defvar  ess-current-region-overlay
-  (let ((overlay (make-overlay (point) (point))))
-    (overlay-put overlay 'face  'highlight)
-    overlay)
-  "The overlay for highlighting currently evaluated region or line.")
+(defun ess-eval-region--normalise-region ()
+  "Clean the region for evaluation.
 
-(defun ess-blink-region (start end)
-  (when ess-blink-region
-    (move-overlay ess-current-region-overlay start end)
-    (run-with-timer ess-blink-delay nil
-                    (lambda ()
-                      (delete-overlay ess-current-region-overlay)))))
-
-
-(defun ess-eval-region (start end toggle &optional message inject)
-  "Send the current region to the inferior ESS process.
-With prefix argument toggle the meaning of `ess-eval-visibly';
-this does not apply when using the S-plus GUI, see `ess-eval-region-ddeclient'.
-
-If INJECT is non-nil the region will be pre-processed in a
-dialect specific way to include source references"
-
-  (interactive "r\nP")
-  ;;(untabify (point-min) (point-max))
-  ;;(untabify start end); do we really need to save-excursion?
-  (ess-force-buffer-current "Process to use: ")
-
-  (unless ess-local-customize-alist
-    ;; external applications might call ess-eval-* functions; make it easier for them
-    (ess-setq-vars-local (symbol-value (ess-get-process-variable 'ess-local-customize-alist))))
-
-  (message "Starting evaluation...")
-  (setq message (or message "Eval region"))
-
+This trims newlines at beginning and end of the region because
+they might throw off the debugger."
   (save-excursion
-    ;; don't send new lines (avoid screwing the debugger)
     (goto-char start)
     (skip-chars-forward "\n\t ")
     (setq start (point))
@@ -1746,46 +1650,61 @@ dialect specific way to include source references"
     (unless mark-active
       (ess-blink-region start end))
 
-    ;; don't send new lines at the end (avoid screwing the debugger)
     (goto-char end)
     (skip-chars-backward "\n\t ")
-    (setq end (point)))
+    (setq end (point))))
 
-  (let* ((proc (get-process ess-local-process-name))
-         (visibly (if toggle (not ess-eval-visibly) ess-eval-visibly))
-         (dev-p (or ess-developer
-                    (ess-get-process-variable 'ess-developer)))
-         (tb-p  (process-get proc 'tracebug)))
-    (cond
-     (dev-p     (ess-developer-send-region proc start end visibly message tb-p))
-     (tb-p      (ess-tracebug-send-region proc start end visibly message inject))
-     (t         (ess-send-region proc start end visibly message))))
+(defun ess-eval-region (start end toggle &optional message type)
+  "Send the current region to the inferior ESS process.
+With prefix argument toggle the meaning of `ess-eval-visibly';
+this does not apply when using the S-plus GUI, see
+`ess-dde-send-region'. TYPE is a symbol indicating what type of
+region this is."
+  (interactive "r\nP")
 
-  (if (and (fboundp 'deactivate-mark) ess-eval-deactivate-mark)
-      (deactivate-mark))
-  ;; return value
+  (ess-force-buffer-current "Process to use: ")
+  (message "Starting evaluation...")
+
+  (unless ess-local-customize-alist
+    ;; External applications might call ess-eval-* functions; make it
+    ;; easier for them
+    (ess-setq-vars-local (symbol-value (ess-get-process-variable 'ess-local-customize-alist))))
+
+  (ess-eval-region--normalise-region)
+
+  (let ((visibly (if toggle (not ess-eval-visibly) ess-eval-visibly))
+        (message (or message "Eval region"))
+        (proc (ess-get-process)))
+    (save-excursion
+      (ess-send-region proc start end visibly message type)))
+
+  (when ess-eval-deactivate-mark
+    (ess-deactivate-mark))
+
   (list start end))
 
 (defun ess-eval-buffer (vis)
   "Send the current buffer to the inferior ESS process.
-Arg has same meaning as for `ess-eval-region'."
+VIS has same meaning as for `ess-eval-region'."
   (interactive "P")
   (ess-eval-region (point-min) (point-max) vis "Eval buffer" 'buffer))
 
 (defun ess-eval-buffer-from-beg-to-here (vis)
+  "Send region from beginning to point to the inferior ESS process.
+VIS has same meaning as for `ess-eval-region'."
   (interactive "P")
-  (ess-eval-region (point-min) (point) vis "Eval buffer from the beginning
-of the buffer until here, i.e. 'point'"))
+  (ess-eval-region (point-min) (point) vis "Eval buffer till point"))
 
 (defun ess-eval-buffer-from-here-to-end (vis)
+  "Send region from point to end of buffer to the inferior ESS process.
+VIS has same meaning as for `ess-eval-region'."
   (interactive "P")
-  (ess-eval-region (point) (point-max) vis "Eval buffer from here ('point') until
-the end of the buffer"))
+  (ess-eval-region (point) (point-max) vis "Eval buffer till end"))
 
 
 (defun ess-eval-function (vis &optional no-error)
   "Send the current function to the inferior ESS process.
-Arg has same meaning as for `ess-eval-region'.
+Prefix argument VIS toggles the meaning of `ess-eval-visibly'.
 
 If NO-ERROR is non-nil and the function was successfully
 evaluated, return '(beg end) representing the beginning and end
@@ -1795,32 +1714,29 @@ nil."
   (ess-force-buffer-current "Process to use: ")
   (save-excursion
     (ignore-errors
-      ;; evaluation is forward oriented
+      ;; Evaluation is forward oriented
       (forward-line -1)
       (ess-next-code-line 1))
     (let ((beg-end (ess-end-of-function nil no-error)))
-      (if beg-end
-          (let* ((beg (nth 0 beg-end))
-                 (end (nth 1 beg-end))
-                 (proc (get-process ess-local-process-name))
-                 (tb-p  (process-get proc 'tracebug))
-                 (dev-p (or ess-developer
-                            (ess-get-process-variable 'ess-developer)))
-                 (name (progn (goto-char beg)
-                              (forward-word) ;;func names starting with . are not recognized??
-                              (ess-read-object-name-default)))
-                 (mess (format "Eval function %s"
-                               (propertize (or name "???")
-                                           'face 'font-lock-function-name-face)))
-                 (visibly (if vis (not ess-eval-visibly) ess-eval-visibly)))
-
-            (ess-blink-region beg end)
-            (cond
-             (dev-p     (ess-developer-send-function proc beg end name visibly mess tb-p))
-             (tb-p      (ess-tracebug-send-function  proc beg end      visibly mess))
-             (t         (ess-send-region             proc beg end      visibly mess)))
-            beg-end)
-        nil))))
+      (when beg-end
+        (let* ((beg (nth 0 beg-end))
+               (end (nth 1 beg-end))
+               (proc (get-process ess-local-process-name))
+               ;; FIXME: func names starting with . are not recognized??
+               (name (progn (goto-char beg)
+                            (forward-word)
+                            (ess-read-object-name-default)))
+               (msg (format "Eval function %s"
+                            (propertize (or name "???")
+                                        'face 'font-lock-function-name-face)))
+               (visibly (if vis (not ess-eval-visibly) ess-eval-visibly)))
+          (ess-blink-region beg end)
+          (cond
+           ((ess-tracebug-p)
+            (ess-tracebug-send-function proc beg end visibly msg))
+           (t
+            (ess-send-region proc beg end visibly msg)))
+          beg-end)))))
 
 
 ;; This is from  Mary Lindstrom <lindstro@Biostat.Wisc.Edu>
@@ -1831,8 +1747,11 @@ Prefix arg VIS toggles visibility of ess-code as for `ess-eval-region'."
   (interactive "P")
   (save-excursion
     (forward-paragraph)
+    ;; Skip blank code to avoid sending surrounding comments
+    (ess-skip-blanks-backward 'multiline)
     (let ((end (point)))
       (backward-paragraph)
+      (ess-skip-blanks-forward 'multiline)
       (ess-eval-region (point) end vis "Eval paragraph"))))
 
 ;; ;; Experimental - after suggestion from Jenny Brian for an 'eval-multiline'
@@ -1848,7 +1767,6 @@ Prefix arg VIS toggles visibility of ess-code as for `ess-eval-region'."
 ;;     (let ((end (point)))
 ;;       (backward-sexp)
 ;;       (ess-eval-region (point) end vis "Eval sexp"))))
-
 
 (defun ess-eval-function-or-paragraph (vis)
   "Send the current function if \\[point] is inside one, otherwise the current
@@ -1885,7 +1803,6 @@ paragraph.
       (ess-eval-region (region-beginning) (region-end) vis)
     (ess-eval-function-or-paragraph vis)))
 
-
 (defun ess-eval-region-or-function-or-paragraph-and-step (vis)
   "Send the current region if mark is active, if not, send
 function if \\[point] is inside one, otherwise the current
@@ -1902,8 +1819,7 @@ end of region if region was active.
         (goto-char end))
     (ess-eval-function-or-paragraph-and-step vis)))
 
-
-(defun ess-eval-line (vis)
+(defun ess-eval-line (&optional vis)
   "Send the current line to the inferior ESS process.
 Arg has same meaning as for `ess-eval-region'."
   (interactive "P")
@@ -1913,8 +1829,6 @@ Arg has same meaning as for `ess-eval-region'."
       (beginning-of-line)
       (princ (concat "Loading line: " (ess-extract-word-name) " ...") t)
       (ess-eval-region (point) end vis "Eval line"))))
-
-
 
 (defun ess-next-code-line (&optional arg skip-to-eob)
   "Move ARG lines of code forward (backward if ARG is negative).
@@ -1981,8 +1895,7 @@ true."
   (if (and transient-mark-mode mark-active ;; xemacs doesn't have use-region-p
            (> (region-end) (region-beginning)))
       (ess-eval-region (region-beginning) (region-end) vis)
-    (ess-eval-line-and-step)
-  ))
+    (ess-eval-line-and-step)))
 
 (defun ess-eval-line-and-step-invisibly ()
   "Evaluate the current line invisibly and step to the next line.
@@ -1996,6 +1909,7 @@ Evaluate all comments and empty lines."
 
 ;; FER's versions don't work properly with nested functions. Replaced
 ;; mine. DMS 16 Nov 92
+
 
 ;;;*;;; Evaluate and switch to S
 
@@ -2044,57 +1958,7 @@ for `ess-eval-region'."
     (goto-char (cadr beg-end))
     (if ess-eval-empty
         (forward-line 1)
-      (ess-next-code-line 1)))
-  )
-
-;;; Related to the ess-eval-* commands, there are the ess-load
-;;; commands.   Need to add appropriate stuff...
-
-
-(defun ess-load-file (&optional filename)
-  "Load an S source file into an inferior ESS process."
-  (interactive (list
-                (or
-                 (and (eq major-mode 'ess-mode)
-                      (buffer-file-name))
-                 (expand-file-name
-                  (read-file-name "Load S file: " nil nil t)))))
-  (ess-force-buffer-current "Process to load into: ")
-  (if (or ess-developer
-          (ess-get-process-variable  'ess-developer))
-      (ess-developer-source-current-file filename)
-    (let ((filename (if (and (fboundp 'tramp-tramp-file-p)
-                             (tramp-tramp-file-p filename))
-                        (tramp-file-name-localname (tramp-dissect-file-name filename))
-                      filename)))
-      (if ess-microsoft-p
-          (setq filename (ess-replace-in-string filename "[\\]" "/")))
-      (if (fboundp (ess-process-get 'source-file-function))
-         (funcall (ess-process-get 'source-file-function) filename)
-       (let ((source-buffer (get-file-buffer filename)))
-         (if (ess-check-source filename)
-             (error "Buffer %s has not been saved" (buffer-name source-buffer)))
-         ;; else
-         (if (ess-ddeclient-p)
-             (ess-load-file-ddeclient filename)
-
-           ;; else: "normal", non-DDE behavior:
-           ;; Find the process to load into
-           (if source-buffer
-               (with-current-buffer source-buffer
-                 (ess-force-buffer-current "Process to load into: ")
-                 (ess-check-modifications)))
-           (let ((errbuffer (ess-create-temp-buffer ess-error-buffer-name))
-                 error-occurred nomessage)
-             (ess-eval-linewise (format ess-load-command filename))
-             )))))))
-
-;; C-c C-l  *used to* eval code:
-(defun ess-msg-and-comint-dynamic-list-input-ring ()
- "Display a list of recent inputs entered into the current buffer."
-  (interactive)
-  (message "C-c C-l  no longer loads a source file in [iESS], rather use C-c M-l instead")
-  (comint-dynamic-list-input-ring))
+      (ess-next-code-line 1))))
 
  ; Inferior S mode
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2179,6 +2043,7 @@ for `ess-eval-region'."
      ["Jump to Error"           ess-parse-errors        t]
      ["Load source file"  	ess-load-file           t]
      ["Resynch S completions"	ess-resynch		t]
+     ["Recreate R and S versions known to ESS" (ess-r-s-versions-creation+menu) t]
      )
     "------"
     ("start-dev" :visible nil); <-- ??
@@ -2213,8 +2078,7 @@ for `ess-eval-region'."
     (define-key map "\C-c\C-s" 'ess-execute-search)
     (define-key map "\C-c\C-x" 'ess-execute-objects)
     map)
-  "Keymap used in `ess-execute'"
-  )
+  "Keymap used in `ess-execute'")
 
 (defun inferior-ess-mode ()
   "Major mode for interacting with an inferior ESS process.
@@ -2270,9 +2134,8 @@ Paragraphs are separated only by blank lines.  Crosshatches start comments.
 If you accidentally suspend your process, use \\[comint-continue-subjob]
 to continue it."
   (interactive)
-
-  (comint-mode)
-
+  (delay-mode-hooks
+    (comint-mode))
   (set (make-local-variable 'comint-input-sender) 'inferior-ess-input-sender)
   (set (make-local-variable 'process-connection-type) t)
   ;; initialize all custom vars:
@@ -2310,10 +2173,10 @@ to continue it."
           ess--local-mode-line-process-indicator
           "]: %s"))
   (use-local-map inferior-ess-mode-map)
-  (if ess-mode-syntax-table
-      (set-syntax-table ess-mode-syntax-table)
-    ;; FIXME: need to do something if not set!  Get from the proper place!
-    )
+  (let ((inf-syntax-table (or inferior-ess-mode-syntax-table
+                              ess-mode-syntax-table)))
+    (when inf-syntax-table
+      (set-syntax-table inf-syntax-table)))
 
   (ess-write-to-dribble-buffer
    (format "(i-ess 1): buf=%s, lang=%s, comint..echo=%s, comint..sender=%s,\n"
@@ -2374,8 +2237,8 @@ to continue it."
   (setq comint-input-autoexpand t) ; Only for completion, not on input.
 
   ;; timers
-  (add-hook 'ess-idle-timer-functions 'ess-cache-search-list nil 'local)
-  (add-hook 'ess-idle-timer-functions 'ess-synchronize-dirs nil 'local)
+  ;; (add-hook 'ess-idle-timer-functions 'ess-cache-search-list nil 'local)
+  ;; (add-hook 'ess-idle-timer-functions 'ess-synchronize-dirs nil 'local)
 
   ;;; Keep <tabs> out of the code.
   (set (make-local-variable 'indent-tabs-mode) nil)
@@ -2383,19 +2246,15 @@ to continue it."
   (set (make-local-variable 'paragraph-start)
        (concat inferior-ess-primary-prompt "\\|\^L"))
   (set (make-local-variable 'paragraph-separate) "\^L")
-
-  ;; SJE Tue 28 Dec 2004: do not attempt to load object name db.
-  ;; (ess-load-object-name-db-file)
-  ;; (sleep-for 0.5)
+  (if (featurep 'jit-lock)
+      (setq-local jit-lock-chunk-size inferior-ess-jit-lock-chunk-size))
   (make-local-variable 'kill-buffer-hook)
   (add-hook 'kill-buffer-hook 'ess-kill-buffer-function)
-  (run-hooks 'inferior-ess-mode-hook)
-
+  (run-mode-hooks 'inferior-ess-mode-hook)
   (ess-write-to-dribble-buffer
    (format "(i-ess end): buf=%s, lang=%s, comint..echo=%s, comint..sender=%s,\n"
            (current-buffer) ess-language
            comint-process-echoes comint-input-sender))
-
   (message
    (concat (substitute-command-keys
             "Type \\[describe-mode] for help on ESS version ")
@@ -2412,57 +2271,8 @@ to continue it."
         (ess-eval-linewise string nil nil ess-eval-empty)
       (ess-send-string proc string))))
 
-
 (defvar ess-help-arg-regexp "\\(['\"]?\\)\\([^,=)'\"]*\\)\\1"
   "Reg(ular) Ex(pression) of help(.) arguments.  MUST: 2nd \\(.\\) = arg.")
-(defconst inferior-R--input-help (format "^ *help *(%s)" ess-help-arg-regexp))
-;; (defconst inferior-R-2-input-help (format "^ *\\? *%s" ess-help-arg-regexp))
-(defconst inferior-R--input-?-help-regexp
-  "^ *\\(?:\\(?1:[a-zA-Z ]*?\\?\\{1,2\\}\\) *\\(?2:.+\\)\\)")
-(defconst inferior-R--page-regexp (format "^ *page *(%s)" ess-help-arg-regexp))
-
-(defun ess-R--sanitize-help-topic (string)
-  ;; enclose help topics into `` to avoid ?while ?if etc hangs
-  (if (string-match "\\([^:]*:+\\)\\(.*\\)$" string) ; treat foo::bar corectly
-      (format "%s`%s`" (match-string 1 string) (match-string 2 string))
-    (format "`%s`" string)))
-
-(defun inferior-R-input-sender (proc string)
-  (save-current-buffer
-    (let ((help-match (and (string-match inferior-R--input-help string)
-                           (match-string 2 string)))
-          (help-?-match (and (string-match inferior-R--input-?-help-regexp string)
-                             string))
-          (page-match   (and (string-match inferior-R--page-regexp string)
-                             (match-string 2 string))))
-      (cond (help-match
-             (ess-display-help-on-object help-match)
-             (process-send-string proc "\n"))
-            (help-?-match
-             (if (string-match "\\?\\?\\(.+\\)" help-?-match)
-                 (ess--display-indexed-help-page (concat help-?-match "\n")
-                                                 "^\\([^ \t\n]+::[^ \t\n]+\\)[ \t\n]+"
-                                                 (format "*ess-apropos[%s](%s)*"
-                                                         ess-current-process-name (match-string 1 help-?-match))
-                                                 'appropos)
-               (if (string-match "^ *\\? *\\([^:]+\\)$" help-?-match) ; help(foo::bar) doesn't work
-                   (ess-display-help-on-object (match-string 1 help-?-match))
-                 ;; anything else we send to process almost unchanged
-                 (let ((help-?-match (and (string-match inferior-R--input-?-help-regexp string)
-                                          (format "%s%s" (match-string 1 string)
-                                                  (ess-R--sanitize-help-topic (match-string 2 string))))))
-                   (ess-display-help-on-object help-?-match "%s\n"))))
-             (process-send-string proc "\n"))
-            (page-match
-             (switch-to-buffer-other-window
-              (ess-command (concat page-match "\n")
-                           (get-buffer-create (concat page-match ".rt"))))
-             (R-transcript-mode)
-             (process-send-string proc "\n"))
-
-            (t ;; normal command
-             (inferior-ess-input-sender proc string)
-             )))))
 
 (defun inferior-ess-send-input ()
   "Sends the command on the current line to the ESS process."
@@ -2496,8 +2306,7 @@ Note: inferior-ess-secondary-prompt should match exactly.
                     (string-match secondary-prompt (field-string-no-properties pos))
                   t))
       (goto-char pos)
-      (setq pos (previous-single-property-change pos 'field))))
-  )
+      (setq pos (previous-single-property-change pos 'field)))))
 
 (defun inferior-ess--goto-input-end:field ()
   "Move point to the end of input skiping all continuation lines.
@@ -2513,8 +2322,7 @@ NOTE: to be used only with fields, see `comint-use-prompt-regexp'.
                     (string-match secondary-prompt (field-string-no-properties pos))
                   t))
       (goto-char pos)
-      (setq pos (next-single-property-change pos 'field)))
-    ))
+      (setq pos (next-single-property-change pos 'field)))))
 
 (defun inferior-ess--get-old-input:field ()
   "Return the ESS command surrounding point (use with fields)."
@@ -2556,8 +2364,7 @@ If in the output field, goes to the begining of previous input.
                 (looking-at inferior-ess-secondary-prompt))))
   (unless (looking-at inferior-ess-prompt)
     (ess-error "Beggining of input not found"))
-  (comint-skip-prompt)
-  )
+  (comint-skip-prompt))
 
 (defun inferior-ess--get-old-input:regexp ()
   "Return the ESS command surrounding point (use regexp)."
@@ -2585,15 +2392,13 @@ If in the output field, goes to the begining of previous input.
             (setq ess-temp-point (point)) ;; this is ugly, used by transcript
             command)
         (message "No command at this point")
-        "")
-      )))
+        ""))))
 
 (defun inferior-ess-get-old-input ()
   "Return the ESS command surrounding point."
   (if comint-use-prompt-regexp
       (inferior-ess--get-old-input:regexp)
-    (inferior-ess--get-old-input:field))
-  )
+    (inferior-ess--get-old-input:field)))
 
 ;;;*;;; Hot key commands
 
@@ -2641,15 +2446,36 @@ Doesn't work for data frames."
                        ")") 'buffer)
   (ess-process-put 'sp-for-help-changed? t))
 
-(defun ess-execute-screen-options ()
+(defun ess-execute-screen-options (&optional invisibly)
   "Cause S to set the \"width\" option to 1 less than the window width.
-Also sets the \"length\" option to 99999.
-This is a good thing to put in `ess-post-run-hook' --- for the S dialects."
+Also sets the \"length\" option to 99999. When INVISIBLY is
+non-nil, don't echo to R subprocess.
+
+This is a good thing to put in `ess-R-post-run-hook' or
+`ess-S+-post-run-hook'."
   (interactive)
-  (if (string= ess-language "S")
-      (ess-eval-linewise (format "options(width=%d, length=99999)"
-                                 (1- (window-width)))
-                         nil nil nil 'wait-prompt)))
+  (if (null ess-execute-screen-options-command)
+      (message "Not implemented for '%s'" ess-dialect)
+    ;; We cannot use (window-width) here because it returns sizes in default
+    ;; (frame) characters which leads to incorrect sizes with scaled fonts.To
+    ;; solve this we approximate font width in pixels and use window-pixel-width
+    ;; to compute the approximate number of characters that fit into line.
+    (let* ((wedges (window-inside-pixel-edges))
+           (wwidth (- (nth 2 wedges) (nth 0 wedges)))
+           (nchars (if (fboundp 'default-font-width)
+                       (floor (/ wwidth (default-font-width)))
+                     ;; emacs 24
+                     (if (display-graphic-p)
+                         (let* ((r (/ (float (frame-char-height)) (frame-char-width)))
+                                (charh (aref (font-info (face-font 'default)) 3))
+                                (charw (/ charh  r)))
+                           (- (floor (/ wwidth charw)) 1))
+                       ;; e.g., no X11 as in  'emacs -nw'
+                       (- (window-width) 2))))
+           (command (format ess-execute-screen-options-command nchars)))
+      (if invisibly
+          (ess-command command)
+        (ess-eval-linewise command nil nil nil 'wait-prompt)))))
 
 (defun ess-execute (command &optional invert buff message)
   "Send a command to the ESS process.
@@ -2692,50 +2518,19 @@ to the command if BUFF is not given.)"
 
 ;;;*;;; Quitting
 
-(defun ess-quit ()
+(ess-defgeneric ess-quit (&rest args)
   "Issue an exiting command to the inferior process, additionally
-also running \\[ess-cleanup].  For R, runs \\[ess-quit-r], see there."
+also running \\[ess-cleanup]."
   (interactive)
-  (if (string-equal ess-dialect "R")
-      (ess-quit-r)
-    ;; else:  non-R
-    (ess-force-buffer-current "Process to quit: " nil 'no-autostart)
-    (ess-make-buffer-current)
-    (let ((sprocess (ess-get-process ess-current-process-name)))
-      (if (not sprocess) (error "No ESS process running"))
-      (when (y-or-n-p (format "Really quit ESS process %s? " sprocess))
-        (ess-cleanup)
-        (goto-char (marker-position (process-mark sprocess)))
-        (insert inferior-ess-exit-command)
-        (process-send-string sprocess inferior-ess-exit-command)
-        ;;SJE - suggest no need to rename buffer upon exit.
-        ;;(rename-buffer (concat (buffer-name) "-exited") t)
-        ))))
-
-(defun ess-quit-r ()
-  "Issue an exiting command to an inferior R process, and optionally clean up.
-This version is for killing *R* processes; it asks the extra question
-regarding whether the workspace image should be saved."
   (ess-force-buffer-current "Process to quit: " nil 'no-autostart)
   (ess-make-buffer-current)
-  (let (cmd
-        ;;Q     response
-        (sprocess (ess-get-process ess-current-process-name)))
-    (if (not sprocess) (error "No ESS process running"))
-    ;;Q (setq response (completing-read "Save workspace image? "
-    ;;Q                                 '( ( "yes".1) ("no" . 1) ("cancel" . 1))
-    ;;Q                                 nil t))
-    ;;Q (if (string-equal response "")
-    ;;Q (setq response "default")); which will ask again (in most situations)
-    ;;Q (unless (string-equal response "cancel")
-    (ess-cleanup)
-    ;;Q   (setq cmd (format "q(\"%s\")\n" response))
-    (setq cmd "q()\n")
-    (goto-char (marker-position (process-mark sprocess)))
-    (process-send-string sprocess cmd)
-    ;;(rename-buffer (concat (buffer-name) "-exited") t)
-    ;;Q      )
-    ))
+  (:override
+   (let ((sprocess (ess-get-process ess-current-process-name)))
+     (if (not sprocess) (error "No ESS process running"))
+     (ess-cleanup)
+     (goto-char (marker-position (process-mark sprocess)))
+     (insert inferior-ess-exit-command)
+     (process-send-string sprocess inferior-ess-exit-command))))
 
 (defun ess-abort ()
   "Kill the ESS process, without executing .Last or terminating devices.
@@ -2746,7 +2541,7 @@ If you want to finish your session, use \\[ess-quit] instead."
   (ding)
   (message "WARNING: \\[inferior-ess-exit-command] will not be executed and graphics devices won't finish properly!")
   (sit-for 2)
-  (if (yes-or-no-p "Still abort? ")
+  (if (y-or-n-p "Still abort? ")
       (comint-quit-subjob)
     (message "Good move.")))
 
@@ -2776,6 +2571,15 @@ before you quit.  It is run automatically by \\[ess-quit]."
             (kill-buffer buf)))))
     (ess-switch-to-ESS nil)))
 
+(ess-defgeneric inferior-ess-reload (&optional start-args)
+  "Reload the inferior process."
+  (interactive)
+  (let ((dir (ess-get-working-directory))
+        (ess-ask-for-ess-directory nil))
+    (:override
+     (error "Unimplemented for this dialect"))
+    (ess-set-working-directory dir)))
+
 (defun ess-kill-buffer-function ()
   "Function run just before an ESS process buffer is killed."
   ;; This simply deletes the buffers process to avoid an Emacs bug
@@ -2799,7 +2603,8 @@ directory and has been modified since it was last read."
   (let* ((entry (nth (1- posn) alist))
          (dir (car entry))
          (timestamp (car (cdr entry)))
-         (new-modtime (ess-dir-modtime dir)))
+         (new-modtime (and timestamp
+                           (ess-dir-modtime dir))))
     ;; Refresh the object listing if necessary
     (if (or force (not (equal new-modtime timestamp)))
         (setcdr (cdr entry) (ess-object-names dir posn)))
@@ -2844,8 +2649,7 @@ If exclude-first is non-nil, don't return objects in first positon (.GlobalEnv).
             (progn (ess-write-to-dribble-buffer "--> (ess-get-modtime-list)\n")
                    (ess-get-modtime-list))
           ;;else
-          (ess-write-to-dribble-buffer " using existing ess-sl-modtime-alist\n")
-          )
+          (ess-write-to-dribble-buffer " using existing ess-sl-modtime-alist\n"))
         (let* ((alist ess-sl-modtime-alist)
                (i 2)
                (n (length alist))
@@ -2867,30 +2671,37 @@ If exclude-first is non-nil, don't return objects in first positon (.GlobalEnv).
 (defun ess-get-words-from-vector (command &optional no-prompt-check wait proc)
   "Evaluate the S command COMMAND, which returns a character vector.
 Return the elements of the result of COMMAND as an alist of
-strings.  COMMAND should have a terminating newline. WAIT is
-passed to `ess-command'.
+strings.  COMMAND should have a terminating newline.  NO-PROMPT-CHECK,
+WAIT, and PROC are passed to `ess-command'.  FILTER may be the
+keyword 'non-... or nil.
 
 To avoid truncation of long vectors, wrap your
 command (%s) like this, or a version with explicit options(max.print=1e6):
 
 local({ out <- try({%s}); print(out, max=1e6) })\n
 "
-  (let ((tbuffer (get-buffer-create
+  (let* ((tbuffer (get-buffer-create
                   " *ess-get-words*")); initial space: disable-undo
-        words)
-    (ess-if-verbose-write (format "ess-get-words*(%s).. " command))
+         (word-RE
+          (concat "\\("
+                  "\\\\\\\"" "\\|" "[^\"]" ;  \" or non-"-char
+                  "\\)*"))
+         (full-word-regexp
+          (concat "\"" "\\(" word-RE "\\)"
+                   "\""
+                   "\\( \\|$\\)"; space or end
+                   ))
+         words)
+    (ess-if-verbose-write
+     (format "(ess-get-words-* command=%s full-word-regexp=%S)\n"
+                                  command full-word-regexp))
     (ess-command command tbuffer 'sleep no-prompt-check wait proc)
     (ess-if-verbose-write " [ok] ..")
     (with-current-buffer tbuffer
       (goto-char (point-min))
-      ;; this is bad, only R specific test
-      ;; (if (not (looking-at "[+ \t>\n]*\\[1\\]"))
-      ;;     (progn (ess-if-verbose-write "not seeing \"[1]\".. ")
-      ;;            (setq words nil)
-      ;;            )
-      (while (re-search-forward "\"\\(\\(\\\\\\\"\\|[^\"]\\)*\\)\"\\( \\|$\\)" nil t);match \"
-        (setq words (cons (buffer-substring (match-beginning 1)
-                                            (match-end 1)) words))))
+      (while (re-search-forward full-word-regexp nil t)
+        (setq words (cons (buffer-substring (match-beginning 1) (match-end 1))
+                          words))))
     (ess-if-verbose-write
      (if (> (length words) 5)
          (format " |-> (length words)= %d\n" (length words))
@@ -3102,36 +2913,37 @@ and (indirectly) by \\[ess-get-help-files-list]."
 ;;; and has the same number of elements and is in the same order as the
 ;;; S search list
 
-(defun ess-get-modtime-list ()
-  "Record the modification times of the directories in the search list,
-and the objects in those directories.
-The result is stored in `ess-sl-modtime-alist'."
+(defun ess-get-modtime-list (&optional cache-var-name exclude-first)
+  "Record directories in the search list, and the objects in those directories.
+The result is stored in CACHE-VAR-NAME. If nil, CACHE-VAR-NAME
+defaultst to `ess-sl-modtime-alist'. If EXCLUDE-FIRST is non-nil
+don't recompile first object in the search list."
   ;; Operation applies to process of current buffer
-  (let* ((searchlist (ess-search-list))
-         (index 1)
-         posn
-         newalist)
+  (let* ((searchlist (if exclude-first
+                         (cdr (ess-search-list))
+                       (ess-search-list)))
+         (index (if exclude-first 2 1))
+         (cache-name (or cache-var-name 'ess-sl-modtime-alist))
+         pack newalist)
     (while searchlist
-      (setq posn (car searchlist))
+      (setq pack (car searchlist))
       (setq newalist
             (append
              newalist
-             (list (or (assoc posn ess-sl-modtime-alist)
+             (list (or (assoc pack (symbol-value cache-name))
                        (append
-                        (list posn (ess-dir-modtime posn))
+                        (list pack (ess-dir-modtime pack))
                         (prog2
-                            (message "Forming completions for %s..." posn)
-                            (ess-object-names posn index)
-                          (message "Forming completions for %s...done" posn)
-                          ))))))
+                            (message "Forming completions for %s..." pack)
+                            (ess-object-names pack index)
+                          (message "Forming completions for %s...done" pack)))))))
       (setq index (1+ index))
       (setq searchlist (cdr searchlist)))
     ;;DBG:
     (ess-write-to-dribble-buffer
-     (format "(ess-get-modtime-list): created new alist of length %d\n"
-             (length newalist)));; todo : also give length of components!
-
-    (setq ess-sl-modtime-alist newalist)))
+     (format "(%s): created new alist of length %d\n"
+             cache-var-name (length newalist)))
+    (set cache-name newalist)))
 
 
 (defun ess-search-path-tracker (str)
@@ -3152,48 +2964,46 @@ compatibility only."
  ; Miscellaneous routines
 
 ;;;*;;; Routines for reading object names
-(defun ess-read-object-name (p-string)
-  "Read an S object name from the minibuffer with completion, and return it.
+(ess-defgeneric ess-read-object-name (p-string)
+  "Read an object name from the minibuffer with completion, and return it.
 P-STRING is the prompt string."
-  (let* ((default (ess-read-object-name-dump))
-         (object-list (ess-get-object-list ess-local-process-name))
-         (spec (ess-completing-read p-string object-list nil nil nil nil default)))
-    (list (cond
-           ((string= spec "") default)
-           (t spec)))))
+  (:override
+   (let* ((default (ess-read-object-name-dump))
+          (object-list (ess-get-object-list ess-local-process-name))
+          (spec (ess-completing-read p-string object-list nil nil nil nil default)))
+     (list (cond
+            ((string= spec "") default)
+            (t spec))))))
 
 (defun ess-read-object-name-default ()
   "Return the object name at point, or nil if none."
-  (condition-case ()
-      (save-excursion
-        ;; The following line circumvents an 18.57 bug in following-char
-        (if (eobp) (backward-char 1)) ; Hopefully buffer is not empty!
-        ;; Get onto a symbol
-        (catch 'nosym ; bail out if there's no symbol at all before point
-          (while (/= (char-syntax (following-char)) ?w)
-            (if (bobp) (throw 'nosym nil) (backward-char 1)))
-          (let*
-              ((end (progn (forward-sexp 1) (point)))
-               (beg (progn (backward-sexp 1) (point))))
-            (buffer-substring-no-properties beg end))))
-    (error nil)))
+  (ignore-errors
+    (save-excursion
+      ;; The following line circumvents an 18.57 bug in following-char
+      (if (eobp) (backward-char 1))   ; Hopefully buffer is not empty!
+      ;; Get onto a symbol
+      (catch 'nosym          ; bail out if there's no symbol at all before point
+        (while (let ((sc (char-syntax (following-char))))
+                 (not (or (= sc ?w) (= sc ?_))))
+          (if (bobp) (throw 'nosym nil) (backward-char 1))))
+      (let*
+          ((end (progn (forward-sexp 1) (point)))
+           (beg (progn (backward-sexp 1) (point))))
+        (buffer-substring-no-properties beg end)))))
 
 (defun ess-read-object-name-dump ()
   "Return the object name at point, or \"Temporary\" if none."
-  (condition-case ()
-      (save-excursion
-        ;; The following line circumvents an 18.57 bug in following-char
-        (if (eobp) (backward-char 1)) ; Hopefully buffer is not empty!
-        ;; Get onto a symbol
-        (catch 'nosym ; bail out if there's no symbol at all before point
-          (while (/= (char-syntax (following-char)) ?w)
-            (if (bobp) (throw 'nosym nil) (backward-char 1)))
-          (let*
-              ((end (progn (forward-sexp 1) (point)))
-               (beg (progn (backward-sexp 1) (point)))
-               (object-name (buffer-substring beg end)))
-            (or object-name "Temporary"))))
-    (error nil)))
+  (ignore-errors
+    (save-excursion
+      ;; Get onto a symbol
+      (catch 'nosym ; bail out if there's no symbol at all before point
+        (while (/= (char-syntax (following-char)) ?w)
+          (if (bobp) (throw 'nosym nil) (backward-char 1)))
+        (let*
+            ((end (progn (forward-sexp 1) (point)))
+             (beg (progn (backward-sexp 1) (point)))
+             (object-name (buffer-substring beg end)))
+          (or object-name "Temporary"))))))
 
 ;;;; start of ess-smart-operators
 ;;;; inspired by slime repl shortcuts
@@ -3227,14 +3037,12 @@ list."
       (if ess-smart-operators
           (progn
             (delete-horizontal-space)
-            (insert ", "))
-        (insert ","))
-      )))
-
-
+            (insert ", ")
+            (unless (eq major-mode 'inferior-ess-mode)
+             (indent-according-to-mode)))
+        (insert ",")))))
 
  ; directories
-
 (defun ess-set-working-directory (path &optional no-error)
   "Set the current working directory to PATH for both ESS
 subprocess and Emacs buffer `default-directory'."
@@ -3265,19 +3073,17 @@ subprocess and Emacs buffer `default-directory'."
 
 (defun ess-synchronize-dirs ()
   "Set Emacs' current directory to be the same as the subprocess directory.
-Used in `ess-idle-timer-functions'."
+To be used in `ess-idle-timer-functions'."
   (when (and ess-can-eval-in-background
              ess-getwd-command)
     (ess-when-new-input last-sync-dirs
       (ess-if-verbose-write "\n(ess-synchronize-dirs)\n")
       (setq default-directory
             (car (ess-get-words-from-vector ess-getwd-command)))
-      default-directory
-      )))
+      default-directory)))
 
 (defun ess-dirs ()
-  "Set Emacs' current directory to be the same as the *R* process.
-"
+  "Set Emacs' current directory to be the same as the *R* process."
   ;; Note: This function is not necessary anymore. The Emacs
   ;; default-directory and subprocess working directory are
   ;; synchronized automatically.
@@ -3297,7 +3103,7 @@ changed."
   (ess-process-put 'sp-for-ac-changed? t))
 
 (defun ess-cache-search-list ()
-  "Used in `ess-idle-timer-functions', to set
+  "To be used in `ess-idle-timer-functions', to set
 search path related variables."
   (when (and ess-can-eval-in-background
              inferior-ess-search-list-command)
@@ -3307,8 +3113,7 @@ search path related variables."
         (when (not (equal path old-path))
           (process-put *proc* 'search-list path)
           (ess--mark-search-list-as-changed)
-          path
-          )))))
+          path)))))
 
 
 ;;*;; Temporary buffer handling
@@ -3339,7 +3144,7 @@ search path related variables."
 
 ;; I added the component:
 ;;  (inferior-ess-search-list-command . "search()\n")
-;; to S+3-customize-alist and R-customize-alist, and then I redefined the
+;; to S+3-customize-alist and ess-r-customize-alist, and then I redefined the
 ;; ess-create-temp-buffer function as follows:
 (defun ess-create-temp-buffer (name)
   "Create an empty buffer called NAME."

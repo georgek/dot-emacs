@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<!-- Created by GNU Texinfo 5.1, http://www.gnu.org/software/texinfo/ -->
+<!-- Created by GNU Texinfo 5.2, http://www.gnu.org/software/texinfo/ -->
 <head>
 <title>ESS - Emacs Speaks Statistics</title>
 
@@ -312,7 +312,7 @@ acronym[title]::after { content: "This acronym means" attr(title); speak:normal;
 <a name="index-README"></a>
 
 <p>This is the README file for the distribution of ESS version
-13.09-1
+16.10
 </p>
 <p>ESS is a GNU Emacs and XEmacs mode for interactive statistical
 programming and data analysis.  Languages supported: the S family (S,
@@ -371,7 +371,7 @@ Lumley).
 <a name="License"></a>
 <div class="header">
 <p>
-Next: <a href="#Stability" accesskey="n" rel="next">Stability</a>, Previous: <a href="#General-Information" accesskey="p" rel="previous">General Information</a>, Up: <a href="#General-Information" accesskey="u" rel="up">General Information</a> &nbsp; </p>
+Next: <a href="#Stability" accesskey="n" rel="next">Stability</a>, Previous: <a href="#General-Information" accesskey="p" rel="prev">General Information</a>, Up: <a href="#General-Information" accesskey="u" rel="up">General Information</a> &nbsp; </p>
 </div>
 <a name="License-1"></a>
 <h3 class="section">1.1 License</h3>
@@ -392,7 +392,7 @@ details.
 <a name="Stability"></a>
 <div class="header">
 <p>
-Next: <a href="#Requirements" accesskey="n" rel="next">Requirements</a>, Previous: <a href="#License" accesskey="p" rel="previous">License</a>, Up: <a href="#General-Information" accesskey="u" rel="up">General Information</a> &nbsp; </p>
+Next: <a href="#Requirements" accesskey="n" rel="next">Requirements</a>, Previous: <a href="#License" accesskey="p" rel="prev">License</a>, Up: <a href="#General-Information" accesskey="u" rel="up">General Information</a> &nbsp; </p>
 </div>
 <a name="Stability-1"></a>
 <h3 class="section">1.2 Stability</h3>
@@ -409,7 +409,7 @@ reports are much appreciated!
 <a name="Requirements"></a>
 <div class="header">
 <p>
-Next: <a href="#Latest-Version" accesskey="n" rel="next">Latest Version</a>, Previous: <a href="#Stability" accesskey="p" rel="previous">Stability</a>, Up: <a href="#General-Information" accesskey="u" rel="up">General Information</a> &nbsp; </p>
+Next: <a href="#Latest-Version" accesskey="n" rel="next">Latest Version</a>, Previous: <a href="#Stability" accesskey="p" rel="prev">Stability</a>, Up: <a href="#General-Information" accesskey="u" rel="up">General Information</a> &nbsp; </p>
 </div>
 <a name="Requirements-1"></a>
 <h3 class="section">1.3 Requirements</h3>
@@ -418,16 +418,14 @@ Next: <a href="#Latest-Version" accesskey="n" rel="next">Latest Version</a>, Pre
 statistical packages: R/S-PLUS, SAS, Stata, OpenBUGS and JAGS.
 </p>
 <p>ESS supports current, and recent, stable versions of GNU Emacs
-(currently, specifically, the 23.x and 24.x series; alpha/beta/pre-release
+(currently, the 24.x and 25.x series; alpha/beta/pre-release
 versions are NOT SUPPORTED).  Non-Windows users beware: GNU Emacs 24.3 is 
 preferable to 24.1 or 24.2: these broken builds suffer from bug 12463 
 <a href="http://debbugs.gnu.org/cgi/bugreport.cgi?bug=12463">http://debbugs.gnu.org/cgi/bugreport.cgi?bug=12463</a> which 
-will cause emacs and ESS to get progressively slower over time.
+will cause Emacs to get progressively slower over time.
 </p>
 <p>Due to XEmacs lacking some features that ESS requires, ESS
-support of XEmacs ends with ESS 12.04-4.  This decision will
-be re-visited in the future as XEmacs continues to sync with
-GNU Emacs.
+support of XEmacs ended with ESS 12.04-4.  
 </p>
 <p>To build the PDF documentation, you will need a version of TeX Live or
 texinfo that includes texi2dvi (BEWARE: recent TeX Live, and some
@@ -443,7 +441,7 @@ texinfo RPMs, do NOT include texi2dvi).
 <a name="Latest-Version"></a>
 <div class="header">
 <p>
-Next: <a href="#Installation" accesskey="n" rel="next">Installation</a>, Previous: <a href="#Requirements" accesskey="p" rel="previous">Requirements</a>, Up: <a href="#General-Information" accesskey="u" rel="up">General Information</a> &nbsp; </p>
+Next: <a href="#Installation" accesskey="n" rel="next">Installation</a>, Previous: <a href="#Requirements" accesskey="p" rel="prev">Requirements</a>, Up: <a href="#General-Information" accesskey="u" rel="up">General Information</a> &nbsp; </p>
 </div>
 <a name="Getting-the-Latest-Version"></a>
 <h3 class="section">1.4 Getting the Latest Version</h3>
@@ -452,50 +450,10 @@ Next: <a href="#Installation" accesskey="n" rel="next">Installation</a>, Previou
 <a href="http://ess.r-project.org">ESS web page</a> or
 <a href="http://lib.stat.cmu.edu/general/ESS/">StatLib</a>
 </p>
-<a name="ESS-subversion-repository"></a>
-<h4 class="subsection">1.4.1 ESS subversion repository</h4>
 
-
-
-<p>The latest development version of ESS is available via
-<a href="https://svn.R-project.org/ESS/">https://svn.R-project.org/ESS/</a>, the ESS Subversion repository.  If
-you have a Subversion client (see <a href="http://subversion.tigris.org/">http://subversion.tigris.org/</a>),
-you can download the sources using:
-</p><div class="smallexample">
-<pre class="smallexample">% svn checkout https://svn.r-project.org/ESS/trunk <var>path</var>
-</pre></div>
-<p>which will put the ESS files into directory <var>path</var>.  Later,
-within that directory, &lsquo;svn update&rsquo; will bring that directory up to
-date.  Windows-based tools such as TortoiseSVN are also available for
-downloading the files.  Alternatively, you can browse the sources with a
-web browser at: <a href="https://svn.r-project.org/ESS/trunk">ESS SVN
-site</a>.  However, please use a subversion client instead to minimize the
-load when retrieving.
-</p>
-<p>If you remove other versions of ESS from your emacs load-path, you can
-then use the development version by adding the following to .emacs:
-</p>
-<div class="example">
-<pre class="example">(load &quot;/path/to/ess-svn/lisp/ess-site.el&quot;) 
-</pre></div>
-
-<p>Note that https is required, and that the SSL certificate for the
-Subversion server of the R project is
-</p>
-<div class="smallexample">
-<pre class="smallexample">Certificate information:
- - Hostname: svn.r-project.org
- - Valid: from Jul 16 08:10:01 2004 GMT until Jul 14 08:10:01 2014 GMT
- - Issuer: Department of Mathematics, ETH Zurich, Zurich, Switzerland, CH
- - Fingerprint: c9:5d:eb:f9:f2:56:d1:04:ba:44:61:f8:64:6b:d9:33:3f:93:6e:ad
-</pre></div>
-
-<p>(currently, there is no &ldquo;trusted certificate&rdquo;).  You can accept this
-certificate permanently and will not be asked about it anymore.
-</p>
-<a name="Git-for-development"></a>
-<h4 class="subsection">1.4.2 Git for development</h4>
-<p>For development and experimentation on new features, there is now a
+<a name="Git-for-ESS-development"></a>
+<h4 class="subsection">1.4.1 Git for ESS development</h4>
+<p>For development and experimentation on new ESS features, there is now a
 GitHub branch for <acronym>ESS</acronym>, available at <a href="https://github.com/emacs-ess/ESS">https://github.com/emacs-ess/ESS</a>.
 </p>
 
@@ -505,7 +463,7 @@ GitHub branch for <acronym>ESS</acronym>, available at <a href="https://github.c
 <a name="Installation"></a>
 <div class="header">
 <p>
-Next: <a href="#Starting-up" accesskey="n" rel="next">Starting up</a>, Previous: <a href="#Latest-Version" accesskey="p" rel="previous">Latest Version</a>, Up: <a href="#General-Information" accesskey="u" rel="up">General Information</a> &nbsp; </p>
+Next: <a href="#Starting-up" accesskey="n" rel="next">Starting up</a>, Previous: <a href="#Latest-Version" accesskey="p" rel="prev">Latest Version</a>, Up: <a href="#General-Information" accesskey="u" rel="up">General Information</a> &nbsp; </p>
 </div>
 <a name="Installation-1"></a>
 <h3 class="section">1.5 Installation</h3>
@@ -516,14 +474,8 @@ Next: <a href="#Starting-up" accesskey="n" rel="next">Starting up</a>, Previous:
 area</a> and unpack it into a directory where you would like ESS to
 reside. We will denote this directory as <samp>/path/to/ESS/</samp> hereafter.
 
-<p>Alternatively you can use <code>svn</code> or <code>git</code> to fetch the most
+<p>Alternatively you can use <code>git</code> to fetch the most
 recent development version to your local machine with:
-</p>
-<div class="example">
-<pre class="example">svn checkout https://svn.r-project.org/ESS/trunk /path/to/ESS
-</pre></div>
-
-<p>or 
 </p>
 <div class="example">
 <pre class="example">git clone https://github.com/emacs-ess/ESS.git /path/to/ESS
@@ -585,7 +537,7 @@ with GNU Emacs.
 <a name="Starting-up"></a>
 <div class="header">
 <p>
-Next: <a href="#Current-Features" accesskey="n" rel="next">Current Features</a>, Previous: <a href="#Installation" accesskey="p" rel="previous">Installation</a>, Up: <a href="#General-Information" accesskey="u" rel="up">General Information</a> &nbsp; </p>
+Next: <a href="#Current-Features" accesskey="n" rel="next">Current Features</a>, Previous: <a href="#Installation" accesskey="p" rel="prev">Installation</a>, Up: <a href="#General-Information" accesskey="u" rel="up">General Information</a> &nbsp; </p>
 </div>
 <a name="Starting-an-ESS-process"></a>
 <h3 class="section">1.6 Starting an ESS process</h3>
@@ -599,7 +551,7 @@ use the MSDOS prompt shell, simply type <kbd>M-x S+6-msdos RET</kbd>.
 <a name="Current-Features"></a>
 <div class="header">
 <p>
-Next: <a href="#New-Features" accesskey="n" rel="next">New Features</a>, Previous: <a href="#Starting-up" accesskey="p" rel="previous">Starting up</a>, Up: <a href="#General-Information" accesskey="u" rel="up">General Information</a> &nbsp; </p>
+Next: <a href="#New-Features" accesskey="n" rel="next">New Features</a>, Previous: <a href="#Starting-up" accesskey="p" rel="prev">Starting up</a>, Up: <a href="#General-Information" accesskey="u" rel="up">General Information</a> &nbsp; </p>
 </div>
 <a name="Current-Features-1"></a>
 <h3 class="section">1.7 Current Features</h3>
@@ -637,7 +589,7 @@ Next: <a href="#New-Features" accesskey="n" rel="next">New Features</a>, Previou
   </li><li> Manipulating and editing saved transcripts
   </li><li> Re-evaluating commands from transcript files
   </li></ul>
-</li><li> Interaction with Help Pages and other Documenation (R)
+</li><li> Interaction with Help Pages and other Documentation (R)
   <ul>
 <li> Fast Navigation
   </li><li> Sending Examples to running ESS process.
@@ -656,11 +608,234 @@ Next: <a href="#New-Features" accesskey="n" rel="next">New Features</a>, Previou
 <a name="New-Features"></a>
 <div class="header">
 <p>
-Next: <a href="#Reporting-Bugs" accesskey="n" rel="next">Reporting Bugs</a>, Previous: <a href="#Current-Features" accesskey="p" rel="previous">Current Features</a>, Up: <a href="#General-Information" accesskey="u" rel="up">General Information</a> &nbsp; </p>
+Next: <a href="#Reporting-Bugs" accesskey="n" rel="next">Reporting Bugs</a>, Previous: <a href="#Current-Features" accesskey="p" rel="prev">Current Features</a>, Up: <a href="#General-Information" accesskey="u" rel="up">General Information</a> &nbsp; </p>
 </div>
 <a name="New-Features-1"></a>
 <h3 class="section">1.8 New Features</h3>
 
+
+<p>Changes and New Features in 16.10:
+</p><ul>
+<li> <acronym>ESS[R]</acronym>: Syntax highlighting is now more consistent. Backquoted
+names are not fontified as strings (since they really are identifiers).
+Furthermore they are now correctly recognised when they are function
+definitions or function calls.
+</li><li> <acronym>ESS[R]</acronym>: Backquoted names and <code>%op%</code> operators are
+recognised as sexp. This is useful for code navigation, e.g. with
+<kbd>C-M-f</kbd> and <kbd>C-M-b</kbd>.
+</li><li> <acronym>ESS[R]</acronym>: Integration of outline mode with roxygen examples fields.
+You can use outline mode&rsquo;s code folding commands to fold the examples
+field. This is especially nice to use with well documented packages with
+long examples set. Set <code>ess-roxy-fold-examples</code> to non-nil to
+automatically fold the examples field when you open a buffer.
+</li><li> <acronym>ESS[R]</acronym>: New experimental feature: syntax highlighting in
+roxygen examples fields. This is turned off by default. Set
+<code>ess-roxy-fontify-examples</code> to non-nil to try it out.
+</li><li> <acronym>ESS[R]</acronym>: New package development command <code>ess-r-devtools-ask</code>
+bound to <kbd>C-c C-w C-a</kbd>. It asks with completion for any devtools
+command that takes <code>pkg</code> as argument.
+</li><li> <acronym>ESS[R]</acronym>: New command <kbd>C-c C-e C-r</kbd> to reload the inferior process. 
+Currently only implemented for R. The R method runs <code>inferior-ess-r-reload-hook</code>
+on reloading.
+</li><li> <acronym>ESS[R]</acronym>: <code>ess-r-package-mode</code> is now activated in non-file buffers as well.
+</li></ul>
+
+<p>Bug fixes in 16.10:
+</p><ul>
+<li> <acronym>ESS[R]</acronym>: Fix broken (un)flagging for debugging inside packages
+</li><li> <acronym>ESS[R]</acronym>: Fixes (and improvements) in Package development
+</li><li> <acronym>ESS[R]</acronym>: Completion no longer produces <code>...=</code> inside <code>list(  )</code>.
+</li><li> <acronym>ESS[R]</acronym>: Better debugging and tracing in packages.
+</li><li> <acronym>ESS[R]</acronym>: Better detection of symbols at point.
+</li><li> <acronym>ESS[R]</acronym>: No more spurious warnings on deletion of temporary files.
+</li><li> <acronym>ESS[julia]</acronym>: help and completion work (better)
+</li><li> <acronym>ESS[julia]</acronym>: available via <code>ess-remote</code>
+</li></ul>
+
+<p>Changes and New Features in 16.04:
+</p><ul>
+<li> <acronym>ESS[R]</acronym>: <code>developer</code> functionality has been refactored.
+The new user interface consists of a single command
+<code>ess-r-set-evaluation-env</code> bound by default to <kbd>C-c C-t
+C-s</kbd>. Once an evaluation environment has been set with, all subsequent
+ESS evaluation will source the code into that environment. By default,
+for file within R packages the evaluation environment is set to the
+package environment. Set <code>ess-r-package-auto-set-evaluation-env</code> to
+<code>nil</code> to disable this.
+</li><li> <acronym>ESS[R]</acronym>: New <code>ess-r-package-mode</code>
+This development mode provides features to make package development
+easier. Currently, most of the commands are based on the <code>devtools</code>
+packages and are accessible with <kbd>C-c C-w</kbd> prefix. See the
+documentation of <code>ess-r-package-mode</code> function for all available
+commands. With <kbd>C-u</kbd> prefix each command asks for extra arguments to
+the underlying devtools function. This mode is automatically enabled in
+all files within R packages and is indicated with <code>[pkg:NAME]</code> in
+the mode-line.
+</li><li> <acronym>ESS[R]</acronym>: Help lookup has been improved.
+It is now possible to get help for namespaced objects such as
+pkg::foobar. Furthermore, ESS recognizes more reliably when you change
+<code>options('html_type')</code>.
+</li><li> <acronym>ESS[R]</acronym>: New specialized breakpoints for debugging magrittr pipes
+</li><li> <acronym>ESS</acronym>: ESS now implements a simple message passing interface
+to communicate between ESS and inferior process.
+</li></ul>
+
+<p>Bug fixes in 16.04:
+</p><ul>
+<li> <acronym>ESS[R]</acronym>: Roxygen blocks with backtics are now correctly filled
+</li><li> <acronym>ESS[R]</acronym>: Don&rsquo;t skip breakpoints in magrittr&rsquo;s <code>debug_pipe</code>
+</li><li> <acronym>ESS[R]</acronym>: Error highlighting now understands &lsquo;testthat&lsquo; type errors
+</li><li> <acronym>ESS[Julia]</acronym>: Added getwd and setwd generic commands
+</li></ul>
+
+
+<p>Changes and New Features in 15.09:
+</p><ul>
+<li> <acronym>ESS[R]</acronym>: The indentation logic has been refactored.
+It should be faster, more consistent and more flexible. There are three
+types of indentation settings, those starting with <code>ess-offset-</code>
+give the actual offsets, those starting with <code>ess-indent-</code> are
+control (commonly Boolean) variables, and those starting with
+<code>ess-align-</code> are vertical alignment overrides which inhibit default
+offsets in specific situations. See <code>ess-style-alist</code> for detailed
+description of the new indentation system and provided default
+indentation styles.
+
+</li><li> <acronym>ESS[R]</acronym>: Deprecation of old indentation settings.
+As a consequence of the indentation re-factoring
+<code>ess-brace-imaginary-offset</code>, <code>ess-expression-offset</code> and all
+delimiter-specific offsets are deprecated. The settings for indentation
+of continued statements have been replaced by
+<code>ess-offset-continuations</code>. It can be set to either <code>cascade</code>
+or <code>straight</code> (the default). <code>ess-arg-function-offset</code> has
+been replaced by <code>ess-indent-from-lhs</code> and has been generalised to
+assignments. This setting now works with both statement blocks and
+expressions and only takes effect for offsets set to <code>prev-call</code>
+and <code>open-delim</code> in order to produce a consistent indentation.
+
+</li><li> <acronym>ESS</acronym>: A test framework has been set up.
+
+</li><li> <acronym>ESS[R]</acronym>: A new RStudio style is provided to mimic as closely
+as possible R files indented via RStudio. To reproduce the setup of some
+of the RStudio users, the RStudio- style with
+<code>ess-offset-arguments</code> set to <code>prev-line</code> is also provided. In
+addition, the new RRR+ style is equivalent to RRR except it indents
+blocks in function calls relatively to the opening delimiter. This style
+does not try to save horizontal space and produces more indentation.
+
+</li><li> <acronym>ESS[R]</acronym>: Roxygen fields will now be indented on paragraph
+refilling in order to make the documentation more readable. You can also
+refill commented lines in the <code>examples</code> field without squashing
+the surrounding code in the comments.
+
+</li><li> <acronym>ESS[R]</acronym>: ESS can now format your code! This is controlled
+through the settings <code>ess-fill-calls</code> and
+<code>ess-fill-continuations</code>. When activated, <code>(fill-paragraph)</code>
+formats your calls and your formulas/continuations while making sure
+they don&rsquo;t go past <code>fill-column</code>. Repeated refills cycle through
+different styles (see the docstrings for more details). By default, the
+refilled region blinks. Set <code>ess-blink-filling</code> to nil to prevent
+this.
+
+</li><li> <acronym>ESS[R]</acronym>: Fix occasional missing error location fontification
+in inferior buffers.
+
+</li><li> <acronym>ESS[R]</acronym>: ess-developer now correctly assigned the environment
+of new functions to the package namespace.
+
+
+</li><li> <acronym>ESS[Julia]</acronym>: ?[topic] now works in the *julia* buffer.
+Note that support for editing Julia code now depends on
+<samp>julia-mode.el</samp> from the Julia project.  If you install ESS from
+the official tarball/zip file, <samp>julia-mode.el</samp> is already included.
+Otherwise, if you install ESS by
+running <code>make</code>, then the latest version of <samp>julia-mode.el</samp> is
+downloaded (and so you need an active internet connection to install)
+during the installation process.  Alternatively, if you run ESS without
+running <code>make</code>, then ensure that you have the <code>julia-mode.el</code>,
+which you can get easily from MELPA for example.
+
+
+</li><li> i<acronym>ESS</acronym><!-- /@w -->: For naming inferior processes, ESS can use <code>projectile</code>&rsquo;s
+project root and it does so when <code>ess-gen-proc-buffer-name-function</code> is
+set to <code>ess-gen-proc-buffer-name:projectile-or-simple</code> as by default,
+or to another value beginning with <code>ess-gen-proc-buffer-name:projectile-*</code>.
+
+</li></ul>
+
+
+<p>Changes and New Features in 15.03-1:
+</p><ul>
+<li> <acronym>ESS[R]</acronym>: An indentation bug has been fixed (github issue 163)
+</li><li> <acronym>ESS[R]</acronym>: On windows, if &lsquo;ess-prefer-higher-bit&rsquo; is non-nil (the
+default), then R-newest will try to run a 64 bit (rather than 32 bit)
+version of R.
+</li></ul>
+
+<p>Changes and New Features in 15.03:
+</p><ul>
+<li> <acronym>ESS[R]</acronym>: Full native support for &lsquo;company-mode&lsquo;.
+</li><li> <acronym>ESS[R]</acronym>: More efficient caching algorithm for R completion.
+</li><li> <acronym>ESS</acronym>: New offset variable &lsquo;ess-close-paren-offset&lsquo; to control
+the indentation of the closing parentheses.
+</li><li> <acronym>ESS[R]</acronym>: Ask for CRAN mirror only once per emacs session.
+</li><li> <acronym>ESS[R]</acronym>: Detect <code>library</code> and <code>require</code> calls
+for better completion caching.
+</li><li> Buffer display is now customizable (<code>ess-show-buffer-action</code>).
+</li><li> Use <code>y-or-n-p</code> instead of <code>yes-or-no-p</code> throughout.
+</li><li> More support for ODS in ess-sas-graph-view.
+</li><li> Makefiles are now both UNIX and GNU friendly.
+</li><li> <acronym>ESS[R]</acronym>: Simplify directory lookup in <code>ess-developer</code> (#137).
+</li><li> Make closed paren indentation consistent
+</li></ul>
+
+<p>Bug Fixes in 15.03:
+</p><ul>
+<li> Fix open brace indentation bug (#27 in ess/R-ESS-bugs.R).
+</li><li> Fix git version lookup
+</li><li> Don&rsquo;t check directory modtime in R dialect.
+</li><li> Declare all ess macros for edebug.
+</li><li> Add <code>ess-smart-comma</code> to eldoc message functions.
+</li><li> Inform users when retrieving RDA aliases.
+</li><li> Line ending in &rsquo;~&rsquo; is also a continuation line.
+</li><li> Filing roxy paragraphs works as expected now.
+</li><li> In <code>ess-developer-add-package</code>, remove incorrect &lsquo;wait&lsquo;
+argument from <code>ess-get-words-from-vector</code> call.
+</li><li> Fix #96, #117, #120, #125, #134, #137.
+</li><li> Fix ess-quit-r. Call base::q() even if it is masked.
+</li><li> Fix &lsquo;ess-show-buffer&lsquo; to always display the buffer in another window.
+</li><li> Makefile: Fix cd bug for directories with spaces in them
+</li><li> <code>ess-kill-buffer-and-go</code> modified to not restart R
+</li></ul>
+
+<p>Changes / Selected Bug Fixes in 14.09:
+</p><ul>
+<li> <acronym>ESS[Julia]</acronym>: Executable is changed to <code>julia</code>.
+</li><li> <acronym>ESS[Julia]</acronym>: Completion and help system was adjusted to Julia
+v.0.3.0. Julia v.0.2.x is no more supported.
+</li><li> <acronym>ESS[R]</acronym>: Running R with <code>gdb</code> debugger now works as expected
+</li><li> i<acronym>ESS</acronym><!-- /@w -->: Inferior ESS buffers are now derived from <code>comint-mode</code>
+</li><li> <acronym>ESS[R]</acronym>: <code>ess-execute-screen-options</code> uses correct screen
+width in terminal sessions
+</li><li> <acronym>ESS</acronym>: <code>ess-build-tags-for-directory</code> works when no TAGS file
+name was provided
+</li><li> <acronym>ESS</acronym>: <code>ess-offset-statement-continued</code> is now respected everywhere
+except inside of the <code>if</code> test condition.
+</li><li> <acronym>ESS</acronym>: New variable <code>ess-offset-statement-first-continued</code> for
+indentation of the first line in multiline statements.
+</li><li> <acronym>ESSR</acronym>: Starting <kbd>,</kbd> in multiline statements indentation is now
+ignored to achieve a more pleasant alignment.
+</li><li> <acronym>ESSR</acronym>: Improved behavior of <kbd>RET</kbd> in roxygen blocks.
+</li><li> <acronym>ESS[R]</acronym>: command cleaning with <kbd>C-u C-u C-y</kbd> was broken with
+lines containing &quot; + &quot;
+</li><li> <acronym>ESS[R]</acronym>: fixed &quot;empty watch window bug&quot;
+</li><li> <acronym>ESS[R]</acronym>: don&rsquo;t ask for help location on ac-quick-help (request of github #81)
+</li><li> <acronym>ESS[R]</acronym>: &quot;importClassesFrom&quot; and &quot;importMethodsFrom&quot; were added to
+the list of two-parameter roxygen commands
+</li><li> <acronym>ESS[R]</acronym>: fix vignetes display and hyperlinks (were broken in 13.09-1)
+</li><li> <acronym>ESS[Julia]</acronym>: recognize function names ending with !
+</li><li> <acronym>ESS[Julia]</acronym>: fix indentation of &quot;for&quot; comprehension syntax within brackets.
+</li></ul>
 
 <p>Changes / Selected Bug Fixes in 13.09-1:
 </p><ul>
@@ -684,15 +859,15 @@ Leading comments are automatically removed before the evaluation
  preceded by &rsquo;+&rsquo;
 </li><li> <acronym>ESS[SAS]</acronym>: Three features/fixes with special thanks to Matthew Fidler
 <a href="https://github.com/emacs-ess/ESS/pulls/mlf176f2">https://github.com/emacs-ess/ESS/pulls/mlf176f2</a>. Turn on SAS log mode
-when appropriate.  Indent comments and CARDS statement more appropriately. 
+when appropriate.  Indent comments and CARDS statement more appropriately.
 </li><li> <acronym>ESS[SAS]</acronym>: <code>ess-sas-edit-keys-toggle</code> default returns to <code>nil</code>
-</li><li> <acronym>ESS[R]</acronym>: support for <code>prettify-symbols-mode</code>: 
+</li><li> <acronym>ESS[R]</acronym>: support for <code>prettify-symbols-mode</code>:
 contribution from Rudiger Sonderfeld <a href="https://github.com/emacs-ess/ESS/pull/65">https://github.com/emacs-ess/ESS/pull/65</a>
 </li><li> <acronym>ESS[SWV]</acronym>: knitr now evaluates in the current frame
 </li><li> <acronym>ESS[developer]</acronym>: ess-developer doesn&rsquo;t kill open DESCRIPTION files anymore
 </li><li> <acronym>ESS[roxygen]</acronym>: <code>ess-roxy-preview-HTML</code> is now on <kbd>C-c C-o C-w</kbd> and
  <code>ess-roxy-preview-text</code> is now on <code>C-c C-o C-t</code>
-</li><li> <acronym>ESS</acronym>: installation with <code>make install</code> was simplified and should work 
+</li><li> <acronym>ESS</acronym>: installation with <code>make install</code> was simplified and should work
 out of the box on most *nix systems
 </li><li> <acronym>ESS</acronym> installation instructions simplified
 </li><li> fixed font-lock bug introduced in 13.09 that was causing very slow process output
@@ -1361,13 +1536,13 @@ fixed in <code>ess-get-words-from-vector</code> and <code>ess-command</code>.
 <a name="Reporting-Bugs"></a>
 <div class="header">
 <p>
-Next: <a href="#Mailing-Lists" accesskey="n" rel="next">Mailing Lists</a>, Previous: <a href="#New-Features" accesskey="p" rel="previous">New Features</a>, Up: <a href="#General-Information" accesskey="u" rel="up">General Information</a> &nbsp; </p>
+Next: <a href="#Mailing-Lists" accesskey="n" rel="next">Mailing Lists</a>, Previous: <a href="#New-Features" accesskey="p" rel="prev">New Features</a>, Up: <a href="#General-Information" accesskey="u" rel="up">General Information</a> &nbsp; </p>
 </div>
 <a name="Reporting-Bugs-1"></a>
 <h3 class="section">1.9 Reporting Bugs</h3>
 
 <p>Please send bug reports, suggestions etc. to
-<a href="mailto:ESS-bugs@stat.math.ethz.ch">ESS-bugs@stat.math.ethz.ch</a>
+<a href="mailto:ESS-bugs@r-project.org">ESS-bugs@r-project.org</a>
 </p>
 <p>The easiest way to do this is within Emacs by typing
 </p>
@@ -1388,7 +1563,7 @@ donations are also more than welcome.
 <a name="Mailing-Lists"></a>
 <div class="header">
 <p>
-Next: <a href="#Authors" accesskey="n" rel="next">Authors</a>, Previous: <a href="#Reporting-Bugs" accesskey="p" rel="previous">Reporting Bugs</a>, Up: <a href="#General-Information" accesskey="u" rel="up">General Information</a> &nbsp; </p>
+Next: <a href="#Authors" accesskey="n" rel="next">Authors</a>, Previous: <a href="#Reporting-Bugs" accesskey="p" rel="prev">Reporting Bugs</a>, Up: <a href="#General-Information" accesskey="u" rel="up">General Information</a> &nbsp; </p>
 </div>
 <a name="Mailing-Lists-1"></a>
 <h3 class="section">1.10 Mailing Lists</h3>
@@ -1396,9 +1571,9 @@ Next: <a href="#Authors" accesskey="n" rel="next">Authors</a>, Previous: <a href
 
 <p>There is a mailing list for discussions and announcements relating to
 ESS.  Join the list by sending an e-mail with &quot;subscribe ess-help&quot; (or
-&quot;help&quot;) in the body to <a href="mailto:ess-help-request@stat.math.ethz.ch">ess-help-request@stat.math.ethz.ch</a>;
+&quot;help&quot;) in the body to <a href="mailto:ess-help-request@r-project.org">ess-help-request@r-project.org</a>;
 contributions to the list may be mailed to
-<a href="mailto:ess-help@stat.math.ethz.ch">ess-help@stat.math.ethz.ch</a>.  Rest assured, this is a fairly
+<a href="mailto:ess-help@r-project.org">ess-help@r-project.org</a>.  Rest assured, this is a fairly
 low-volume mailing list.
 </p>
 <p>The purposes of the mailing list include
@@ -1415,7 +1590,7 @@ low-volume mailing list.
 <a name="Authors"></a>
 <div class="header">
 <p>
-Previous: <a href="#Mailing-Lists" accesskey="p" rel="previous">Mailing Lists</a>, Up: <a href="#General-Information" accesskey="u" rel="up">General Information</a> &nbsp; </p>
+Previous: <a href="#Mailing-Lists" accesskey="p" rel="prev">Mailing Lists</a>, Up: <a href="#General-Information" accesskey="u" rel="up">General Information</a> &nbsp; </p>
 </div>
 <a name="Authors-1"></a>
 <h3 class="section">1.11 Authors</h3>
@@ -1430,6 +1605,7 @@ Previous: <a href="#Mailing-Lists" accesskey="p" rel="previous">Mailing Lists</a
 </li><li> <a href="mailto:spluque@gmail.com">Sebastian P. Luque</a>
 </li><li> <a href="mailto:henning.red@googlemail.com">Henning Redestig</a>
 </li><li> <a href="mailto:spinuvit@gmail.com">Vitalie Spinu</a>
+</li><li> <a href="mailto:lionel.hry@gmail.com">Lionel Henry</a>
 </li></ul>
 
 <hr>

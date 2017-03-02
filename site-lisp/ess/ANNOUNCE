@@ -1,7 +1,7 @@
 1 ANNOUNCING ESS
 ****************
 
-The ESS Developers proudly announce the release of ESS 13.09-1
+The ESS Developers proudly announce the release of ESS 16.10
 
    Emacs Speaks Statistics (ESS) provides an intelligent, consistent
 interface between the user and the software.  ESS interfaces with
@@ -26,43 +26,10 @@ The latest released version of ESS is always available on the web at:
 ESS web page (http://ess.r-project.org) or StatLib
 (http://lib.stat.cmu.edu/general/ESS/)
 
-1.1.1 ESS subversion repository
--------------------------------
+1.1.1 Git for ESS development
+-----------------------------
 
-The latest development version of ESS is available via
-<https://svn.R-project.org/ESS/>, the ESS Subversion repository.  If you
-have a Subversion client (see <http://subversion.tigris.org/>), you can
-download the sources using:
-     % svn checkout https://svn.r-project.org/ESS/trunk PATH
-which will put the ESS files into directory PATH.  Later, within that
-directory, 'svn update' will bring that directory up to date.
-Windows-based tools such as TortoiseSVN are also available for
-downloading the files.  Alternatively, you can browse the sources with a
-web browser at: ESS SVN site (https://svn.r-project.org/ESS/trunk).
-However, please use a subversion client instead to minimize the load
-when retrieving.
-
-   If you remove other versions of ESS from your emacs load-path, you
-can then use the development version by adding the following to .emacs:
-
-     (load "/path/to/ess-svn/lisp/ess-site.el")
-
-   Note that https is required, and that the SSL certificate for the
-Subversion server of the R project is
-
-     Certificate information:
-      - Hostname: svn.r-project.org
-      - Valid: from Jul 16 08:10:01 2004 GMT until Jul 14 08:10:01 2014 GMT
-      - Issuer: Department of Mathematics, ETH Zurich, Zurich, Switzerland, CH
-      - Fingerprint: c9:5d:eb:f9:f2:56:d1:04:ba:44:61:f8:64:6b:d9:33:3f:93:6e:ad
-
-(currently, there is no "trusted certificate").  You can accept this
-certificate permanently and will not be asked about it anymore.
-
-1.1.2 Git for development
--------------------------
-
-For development and experimentation on new features, there is now a
+For development and experimentation on new ESS features, there is now a
 GitHub branch for ESS, available at <https://github.com/emacs-ess/ESS>.
 
 1.2 Current Features
@@ -93,7 +60,7 @@ GitHub branch for ESS, available at <https://github.com/emacs-ess/ESS>.
         * Recording and saving transcript files
         * Manipulating and editing saved transcripts
         * Re-evaluating commands from transcript files
-   * Interaction with Help Pages and other Documenation (R)
+   * Interaction with Help Pages and other Documentation (R)
         * Fast Navigation
         * Sending Examples to running ESS process.
         * Fast Transfer to Further Help Pages
@@ -109,16 +76,14 @@ ESS is most likely to work with current/recent versions of the following
 statistical packages: R/S-PLUS, SAS, Stata, OpenBUGS and JAGS.
 
    ESS supports current, and recent, stable versions of GNU Emacs
-(currently, specifically, the 23.x and 24.x series;
-alpha/beta/pre-release versions are NOT SUPPORTED). Non-Windows users
-beware: GNU Emacs 24.3 is preferable to 24.1 or 24.2: these broken
-builds suffer from bug 12463
+(currently, the 24.x and 25.x series; alpha/beta/pre-release versions
+are NOT SUPPORTED). Non-Windows users beware: GNU Emacs 24.3 is
+preferable to 24.1 or 24.2: these broken builds suffer from bug 12463
 <http://debbugs.gnu.org/cgi/bugreport.cgi?bug=12463> which will cause
-emacs and ESS to get progressively slower over time.
+Emacs to get progressively slower over time.
 
    Due to XEmacs lacking some features that ESS requires, ESS support of
-XEmacs ends with ESS 12.04-4.  This decision will be re-visited in the
-future as XEmacs continues to sync with GNU Emacs.
+XEmacs ended with ESS 12.04-4.
 
    To build the PDF documentation, you will need a version of TeX Live
 or texinfo that includes texi2dvi (BEWARE: recent TeX Live, and some
@@ -139,9 +104,9 @@ reports are much appreciated!
 
 There is a mailing list for discussions and announcements relating to
 ESS. Join the list by sending an e-mail with "subscribe ess-help" (or
-"help") in the body to <ess-help-request@stat.math.ethz.ch>;
-contributions to the list may be mailed to <ess-help@stat.math.ethz.ch>.
-Rest assured, this is a fairly low-volume mailing list.
+"help") in the body to <ess-help-request@r-project.org>; contributions
+to the list may be mailed to <ess-help@r-project.org>.  Rest assured,
+this is a fairly low-volume mailing list.
 
    The purposes of the mailing list include
 
@@ -154,8 +119,7 @@ Rest assured, this is a fairly low-volume mailing list.
 1.6 Reporting Bugs
 ==================
 
-Please send bug reports, suggestions etc.  to
-<ESS-bugs@stat.math.ethz.ch>
+Please send bug reports, suggestions etc.  to <ESS-bugs@r-project.org>
 
    The easiest way to do this is within Emacs by typing
 
@@ -184,6 +148,7 @@ donations are also more than welcome.
    * Sebastian P. Luque (mailto:spluque@gmail.com)
    * Henning Redestig (mailto:henning.red@googlemail.com)
    * Vitalie Spinu (mailto:spinuvit@gmail.com)
+   * Lionel Henry (mailto:lionel.hry@gmail.com)
 
 1.8 License
 ===========
@@ -201,7 +166,217 @@ the file COPYING in the same directory as this file for more details.
 1.9 New Features
 ================
 
-Changes / Selected Bug Fixes in 13.09-1:
+Changes and New Features in 16.10:
+
+   * ESS[R]: Syntax highlighting is now more consistent.  Backquoted
+     names are not fontified as strings (since they really are
+     identifiers).  Furthermore they are now correctly recognised when
+     they are function definitions or function calls.
+   * ESS[R]: Backquoted names and '%op%' operators are recognised as
+     sexp.  This is useful for code navigation, e.g.  with 'C-M-f' and
+     'C-M-b'.
+   * ESS[R]: Integration of outline mode with roxygen examples fields.
+     You can use outline mode's code folding commands to fold the
+     examples field.  This is especially nice to use with well
+     documented packages with long examples set.  Set
+     'ess-roxy-fold-examples' to non-nil to automatically fold the
+     examples field when you open a buffer.
+   * ESS[R]: New experimental feature: syntax highlighting in roxygen
+     examples fields.  This is turned off by default.  Set
+     'ess-roxy-fontify-examples' to non-nil to try it out.
+   * ESS[R]: New package development command 'ess-r-devtools-ask' bound
+     to 'C-c C-w C-a'.  It asks with completion for any devtools command
+     that takes 'pkg' as argument.
+   * ESS[R]: New command 'C-c C-e C-r' to reload the inferior process.
+     Currently only implemented for R. The R method runs
+     'inferior-ess-r-reload-hook' on reloading.
+   * ESS[R]: 'ess-r-package-mode' is now activated in non-file buffers
+     as well.
+
+   Bug fixes in 16.10:
+   * ESS[R]: Fix broken (un)flagging for debugging inside packages
+   * ESS[R]: Fixes (and improvements) in Package development
+   * ESS[R]: Completion no longer produces '...=' inside 'list( )'.
+   * ESS[R]: Better debugging and tracing in packages.
+   * ESS[R]: Better detection of symbols at point.
+   * ESS[R]: No more spurious warnings on deletion of temporary files.
+   * ESS[julia]: help and completion work (better)
+   * ESS[julia]: available via 'ess-remote'
+
+   Changes and New Features in 16.04:
+
+   * ESS[R]: 'developer' functionality has been refactored.  The new
+     user interface consists of a single command
+     'ess-r-set-evaluation-env' bound by default to 'C-c C-t C-s'.  Once
+     an evaluation environment has been set with, all subsequent ESS
+     evaluation will source the code into that environment.  By default,
+     for file within R packages the evaluation environment is set to the
+     package environment.  Set 'ess-r-package-auto-set-evaluation-env'
+     to 'nil' to disable this.
+   * ESS[R]: New 'ess-r-package-mode' This development mode provides
+     features to make package development easier.  Currently, most of
+     the commands are based on the 'devtools' packages and are
+     accessible with 'C-c C-w' prefix.  See the documentation of
+     'ess-r-package-mode' function for all available commands.  With
+     'C-u' prefix each command asks for extra arguments to the
+     underlying devtools function.  This mode is automatically enabled
+     in all files within R packages and is indicated with '[pkg:NAME]'
+     in the mode-line.
+   * ESS[R]: Help lookup has been improved.  It is now possible to get
+     help for namespaced objects such as pkg::foobar.  Furthermore, ESS
+     recognizes more reliably when you change 'options('html_type')'.
+   * ESS[R]: New specialized breakpoints for debugging magrittr pipes
+   * ESS: ESS now implements a simple message passing interface to
+     communicate between ESS and inferior process.
+
+   Bug fixes in 16.04:
+   * ESS[R]: Roxygen blocks with backtics are now correctly filled
+   * ESS[R]: Don't skip breakpoints in magrittr's 'debug_pipe'
+   * ESS[R]: Error highlighting now understands 'testthat' type errors
+   * ESS[Julia]: Added getwd and setwd generic commands
+
+   Changes and New Features in 15.09:
+
+   * ESS[R]: The indentation logic has been refactored.  It should be
+     faster, more consistent and more flexible.  There are three types
+     of indentation settings, those starting with 'ess-offset-' give the
+     actual offsets, those starting with 'ess-indent-' are control
+     (commonly Boolean) variables, and those starting with 'ess-align-'
+     are vertical alignment overrides which inhibit default offsets in
+     specific situations.  See 'ess-style-alist' for detailed
+     description of the new indentation system and provided default
+     indentation styles.
+
+   * ESS[R]: Deprecation of old indentation settings.  As a consequence
+     of the indentation re-factoring 'ess-brace-imaginary-offset',
+     'ess-expression-offset' and all delimiter-specific offsets are
+     deprecated.  The settings for indentation of continued statements
+     have been replaced by 'ess-offset-continuations'.  It can be set to
+     either 'cascade' or 'straight' (the default).
+     'ess-arg-function-offset' has been replaced by
+     'ess-indent-from-lhs' and has been generalised to assignments.
+     This setting now works with both statement blocks and expressions
+     and only takes effect for offsets set to 'prev-call' and
+     'open-delim' in order to produce a consistent indentation.
+
+   * ESS: A test framework has been set up.
+
+   * ESS[R]: A new RStudio style is provided to mimic as closely as
+     possible R files indented via RStudio.  To reproduce the setup of
+     some of the RStudio users, the RStudio- style with
+     'ess-offset-arguments' set to 'prev-line' is also provided.  In
+     addition, the new RRR+ style is equivalent to RRR except it indents
+     blocks in function calls relatively to the opening delimiter.  This
+     style does not try to save horizontal space and produces more
+     indentation.
+
+   * ESS[R]: Roxygen fields will now be indented on paragraph refilling
+     in order to make the documentation more readable.  You can also
+     refill commented lines in the 'examples' field without squashing
+     the surrounding code in the comments.
+
+   * ESS[R]: ESS can now format your code!  This is controlled through
+     the settings 'ess-fill-calls' and 'ess-fill-continuations'.  When
+     activated, '(fill-paragraph)' formats your calls and your
+     formulas/continuations while making sure they don't go past
+     'fill-column'.  Repeated refills cycle through different styles
+     (see the docstrings for more details).  By default, the refilled
+     region blinks.  Set 'ess-blink-filling' to nil to prevent this.
+
+   * ESS[R]: Fix occasional missing error location fontification in
+     inferior buffers.
+
+   * ESS[R]: ess-developer now correctly assigned the environment of new
+     functions to the package namespace.
+
+   * ESS[Julia]: ?[topic] now works in the *julia* buffer.  Note that
+     support for editing Julia code now depends on 'julia-mode.el' from
+     the Julia project.  If you install ESS from the official
+     tarball/zip file, 'julia-mode.el' is already included.  Otherwise,
+     if you install ESS by running 'make', then the latest version of
+     'julia-mode.el' is downloaded (and so you need an active internet
+     connection to install) during the installation process.
+     Alternatively, if you run ESS without running 'make', then ensure
+     that you have the 'julia-mode.el', which you can get easily from
+     MELPA for example.
+
+   * iESS: For naming inferior processes, ESS can use 'projectile''s
+     project root and it does so when
+     'ess-gen-proc-buffer-name-function' is set to
+     'ess-gen-proc-buffer-name:projectile-or-simple' as by default, or
+     to another value beginning with
+     'ess-gen-proc-buffer-name:projectile-*'.
+
+   Changes and New Features in 15.03-1:
+   * ESS[R]: An indentation bug has been fixed (github issue 163)
+   * ESS[R]: On windows, if 'ess-prefer-higher-bit' is non-nil (the
+     default), then R-newest will try to run a 64 bit (rather than 32
+     bit) version of R.
+
+   Changes and New Features in 15.03:
+   * ESS[R]: Full native support for 'company-mode'.
+   * ESS[R]: More efficient caching algorithm for R completion.
+   * ESS: New offset variable 'ess-close-paren-offset' to control the
+     indentation of the closing parentheses.
+   * ESS[R]: Ask for CRAN mirror only once per emacs session.
+   * ESS[R]: Detect 'library' and 'require' calls for better completion
+     caching.
+   * Buffer display is now customizable ('ess-show-buffer-action').
+   * Use 'y-or-n-p' instead of 'yes-or-no-p' throughout.
+   * More support for ODS in ess-sas-graph-view.
+   * Makefiles are now both UNIX and GNU friendly.
+   * ESS[R]: Simplify directory lookup in 'ess-developer' (#137).
+   * Make closed paren indentation consistent
+
+   Bug Fixes in 15.03:
+   * Fix open brace indentation bug (#27 in ess/R-ESS-bugs.R).
+   * Fix git version lookup
+   * Don't check directory modtime in R dialect.
+   * Declare all ess macros for edebug.
+   * Add 'ess-smart-comma' to eldoc message functions.
+   * Inform users when retrieving RDA aliases.
+   * Line ending in '~' is also a continuation line.
+   * Filing roxy paragraphs works as expected now.
+   * In 'ess-developer-add-package', remove incorrect 'wait' argument
+     from 'ess-get-words-from-vector' call.
+   * Fix #96, #117, #120, #125, #134, #137.
+   * Fix ess-quit-r.  Call base::q() even if it is masked.
+   * Fix 'ess-show-buffer' to always display the buffer in another
+     window.
+   * Makefile: Fix cd bug for directories with spaces in them
+   * 'ess-kill-buffer-and-go' modified to not restart R
+
+   Changes / Selected Bug Fixes in 14.09:
+   * ESS[Julia]: Executable is changed to 'julia'.
+   * ESS[Julia]: Completion and help system was adjusted to Julia
+     v.0.3.0.  Julia v.0.2.x is no more supported.
+   * ESS[R]: Running R with 'gdb' debugger now works as expected
+   * iESS: Inferior ESS buffers are now derived from 'comint-mode'
+   * ESS[R]: 'ess-execute-screen-options' uses correct screen width in
+     terminal sessions
+   * ESS: 'ess-build-tags-for-directory' works when no TAGS file name
+     was provided
+   * ESS: 'ess-offset-statement-continued' is now respected everywhere
+     except inside of the 'if' test condition.
+   * ESS: New variable 'ess-offset-statement-first-continued' for
+     indentation of the first line in multiline statements.
+   * ESSR: Starting ',' in multiline statements indentation is now
+     ignored to achieve a more pleasant alignment.
+   * ESSR: Improved behavior of 'RET' in roxygen blocks.
+   * ESS[R]: command cleaning with 'C-u C-u C-y' was broken with lines
+     containing " + "
+   * ESS[R]: fixed "empty watch window bug"
+   * ESS[R]: don't ask for help location on ac-quick-help (request of
+     github #81)
+   * ESS[R]: "importClassesFrom" and "importMethodsFrom" were added to
+     the list of two-parameter roxygen commands
+   * ESS[R]: fix vignetes display and hyperlinks (were broken in
+     13.09-1)
+   * ESS[Julia]: recognize function names ending with !
+   * ESS[Julia]: fix indentation of "for" comprehension syntax within
+     brackets.
+
+   Changes / Selected Bug Fixes in 13.09-1:
    * ess-remote and TRAMP: R support code is now downloaded in binary
      form instead of being injected from local machine.  The R code is
      stored in '~/.config/ESSR/' directory on the remote machine

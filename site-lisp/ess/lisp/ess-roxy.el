@@ -1,4 +1,4 @@
-; ess-roxy.el --- convenient editing of in-code roxygen documentation
+;;; ess-roxy.el --- convenient editing of in-code roxygen documentation
 ;;
 ;; Copyright (C) 2009--2012 Henning Redestig, A.J. Rossini, Richard
 ;;      M. Heiberger, Martin Maechler, Kurt Hornik, Rodney Sparapani, Stephen
@@ -36,7 +36,7 @@
 ;;   - C-c C-o C-o :: update template
 ;; - navigating and filling roxygen fields
 ;;   - C-c TAB, M-q, C-a, ENTER, M-h :: advised tag completion, fill-paragraph,
-;;        move-beginning-of-line, newline-and-indent, mark-paragraph
+;;        move-beginning-of-line, newline-and-indent
 ;;   - C-c C-o n,p :: next, previous roxygen entry
 ;;   - C-c C-o C-c :: Unroxygen region. Convenient for editing examples.
 ;; - folding visibility using hs-minor-mode
@@ -59,13 +59,21 @@
 
 ;; this *is* enabled now via ess-mode-hook in ./ess-site.el
 
-;;; Code:
+
+;;*;; Dependencies:
 
+(require 'ess-utils)
 (require 'ess-custom)
 (require 'hideshow)
+(require 'outline)
+(eval-when-compile
+  (require 'cl))
 (autoload 'Rd-preview-help "ess-rd" "[autoload]" t)
+(require 'essddr "ess-rd.el")
 
-;; ------------------
+
+;;*;; Roxy Minor Mode
+
 (defvar ess-roxy-mode-map
   (let ((map (make-sparse-keymap)))
     (if ess-roxy-hide-show-p
@@ -79,10 +87,7 @@
     (define-key map (kbd "C-c C-o C-w") 'ess-roxy-preview-HTML)
     (define-key map (kbd "C-c C-o C-t")   'ess-roxy-preview-text)
     (define-key map (kbd "C-c C-o C-c") 'ess-roxy-toggle-roxy-region)
-    map)
-  )
-
-;; (defvar ess-roxy-font-lock-keywords nil)
+    map))
 
 (defvar ess-roxy-font-lock-keywords
   `((,(concat ess-roxy-re " *\\([@\\]"
@@ -90,7 +95,9 @@
               "\\)\\>")
      (1 'font-lock-keyword-face prepend))
     (,(concat ess-roxy-re " *\\([@\\]"
-              (regexp-opt '("param" "importFrom") t)
+              (regexp-opt '("param" "importFrom" "importClassesFrom"
+                            "importMethodsFrom")
+                          t)
               "\\)\\>\\(?:[ \t]+\\(\\sw+\\)\\)?")
      (1 'font-lock-keyword-face prepend)
      (3 'font-lock-variable-name-face prepend))
@@ -99,55 +106,205 @@
     (,(concat ess-roxy-re)
      (0 'bold prepend))))
 
+(defvar ess-roxy-fontify-examples nil
+  "When non-nil, the `@examples' field is fontified as ordinary code.
+Experimental feature with known bugs.")
+
+(defun ess-roxy-extend-region-to-field (start end)
+  (if (or (progn
+            (goto-char start)
+            (ess-roxy-entry-p "examples"))
+          (progn
+            (goto-char end)
+            (ess-roxy-entry-p "examples")))
+      (let ((new-start (min start (ess-roxy-beg-of-field)))
+            (new-end (max end (ess-roxy-end-of-field))))
+        (cons new-start new-end))
+    (cons start end)))
+
+(defun ess-roxy-modify-examples (overlay after start end &optional length)
+  (when (and overlay after)
+    (ess-roxy-delete-examples-field overlay (min (1+ (overlay-end overlay))
+                                                 (point-max)))))
+
+(defun ess-roxy-insert-behind-examples (overlay after start end &optional length)
+  (when (and overlay after)
+    (ess-roxy-delete-examples-field overlay (1+ end))))
+
+(defun ess-roxy-delete-examples-field (overlay header-end)
+  (let ((inhibit-modification-hooks t))
+    (delete-overlay overlay)
+    (when (get-text-property header-end 'ess-roxy-examples)
+      (let ((field-end (next-single-property-change header-end 'ess-roxy-examples)))
+        (remove-list-of-text-properties header-end field-end
+                                        (list 'ess-roxy-examples
+                                              'ess-face-adjusted
+                                              'ess-adjust-face-background))))))
+
+(defun ess-roxy-syntax-propertize (start end)
+  (funcall
+   (syntax-propertize-rules
+    ;; Cache `@examples' field boundaries in text properties. Signal
+    ;; buffer and chunks for face adjustment.
+    ("^\\(#+'\\) +\\(@examples\\)[ \t\n]"
+     (1 (progn
+          (setq-local ess-buffer-has-chunks t)
+          (let ((field-start (1+ (match-end 2)))
+                (field-end (1+ (save-match-data
+                                 (ess-roxy-end-of-field)))))
+            (add-text-properties field-start field-end
+                                 (list 'ess-adjust-face-background t
+                                       'ess-roxy-examples t))
+            (unless (ess-find-overlay (match-beginning 2) 'ess-roxy-examples-header)
+              (let ((overlay (make-overlay (match-beginning 2) (match-end 2))))
+                (overlay-put overlay 'modification-hooks (list #'ess-roxy-modify-examples))
+                (overlay-put overlay 'insert-in-front-hooks (list #'ess-roxy-modify-examples))
+                (overlay-put overlay 'insert-behind-hooks (list #'ess-roxy-insert-behind-examples))
+                (overlay-put overlay 'ess-roxy-examples-header t))))
+          nil)))
+    ("^#+'"
+     ;; Remove comment and string properties of roxy prefix in fields
+     ;; that should be fontified as usual. Add `roxy-prefix' property
+     ;; so we can manually fontify the prefix as comment later on.
+     (0 (when (get-text-property (match-beginning 0) 'ess-roxy-examples)
+          (add-text-properties (match-beginning 0) (match-end 0)
+                               (list 'ess-roxy-prefix t
+                                     'font-lock-face 'font-lock-comment-face))
+          (string-to-syntax "-")))))
+   start end))
+
+(defun ess-roxy-fontify-region (start end loudly)
+  (prog1 (font-lock-default-fontify-region start end loudly)
+    (when (and ess-adjust-chunk-faces ess-buffer-has-chunks)
+      (let* ((prop 'ess-adjust-face-background)
+             (end (line-end-position))
+             (adjust-start (or (and (get-text-property start prop)
+                                    (previous-single-property-change start prop))
+                               (next-single-property-change start prop nil end)))
+             next-pos)
+        (while (progn
+                 (when (get-text-property adjust-start 'ess-face-adjusted)
+                   (setq adjust-start (next-single-property-change
+                                       adjust-start 'ess-face-adjusted nil end)))
+                 (< adjust-start end))
+          (setq next-pos (next-single-property-change adjust-start prop nil end))
+          (when (text-property-not-all adjust-start end 'ess-face-adjusted t)
+            (ess-adjust-face-background adjust-start next-pos))
+          (setq adjust-start (next-single-property-change next-pos prop nil end)))))))
+
+(defun ess-roxy-unfontify-region (start end)
+  (font-lock-default-unfontify-region start end)
+  (remove-list-of-text-properties start end (list 'ess-face-adjusted)))
+
 (define-minor-mode ess-roxy-mode
-  "Minor mode for editing in-code documentation."
-  ;; :lighter " Rox"
+  "Minor mode for editing ROxygen documentation."
   :keymap ess-roxy-mode-map
   (if ess-roxy-mode
       (progn
-        (unless (featurep 'xemacs) ;; does not exist in xemacs:
+        (unless (featurep 'xemacs)
           (font-lock-add-keywords nil ess-roxy-font-lock-keywords))
         (if (and (featurep 'emacs) (>= emacs-major-version 24))
             (add-to-list 'completion-at-point-functions 'ess-roxy-tag-completion)
           (add-to-list 'comint-dynamic-complete-functions 'ess-roxy-complete-tag))
-        (if ess-roxy-hide-show-p
-            (progn
-                                        ;(setq hs-c-start-regexp "s")
-              (if (condition-case nil
-                      (if (and (symbolp hs-minor-mode)
-                               (symbol-value hs-minor-mode))
-                          nil t) (error t) )
-                  (progn
-                    (hs-minor-mode)))
-              (if ess-roxy-start-hidden-p
-                  (ess-roxy-hide-all)))))
-    (if ess-roxy-hide-show-p
-        (if hs-minor-mode
-            (progn
-              (hs-show-all)
-              (hs-minor-mode))))
+        ;; Hideshow Integration
+        (when (and ess-roxy-hide-show-p (featurep 'hideshow))
+          (hs-minor-mode 1)
+          (when ess-roxy-start-hidden-p
+            (ess-roxy-hide-all)))
+        ;;  Outline Integration
+        (when ess-roxy-fold-examples
+          (ess-roxy-hide-all-examples))
+        ;; Fontification
+        (when ess-roxy-fontify-examples
+          (add-hook 'syntax-propertize-extend-region-functions
+                    #'ess-roxy-extend-region-to-field
+                    'append 'local)
+          (setq-local syntax-propertize-function #'ess-roxy-syntax-propertize)
+          (setq-local font-lock-fontify-region-function #'ess-roxy-fontify-region)
+          (setq-local font-lock-unfontify-region-function #'ess-roxy-unfontify-region)))
+    (when (and ess-roxy-hide-show-p
+               (bound-and-true-p hs-minor-mode))
+      (hs-show-all)
+      (hs-minor-mode))
     (unless (featurep 'xemacs)
-      (font-lock-remove-keywords nil ess-roxy-font-lock-keywords)))
+      (font-lock-remove-keywords nil ess-roxy-font-lock-keywords))
+    (setq-local syntax-propertize-function nil)
+    (setq-local font-lock-fontify-region-function nil)
+    (setq-local font-lock-unfontify-region-function nil)
+    (remove-hook 'syntax-propertize-extend-region-functions
+                 #'ess-roxy-extend-region-to-field
+                 'local))
   (when font-lock-mode
     (font-lock-fontify-buffer))
-  ;; for auto fill functionality
-  (make-local-variable 'adaptive-fill-regexp)
-  (setq adaptive-fill-regexp (concat ess-roxy-re adaptive-fill-regexp))
-  (make-local-variable 'adaptive-fill-first-line-regexp)
-  (setq adaptive-fill-first-line-regexp (concat ess-roxy-re
-                                                adaptive-fill-first-line-regexp))
-  (make-local-variable 'paragraph-start)
-  (setq paragraph-start (concat "\\(" ess-roxy-re "\\)*" paragraph-start))
-  (make-local-variable 'paragraph-separate)
-  (setq paragraph-separate (concat "\\(" ess-roxy-re "\\)*" paragraph-separate))
-  (add-hook 'ess-presend-filter-functions 'ess-roxy-remove-roxy-re nil 'local)
-  )
+  ;; Autofill
+  (setq-local paragraph-start (concat "\\(" ess-roxy-re "\\)*" paragraph-start))
+  (setq-local paragraph-separate (concat "\\(" ess-roxy-re "\\)*" paragraph-separate))
+  (setq-local adaptive-fill-function 'ess-roxy-adaptive-fill-function))
 
 
-;; (setq hs-c-start-regexp ess-roxy-str)
-;; (make-variable-buffer-local 'hs-c-start-regexp)
+
+;;*;; Outline Integration
 
-;; Function definitions
+(defvar ess-roxy-fold-examples nil
+  "Whether to fold `@examples' when opening a buffer.
+Use you regular key for `outline-show-entry' to reveal it.")
+
+(defvar ess-roxy-outline-regexp "^#+' +@examples\\|^[^#]")
+
+(defun ess-roxy-substitute-outline-regexp (command)
+  (let ((outline-regexp (if (ess-roxy-entry-p "examples")
+                            ess-roxy-outline-regexp
+                          outline-regexp)))
+    (funcall command)))
+
+(defun ess-roxy-cycle-example ()
+  (interactive)
+  (unless (featurep 'outline-magic)
+    (error "Please install and load outline-magic"))
+  ;; Don't show children when cycling @examples
+  (let ((this-command 'outline-cycle-overwiew))
+    (ess-roxy-substitute-outline-regexp #'outline-cycle)))
+
+(defun ess-roxy-show-example ()
+  (interactive)
+  (ess-roxy-substitute-outline-regexp #'outline-show-entry))
+
+(defun ess-roxy-hide-example ()
+  (interactive)
+  (ess-roxy-substitute-outline-regexp #'outline-hide-entry))
+
+(defun ess-roxy-hide-all-examples ()
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (while (re-search-forward "^#+' +@examples\\b" nil t)
+      ;; Handle edge cases
+      (when (ess-roxy-entry-p "examples")
+        (ess-roxy-hide-example)))))
+
+(when (featurep 'outline-magic)
+  (substitute-key-definition 'outline-cyle
+                             'ess-roxy-cyle-example
+                             ess-roxy-mode-map outline-mode-menu-bar-map))
+
+(substitute-key-definition 'outline-hide-entry
+                           'ess-roxy-hide-example
+                           ess-roxy-mode-map outline-minor-mode-map)
+
+(substitute-key-definition 'outline-show-entry
+                           'ess-roxy-show-example
+                           ess-roxy-mode-map outline-minor-mode-map)
+
+
+;;*;; Function definitions
+
+(defun ess-back-to-roxy ()
+  "Go to roxy prefix"
+  (progn
+    (end-of-line)
+    (re-search-backward (concat ess-roxy-re " ?") (point-at-bol))
+    (goto-char (match-end 0))))
+
 (defun ess-roxy-beg-of-entry ()
   "Get point number at start of current entry, 0 if not in entry"
   (save-excursion
@@ -233,11 +390,13 @@
         (if cont (setq cont (= (forward-line 1) 0))))
       end)))
 
-(defun ess-roxy-entry-p ()
+(defun ess-roxy-entry-p (&optional field)
   "True if point is in a roxy entry"
-  (save-excursion
-    (beginning-of-line)
-    (looking-at (concat ess-roxy-re))))
+  (and (save-excursion
+         (beginning-of-line)
+         (looking-at ess-roxy-re))
+       (or (null field)
+           (string= (ess-roxy-current-field) field))))
 
 (defun ess-roxy-narrow-to-field ()
   "Go to to the start of current field"
@@ -246,23 +405,51 @@
         (end (ess-roxy-end-of-field)))
     (narrow-to-region beg end)))
 
-(defun ess-roxy-fill-field ()
-  "Fill the current paragraph in the current roxygen field."
-  (interactive)
-  (if (ess-roxy-entry-p)
-      (save-excursion
-        (let ((beg (ess-roxy-beg-of-field))
-              (end (ess-roxy-end-of-field))
-              (fill-prefix (concat (ess-roxy-guess-str) " "))
-              (beg-par (point-min))
-              (end-par (point-max)))
+(defun ess-roxy-extract-field ()
+  (let ((field (buffer-substring (ess-roxy-beg-of-entry)
+                                 (ess-roxy-end-of-entry)))
+        (prefix-re (ess-roxy-guess-str)))
+    (with-temp-buffer
+      (insert field)
+      (goto-char (point-min))
+      (while (re-search-forward prefix-re (point-max) 'noerror)
+        (replace-match ""))
+      (buffer-substring (point-min) (point-max)))))
+
+(defun ess-roxy-adaptive-fill-function ()
+  "Return prefix for filling paragraph or nil if not determined."
+  (when (ess-roxy-entry-p)
+    (let ((roxy-str (car (split-string (ess-roxy-guess-str) "'"))))
+      (if (ess-roxy-in-header-p)
           (save-excursion
-            (if (re-search-backward (concat ess-roxy-re " *$") beg t)
-                (setq beg-par (match-end 0))))
-          (save-excursion
-            (if (re-search-forward (concat ess-roxy-re " *$") end t)
-                (setq end-par (- (match-beginning 0) 1))))
-          (fill-region (max beg beg-par) (min end end-par))))))
+            (ess-back-to-roxy)
+            (re-search-forward "\\([ \t]*\\)" (line-end-position) t)
+            (concat roxy-str "' " (match-string 1)))
+        (concat roxy-str "' " (make-string ess-indent-offset ? ))))))
+
+(defun ess-roxy-current-field ()
+  "Return the name of the field at point."
+  (and (not (ess-roxy-in-header-p))
+       (save-excursion
+         (goto-char (ess-roxy-beg-of-field))
+         (if (re-search-forward (concat ess-roxy-re
+                                        "[ \t]+@\\([[:alpha:]]+\\)")
+                                (line-end-position) t)
+             (match-string-no-properties 1)))))
+
+(defun ess-roxy-maybe-indent-line ()
+  "Indent line when point is in a field, but not in its first line."
+  (when (and (not (ess-roxy-in-header-p))
+             (not (equal (ess-roxy-current-field) "examples"))
+             (save-excursion
+               (beginning-of-line)
+               (let ((line-n (count-lines 1 (point))))
+                 (goto-char (ess-roxy-beg-of-field))
+                 (not (equal line-n (count-lines 1 (point)))))))
+    (ess-roxy-should-indent-line-p)
+    (ess-back-to-roxy)
+    (delete-region (point) (progn (skip-chars-forward " \t") (point)))
+    (insert (make-string ess-indent-offset ? ))))
 
 (defun ess-roxy-goto-func-def ()
   "put point at start of function either that the point is in or
@@ -278,7 +465,7 @@ below the current roxygen entry, error otherwise"
   "get args list for current function"
   (save-excursion
     (ess-roxy-goto-func-def)
-    (let* ((args (ess-roxy-get-function-args)))
+    (let ((args (ess-roxy-get-function-args)))
       (mapcar (lambda (x) (cons x '(""))) args))))
 
 (defun ess-roxy-insert-args (args &optional here)
@@ -305,8 +492,7 @@ function at point. if here is supplied start inputting
            (ess-replace-in-string (concat (car (cdr arg-des))) "\n"
                                   (concat "\n" roxy-str)))
           (if ess-roxy-fill-param-p
-              (ess-roxy-fill-field))
-          )))))
+              (fill-paragraph)))))))
 
 (defun ess-roxy-merge-args (fun ent)
   "Take two args lists (alists) and return their union. Result
@@ -369,8 +555,7 @@ non-nil."
                 (insert (concat line-break roxy-str " @"
                                 (car tag-def) " " (cdr tag-def))))
               ))
-          (setq line-break "\n")
-          )))))
+          (setq line-break "\n"))))))
 
 (defun ess-roxy-goto-end-of-entry ()
   "Put point at the top of the entry at point or above the
@@ -384,7 +569,8 @@ roxygen entry."
   (if (ess-roxy-entry-p)
       (progn
         (goto-char (ess-roxy-end-of-entry))
-        t) (forward-line) nil))
+        t)
+    (forward-line) nil))
 
 (defun ess-roxy-goto-beg-of-entry ()
   "put point at the top of the entry at point or above the
@@ -398,7 +584,8 @@ roxygen entry."
   (if (ess-roxy-entry-p)
       (progn
         (goto-char (ess-roxy-beg-of-entry))
-        t) (forward-line) nil))
+        t)
+    (forward-line) nil))
 
 (defun ess-roxy-delete-args ()
   "remove all args from the entry at point or above the function
@@ -456,7 +643,8 @@ point is"
                     (setq desc (replace-regexp-in-string
                                 (concat "^" (regexp-quote arg-name) " *") "" args-text))
                     (setq args (cons (list (concat arg-name)
-                                           (concat desc)) args))))
+                                           (concat desc))
+                                     args))))
               (forward-line -1))
             args)
         nil))))
@@ -467,16 +655,16 @@ region, otherwise prefix all lines with the roxy
 string. Convenient for editing example fields."
   (interactive "r")
   (unless (use-region-p)
-      (error "region is not active"))
+    (error "region is not active"))
   (ess-roxy-roxy-region beg end (ess-roxy-entry-p)))
 
 (defun ess-roxy-roxy-region (beg end &optional on)
   (save-excursion
     (let (RE to-string
-          (roxy-str (ess-roxy-guess-str)))
+             (roxy-str (ess-roxy-guess-str)))
       (narrow-to-region beg (- end 1))
       (if on
-          (progn (setq RE (concat ess-roxy-re " *"))
+          (progn (setq RE (concat ess-roxy-re " +?"))
                  (setq to-string ""))
         (setq RE "^")
         (setq to-string (concat roxy-str " ")))
@@ -495,8 +683,9 @@ in a temporary buffer and return that buffer."
         (out-rd-roclet
          (cond ((string= "roxygen" ess-roxy-package)
                 "make.Rd2.roclet()$parse")
+               ;; must not line break strings to avoid getting +s in the output
                ((string= "roxygen2" ess-roxy-package)
-                "(function(P) {..results <- roxygen2:::roc_process(rd_roclet(), parse.files(P), \"\");cat(vapply(..results, FUN.VALUE=character(1), function(x) {roxygen2:::rd_out_cache$compute(x, format(x))}))})")
+                "(function(P) { if(compareVersion(paste(packageVersion('roxygen2')), '3.0.0') < 0) { ..results <- roxygen2:::roc_process(rd_roclet(), parse.files(P), \"\");cat(vapply(..results, FUN.VALUE=character(1), function(x) { roxygen2:::rd_out_cache$compute(x, format(x))})) } else {..results <- roc_proc_text(rd_roclet(), readChar(P, file.info(P)$size));cat(vapply(..results, format, FUN.VALUE = character(1))) } })")
                (t (error "need to hard code the roclet output call for roxygen package '%s'"
                          ess-roxy-package))))
         )
@@ -512,7 +701,8 @@ in a temporary buffer and return that buffer."
         (append-to-file beg (point) tmpf))
       (ess-force-buffer-current)
       (ess-command (concat "print(suppressWarnings(require(" ess-roxy-package
-                           ", quietly=TRUE)))\n") roxy-buf)
+                           ", quietly=TRUE)))\n")
+                   roxy-buf)
       (with-current-buffer roxy-buf
         (goto-char 1)
         (if (search-forward-regexp "FALSE" nil t)
@@ -584,16 +774,41 @@ block before the point"
         (match-string 0)
       ess-roxy-str)))
 
-(defun ess-roxy-hide-all ()
-  "Hide all Roxygen entries in current buffer. "
+(defun ess-roxy-hide-block ()
+  "hide current roxygen comment block"
   (interactive)
   (save-excursion
-    (goto-char (point-min))
-    (while (re-search-forward (concat ess-roxy-re) (point-max) t 1)
-      (if (not (hs-already-hidden-p))
-          (hs-hide-block))
-      (goto-char (ess-roxy-end-of-entry))
-      (forward-line 1))))
+    (let ((end-of-entry (ess-roxy-end-of-entry))
+          (beg-of-entry (ess-roxy-beg-of-entry)))
+      (hs-hide-block-at-point nil (list beg-of-entry end-of-entry)))))
+
+(defun ess-roxy-toggle-hiding ()
+  "Toggle hiding/showing of a block.
+See `hs-show-block' and `ess-roxy-hide-block'."
+  (interactive)
+  (hs-life-goes-on
+   (if (hs-overlay-at (point-at-eol))
+       (hs-show-block)
+     (ess-roxy-hide-block))))
+
+(defun ess-roxy-show-all ()
+  "Hide all Roxygen entries in current buffer. "
+  (interactive)
+  (ess-roxy-hide-all t))
+
+(defun ess-roxy-hide-all (&optional show)
+  "Hide all Roxygen entries in current buffer. "
+  (interactive)
+  (hs-life-goes-on
+   (save-excursion
+     (goto-char (point-min))
+     (while (re-search-forward (concat ess-roxy-re) (point-max) t 1)
+       (let ((end-of-entry (ess-roxy-end-of-entry)))
+         (if show
+             (hs-show-block)
+           (ess-roxy-hide-block))
+         (goto-char end-of-entry)
+         (forward-line 1))))))
 
 (defun ess-roxy-previous-entry ()
   "Go to beginning of previous Roxygen entry. "
@@ -629,7 +844,7 @@ list of strings."
               (progn
                 (ess-roxy-match-paren)
                 (point))))))
-      (setq args-txt (replace-regexp-in-string "#+.*\n" "" args-txt))
+      (setq args-txt (replace-regexp-in-string "#+[^\"']*\n" "" args-txt))
       (setq args-txt (replace-regexp-in-string "([^)]+)" "" args-txt))
       (setq args-txt (replace-regexp-in-string "=[^,]+" "" args-txt))
       (setq args-txt (replace-regexp-in-string "[ \t\n]+" "" args-txt))
@@ -660,52 +875,200 @@ list of strings."
 (defun ess-roxy-remove-roxy-re (string)
   "Remove the `ess-roxy-str' before sending to R process. Useful
   for sending code from example section.  This function is placed
-  in `ess-presend-filter-functions'.
-  "
-  (if (ess-roxy-entry-p)
+  in `ess-presend-filter-functions'."
+  ;; Only strip the prefix in the @examples field, and only when
+  ;; STRING is entirely contained inside it. This allows better
+  ;; behaviour for evaluation of regions.
+  (if (and (ess-roxy-entry-p "examples")
+           (with-temp-buffer
+             (insert string)
+             (ess-roxy-entry-p)))
       (replace-regexp-in-string ess-roxy-re "" string)
     string))
 (add-hook 'ess-presend-filter-functions 'ess-roxy-remove-roxy-re nil)
 
-(defadvice mark-paragraph (around ess-roxy-mark-field)
-  "mark this field"
-  (if (and (ess-roxy-entry-p) (not mark-active))
-      (progn
-        (push-mark (point))
-        (push-mark (1+ (ess-roxy-end-of-field)) nil t)
-        (goto-char (ess-roxy-beg-of-field)))
+(defun ess-roxy-find-par-end (stop-point &rest stoppers)
+  (mapc #'(lambda (stopper)
+            (when (and (> stop-point (point))
+                       (save-excursion
+                         (re-search-forward stopper stop-point t)))
+              (setq stop-point (match-beginning 0))))
+        stoppers)
+  (save-excursion
+    (goto-char stop-point)
+    (line-end-position 0)))
+
+
+;;*;; Advices
+
+(defmacro ess-roxy-with-filling-context (examples &rest body)
+  (declare (indent 0) (debug (&rest form)))
+  `(let ((comment-start "#+'[ \t]+#")
+         (comment-start-skip "#+'[ \t]+# *")
+         (comment-use-syntax nil)
+         (adaptive-fill-first-line-regexp (concat ess-roxy-re "[ \t]*"))
+         (paragraph-start (concat "\\(" ess-roxy-re "\\(" paragraph-start
+                                  "\\|[ \t]*@" "\\)" "\\)\\|\\(" paragraph-start "\\)"))
+         (temp-table (if ,examples
+                         (make-syntax-table S-syntax-table)
+                       Rd-mode-syntax-table)))
+     (when ,examples
+       ;; Prevent the roxy prefix to be interpreted as comment or string
+       ;; starter
+       (modify-syntax-entry ?# "w" temp-table)
+       (modify-syntax-entry ?' "w" temp-table))
+     ;; Neutralise (comment-normalize-vars) because it modifies the
+     ;; comment-start regexp in such a way that paragraph filling of
+     ;; comments in @examples fields does not work
+     (cl-letf (((symbol-function 'comment-normalize-vars) #'ignore))
+       (with-syntax-table temp-table
+         ,@body))))
+
+(defadvice ess-eval-line-and-step (around ess-eval-line-and-step-roxy)
+  "evaluate line but do not skip over comment (roxy) lines"
+  (if (ess-roxy-entry-p)
+      (let ((simple-next t))
+        ad-do-it)
     ad-do-it))
 
 (defadvice ess-indent-command (around ess-roxy-toggle-hiding)
   "hide this block if we are at the beginning of the line"
   (if (and (= (point) (point-at-bol)) (ess-roxy-entry-p) 'ess-roxy-hide-show-p)
-      (progn (hs-toggle-hiding))
+      (progn (ess-roxy-toggle-hiding))
     ad-do-it))
 
 (defadvice fill-paragraph (around ess-roxy-fill-advise)
-  "Fill the current roxygen field."
-  (if (ess-roxy-entry-p)
-      (ess-roxy-fill-field)
-    ad-do-it))
+  "Fill roxygen paragraphs."
+  (cond
+   ;; Regular case
+   ((not (and (eq major-mode 'ess-mode)
+              (string= ess-dialect "R")))
+    ad-do-it)
+   ;; Filling of code comments in @examples roxy field
+   ((and (ess-roxy-entry-p)
+         (save-excursion
+           (back-to-indentation)
+           (looking-at "#")))
+    (ess-roxy-with-filling-context t
+      ad-do-it))
+   ((and (not (ess-roxy-entry-p))
+         (ess-within-comment-p))
+    ad-do-it)
+   ;; Filling of call arguments with point on call name
+   ((and ess-fill-calls
+         (ess-within-call-name-p))
+    (save-excursion
+      (skip-chars-forward "^([")
+      (forward-char)
+      (ess-fill-args)))
+   ;; Filling of continuations
+   ((and ess-fill-continuations
+         (ess-within-continuation-p))
+    (ess-fill-continuations))
+   ;; Filling of call arguments
+   ((and ess-fill-calls
+         (ess-within-call-p))
+    (ess-fill-args))
+   ;; Filling of roxy blocks
+   ((ess-roxy-entry-p)
+    (save-excursion
+      (let* ((saved-pos (point))
+             (saved-line (line-number-at-pos))
+             (saved-col (current-column))
+             (buffer (current-buffer))
+             (par-start (save-excursion
+                          (if (save-excursion
+                                (and (backward-paragraph)
+                                     (forward-paragraph)
+                                     (<= (point) saved-pos)))
+                              (line-beginning-position)
+                            (progn (backward-paragraph) (point)))))
+             (par-end (ess-roxy-find-par-end
+                       (save-excursion
+                         (forward-paragraph)
+                         (point))
+                       (concat ess-roxy-re "[ \t]*@examples\\b") "^[^#]")))
+        ;; Refill the whole structural paragraph sequentially, field by
+        ;; field, stopping at @examples
+        (ess-roxy-with-filling-context nil
+          (save-excursion
+            (save-restriction
+              (narrow-to-region par-start par-end)
+              (goto-char 0)
+              (while (< (point) (point-max))
+                (ess-roxy-maybe-indent-line)
+                ad-do-it
+                (forward-paragraph))))))))
+   (t
+    ad-do-it)))
 
 (defadvice move-beginning-of-line (around ess-roxy-beginning-of-line)
   "move to start"
-  (if (and (ess-roxy-entry-p)
-           (not (looking-back (concat ess-roxy-re " *\\="))))
+  (if (ess-roxy-entry-p)
+      (let ((new-pos (save-excursion
+                       (end-of-line)
+                       (and (re-search-backward (concat ess-roxy-re " ?") (point-at-bol) t)
+                            (match-end 0)))))
+        (if (or (bolp)
+                (< new-pos (point)))
+            (goto-char new-pos)
+          ad-do-it))
+    ad-do-it))
+
+(defadvice back-to-indentation (around ess-roxy-back-to-indentation)
+  "Handle back-to-indentation in roxygen doc"
+  (if (ess-roxy-entry-p)
       (progn
         (end-of-line)
-        (re-search-backward (concat ess-roxy-re " *") (point-at-bol))
+        (re-search-backward (concat ess-roxy-re " *") (point-at-bol) t)
         (goto-char (match-end 0)))
     ad-do-it))
 
-(defadvice newline-and-indent (around ess-roxy-newline)
+(defun ess-roxy-indent-new-comment-line ()
+  (if (not (ess-roxy-entry-p))
+      (indent-new-comment-line)
+    (ess-roxy-indent-on-newline)))
+
+(defun ess-roxy-newline-and-indent ()
+  (if (or (not (ess-roxy-entry-p))
+          (not ess-roxy-insert-prefix-on-newline))
+      (newline-and-indent)
+    (ess-roxy-indent-on-newline)))
+
+(defun ess-roxy-indent-on-newline ()
   "Insert a newline in a roxygen field."
-  (if (ess-roxy-entry-p)
-      (progn
-        ad-do-it
-        (insert (concat (ess-roxy-guess-str t) " ")))
-    ad-do-it))
+  (cond
+   ;; Point at beginning of first line of entry; do nothing
+   ((= (point) (ess-roxy-beg-of-entry))
+    (newline-and-indent))
+   ;; Otherwise: skip over roxy comment string if necessary and then
+   ;; newline and then inset new roxy comment string
+   (t
+    (let ((point-after-roxy-string
+           (save-excursion (forward-line 0)
+                           (ess-back-to-roxy)
+                           (point))))
+      (goto-char (max (point) point-after-roxy-string)))
+    (newline-and-indent)
+    (insert (concat (ess-roxy-guess-str t) " ")))))
 
 (provide 'ess-roxy)
+
+ ; Local variables section
+
+;;; This file is automatically placed in Outline minor mode.
+;;; The file is structured as follows:
+;;; Chapters:     ^L ;
+;;; Sections:    ;;*;;
+;;; Subsections: ;;;*;;;
+;;; Components:  defuns, defvars, defconsts
+;;;              Random code beginning with a ;;;;* comment
+
+;;; Local variables:
+;;; mode: emacs-lisp
+;;; outline-minor-mode: nil
+;;; mode: outline-minor
+;;; outline-regexp: "\^L\\|\\`;\\|;;\\*\\|;;;\\*\\|(def[cvu]\\|(setq\\|;;;;\\*"
+;;; End:
 
 ;;; ess-roxy.el ends here

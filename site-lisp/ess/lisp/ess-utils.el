@@ -21,13 +21,13 @@
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
 
-;; You should have received a copy of the GNU General Public License
-;; along with GNU Emacs; see the file COPYING.  If not, write to
-;; the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+;; A copy of the GNU General Public License is available at
+;; http://www.r-project.org/Licenses/
 
 ;;; Code:
 
 (eval-when-compile
+  (require 'tramp)
   (require 'cl))
 
 (defun ess-inside-string-or-comment-p (&optional pos)
@@ -36,11 +36,10 @@
   ;;FIXME (defun ess-calculate-indent ..)  can do that ...
   (interactive)
   (setq pos (or pos (point)))
-  (let ((pps
-         ;; (parse-partial-sexp (point-min) pos)
-         (syntax-ppss pos)))
-    ;; 3: string,  4: comment
-    (or (nth 3 pps) (nth 4 pps))))
+  (let ((ppss (syntax-ppss pos)))
+    (or (car (setq ppss (nthcdr 3 ppss)))
+        (car (setq ppss (cdr ppss)))
+        (nth 3 ppss))))
 
 
 (defun ess-inside-string-p (&optional pos)
@@ -63,14 +62,22 @@
 	    (eq 'font-lock-comment-face face)))
 	(nth 4 (parse-partial-sexp (progn (goto-char pos) (point-at-bol)) pos)))))
 
-(defun ess-inside-brackets-p (&optional pos)
+(defun ess-inside-brackets-p (&optional pos curly?)
   "Return t if position POS is inside brackets.
-POS defaults to point if no value is given."
+POS defaults to point if no value is given. If curly? is non nil
+also return t if inside curly brackets."
   (save-excursion
-    (let* ((pos (or pos (point)))
-	   (beg (re-search-backward "\\[" (max (point-min) (- pos 1000)) t))
-	   (end (re-search-forward "\\]" (min (point-max) (+ pos 1000)) t)))
-      (and beg end (> pos beg) (> end pos)))))
+    (let ((ppss (syntax-ppss pos))
+          (r nil))
+      (while (and (> (nth 0 ppss) 0)
+                  (not r))
+        (goto-char (nth 1 ppss))
+        (when (or (char-equal ?\[ (char-after))
+                  (and curly?
+                       (char-equal ?\{ (char-after))))
+          (setq r t))
+        (setq ppss (syntax-ppss)))
+      r)))
 
 (defun ess--extract-default-fl-keywords (keywords)
   "Extract the t-keywords from `ess-font-lock-keywords'."
@@ -240,11 +247,8 @@ from the beginning of the buffer."
 ;;- `require-final-newline', which is built in.  I hope the names make it
 ;;- obvious.
 
-;; (add-hook 'write-file-hooks 'nuke-trailing-whitespace)
-;;or at least
-;; (add-hook 'ess-mode-hook
-;;         (lambda ()
-;;           (add-hook 'local-write-file-hooks 'nuke-trailing-whitespace)))
+;; use
+;; (add-hook 'write-file-functions 'ess-nuke-trailing-whitespace)
 
 (defvar ess-nuke-trailing-whitespace-p nil;disabled by default  'ask
   "*[Dis]activates (ess-nuke-trailing-whitespace).
@@ -815,7 +819,7 @@ evaluation of BODY.
 Should be used in `ess-idle-timer-functions' which call the
 process to avoid excessive requests.
 "
-  (declare (indent 1))
+  (declare (indent 1) (debug t))
   `(with-ess-process-buffer 'no-error
      (let ((le (process-get *proc* 'last-eval))
            (tv (process-get *proc* ',time-var)))
@@ -870,11 +874,10 @@ t. See examples in the tracebug code.
 (defmacro ess-execute-dialect-specific (command &optional prompt &rest args)
   "Execute dialect specific command.
 
--- If command is not defined issue warning 'Not availabe for dialect X'
--- if a function, execute it with ARGS
+-- If command is nil issue warning 'Not available for dialect X'
+-- If command is a elisp function, execute it with ARGS
 -- If a string starting with 'http' or 'www', browse with `browse-url',
    otherwise execute the command in inferior process.
-
 -- If a string, interpret as a command to subprocess, and
    substitute ARGS with `(format ,command ,@args).
 
@@ -885,7 +888,7 @@ If prompt is a string just pass it to `read-string'. If a list, pass it
 to `ess-completing-read'.
 "
   `(if (null ,command)
-       (message "Sorry, not implemented for dialect %s" ess-dialect)
+       (message "Not implemented for dialect %s" ess-dialect)
      (let* ((com  (if (symbolp ,command)
                      (symbol-function ,command)
                    ,command))
@@ -1000,9 +1003,10 @@ If prefix is given, force tag generation based on imenu. Might be
 useful when different language files are also present in the
 directory (.cpp, .c etc)."
   (interactive "DDirectory to tag:
-FTags file (default TAGS): ")
-  (when (eq (length (file-name-nondirectory tagfile)) 0)
-    (setq tagfile (concat tagfile "TAGS")))
+GTags file (default TAGS): ")
+  (when (or (eq (length (file-name-nondirectory tagfile)) 0)
+            (file-directory-p tagfile))
+    (setq tagfile (concat (file-name-as-directory tagfile) "TAGS")))
   ;; emacs find-tags doesn't play well with remote TAG files :(
   (when (file-remote-p tagfile)
     (require 'tramp)
@@ -1065,25 +1069,48 @@ queried for arguments.
         (setq args nil))
       (or args
           (cadr (assoc funname (process-get proc 'funargs-pre-cache)))
-          (with-current-buffer (ess-command (format ess-funargs-command
-                                                    (ess-quote-special-chars funname))
-                                            nil nil nil nil proc)
-            (goto-char (point-min))
-            (when (re-search-forward "(list" nil t)
-              (goto-char (match-beginning 0))
-              (setq args (ignore-errors (eval (read (current-buffer)))))
-              (if args
-                  (setcar args (cons (car args) (current-time)))))
-            ;; push even if nil
-            (puthash (substring-no-properties funname) args (process-get proc 'funargs-cache))
-            )))))
+	  (and 
+	   (not (process-get proc 'busy))
+	   (with-current-buffer (ess-command (format ess-funargs-command
+						     (ess-quote-special-chars funname))
+					     nil nil nil nil proc)
+	     (goto-char (point-min))
+	     (when (re-search-forward "(list" nil t)
+	       (goto-char (match-beginning 0))
+	       (setq args (ignore-errors (eval (read (current-buffer)))))
+	       (if args
+		   (setcar args (cons (car args) (current-time)))))
+	     ;; push even if nil
+	     (puthash (substring-no-properties funname) args (process-get proc 'funargs-cache))))))))
+
+(defun ess-symbol-at-point ()
+  "Like `symbol-at-point' but consider fully qualified names.
+Fully qualified names include accessor symbols (like aaa$bbb and
+aaa@bbb in R)."
+  (with-syntax-table (or ess-mode-completion-syntax-table
+                         ess-mode-syntax-table
+                         (syntax-table))
+    (symbol-at-point)))
 
 (defun ess-symbol-start ()
-  "Get initial position for objects completion."
-  (let ((beg (car (bounds-of-thing-at-point 'symbol))))
+  "Get initial position for objects completion.
+Symbols are fully qualified names that include accessor
+symbols (like aaa$bbb and aaa@bbb in R)."
+  (let ((beg (car (with-syntax-table (or ess-mode-completion-syntax-table
+                                         ess-mode-syntax-table
+                                         (syntax-table))
+                    (bounds-of-thing-at-point 'symbol)))))
     (when (and beg (not (save-excursion (goto-char beg)
                                         (looking-at "/\\|.[0-9]"))))
       beg)))
+
+(defun ess-arg-start ()
+  "Get initial position for args completion"
+  (when (not (ess-inside-string-p))
+    (when (ess--funname.start)
+      (if (looking-back "[(,]+[ \t\n]*")
+          (point)
+        (ess-symbol-start)))))
 
 (defvar ess--funname.start nil)
 
@@ -1111,14 +1138,14 @@ later."
 
        (unless (ess-inside-string-p)
          (setq ess--funname.start
-               (condition-case nil ;; check if it is inside a functon 
+               (condition-case nil ;; check if it is inside a functon
                    (progn
                      ;; for the sake of big buffers, look only 1000 chars back
                      (narrow-to-region (max (point-min) (- (point) 1000)) (point))
                      (up-list -1)
                      (while (not (looking-at "("))
                        (up-list -1))
-                     (let ((funname (symbol-name (symbol-at-point))))
+                     (let ((funname (symbol-name (ess-symbol-at-point))))
                        (when (and funname
                                   (not (member funname ess-S-non-functions)))
                          (cons funname (- (point) (length funname))))
@@ -1135,6 +1162,132 @@ later."
       ;; don't detect intermediate prompts
       (setq content (concat "{" content "}\n")))
     (ess-command content)))
+
+(defvar ess-current-region-overlay
+  (let ((overlay (make-overlay (point) (point))))
+    (overlay-put overlay 'face  'highlight)
+    overlay)
+  "The overlay for highlighting currently evaluated region or line.")
+
+(defun ess-blink-region (start end)
+  (when ess-blink-region
+    (move-overlay ess-current-region-overlay start end)
+    (run-with-timer ess-blink-delay nil
+                    (lambda ()
+                      (delete-overlay ess-current-region-overlay)))))
+
+(defun ess-deactivate-mark ()
+  (cond ((and (featurep 'evil) evil-mode)
+         (when (evil-visual-state-p)
+           (evil-normal-state)))
+        ((fboundp 'deactivate-mark)
+         (deactivate-mark))))
+
+(defun ess-replace-in-string (str regexp newtext &optional literal)
+  "Replace all matches in STR for REGEXP with NEWTEXT string.
+Optional LITERAL non-nil means do a literal replacement.
+Otherwise treat \\ in NEWTEXT string as special:
+  \\& means substitute original matched text,
+  \\N means substitute match for \(...\) number N,
+  \\\\ means insert one \\."
+  (if (not (stringp str))
+      (error "(replace-in-string): First argument must be a string: %s" str))
+  (if (stringp newtext)
+      nil
+    (error "(replace-in-string): 3rd arg must be a string: %s"
+           newtext))
+  (let ((rtn-str "")
+        (start 0)
+        (special)
+        match prev-start)
+    (while (setq match (string-match regexp str start))
+      (setq prev-start start
+            start (match-end 0)
+            rtn-str
+            (concat
+             rtn-str
+             (substring str prev-start match)
+             (cond (literal newtext)
+                   (t (mapconcat
+                       (function
+                        (lambda (c)
+                          (if special
+                              (progn
+                                (setq special nil)
+                                (cond ((eq c ?\\) "\\")
+                                      ((eq c ?&)
+                                       (substring str
+                                                  (match-beginning 0)
+                                                  (match-end 0)))
+                                      ((and (>= c ?0) (<= c ?9))
+                                       (if (> c (+ ?0 (length
+                                                       (match-data))))
+                                           ;; Invalid match num
+                                           (error "(replace-in-string) Invalid match num: %c" c)
+                                         (setq c (- c ?0))
+                                         (substring str
+                                                    (match-beginning c)
+                                                    (match-end c))))
+                                      (t (char-to-string c))))
+                            (if (eq c ?\\) (progn (setq special t) nil)
+                              (char-to-string c)))))
+                       newtext ""))))))
+    (concat rtn-str (substring str start))))
+
+(defun ess-kill-last-line ()
+  (save-excursion
+    (goto-char (point-max))
+    (forward-line -1)
+    (delete-region (point-at-eol) (point-max))))
+
+(defvar ess-adjust-chunk-faces t
+  "Whether to adjust background color in code chunks.")
+
+(defvar-local ess-buffer-has-chunks nil
+  "Internal usage: indicates whether a buffer has chunks.
+This is used to make face adjustment a no-op when a buffer does
+not contain chunks.")
+
+(defvar ess-adjust-face-intensity 2
+  "Default intensity for adjusting faces.")
+
+(defun ess-adjust-face-background (start end &optional intensity)
+  "Adjust face background between BEG and END.
+On dark background, lighten.  Oposite on light."
+  (let* ((intensity (or intensity ess-adjust-face-intensity))
+         (color (color-lighten-name
+                 (face-background 'default)
+                 (if (eq (frame-parameter nil 'background-mode) 'light)
+                     (- intensity)
+                   intensity)))
+         (face (list (cons 'background-color color))))
+    (with-silent-modifications
+      (ess-adjust-face-properties start end 'face face))))
+
+;; Taken from font-lock.el.
+(defun ess-adjust-face-properties (start end prop value)
+  "Tweaked `font-lock-prepend-text-property'.
+Adds the `ess-face-adjusted' property so we only adjust face once."
+  (let ((val (if (listp value) value (list value))) next prev)
+    (while (/= start end)
+      (setq next (next-single-property-change start prop nil end)
+            prev (get-text-property start prop))
+      ;; Canonicalize old forms of face property.
+      (and (memq prop '(face font-lock-face))
+           (listp prev)
+           (or (keywordp (car prev))
+               (memq (car prev) '(foreground-color background-color)))
+           (setq prev (list prev)))
+      (add-text-properties start next
+                           (list prop (append val (if (listp prev) prev (list prev)))
+                                 'ess-face-adjusted t))
+      (setq start next))))
+
+(defun ess-find-overlay (pos prop)
+  (cl-some (lambda (overlay)
+             (when (overlay-get overlay prop)
+               overlay))
+           (overlays-at pos)))
 
 (provide 'ess-utils)
 

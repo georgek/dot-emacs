@@ -20,9 +20,8 @@
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
 ;;
-;; You should have received a copy of the GNU General Public License
-;; along with GNU Emacs; see the file COPYING.  If not, write to
-;; the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+;; A copy of the GNU General Public License is available at
+;; http://www.r-project.org/Licenses/
 
 ;;; Commentary:
 
@@ -57,8 +56,8 @@
     (set-foreground-color "Black")
     (set-background-color "lightcyan"))
 
-  (set-face-background 'modeline "lightskyblue")
-  (set-face-foreground 'modeline "midnightblue")
+  (set-face-background 'mode-line "lightskyblue")
+  (set-face-foreground 'mode-line "midnightblue")
 
   (set-face-foreground 'font-lock-comment-face "Firebrick")
   (set-face-foreground 'font-lock-function-name-face "Blue")
@@ -76,8 +75,8 @@
     (set-foreground-color "Black")
     (set-background-color "LightBlue"))
 
-  (set-face-foreground 'modeline "LightBlue")
-  (set-face-background 'modeline "DarkSlateBlue")
+  (set-face-foreground 'mode-line "LightBlue")
+  (set-face-background 'mode-line "DarkSlateBlue")
 
   (set-face-foreground 'font-lock-comment-face "Firebrick")
   (set-face-foreground 'font-lock-function-name-face "Blue")
@@ -95,8 +94,8 @@
     (set-foreground-color "Black")
     (set-background-color "Wheat"))
 
-  (set-face-foreground 'modeline "Wheat")
-  (set-face-background 'modeline "Sienna")
+  (set-face-foreground 'mode-line "Wheat")
+  (set-face-background 'mode-line "Sienna")
 
   (set-face-foreground 'font-lock-comment-face "Firebrick")
   (set-face-foreground 'font-lock-function-name-face "Blue")
@@ -115,15 +114,15 @@
     (set-foreground-color "Black")
     (set-background-color "white"))
 
-  (set-face-foreground 'modeline "gray10")
-  (set-face-background 'modeline "gray90")
+  (set-face-foreground 'mode-line "gray10")
+  (set-face-background 'mode-line "gray90")
 
   ;; modify-face is an interactive compiled Lisp function in `faces'.
   ;; Sample usage:
 
   ;;(modify-face FACE                        FOREGROUND BACKGROUND STIPPLE BOLD-P ITALIC-P UNDERLINE-P &optional INVERSE-P FRAME)
 
-  (modify-face 'modeline                     "gray10"   "gray90"   nil     nil    t        nil       )
+  (modify-face 'mode-line                     "gray10"   "gray90"   nil     nil    t        nil       )
   (modify-face 'font-lock-comment-face       "black"    "white"    nil     nil    t        nil       )
   (modify-face 'font-lock-function-name-face "black"    "white"    nil     t      nil      nil       )
   (modify-face 'font-lock-keyword-face       "black"    "white"    nil     nil    nil      t         )

@@ -3,7 +3,7 @@
 ;; Copyright (C) 1989--1996 Bates, Kademan, Ritter and Smith
 ;; Copyright (C) 1997--2010 A.J. Rossini, Richard M. Heiberger, Martin
 ;;      Maechler, Kurt Hornik, Rodney Sparapani, and Stephen Eglen.
-;; Copyright (C) 2011--2012 A.J. Rossini, Richard M. Heiberger, Martin Maechler,
+;; Copyright (C) 2011--2015 A.J. Rossini, Richard M. Heiberger, Martin Maechler,
 ;;      Kurt Hornik, Rodney Sparapani, Stephen Eglen and Vitalie Spinu.
 
 ;; Author: Doug Bates
@@ -26,9 +26,8 @@
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
 ;;
-;; You should have received a copy of the GNU General Public License
-;; along with GNU Emacs; see the file COPYING.  If not, write to
-;; the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+;; A copy of the GNU General Public License is available at
+;; http://www.r-project.org/Licenses/
 
 ;;; Commentary:
 
@@ -101,6 +100,22 @@
 ;;;=====================================================
 ;;;
 
+(defun ess-write-to-dribble-buffer (text)
+  "Write TEXT to dribble ('*ESS*') buffer."
+  (unless (buffer-live-p ess-dribble-buffer)
+    ;; ESS dribble buffer must be re-created.
+    (setq ess-dribble-buffer (get-buffer-create "*ESS*")))
+  (let (deactivate-mark)
+    (with-current-buffer ess-dribble-buffer
+      (goto-char (point-max))
+      (insert-before-markers text))))
+
+;; Shortcut to render "dribbling" statements less cluttering:
+(defun ess-if-verbose-write (text)
+  "Write TEXT to dribble buffer ('*ESS*') only *if* `ess-verbose'."
+  (if ess-verbose (ess-write-to-dribble-buffer text)))
+
+
 (require 'easymenu)
 (if (or window-system
         noninteractive ; compilation!
@@ -111,6 +126,8 @@
 (require 'ess-custom)
 (require 'ess-mode)
 (require 'ess-inf)
+
+(require 'cl)
 
 
  ; ess-mode: editing S/R/XLS/SAS source
@@ -161,32 +178,43 @@
  ; Miscellaneous "ESS globals"
 
 (defun ess-version-string ()
-  (let* ((svn-fname (concat ess-etc-directory "SVN-REVISION"))
-         (svn-rev
-          (when (file-exists-p svn-fname)
-            ;; then it has two lines that look like
-            ;; |Revision: 4803
-            ;; |Last Changed Date: 2012-04-16
-            (with-current-buffer (find-file-noselect svn-fname)
-              (goto-char (point-min))
-              (when (re-search-forward "Revision: \\(.*\\)\n.*: \\(.*\\)" nil t)
-                (concat "svn: " (match-string 1) " (" (match-string 2) ")")))))
-         (git-fname (concat (file-name-directory ess-lisp-directory) ".git/refs/heads/master"))
+  (let* (;;(svn-fname (concat ess-etc-directory "SVN-REVISION"))
+         ;; (svn-rev
+         ;;  (when (file-exists-p svn-fname)
+         ;;    ;; then it has two lines that look like
+         ;;    ;; |Revision: 4803
+         ;;    ;; |Last Changed Date: 2012-04-16
+         ;;    (with-current-buffer (find-file-noselect svn-fname)
+         ;;      (goto-char (point-min))
+         ;;      (when (re-search-forward "Revision: \\(.*\\)\n.*: \\(.*\\)" nil t)
+         ;;        (concat "svn: " (match-string 1) " (" (match-string 2) ")")))))
+         (ess-dir (file-name-directory ess-lisp-directory)) ; if(<from source>) the top-level 'ess/'
+         (is-release (file-exists-p (concat ess-etc-directory ".IS.RELEASE")))
+         (rel-string (if is-release "Released "))
+         (git-ref-fn (concat ess-dir ".git/HEAD"))
+         (git-ref (when (file-exists-p git-ref-fn)
+                    (with-current-buffer (find-file-noselect git-ref-fn)
+                      (goto-char (point-min))
+                      (when (re-search-forward "ref: \\(.*\\)\n" nil t)
+                        (match-string 1)))))
+         (git-fname (if git-ref
+                        (concat ess-dir ".git/" git-ref)
+                      ;; for release
+                      (concat ess-etc-directory "git-ref")))
          (git-rev (when (file-exists-p git-fname)
                     (with-current-buffer (find-file-noselect git-fname)
                       (goto-char (point-min))
                       (concat "git: "(buffer-substring 1 (point-at-eol))))))
-         (elpa-fname (concat (file-name-directory ess-lisp-directory) "ess-pkg.el"))
+         (elpa-fname (concat ess-dir "ess-pkg.el"))
          (elpa-rev (when (file-exists-p elpa-fname)
-                     ;; get it from ELPA dir name, (probbly won't wokr if instaleed manually)
+                     ;; get it from ELPA dir name, (probably won't work if installed manually)
                      (concat "elpa: "
                              (replace-regexp-in-string "ess-" ""
                                                        (file-name-nondirectory
-                                                        (substring (file-name-directory ess-lisp-directory)
-                                                                   1 -1)))))))
+                                                        (substring ess-dir 1 -1)))))))
     ;; set the "global" ess-revision:
     (setq ess-revision (format "%s%s%s"
-                               (or svn-rev "")
+                               (or rel-string "") ;;(or svn-rev "")
                                (or git-rev "")
                                (or elpa-rev "")))
     (when (string= ess-revision "")
@@ -227,8 +255,13 @@ Invoke this command with C-u C-u C-y."
   (interactive "*P")
   (if (equal '(16) ARG)
       (ess-yank-cleaned-commands)
-    (yank ARG))
-  )
+    (let* ((remapped (command-remapping 'yank (point)))
+           (command (cond ((eq remapped 'ess-yank) 'yank)
+                          ((null remapped) 'yank)
+                          (t remapped))))
+      (funcall command ARG))))
+
+(put 'ess-yank 'delete-selection 'yank)
 
  ; ESS Completion
 (defun ess-completing-read (prompt collection &optional predicate
@@ -280,23 +313,31 @@ See also `ess-use-ido'.
   "Load all the extra features depending on custom settings."
 
   (let ((mode (if inferior 'inferior-ess-mode 'ess-mode))
-        (isR (string-match "^R" ess-dialect))
-        (emacsp (featurep 'emacs)))
+        (isR (string-match "^R" ess-dialect)))
 
     ;; auto-complete
-    (when (and emacsp 
-               (require 'auto-complete nil 'no-error)
+    (when (and (boundp 'ac-sources)
                (if inferior
                    (eq ess-use-auto-complete t)
                  ess-use-auto-complete))
       (add-to-list 'ac-modes mode)
-      ;; files should be in front; ugly, but needes
+      ;; files should be in front; ugly, but needed
       (when ess-ac-sources
         (setq ac-sources
               (delq 'ac-source-filename ac-sources))
         (mapcar (lambda (el) (add-to-list 'ac-sources el))
                 ess-ac-sources)
         (add-to-list 'ac-sources 'ac-source-filename)))
+
+    ;; company
+    (when (and (boundp 'company-backends)
+               (if inferior
+                   (eq ess-use-company t)
+                 ess-use-company))
+      (when ess-company-backends
+        (set (make-local-variable 'company-backends)
+             (copy-list (append ess-company-backends company-backends)))
+        (delq 'company-capf company-backends)))
 
     ;; eldoc)
     (require 'eldoc)
@@ -306,11 +347,10 @@ See also `ess-use-ido'.
       (when (> eldoc-idle-delay 0.4) ;; default is too slow for paren help
         (set (make-local-variable 'eldoc-idle-delay) 0.1))
       (set (make-local-variable 'eldoc-documentation-function) ess-eldoc-function)
-      (when emacsp
-        (turn-on-eldoc-mode)))
+      (turn-on-eldoc-mode))
 
     ;; tracebug
-    (when (and ess-use-tracebug emacsp inferior isR)
+    (when (and ess-use-tracebug inferior isR)
       (ess-tracebug 1))))
 
 
@@ -391,15 +431,14 @@ Otherwise try a list of fixed known viewers.
                     (executable-find "xpdf")
                     (executable-find "acroread")
                     (executable-find "xdg-open")
-                    ;; this one is wrongly wrong, (ok for time being as it is use donly in swv)
-                    (car (ess-get-words-from-vector
-                          "getOption(\"pdfviewer\")\n"))
+                    ;; this one is wrong, (ok for time being as it is used only in swv)
+                    (car (ess-get-words-from-vector "getOption(\"pdfviewer\")\n"))
                     )))
     (when (stringp viewer)
       (setq viewer (file-name-nondirectory viewer)))
     viewer))
 
-        
+
 
 
 
@@ -421,21 +460,6 @@ Otherwise try a list of fixed known viewers.
       (store-match-data (match-data))
       (nreverse list))))
 
-(defun ess-write-to-dribble-buffer (text)
-  "Write TEXT to dribble ('*ESS*') buffer."
-  (unless (buffer-live-p ess-dribble-buffer)
-    ;; ESS dribble buffer must be re-created.
-    (setq ess-dribble-buffer (get-buffer-create "*ESS*")))
-  (let (deactivate-mark)
-    (with-current-buffer ess-dribble-buffer
-      (goto-char (point-max))
-      (insert-before-markers text))))
-
-;; Shortcut to render "dribbling" statements less cluttering:
-(defun ess-if-verbose-write (text)
-  "Write TEXT to dribble buffer ('*ESS*') only *if* `ess-verbose'."
-  (if ess-verbose (ess-write-to-dribble-buffer text)))
-
 
 (defvar ess--make-local-vars-permenent nil
   "If this varialbe is non-nil in a buffer make all variable permannet.
@@ -446,7 +470,7 @@ Used in noweb modes.")
 (defun ess-setq-vars-local (alist &optional buf)
   "Set language variables from ALIST, in buffer BUF, if desired."
   (if buf (set-buffer buf))
-  ;; (setq alist (reverse alist)) ;; It should really be in reverse order; 
+  ;; (setq alist (reverse alist)) ;; It should really be in reverse order;
   (mapc (lambda (pair)
           (make-local-variable (car pair))
           (set (car pair) (eval (cdr pair)))
@@ -493,7 +517,7 @@ Used in noweb modes.")
 
 ;; Toby Speight <Toby.Speight@ansa.co.uk>
 ;;> ;; untested
-;;> (let ((l R-customize-alist))            ; or whatever
+;;> (let ((l ess-r-customize-alist))            ; or whatever
 ;;>   (while l
 ;;>     (set (car (car l)) (cdr (car l)))   ; set, not setq!
 ;;>     (setq l (cdr l))))
@@ -509,18 +533,18 @@ Used in noweb modes.")
 ;; Erik Naggum <erik@naggum.no>
 ;;
 ;;(mapcar (lambda (pair) (set (car pair) (cdr pair)))
-;;        R-customize-alist)
+;;        ess-r-customize-alist)
 ;;
 ;;if you want to evaluate these things along the way, which it appears that
 ;;you want, try:
 ;;
 ;;(mapcar (lambda (pair) (set (car pair) (eval (cdr pair))))
-;;        R-customize-alist)
+;;        ess-r-customize-alist)
 
 ;; jsa@alexandria.organon.com (Jon S Anthony)
 ;;(mapcar (lambda (x)
 ;;          (set-variable (car x) (cdr x)))
-;;      R-customize-alist)
+;;      ess-r-customize-alist)
 
 
 

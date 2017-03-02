@@ -5,13 +5,13 @@
 ## cannot be parsed in old R versions
 
 
-## loading ESSR.rda might fails, so re-asign here:
+## loading ESSR.rda might fail, so re-assign here:
 .ess.Rversion <-
     if( exists("getRversion", mode="function") ){
         getRversion()
     } else {
         paste(R.version$major, R.version$minor, sep=".")
- }
+    }
 
 .ess.R.has.utils <- (.ess.Rversion >= "1.9.0")
 .ess.utils.name <- paste("package",
@@ -20,24 +20,36 @@
 
 ## Instead of modern  utils::help use one that works in R 1.0.0:
 .ess.findFUN   <- get("find", .ess.utils.name)
-.ess.helpFUN   <- get("help", .ess.utils.name)
-.ess.sourceFUN <- get("source", pos="package:base")
+
 
 ### HELP
-.ess.help <- function(..., help.type = getOption('help_type'))
-{
-    if (.ess.Rversion > '2.10')# abbreviating 'help_type' on purpose:
-	.ess.helpFUN(..., help = help.type)
-    else # not using identical(), and working also for NULL:
-	.ess.helpFUN(..., htmlhelp = (length(help.type) && help.type=='html'))
+.ess.help <- function(..., help.type = getOption("help_type")) {
+    if (is.null(help.type)) {
+        help.type <- "text"
+    }
+
+    ## - Searching in global env makes sure it works with devtools
+    ## - Redefining to .ess.help this way is necessary because
+    ##   `print.help_files_with_topic` (used internally when there's
+    ##   more than one a package) uses the quoted call
+    .ess.help <- function(...) {
+        do.call(get("help", envir = .GlobalEnv), list(...))
+    }
+
+    if (.ess.Rversion > "2.10") {
+        ## Abbreviating help_type to avoid underscore
+        .ess.help(..., help = help.type)
+    } else {
+        .ess.help(..., htmlhelp = help.type == "html")
+    }
 }
 
 .ess.getHelpAliases <- function(){
     readrds <-
         if(.ess.Rversion >= '2.13.0') readRDS
         else .readRDS
-    rds_files <- paste(searchpaths(), "/help/aliases.rds", sep = "")
-    unlist(lapply(rds_files,
+    rds.files <- paste(searchpaths(), "/help/aliases.rds", sep = "")
+    unlist(lapply(rds.files,
                   function(f){
                       if( file.exists(f) )
                           try(names(readrds(f)))
@@ -46,29 +58,69 @@
 }
 
 ### SOURCING
-.ess.eval <- function(string, echo = TRUE, print.eval = TRUE,
+.ess.eval <- function(string, visibly = TRUE, output = FALSE,
                       max.deparse.length = 300,
-		      file = tempfile("ESS"),
-		      local = if (.ess.Rversion > '2.13') parent.frame() else FALSE)
+                      file = tempfile("ESS"), local = NULL)
 {
+    if (is.null(local)) {
+        local <- if (.ess.Rversion > '2.13') parent.frame() else FALSE
+    }
+
     ## create FILE, put string into it. Then source.
     ## arguments are like in source and .ess.source
     cat(string, file = file)
-    on.exit(file.remove(file))
-    .ess.source(file, echo = echo, print.eval = print.eval,
-		max.deparse.length = max.deparse.length, local = local)
+    ## The following on.exit infloops in R 3.3.0
+    ## https://github.com/emacs-ess/ESS/issues/334
+    ## https://bugs.r-project.org/bugzilla/show_bug.cgi?id=16971
+    ## So we are cleanning it in .ess.source instead.
+    ## on.exit(file.remove(file))
+    .ess.source(file, visibly = visibly, output = output,
+                max.deparse.length = max.deparse.length,
+                local = local, fake.source = TRUE)
 }
 
-.ess.source <- function(file, echo = TRUE, print.eval = TRUE,
-			max.deparse.length = 300,
-			local = if (.ess.Rversion > '2.13') parent.frame() else FALSE)
+.ess.strip.error <- function(msg, srcfile) {
+    pattern <- paste0(srcfile, ":[0-9]+:[0-9]+: ")
+    sub(pattern, "", msg)
+}
+
+.ess.file.remove <- function(file){
+    if (base::file.exists(file)) base::file.remove(file)
+    else FALSE
+}
+
+.ess.source <- function(file, visibly = TRUE, output = FALSE,
+                        max.deparse.length = 300, local = NULL,
+                        fake.source = FALSE, keep.source = TRUE,
+                        message.prefix = "")
 {
+    if (is.null(local)) {
+        local <- if (.ess.Rversion > '2.13') parent.frame() else FALSE
+    }
+
     ss <- # drop 'keep.source' for older versions
-	if(.ess.Rversion >= "2.8") .ess.sourceFUN
-        else function(..., keep.source) .ess.sourceFUN(...)
-    invisible(ss(file, echo = echo, local = local, print.eval = print.eval,
-		 max.deparse.length = max.deparse.length,
-		 keep.source = TRUE)$value) ## return value for org-babel
+        if(.ess.Rversion >= "2.8") base::source
+        else function(..., keep.source) base::source(...)
+
+    out <- tryCatch(ss(file, echo = visibly, local = local, print.eval = output,
+                       max.deparse.length = max.deparse.length,
+                       keep.source = keep.source),
+                    error = function(x) {
+                        if(fake.source) {
+                            .ess.file.remove(file)
+                        }
+                        msg <- .ess.strip.error(x$message, file)
+                        stop(msg, call. = FALSE)
+                    })
+
+    if (fake.source) {
+        .ess.file.remove(file)
+    } else {
+        cat(sprintf("%sSourced file %s\n", message.prefix, file))
+    }
+
+    ## Return value for org-babel
+    invisible(out$value)
 }
 
 if(.ess.Rversion < "1.8")
@@ -83,3 +135,7 @@ if(.ess.Rversion < "1.8")
         unquote(substitute(expr))
     }
 
+
+## Local Variables:
+## eval: (ess-set-style 'RRR t)
+## End:

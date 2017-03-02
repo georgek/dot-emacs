@@ -21,9 +21,9 @@
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
 
-;; You should have received a copy of the GNU General Public License
-;; along with GNU Emacs; see the file COPYING.  If not, write to
-;; the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+;; A copy of the GNU General Public License is available at
+;; http://www.r-project.org/Licenses/
+
 
 ;;; Commentary:
 
@@ -36,7 +36,7 @@
 
 ;;; Define a function to make it easier to check which version we're
 ;;; running.
-
+;; no longer in use; 2013-12-30:
 (defun ess-running-emacs-version-or-newer (major minor)
   (or (> emacs-major-version major)
       (and (= emacs-major-version major)
@@ -50,12 +50,8 @@ Only a concern with earlier versions of Emacs.")
 
 ;; FIXME:  When emacs is started from Cygwin shell in Windows,
 ;;         we have (equal window-system 'x) -and should use "--ess" in *d-r.el
-(defvar ess-microsoft-p (or (equal window-system 'w32)
-                            ;; XEmacs only...
-;;;                         (equal (console-type) 'pc)
-;;;                         (equal (console-type) 'mswindows)
-                            (equal window-system 'win32)
-                            (equal window-system 'mswindows))
+(defvar ess-microsoft-p (or (eq system-type 'ms-dos)
+			    (eq system-type 'windows-nt))
   "Value is t if the OS is one of Microsoft's, nil otherwise.")
 
 

@@ -22,9 +22,8 @@
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
 
-;; You should have received a copy of the GNU General Public License
-;; along with GNU Emacs; see the file COPYING.  If not, write to
-;; the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+;; A copy of the GNU General Public License is available at
+;; http://www.r-project.org/Licenses/
 
 ;;; Commentary:
 
@@ -269,6 +268,14 @@ Better logic needed!  (see 2 uses, in this file).")
                                                     (self-insert-command (prefix-numeric-value arg)))
                                                 (self-insert-command (prefix-numeric-value arg))))))
 
+(defun SAS-menu ()
+  "Start SAS from the menu."
+  (interactive)
+  (if ess-microsoft-p
+      ;; replace with other choices for starting SAS under XEmacs?
+      (error "SAS cannot be started this way in ESS on Windows.")
+    (SAS)))
+
 (defun SAS ()
   "Call 'SAS', from SAS Institute."
   (interactive)
@@ -279,6 +286,7 @@ Better logic needed!  (see 2 uses, in this file).")
              ess-dialect
              temp-dialect))
     (ess-SAS-pre-run-hook temp-dialect)
+    (setq ess-eval-visibly-p nil)
     (inferior-ess)
     (save-excursion
       (set-buffer "*SAS*")

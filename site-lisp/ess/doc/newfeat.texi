@@ -1,6 +1,232 @@
 @comment @itemize @w{}
 @comment @item
 
+Changes and New Features in 16.10:
+@itemize @bullet
+
+@item @ESS{[R]}: Syntax highlighting is now more consistent. Backquoted
+names are not fontified as strings (since they really are identifiers).
+Furthermore they are now correctly recognised when they are function
+definitions or function calls.
+@item @ESS{[R]}: Backquoted names and @code{%op%} operators are
+recognised as sexp. This is useful for code navigation, e.g. with
+@kbd{C-M-f} and @kbd{C-M-b}.
+@item @ESS{[R]}: Integration of outline mode with roxygen examples fields.
+You can use outline mode's code folding commands to fold the examples
+field. This is especially nice to use with well documented packages with
+long examples set. Set @code{ess-roxy-fold-examples} to non-nil to
+automatically fold the examples field when you open a buffer.
+@item @ESS{[R]}: New experimental feature: syntax highlighting in
+roxygen examples fields. This is turned off by default. Set
+@code{ess-roxy-fontify-examples} to non-nil to try it out.
+@item @ESS{[R]}: New package development command @code{ess-r-devtools-ask}
+bound to @kbd{C-c C-w C-a}. It asks with completion for any devtools
+command that takes @code{pkg} as argument.
+@item @ESS{[R]}: New command @kbd{C-c C-e C-r} to reload the inferior process. 
+Currently only implemented for R. The R method runs @code{inferior-ess-r-reload-hook}
+on reloading.
+@item @ESS{[R]}: @code{ess-r-package-mode} is now activated in non-file buffers as well.
+@end itemize
+
+Bug fixes in 16.10:
+@itemize @bullet
+@item @ESS{[R]}: Fix broken (un)flagging for debugging inside packages
+@item @ESS{[R]}: Fixes (and improvements) in Package development
+@item @ESS{[R]}: Completion no longer produces @code{...=} inside @code{list(  )}.
+@item @ESS{[R]}: Better debugging and tracing in packages.
+@item @ESS{[R]}: Better detection of symbols at point.
+@item @ESS{[R]}: No more spurious warnings on deletion of temporary files.
+@item @ESS{[julia]}: help and completion work (better)
+@item @ESS{[julia]}: available via @code{ess-remote}
+@end itemize
+
+Changes and New Features in 16.04:
+@itemize @bullet
+
+@item @ESS{[R]}: @code{developer} functionality has been refactored.
+The new user interface consists of a single command
+@code{ess-r-set-evaluation-env} bound by default to @kbd{C-c C-t
+C-s}. Once an evaluation environment has been set with, all subsequent
+ESS evaluation will source the code into that environment. By default,
+for file within R packages the evaluation environment is set to the
+package environment. Set @code{ess-r-package-auto-set-evaluation-env} to
+@code{nil} to disable this.
+@item @ESS{[R]}: New @code{ess-r-package-mode}
+This development mode provides features to make package development
+easier. Currently, most of the commands are based on the @code{devtools}
+packages and are accessible with @kbd{C-c C-w} prefix. See the
+documentation of @code{ess-r-package-mode} function for all available
+commands. With @kbd{C-u} prefix each command asks for extra arguments to
+the underlying devtools function. This mode is automatically enabled in
+all files within R packages and is indicated with @code{[pkg:NAME]} in
+the mode-line.
+@item @ESS{[R]}: Help lookup has been improved.
+It is now possible to get help for namespaced objects such as
+pkg::foobar. Furthermore, ESS recognizes more reliably when you change
+@code{options('html_type')}.
+@item @ESS{[R]}: New specialized breakpoints for debugging magrittr pipes
+@item @ESS{}: ESS now implements a simple message passing interface
+to communicate between ESS and inferior process.
+@end itemize
+
+Bug fixes in 16.04:
+@itemize @bullet
+@item @ESS{[R]}: Roxygen blocks with backtics are now correctly filled
+@item @ESS{[R]}: Don't skip breakpoints in magrittr's @code{debug_pipe}
+@item @ESS{[R]}: Error highlighting now understands `testthat` type errors
+@item @ESS{[Julia]}: Added getwd and setwd generic commands
+@end itemize
+
+
+Changes and New Features in 15.09:
+@itemize @bullet
+
+@item @ESS{[R]}: The indentation logic has been refactored.
+It should be faster, more consistent and more flexible. There are three
+types of indentation settings, those starting with @code{ess-offset-}
+give the actual offsets, those starting with @code{ess-indent-} are
+control (commonly Boolean) variables, and those starting with
+@code{ess-align-} are vertical alignment overrides which inhibit default
+offsets in specific situations. See @code{ess-style-alist} for detailed
+description of the new indentation system and provided default
+indentation styles.
+
+@item @ESS{[R]}: Deprecation of old indentation settings.
+As a consequence of the indentation re-factoring
+@code{ess-brace-imaginary-offset}, @code{ess-expression-offset} and all
+delimiter-specific offsets are deprecated. The settings for indentation
+of continued statements have been replaced by
+@code{ess-offset-continuations}. It can be set to either @code{cascade}
+or @code{straight} (the default). @code{ess-arg-function-offset} has
+been replaced by @code{ess-indent-from-lhs} and has been generalised to
+assignments. This setting now works with both statement blocks and
+expressions and only takes effect for offsets set to @code{prev-call}
+and @code{open-delim} in order to produce a consistent indentation.
+
+@item @ESS{}: A test framework has been set up.
+
+@item @ESS{[R]}: A new RStudio style is provided to mimic as closely
+as possible R files indented via RStudio. To reproduce the setup of some
+of the RStudio users, the RStudio- style with
+@code{ess-offset-arguments} set to @code{prev-line} is also provided. In
+addition, the new RRR+ style is equivalent to RRR except it indents
+blocks in function calls relatively to the opening delimiter. This style
+does not try to save horizontal space and produces more indentation.
+
+@item @ESS{[R]}: Roxygen fields will now be indented on paragraph
+refilling in order to make the documentation more readable. You can also
+refill commented lines in the @code{examples} field without squashing
+the surrounding code in the comments.
+
+@item @ESS{[R]}: ESS can now format your code! This is controlled
+through the settings @code{ess-fill-calls} and
+@code{ess-fill-continuations}. When activated, @code{(fill-paragraph)}
+formats your calls and your formulas/continuations while making sure
+they don't go past @code{fill-column}. Repeated refills cycle through
+different styles (see the docstrings for more details). By default, the
+refilled region blinks. Set @code{ess-blink-filling} to nil to prevent
+this.
+
+@item @ESS{[R]}: Fix occasional missing error location fontification
+in inferior buffers.
+
+@item @ESS{[R]}: ess-developer now correctly assigned the environment
+of new functions to the package namespace.
+
+
+@item @ESS{[Julia]}: ?[topic] now works in the *julia* buffer.
+Note that support for editing Julia code now depends on
+@file{julia-mode.el} from the Julia project.  If you install ESS from
+the official tarball/zip file, @file{julia-mode.el} is already included.
+Otherwise, if you install ESS by
+running @code{make}, then the latest version of @file{julia-mode.el} is
+downloaded (and so you need an active internet connection to install)
+during the installation process.  Alternatively, if you run ESS without
+running @code{make}, then ensure that you have the @code{julia-mode.el},
+which you can get easily from MELPA for example.
+
+
+@item @iESS{}: For naming inferior processes, ESS can use @code{projectile}'s
+project root and it does so when @code{ess-gen-proc-buffer-name-function} is
+set to @code{ess-gen-proc-buffer-name:projectile-or-simple} as by default,
+or to another value beginning with @code{ess-gen-proc-buffer-name:projectile-*}.
+
+@end itemize
+
+
+Changes and New Features in 15.03-1:
+@itemize @bullet
+@item @ESS{[R]}: An indentation bug has been fixed (github issue 163)
+@item @ESS{[R]}: On windows, if `ess-prefer-higher-bit' is non-nil (the
+default), then R-newest will try to run a 64 bit (rather than 32 bit)
+version of R.
+@end itemize
+
+Changes and New Features in 15.03:
+@itemize @bullet
+@item @ESS{[R]}: Full native support for `company-mode`.
+@item @ESS{[R]}: More efficient caching algorithm for R completion.
+@item @ESS{}: New offset variable `ess-close-paren-offset` to control
+the indentation of the closing parentheses.
+@item @ESS{[R]}: Ask for CRAN mirror only once per emacs session.
+@item @ESS{[R]}: Detect @code{library} and @code{require} calls
+for better completion caching.
+@item Buffer display is now customizable (@code{ess-show-buffer-action}).
+@item Use @code{y-or-n-p} instead of @code{yes-or-no-p} throughout.
+@item More support for ODS in ess-sas-graph-view.
+@item Makefiles are now both UNIX and GNU friendly.
+@item @ESS{[R]}: Simplify directory lookup in @code{ess-developer} (#137).
+@item Make closed paren indentation consistent
+@end itemize
+
+Bug Fixes in 15.03:
+@itemize @bullet
+@item Fix open brace indentation bug (#27 in ess/R-ESS-bugs.R).
+@item Fix git version lookup
+@item Don't check directory modtime in R dialect.
+@item Declare all ess macros for edebug.
+@item Add @code{ess-smart-comma} to eldoc message functions.
+@item Inform users when retrieving RDA aliases.
+@item Line ending in '~' is also a continuation line.
+@item Filing roxy paragraphs works as expected now.
+@item In @code{ess-developer-add-package}, remove incorrect `wait`
+argument from @code{ess-get-words-from-vector} call.
+@item Fix #96, #117, #120, #125, #134, #137.
+@item Fix ess-quit-r. Call base::q() even if it is masked.
+@item Fix `ess-show-buffer` to always display the buffer in another window.
+@item Makefile: Fix cd bug for directories with spaces in them
+@item @code{ess-kill-buffer-and-go} modified to not restart R
+@end itemize
+
+Changes / Selected Bug Fixes in 14.09:
+@itemize @bullet
+@item @ESS{[Julia]}: Executable is changed to @code{julia}.
+@item @ESS{[Julia]}: Completion and help system was adjusted to Julia
+v.0.3.0. Julia v.0.2.x is no more supported.
+@item @ESS{[R]}: Running R with @code{gdb} debugger now works as expected
+@item @iESS{}: Inferior ESS buffers are now derived from @code{comint-mode}
+@item @ESS{[R]}: @code{ess-execute-screen-options} uses correct screen
+width in terminal sessions
+@item @ESS{}: @code{ess-build-tags-for-directory} works when no TAGS file
+name was provided
+@item @ESS{}: @code{ess-offset-statement-continued} is now respected everywhere
+except inside of the @code{if} test condition.
+@item @ESS{}: New variable @code{ess-offset-statement-first-continued} for
+indentation of the first line in multiline statements.
+@item @ESS{R}: Starting @kbd{,} in multiline statements indentation is now
+ignored to achieve a more pleasant alignment.
+@item @ESS{R}: Improved behavior of @kbd{RET} in roxygen blocks.
+@item @ESS{[R]}: command cleaning with @kbd{C-u C-u C-y} was broken with
+lines containing " + "
+@item @ESS{[R]}: fixed "empty watch window bug"
+@item @ESS{[R]}: don't ask for help location on ac-quick-help (request of github #81)
+@item @ESS{[R]}: "importClassesFrom" and "importMethodsFrom" were added to
+the list of two-parameter roxygen commands
+@item @ESS{[R]}: fix vignetes display and hyperlinks (were broken in 13.09-1)
+@item @ESS{[Julia]}: recognize function names ending with !
+@item @ESS{[Julia]}: fix indentation of "for" comprehension syntax within brackets.
+@end itemize
+
 Changes / Selected Bug Fixes in 13.09-1:
 @itemize @bullet
 @item ess-remote and TRAMP: R support code is now downloaded in binary form instead
@@ -24,15 +250,15 @@ Leading comments are automatically removed before the evaluation
 @item @ESS{[SAS]}: Three features/fixes with special thanks to Matthew Fidler
 @uref{https://github.com/emacs-ess/ESS/pulls/mlf176f2,
 https://github.com/emacs-ess/ESS/pulls/mlf176f2}. Turn on SAS log mode
-when appropriate.  Indent comments and CARDS statement more appropriately. 
+when appropriate.  Indent comments and CARDS statement more appropriately.
 @item @ESS{[SAS]}: @code{ess-sas-edit-keys-toggle} default returns to @code{nil}
-@item @ESS{[R]}: support for @code{prettify-symbols-mode}: 
+@item @ESS{[R]}: support for @code{prettify-symbols-mode}:
 contribution from Rudiger Sonderfeld @uref{https://github.com/emacs-ess/ESS/pull/65}
 @item @ESS{[SWV]}: knitr now evaluates in the current frame
 @item @ESS{[developer]}: ess-developer doesn't kill open DESCRIPTION files anymore
 @item @ESS{[roxygen]}: @code{ess-roxy-preview-HTML} is now on @kbd{C-c C-o C-w} and
  @code{ess-roxy-preview-text} is now on @code{C-c C-o C-t}
-@item @ESS{}: installation with @code{make install} was simplified and should work 
+@item @ESS{}: installation with @code{make install} was simplified and should work
 out of the box on most *nix systems
 @item @ESS{} installation instructions simplified
 @item fixed font-lock bug introduced in 13.09 that was causing very slow process output

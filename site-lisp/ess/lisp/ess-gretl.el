@@ -25,10 +25,8 @@
 ;; FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
 ;; details.
 ;;
-;; You should have received a copy of the GNU General Public License along with
-;; this program; see the file COPYING.  If not, write to the Free Software
-;; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-;; USA.
+;; A copy of the GNU General Public License is available at
+;; http://www.r-project.org/Licenses/
 ;;
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -419,7 +417,7 @@ end keywords as associated values.")
   '((paragraph-start		  . (concat "\\s-*$\\|" page-delimiter))
     (paragraph-separate		  . (concat "\\s-*$\\|" page-delimiter))
     (paragraph-ignore-fill-prefix . t)
-    (require-final-newline	  . t)
+    (require-final-newline	  . mode-require-final-newline)
     (comment-start		  . "# ")
     (comment-add                  . 1)
     (comment-start-skip		  . "\\s<+\\s-*")
@@ -478,7 +476,7 @@ end keywords as associated values.")
            (gretl--get-words-from-command "help functions\n" "Accessors:" "^Functions")
            (gretl--get-words-from-command "help functions\n" "^Functions" "^For")
            )))
-  
+
 ;; (defvar ess-gretl-error-regexp-alist '(gretl-in gretl-at)
 ;;   "List of symbols which are looked up in `compilation-error-regexp-alist-alist'.")
 
@@ -501,7 +499,6 @@ end keywords as associated values.")
     ;; (ess-dump-error-re			. "in \\w* at \\(.*\\):[0-9]+")
     ;; (ess-error-regexp			. "\\(^\\s-*at\\s-*\\(?3:.*\\):\\(?2:[0-9]+\\)\\)")
     ;; (ess-error-regexp-alist		. ess-gretl-error-regexp-alist)
-    (ess-send-string-function		. 'gretl-send-string-function)
     ;; (inferior-ess-objects-command	. inferior-gretl-objects-command)
     ;; (inferior-ess-search-list-command	. "search()\n")
     ;; inferior-ess-help-command		. gretl-help-command)
@@ -604,7 +601,7 @@ to gretl, put them in the variable `inferior-gretl-args'."
 				 inferior-gretl-args
 				 "'] ? "))
 		      nil))))
-      (inferior-ess r-start-args) 
+      (inferior-ess r-start-args)
       (set (make-local-variable 'indent-line-function) 'gretl-indent-line)
       (set (make-local-variable 'gretl-basic-offset) 4)
       (setq indent-tabs-mode nil)

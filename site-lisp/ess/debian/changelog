@@ -1,3 +1,108 @@
+ess (16.04-2) unstable; urgency=medium
+
+  * debian/emacsen-install: Skip installation for emacs23
+  * debian/control: Note requirement for emacs24 or later
+  
+  * debian/control: Increased Standards-Version: to current version
+
+ -- Dirk Eddelbuettel <edd@debian.org>  Sun, 22 May 2016 15:30:40 -0500
+
+ess (16.04-1) unstable; urgency=medium
+
+  * New upstream version released today
+
+ -- Dirk Eddelbuettel <edd@debian.org>  Sat, 07 May 2016 11:46:33 -0500
+
+ess (15.09.2-3) unstable; urgency=low
+
+  * debian/control: Add Build-Depends on texlive-fonts-recommended
+
+ -- Dirk Eddelbuettel <edd@debian.org>  Sun, 06 Mar 2016 09:39:09 -0600
+
+ess (15.09.2-2) unstable; urgency=low
+
+  * doc/texinfo.tex: Temporarily adding copy from texinfo 6.0 to avoid
+    breakage with the version included with texinfo 6.1	(Closes: #815734)
+
+ -- Dirk Eddelbuettel <edd@debian.org>  Thu, 03 Mar 2016 07:43:01 -0600
+
+ess (15.09.2-1) unstable; urgency=low
+
+  * New upstream version released today
+
+ -- Dirk Eddelbuettel <edd@debian.org>  Fri, 11 Dec 2015 06:17:51 -0600
+
+ess (15.09.1-1) unstable; urgency=low
+
+  * New upstream version released today
+
+  * debian/emacsen-install: Call gzip with '-f' to ensure in-place upgrades
+  							(Closes: #802953)
+
+  * debian/control: Shift Maintainer: address from ess-debian list to me,
+    remove now-redundant Uploaders: field		(Closes: #803003)
+
+ -- Dirk Eddelbuettel <edd@debian.org>  Mon, 26 Oct 2015 19:22:28 -0500
+
+ess (15.09-1) unstable; urgency=low
+
+  * New upstream version 
+
+ -- Dirk Eddelbuettel <edd@debian.org>  Sat, 26 Sep 2015 21:20:07 -0500
+
+ess (15.03-1-2) unstable; urgency=low
+
+  * debian/emacsen-compat: Added, with value of zero
+  
+  * debian/emacsen-install: Refreshed
+  
+  * debian/control: Depends: emacsen-common (>= 2.0.8) per Emacsen Policy
+
+ -- Dirk Eddelbuettel <edd@debian.org>  Mon, 04 May 2015 20:29:39 -0500
+
+ess (15.03-1-1) unstable; urgency=low
+
+  * New upstream version released today 
+
+ -- Dirk Eddelbuettel <edd@debian.org>  Thu, 23 Apr 2015 12:38:30 -0500
+
+ess (15.03-1) unstable; urgency=low
+
+  * New upstream version released today 
+  
+  * debian/control: Change Depends: on r-base-core to Recommends:
+							  (Closes: #767043)
+  * debian/control: Add julia to Suggests:
+
+  * debian/control: Increased Standards-Version: to current version
+
+ -- Dirk Eddelbuettel <edd@debian.org>  Wed, 01 Apr 2015 05:31:31 -0500
+
+ess (14.09-1) unstable; urgency=low
+
+  * New upstream version released today 
+
+ -- Dirk Eddelbuettel <edd@debian.org>  Sat, 13 Sep 2014 09:03:04 -0500
+
+ess (13.09-1-1) unstable; urgency=low
+
+  * New upstream version released today 
+
+  * debian/control: Increased Standards-Version: to current version
+
+ -- Dirk Eddelbuettel <edd@debian.org>  Sat, 07 Dec 2013 13:26:27 -0600
+
+ess (13.09-1) unstable; urgency=low
+
+  * New upstream version released today 
+
+  * debian/control: Increased Standards-Version: to current version
+
+  * debian/control: Added Build-Depends: on autotools-dev to always use
+    current autotools file
+  
+ -- Dirk Eddelbuettel <edd@debian.org>  Fri, 27 Sep 2013 18:41:32 -0500
+
 ess (13.05-3) unstable; urgency=low
 
   * debian/emacsen-install (PACKAGE): Do not attempt installation for

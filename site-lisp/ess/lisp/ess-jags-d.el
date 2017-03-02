@@ -18,9 +18,8 @@
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
 ;;
-;; You should have received a copy of the GNU General Public License
-;; along with GNU Emacs; see the file COPYING.  If not, write to
-;; the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+;; A copy of the GNU General Public License is available at
+;; http://www.r-project.org/Licenses/
 
 ;;; Code:
 
@@ -142,15 +141,16 @@
                                                             (insert "data in \"" ess-bugs-file-root ".jdt\"\n")
                                                             (insert (ess-replace-in-string ess-jags-temp-chains "##" "in"))
                                                             (insert "initialize\n")
-                                                            (insert "update " (format "%d" (* jags-thin jags-burnin)) "\n")
+                                                            ;(insert "update " (format "%d" (* jags-thin jags-burnin)) "\n")
+                                                            (insert "update " (format "%d" jags-burnin) "\n")
                                                             (insert ess-jags-temp-monitor)
                                                             (insert "update " (format "%d" (* jags-thin jags-update)) "\n")
                                                             (insert (ess-replace-in-string
                                                                      (ess-replace-in-string ess-jags-temp-chains
                                                                                             "compile, nchains([0-9]+)" "#") "##" "to"))
                                                             (insert "coda "
-                                                                    (if ess-microsoft-p (if (w32-shell-dos-semantics) "*" "\\*") "\\*")
-                                                                    ", stem(\"" ess-bugs-file-root "\")\n")
+                                                                    ;(if ess-microsoft-p (if (w32-shell-dos-semantics) "*" "\\*") "\\*")
+                                                                    "*, stem(\"" ess-bugs-file-root "\")\n")
 
                                                             (if ess-jags-system (progn
                                                                                   (insert "system rm -f " ess-bugs-file-root ".ind\n")

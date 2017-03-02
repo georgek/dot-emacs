@@ -9,13 +9,14 @@
 @include ess-defs.texi
 @titlepage
 @title ESS -- Emacs Speaks Statistics
-ESS version @ESSVER
+ESS version
+@ESSVER
 
 @c --- KEEP this synchronized with ./authors.texi :
 @c                                 ~~~~~~~~~~~~~~
 @author The ESS Developers (A.J. Rossini, R.M. Heiberger, K. Hornik,
 @author M. Maechler, R.A. Sparapani, S.J. Eglen,
-@author S.P. Luque, H. Redestig and V. Spinu)
+@author S.P. Luque, H. Redestig, V. Spinu and L. Henry)
 @c @author (Formerly by: Doug Bates, Ed Kademan, Frank Ritter
 @c @author                and David Smith)
 @c @ifhtml
@@ -23,7 +24,7 @@ ESS version @ESSVER
 @c @end ifhtml
 @c
 @author Current Documentation by The ESS Developers
-@author Copyright @copyright{} 2002--2013 The ESS Developers
+@author Copyright @copyright{} 2002--2016 The ESS Developers
 @author Copyright @copyright{} 1996--2001 A.J. Rossini
 @author Original Documentation by David M. Smith
 @author Copyright @copyright{} 1992--1995 David M. Smith
@@ -66,8 +67,9 @@ by  A.J. Rossini,
     R.A. Sparapani,
     S.J. Eglen,
     S.P. Luque,
-    V. Spinu
-and H. Redestig.
+    H. Redestig,
+    V. Spinu,
+and L. Henry.
 @end display
 
 @c (Formerly: Doug
@@ -486,7 +488,7 @@ program on remote computer is to start it with tramp. Require tramp in your .ema
 
 @code{(require 'tramp)}
 
-Now start an ssh session with @samp{C-x f /ssh:user@@host: RET}. Tramp
+Now start an ssh session with @samp{C-x C-f /ssh:user@@host: RET}. Tramp
 should open a dired buffer in your remote home directory. Now call your
 favorite ESS process (@code{R}, @code{Julia}, @code{stata} etc) as you
 would usually do on local machine: @code{M-x R}.
@@ -521,7 +523,7 @@ Other ways to setup a remote ESS connection are through @code{ess-remote}.
 @item Start the ESS process on the remote machine, for example with one of
 the commands @samp{Splus}, or @samp{R}, or @samp{sas -stdio}.
 
-@item Start @samp{M-x ess-remote}.  
+@item Start @samp{M-x ess-remote}.
 You will be prompted for a program name with completion.  Choose
 one. Your process is now known to ESS.  All the usual ESS commands
 (@samp{C-c C-n} and its relatives) now work with the S language
@@ -829,8 +831,8 @@ top of the window.
 
 Finally, if you want to discard the last command output altogether, use
 @cindex deleting output
-@kbd{C-c C-o} (@code{comint-kill-output}),
-@findex comint-kill-output
+@kbd{C-c C-o} (@code{comint-delete-output}),
+@findex comint-delete-output
 which deletes everything from the last command to the current prompt.
 Use this command judiciously to keep your transcript to a more
 manageable size.
@@ -1720,8 +1722,8 @@ value is controlled by the variable @code{comment-column},)
 or just after the expression on the line containing the comment if it
 extends beyond the indentation column.  You turn off the default
 behavior by adding the line
-@code{(setq ess-fancy-comments nil)} to your @file{.emacs} file.
-@vindex ess-fancy-comments
+@code{(setq ess-indent-with-fancy-comments nil)} to your @file{.emacs} file.
+@vindex ess-indent-with-fancy-comments
 
 ESS also supports Roxygen entries which is R documentation maintained in
 the source code as comments @xref{Roxygen}.
@@ -2521,7 +2523,7 @@ packages:
 @menu
 * ESS tracebug::                Visual debugging, breakpoints, tracing, watch etc.
 * Editing documentation::       Tools to edit R documentation
-* ESS developer::               Develop your packages on the fly
+* Namespaced Evaluation::               Develop your packages on the fly
 @end menu
 
 @node ESS tracebug
@@ -2540,8 +2542,8 @@ activation of @code{ess-tracebug} set @code{ess-use-tracebug} to nil.
 
 Tracebug functionality can be found on @code{ess-dev-map}, bound to
 @kbd{C-c C-t}. Additionally, when subprocess is in a debugging state
-@code{ess-debug-minor-mode} is active and the following shortcuts are
-available:
+@code{ess-debug-minor-mode} is active and the following additional
+shortcuts are available:
 
 @verbatim
 * Interactive Debugging (`ess-debug-minor-mode-map'):
@@ -2556,7 +2558,7 @@ available:
 @end verbatim
 
 
-Here are all the tracebug commands defined in @code{ess-dev-map}
+These are all the tracebug commands defined in @code{ess-dev-map}
 (@kbd{C-c C-t ?} to show this table):
 
 @verbatim
@@ -2595,10 +2597,15 @@ Here are all the tracebug commands defined in @code{ess-dev-map}
 
 @end verbatim
 
+To configure how electric watch window splits the display see
+@code{ess-watch-width-threshold} and @code{ess-watch-height-threshold}
+variables.
+
 A more detailed ess-tracebug documentation with screenshots is available
 at @uref{http://code.google.com/p/ess-tracebug/}.
 
 A short tutorial is at @uref{http://code.google.com/p/ess-tracebug/wiki/GettingStarted}.
+
 
 @emph{Note:} Currently, ess-tracebug does not detect some of R's debug
 related messages in non-English locales. To set your R messages to
@@ -2859,152 +2866,43 @@ the Roxygen start string.
 string.
 @end table
 
-@node ESS developer
-@section ESS developer
+@node Namespaced Evaluation
+@section Namespaced Evaluation
 @cindex ess developer
 
-Usual ESS evaluation commands, @xref{Evaluating code}, send portions of
-the current buffer for the evaluation in the current environment
-(usually @code{R_GlobalEnv}). Often, in process of the developing
-packages with namespaces, it is necessary to evaluate code directly in
-the package's environment or its namespace. The @code{ess-developer}
-utility provides such a functionality with minimal disruption of the
-usual ESS work-flow.
+In non package files evaluation commands (@xref{Evaluating code}) send
+portions of the current buffer environment (@code{R_GlobalEnv}. When
+developing packages, ESS sends code to the corresponding package
+namespace and (for visible objects) into package environment (visible on
+search path). All objects that are assigned are displayed in the
+minibuffer alongside the environment in which they are assigned.
 
-To understand how ess-developer works you must be familiar with
-namespace system in R. In a nutshell, all objects defined in a package
-'foo' are stored in an environment called 'namespace:foo'. Parent
-environment of 'namespace:foo' is an environment 'imports:foo' which
-contains copies of all objects from other packages which 'foo'
-imports. Parent environment of 'imports:foo' is the
-'namespace:base'. Parent environment of 'namespace:base' is
-.GlobalEnv. Thus functions and methods stored in 'namespace:foo' see all
-the objects in .GlobalEnv unless shadowed by objects in 'imports:foo',
-'namespace:base', or 'namespace:foo' itself. There is another
-environment associated with 'foo' - 'package:foo'. This environment
-stores *copies* of exported objects from 'namespace:foo' and is placed
-on the search() path, i.e. if 'foo' is loaded and if you start with
-.GlobalEnv and iteratively call parent.env() you will get eventually to
-'package:foo'. Thus all methods and functions defined in .GlobalEnv can
-"see" objects in 'package:foo' environment. See also
+Here is a short overview of how namespace and package environments work
+in R. All objects defined in a package 'foo' are stored in an
+environment called 'namespace:foo'. Parent environment of
+'namespace:foo' is an environment 'imports:foo' which contains copies of
+all objects from other packages which 'foo' imports. Parent environment
+of 'imports:foo' is the 'namespace:base'. Parent environment of
+'namespace:base' is .GlobalEnv. Thus functions and methods stored in
+'namespace:foo' see all the objects in .GlobalEnv unless shadowed by
+objects in 'imports:foo', 'namespace:base', or 'namespace:foo'
+itself. There is another environment associated with 'foo' -
+'package:foo'. This environment stores *copies* of exported objects from
+'namespace:foo' and is placed on the search() path, i.e. if 'foo' is
+loaded and if you start with .GlobalEnv and iteratively call
+parent.env() you will get eventually to 'package:foo'. Thus all methods
+and functions defined in .GlobalEnv can "see" objects in 'package:foo'
+environment. See also
 @uref{http://cran.r-project.org/doc/manuals/R-ints.html#Namespaces}.
 
-In order to use ess-developer you must add names of the packages that
-you are developing to @code{ess-developer-packages}. You can also do
-that interactively with @kbd{C-c C-t C-a}. To remove packages from
-@code{ess-developer-packages} use @kbd{C-c C-t C-r}. When developer mode
-is on, the process mode line indicator displays a small or capital
-letter "d".
+Ocasionally you want to evaluate into a package from a non-package file,
+or the other way around, evaluate into @code{GlobalEnv} from inside a
+package. In such cases @kbd{C-c C-t C-s} is your friend.
 
-If variable @code{ess-developer-activate-in-package} is @code{t} (the
-default) @code{R-mode} will check after visiting the file whether or not
-the file is part of the package. If visited file is part of a package
-listed in @code{ess-developer-packages}, developer mode is activated
-automatically.
-
-Developer mode is usually activated on per-file basis and a small "d"
-appears in the modeline. You can also activate ess-developer for all
-buffers connected to current process. This is done by toggling
-@code{ess-developer} in subprocess buffer. In this case a big "D" will
-appear in the modeline.
-
-@deffn Command ess-developer @var{val}
-@kindex C-c C-t C-t
-@kbd{C-c C-t C-t} Toggle developer mode on and off. If called from
-script buffer, toggle developer on file-by-file basis. When called from
-process buffer, toggle developer on per-process basis.
+@deffn Command ess-r-set-evaluation-env @var{arg}
+@kindex C-c C-t C-s
+@kbd{C-c C-t C-s} Set or unset the current evaluation environment (a package). 
 @end deffn
-
-@deffn Command ess-developer-add-package @var{from-attached} @var{remove}
-@kindex C-c C-t C-a
-@kbd{C-c C-t C-a} Add a package to your development list (@code{ess-developer-packages}).
-@end deffn
-
-@deffn Command ess-developer-remove-package
-@kindex C-c C-t C-r
-@kbd{C-c C-t C-r} Remove a package from your development list.
-@end deffn
-
-When you add a package to @code{ess-developer-packages}, ESS will ask
-for loading command. By default there are two options @code{library} and
-@code{load_all} from @code{devtools} package. You can configure this
-behavior in @code{ess-developer-load-on-add-commands}. To explisitely
-load the package containing current file use @kbd{C-c C-t l}.
-
-@deffn Command ess-developer-load-package
-@kindex C-c C-t l
-@kbd{C-c C-t l} Load package with @code{load_all} utility from
-@code{devtools} package.
-@end deffn
-
-When developer mode is on, ESS evaluation commands behave differently:
-
-@itemize @bullet
-
-@item @kbd{C-c C-l} (@code{ess-load-file}) asks for the package to source
-into and inserts all redefined objects into the package:foo or
-namespace:foo accordingly.
-
-@itemize @minus
-
-@item PLAIN OBJECTS and FUNCTIONS: @*
- If the object is found in an environment (package:foo or
-  namespace:foo), and differs from the old one it is assigned into the
-  corresponding environment. If the object is not found it is assigned
-  into .GlobalEnv. The environment of functions is set to namespace:foo.
-
-@item CLASSES: @*
-Same as plain objects, with the difference that even if the class
-definition is assigned into .GlobalEnv, it is still associated with the
-package foo. Thus if you issue getClassDeff("foo") you will get a class
-definition with the slot @@package pointing to package "foo".
-
-@emph{Note:} Occasionally, after adding new classes you might get warnings
-from "setClass". This is especially true if new class inherits or is
-inherited by a class whose definition is not exported. You might get
-something like:
-    @code{
-       Warning: Class "boo" is defined (with package slot ‘foo’) but no
-       metadata object found to revise subclass information---not exported?
-       }      
-
-You can safely ignore this warnings.
-
-@item S4 METHODS: @*
-Similarly to function definitions modified methods are assigned in the
-local method table in the namespace:foo. New methods are assigned into
-.GlobalEnv, but with the environment pointing to namespace:foo. There is
-a suttle catch with method caching in R though. See the code in
-etc/ESSR/developer.R for more details.
-
-  @c Note that if method or generic is exported the *same* table (which is an
-  @c environment) is present in package:foo.
-
-
-@item S3 METHODS: @*
-S3 methods are not automatically registered. You can register them
-manually after you have inserted method_name.my_class into your package
-environment using ess-developer, like follows:
-
-   registerS3method("method_name", "my_class", my_package:::method_name.my_class)
-
-If you don't register your S3 method, R will call the registered (aka
-cached) S3 method instead of the new method that ess-developer inserted
-in the package environment.
-
-@end itemize
-
-@item @kbd{C-c C-r}(@code{ess-eval-region}  and functions that depend on
-it (@code{ess-eval-paragraph}, @code{ess-eval-buffer} etc., behave as
-ess-load-file', but restrict the evaluation to the corresponding region.
-
-@item @kbd{C-c C-f} (@code{ess-eval-function}) and friends check if the
-current function's name can be found in a namespace:foo or package:foo
-for a 'foo' from `ess-developer-packages'.  If found, and new function
-definition differs from the old one, the function is assigned into that
-namespace. If not found, it is assigned into .GlobalEnv.
-@end itemize
-
 
 @node Extras
 @chapter Other ESS features and tools

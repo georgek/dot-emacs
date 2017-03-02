@@ -1,3 +1,41 @@
+2016-05-07  ESS Maintainers <ESS-core@r-project.org>
+
+  * Version 16.04 released.
+
+2015-12-11  ESS Maintainers <ESS-core@r-project.org>
+
+  * Version 15.09-2 released.
+
+2015-10-26  ESS Maintainers <ESS-core@r-project.org>
+
+  * Version 15.09-1 released.
+
+2015-09-24  ESS Maintainers <ESS-core@r-project.org>
+
+  * Version 15.09 released.
+
+2015-04-23  ESS Maintainers <ESS-core@r-project.org>
+
+  * Version 15.03-1 released.
+
+2015-03-31  ESS Maintainers <ESS-core@r-project.org>
+
+  * Version 15.03 released.
+
+2015-01-31  Rodney Sparapani  <rsparapa@mcw.edu>
+
+	* Makefiles are now UNIX and GNU make friendly.
+
+2014-09-13  ESS Maintainers <ESS-core@r-project.org>
+
+  * Version 14.09 released.
+
+2013-12-10  Rodney Sparapani  <rsparapa@mcw.edu>
+
+	* Makeconf (SITELISP): tersely documenting SITELISP
+	and incorporating into comments for emacs variants
+	* Makeconf (INFODIR): updating INFODIR for Mac OS X
+
 2013-12-07  ESS Maintainers <ESS-core@r-project.org>
 
   * Version 13.09-1 released.

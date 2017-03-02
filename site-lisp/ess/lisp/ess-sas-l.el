@@ -23,9 +23,9 @@
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
 
-;; You should have received a copy of the GNU General Public License
-;; along with GNU Emacs; see the file COPYING.  If not, write to
-;; the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+;; A copy of the GNU General Public License is available at
+;; http://www.r-project.org/Licenses/
+
 
 ;;; Commentary:
 
@@ -470,7 +470,7 @@ number."
                                    "discrim" "distance"
                                    "entropy" "expand"
                                    "factor" "fastclus" "forecast"
-                                   "gam" "genmod" "glimmix" "glm" "glmmod" "glmpower" "glmselect"
+                                   "gam" "gee" "genmod" "glimmix" "glm" "glmmod" "glmpower" "glmselect"
                                    "hpmixed"
                                    "inbreed"
                                    "kde" "krige2d"
@@ -506,7 +506,7 @@ number."
                  "change" "choro" "class" "contains" "contrast"
                  "delete" "display" "dm" "donut" "drop"
                  "else" "error" "exchange" "exclude"
-                 "file" "filename" "format" "freq"
+                 "fcs" "file" "filename" "format" "freq"
                  "footnote" "footnote1" "footnote2" "footnote3" "footnote4" "footnote5"
                  "footnote6" "footnote7" "footnote8" "footnote9" "footnote10"
                  "goptions" "grid" ; "ge" "gt"
@@ -516,8 +516,8 @@ number."
                  "label" "length" "libname" "like" "link" "lsmeans" ; "le" "lt"
                  "manova" "means" "merge" "missing" "model" "modify"
                  "not" "null" ; "ne" "note"
-                 "ods" "options" "or" "output" "otherwise"
-                 "pageby" "pie" "pie3d" "plot" "plot2" "prism" "put"
+                 "ods" "options" "output" "otherwise" ; "or"
+                 "pageby" "parms" "pie" "pie3d" "plot" "plot2" "prism" "put"
                  "random" "rename" "repeated" "retain"
                  "same" "save" "scatter" "select" "set" "skip" "star" "strata" "sum" "sumby" "surface"
                  "table" "tables" "test" "then" "time"
@@ -550,7 +550,7 @@ number."
                  "call poke" "call ranbin" "call rancau" "call ranexp"
                  "call rangam" "call rannor" "call ranpoi" "call rantbl"
                  "call rantri" "call ranuni" "call rxchange" "call rxfree"
-                 "call rxsubstr" "call set" "call symput" "call system"
+                 "call rxsubstr" "call set" "call streaminit" "call symput" "call system"
                  "cdf" "ceil" "cinv" "collate" "compress" "convx" "convxp" "cos" "cosh" "css" "cv"
                  "daccdb" "daccdbsl" "daccsl" "daccsyd" "dacctab"
                  "depdb" "depdbsl" "depsl" "depsyd" "deptab"
@@ -563,15 +563,17 @@ number."
                  "juldate"
                  "kurtosis"
                  "lag" "lbound" "left" "length" "lgamma" "log" "log10" "log2"
+                 "logcdf" "logpdf" "logsdf"
                  "max" "mdy" "mean" "min" "minute" "mod" "month" "mort"
                  "n" "netpv" "nmiss" "normal" "npv"
                  "ordinal"
+                 "pdf"
                  "probbeta" "probbnml" "probchi" "probf" "probgam" "probhypr" "probit" "probnegb" "probnorm" "probt"
                  "poisson" "put"
-                 "qtr"
-                 "range" "rank" "repeat" "reverse" "right" "round" "rxmatch" "rxparse"
+                 "qtr" "quantile"
+                 "rand" "range" "rank" "repeat" "reverse" "right" "round" "rxmatch" "rxparse"
                  "ranbin" "rancau" "ranexp" "rangam" "rannor" "ranpoi" "rantbl" "rantri" "ranuni"
-                 "saving" "scan" "second" "sign" "sin" "sinh" "sqrt"
+                 "saving" "scan" "sdf" "second" "sign" "sin" "sinh" "sqrt" "squantile"
                  "std" "stderr" "stfips" "stname" "stnamel" "substr" "sum" "symget"
                  "tan" "tanh" "time" "timepart" "tinv" "today" "translate" "trigamma" "trim" "trunc"
                  "uniform" "until" "upcase" "uss"
@@ -807,7 +809,7 @@ number."
     (adaptive-fill-mode           . nil)
     (indent-line-function         . 'sas-indent-line)
     ;;(indent-region-function       . 'sas-indent-region)
-    (require-final-newline        . t)
+    (require-final-newline        . mode-require-final-newline)
     (comment-start                . "/*")
     (comment-start-skip           . "/[*]")
     (comment-end                  . "*/")
@@ -1543,9 +1545,8 @@ page ;
 ;;;    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;;;    GNU General Public License for more details.
 ;;;
-;;;    You should have received a copy of the GNU General Public License
-;;;    along with this program; if not, write to the Free Software
-;;;    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+;;; A copy of the GNU General Public License is available at
+;;; http://www.r-project.org/Licenses/
 ;;;
 ;;;  Author:   Tom Cook
 ;;;            Dept. of Biostatistics
