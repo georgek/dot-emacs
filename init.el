@@ -255,9 +255,10 @@
   (nice-paredit-on)
   (yas/minor-mode -1)
   (local-set-key (kbd "TAB") #'elisp-magic-tab)
-  (local-set-key (kbd "C-c C-b") #'eval-buffer-key)
+  (local-set-key (kbd "C-c C-k") #'eval-buffer-key)
   (local-set-key (kbd "C-c C-c") #'eval-defun-key)
   (local-set-key (kbd "C-c C-z") #'ielm-switch-to-buffer)
+  (local-set-key (kbd "C-c z") #'ielm-switch-to-buffer)
   (local-set-key (kbd "C-c C-l") #'paredit-recentre-on-sexp)
   (local-set-key (kbd "C-c e") #'macrostep-expand)
   (local-set-key (kbd "C-c d") #'toggle-debug-on-error))
@@ -968,8 +969,14 @@ call to other-window-repeat or switch-prev-window."
 ;;; ESS (R)
 (add-to-path-init load-path "site-lisp/ess/lisp")
 (require 'ess-site)
+(defun ess-eval-defun-key ()
+  (interactive)
+  (ess-eval-function-or-paragraph t))
 (makehookedfun ess-mode-hook
-  (local-set-key (kbd "C-c z") #'ess-switch-to-inferior-or-script-buffer))
+  (local-set-key (kbd "C-c z") #'ess-switch-to-inferior-or-script-buffer)
+  (local-set-key (kbd "C-c C-c") #'ess-eval-defun-key)
+  (local-set-key (kbd "C-c C-k") #'ess-eval-buffer)
+  (local-set-key (kbd "C-c C-b") #'ess-force-buffer-current))
 ;;; iESS
 (defun clear-shell ()
    (interactive)
@@ -1019,7 +1026,8 @@ call to other-window-repeat or switch-prev-window."
 (makehookedfun python-mode-hook
   (local-set-key (kbd "C-c C-c") #'python-eval-defun-key)
   (local-set-key (kbd "C-c C-k") #'python-shell-send-buffer)
-  (local-set-key (kbd "C-c C-z") #'python-shell-switch-to-shell))
+  (local-set-key (kbd "C-c C-z") #'python-shell-switch-to-shell)
+  (local-set-key (kbd "C-c z") #'python-shell-switch-to-shell))
 
 ;;; mail stuff
 
