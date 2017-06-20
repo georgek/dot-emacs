@@ -501,6 +501,7 @@ RECURRENCES occasions."
 ;; RefTeX
 (require 'reftex)
 (setq reftex-plug-into-AUCTeX t)        ;AUCTeX-RefTeX interface
+(setq reftex-default-bibliography '("bibliography"))
 
 (makehookedfun LaTeX-mode-hook
   (TeX-PDF-mode)
