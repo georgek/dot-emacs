@@ -174,6 +174,9 @@
 (ace-jump-mode-enable-mark-sync)
 (define-key global-map (kbd "C-x SPC") 'ace-jump-mode-pop-mark)
 
+;;; *** smartparens ***
+;; (require 'smartparens-config)
+
 ;;; *** paredit ***
 
 ;; electric return stuff
@@ -253,6 +256,7 @@
 
 (makehookedfun emacs-lisp-mode-hook
   (nice-paredit-on)
+  ;; (smartparens-strict-mode)
   (yas/minor-mode -1)
   (local-set-key (kbd "TAB") #'elisp-magic-tab)
   (local-set-key (kbd "C-c C-k") #'eval-buffer-key)
@@ -275,12 +279,15 @@
 
 (makehookedfun ielm-mode-hook
   (nice-paredit-on)
+  ;; (smartparens-strict-mode)
   (local-set-key (kbd "C-<return>")
                  'ielm-send-input))
 
 ;;; *** scheme ***
 (makehookedfun scheme-mode-hook
-  (nice-paredit-on))
+  (nice-paredit-on)
+  ;; (smartparens-strict-mode)
+  )
 
 ;;; *** SLIME ***
 (setq inferior-lisp-program "/usr/bin/sbcl") ; your Lisp system
@@ -296,6 +303,7 @@
 
 (makehookedfun lisp-mode-hook
   (nice-paredit-on)
+  ;; (smartparens-strict-mode)
   (yas/minor-mode -1)
   (local-set-key (kbd "TAB") #'slime-magic-tab)
   (local-set-key (kbd "C-c z") #'slime-switch-to-output-buffer)
@@ -312,14 +320,27 @@
 ;;; REPL
 (makehookedfun slime-repl-mode-hook
   (nice-paredit-on)
+  ;; (smartparens-strict-mode)
   ;; Stop SLIME's REPL from grabbing DEL,
   ;; which is annoying when backspacing over a '('
-  (define-key slime-repl-mode-map
-    (read-kbd-macro paredit-backward-delete-key) nil))
+  ;; (define-key slime-repl-mode-map
+  ;;   (read-kbd-macro paredit-backward-delete-key) nil)
+  
+  )
 
 ;;; Lisp pretty things
 ;;; dim parens
 (require 'parenface)
+
+;; CIDER
+(add-to-path-init load-path "site-lisp/clojure-mode")
+(add-to-path-init load-path "site-lisp/cider")
+(require 'cider)
+(require 'cider-macroexpansion)
+(makehookedfun clojure-mode-hook
+  (nice-paredit-on))
+(makehookedfun cider-repl-mode-hook
+  (paredit-mode))
 
 ;;; *** org-mode settings ***
 (require 'org)
