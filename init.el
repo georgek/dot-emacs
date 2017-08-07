@@ -176,9 +176,6 @@
 (require 'ace-window)
 (global-set-key (kbd "M-'") 'ace-window)
 
-;;; *** smartparens ***
-;; (require 'smartparens-config)
-
 ;;; *** paredit ***
 
 ;; electric return stuff
