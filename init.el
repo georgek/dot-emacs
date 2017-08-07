@@ -549,6 +549,8 @@ RECURRENCES occasions."
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
 (setq TeX-newline-function 'newline-and-indent)
+;; (add-to-list 'LaTeX-verbatim-environments "Verbatim")
+;; (add-to-list 'LaTeX-verbatim-environments "lstlisting")
 ;; RefTeX
 (require 'reftex)
 (setq reftex-plug-into-AUCTeX t)        ;AUCTeX-RefTeX interface
