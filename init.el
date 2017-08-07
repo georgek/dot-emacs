@@ -528,6 +528,7 @@ RECURRENCES occasions."
 (setq uniquify-separator "/")
 (setq uniquify-after-kill-buffer-p t) ; rename after killing uniquified
 (setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
+(setq uniquify-min-dir-content 0)
 
 ;; binds hippie-expand to M-/
 (global-set-key (kbd "M-/") 'hippie-expand)
