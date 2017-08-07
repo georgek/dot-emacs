@@ -1022,8 +1022,8 @@ call to other-window-repeat or switch-prev-window."
 ;;; Python
 (require 'python)
 (setq
-  python-shell-interpreter "ipython"
-  python-shell-interpreter-args "--pylab"
+  python-shell-interpreter "ipython3"
+  python-shell-interpreter-args ""
   python-shell-prompt-regexp "In \\[[0-9]+\\]: "
   python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
   python-shell-completion-setup-code
