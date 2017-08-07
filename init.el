@@ -393,6 +393,31 @@
 (setq org-export-latex-listings 'minted)
 ;(add-to-list 'org-export-latex-default-packages-alist '("" "minted"))
 
+(defun orgtbl-to-latex-booktabs (table params)
+  "Convert the Orgtbl mode TABLE to LaTeX using booktabs package."
+  (let* ((alignment (mapconcat (lambda (x) (if x "r" "l"))
+                               org-table-last-alignment ""))
+         (params2
+          (list
+           :tstart "\\toprule"
+           :tend "\\bottomrule\n"
+           :lstart "" :lend " \\\\" :sep " & "
+           :efmt "%s\\,(%s)" :hline "\\midrule")))
+    (orgtbl-to-generic table (org-combine-plists params2 params))))
+
+(eval-after-load "org-table"
+  '(progn
+     (setq orgtbl-radio-table-templates
+           (delete-if (lambda (x) (equal (car x) 'latex-mode))
+                      orgtbl-radio-table-templates))
+     (add-to-list 'orgtbl-radio-table-templates
+                  '(latex-mode "% BEGIN RECEIVE ORGTBL %n\n"
+                               "% END RECEIVE ORGTBL %n\n"
+                               "\\begin{comment}\n#+ORGTBL: SEND %n "
+                               "orgtbl-to-latex-booktabs :splice nil "
+                               ":skip 0 :no-escape t\n"
+                               "| | |\n\\end{comment}\n"))))
+
 ;;; export with CSS classes instead of explicit colours
 (setq org-html-htmlize-output-type 'css)
 (setq org-html-htmlize-font-prefix "org-")
