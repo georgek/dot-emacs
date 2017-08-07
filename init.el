@@ -168,11 +168,13 @@
 ;;; ediff
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 
-;;; ace jump mode
-(require 'ace-jump-mode)
-(define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
-(ace-jump-mode-enable-mark-sync)
-(define-key global-map (kbd "C-x SPC") 'ace-jump-mode-pop-mark)
+;;; avy
+(require 'avy)
+(global-set-key (kbd "C-:") 'avy-goto-char)
+
+;;; ace window mode
+(require 'ace-window)
+(global-set-key (kbd "M-'") 'ace-window)
 
 ;;; *** smartparens ***
 ;; (require 'smartparens-config)
