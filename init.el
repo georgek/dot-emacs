@@ -340,9 +340,11 @@
 (require 'cider)
 (require 'cider-macroexpansion)
 (makehookedfun clojure-mode-hook
-  (nice-paredit-on))
+  (nice-paredit-on)
+  (local-set-key (kbd "C-c z") #'cider-switch-to-repl-buffer))
 (makehookedfun cider-repl-mode-hook
   (paredit-mode))
+(setq cider-repl-display-help-banner nil)
 
 ;;; *** org-mode settings ***
 (require 'org)
