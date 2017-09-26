@@ -416,7 +416,7 @@
 (require 'htmlize)
 ;;; org-reveal
 (require 'ox-reveal)
-(setq org-reveal-root (concat "file://" init-path "/misc/reveal.js"))
+(setq org-reveal-root ".")
 (setq org-reveal-init-script "zoomKey: 'shift'")
 
 ;;; twbs
