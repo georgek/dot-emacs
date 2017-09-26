@@ -378,6 +378,7 @@
   (nice-paredit-on))
 (makehookedfun cider-repl-mode-hook
   (paredit-mode))
+(setq cider-repl-display-help-banner nil)
 
 ;;; *** org-mode settings ***
 (require 'org)
