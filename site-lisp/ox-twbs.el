@@ -45,6 +45,16 @@
 (eval-when-compile (require 'cl) (require 'table nil 'noerror))
 
 
+;;; Macros
+(defmacro html (element attributes &rest body)
+  `(format "<%s%s>%s</%s>"
+           ,element
+           (mapconcat (lambda (attr) (format " %s=\"%s\"" (car attr) (cadr attr)))
+                      ',attributes
+                      "")
+           (concat ,@body)
+           ,element))
+
 ;;; Function Declarations
 
 (declare-function org-id-find-id-file "org-id" (id))
@@ -174,6 +184,17 @@ $(function() {
     $(document.body).scrollspy({target: '.bs-docs-sidebar'});
 
     $('.bs-docs-sidebar').affix();
+
+    $('.btn-block').on('click' ,function(){
+       $(this).blur()
+    });
+
+    $('.collapse').on('shown.bs.collapse', function(){
+       $(this).parent().find(\".glyphicon-menu-down\").removeClass(\"glyphicon-menu-down\").addClass(\"glyphicon-menu-up\");
+    }).on('hidden.bs.collapse', function(){
+       $(this).parent().find(\".glyphicon-menu-up\").removeClass(\"glyphicon-menu-up\").addClass(\"glyphicon-menu-down\");
+    });
+
 });
 </script>"
   "Basic JavaScript that is needed by HTML files produced by Org mode.")
@@ -221,6 +242,8 @@ blockquote p {
 
 pre {
     font-size: 16px;
+    margin: 0;
+    border: 0;
 }
 
 .footpara {
@@ -314,6 +337,10 @@ figcaption {
 .bs-docs-sidebar .nav .nav .nav > .active:focus > a {
     padding-left: 38px;
     font-weight: 500;
+}
+
+.caption {
+    margin-left: 1ex;
 }
 
 /* Show and affix the side nav when space allows it */
@@ -2835,14 +2862,20 @@ contextual information."
           (label (let ((lbl (org-element-property :name src-block)))
                    (if (not lbl) ""
                      (format " id=\"%s\""
-                             lbl)))))
+                             lbl))))
+          (div-id org-twbs-id))
+      (setq org-twbs-id (1+ org-twbs-id))
       (if (not lang) (format "<pre class=\"example\"%s>\n%s</pre>" label code)
         (format
-         "<div class=\"org-src-container\">\n%s%s\n</div>"
+         "<div class=\"panel panel-default\">\n%s%s\n</div>"
          (if (not caption) ""
-           (format "<label class=\"org-src-name\">%s</label>"
+           (format "<div class=\"panel-heading\"><a href=\"#%d\" class=\"btn-block\" data-toggle=\"collapse\" aria-expanded=\"false\" aria-controls=\"%d\"><span class=\"glyphicon glyphicon-menu-down\"></span><span class=\"caption\">%s</span></a></div>"
+                   div-id
+                   div-id
                    (org-export-data caption info)))
-         (format "\n<pre class=\"src src-%s\"%s>%s</pre>" lang label code))))))
+         (if (not caption)
+             (format "\n<div id=\"%d\" class=\"panel-collapse collapse in\"><pre>%s</pre></div>" div-id code)
+           (format "\n<div id=\"%d\" class=\"panel-collapse collapse\"><pre>%s</pre></div>" div-id code)))))))
 
 ;;;; Statistics Cookie
 
@@ -3192,7 +3225,8 @@ Return output file's name."
   (interactive)
   (let* ((extension (concat "." org-twbs-extension))
          (file (org-export-output-file-name extension subtreep))
-         (org-export-coding-system org-twbs-coding-system))
+         (org-export-coding-system org-twbs-coding-system)
+         (org-twbs-id 1))
     (org-export-to-file 'twbs file
       async subtreep visible-only body-only ext-plist)))
 
