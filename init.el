@@ -602,6 +602,19 @@ RECURRENCES occasions."
 (yas-global-mode 1)
 (setq yas-prompt-functions
       '(yas-dropdown-prompt yas-completing-prompt yas-ido-prompt))
+(defun company-yasnippet-or-completion ()
+  "Solve company yasnippet conflicts."
+  (interactive)
+  (let ((yas-fallback-behavior
+         (apply 'company-complete-common nil)))
+    (yas-expand)))
+
+(add-hook 'company-mode-hook
+          (lambda ()
+            (substitute-key-definition
+             'company-complete-common
+             'company-yasnippet-or-completion
+             company-active-map)))
 
 ;; keep backup files neatly out of the way in .~/
 (setq backup-directory-alist '(("." . ".~")))
@@ -1026,40 +1039,45 @@ call to other-window-repeat or switch-prev-window."
  '("\\.\\(fasta\\|fa\\|exp\\|ace\\|gb\\)\\'" . dna-mode))
 
 ;;; Python
-(require 'python)
-(setq
-  python-shell-interpreter "ipython"
-  python-shell-interpreter-args "--pylab"
-  python-shell-prompt-regexp "In \\[[0-9]+\\]: "
-  python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
-  python-shell-completion-setup-code
-  "from IPython.core.completerlib import module_completion"
-  python-shell-completion-module-string-code
-  "';'.join(module_completion('''%s'''))\n"
-  python-shell-completion-string-code
-  "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
+;; (require 'python)
+;; (setq
+;;   python-shell-interpreter "ipython3"
+;;   python-shell-interpreter-args ""
+;;   python-shell-prompt-regexp "In \\[[0-9]+\\]: "
+;;   python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
+;;   python-shell-completion-setup-code
+;;   "from IPython.core.completerlib import module_completion"
+;;   python-shell-completion-module-string-code
+;;   "';'.join(module_completion('''%s'''))\n"
+;;   python-shell-completion-string-code
+;;   "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
 
-(defun python-eval-defun-key (arg)
-     (interactive "P")
-     (let (beg ol)
-       (save-excursion
-         (end-of-defun)
-         (beginning-of-defun)
-         (setq beg (point))
-         (end-of-defun)
-         (setq ol (make-overlay beg (point))))
-       (overlay-put ol 'face 'highlight)
-       (unwind-protect
-           (progn
-             (python-shell-send-defun arg)
-             (sit-for 0.1))
-         (delete-overlay ol))))
+;; (defun python-eval-defun-key (arg)
+;;      (interactive "P")
+;;      (let (beg ol)
+;;        (save-excursion
+;;          (end-of-defun)
+;;          (beginning-of-defun)
+;;          (setq beg (point))
+;;          (end-of-defun)
+;;          (setq ol (make-overlay beg (point))))
+;;        (overlay-put ol 'face 'highlight)
+;;        (unwind-protect
+;;            (progn
+;;              (python-shell-send-defun arg)
+;;              (sit-for 0.1))
+;;          (delete-overlay ol))))
 
-(makehookedfun python-mode-hook
-  (local-set-key (kbd "C-c C-c") #'python-eval-defun-key)
-  (local-set-key (kbd "C-c C-k") #'python-shell-send-buffer)
-  (local-set-key (kbd "C-c C-z") #'python-shell-switch-to-shell)
-  (local-set-key (kbd "C-c z") #'python-shell-switch-to-shell))
+;; (makehookedfun python-mode-hook
+;;   (local-set-key (kbd "C-c C-c") #'python-eval-defun-key)
+;;   (local-set-key (kbd "C-c C-k") #'python-shell-send-buffer)
+;;   (local-set-key (kbd "C-c C-z") #'python-shell-switch-to-shell)
+;;   (local-set-key (kbd "C-c z") #'python-shell-switch-to-shell)
+;;   (turn-on-eldoc-mode))
+
+(elpy-enable)
+(elpy-use-ipython)
+(setq elpy-rpc-backend "jedi")
 
 ;;; mail stuff
 
