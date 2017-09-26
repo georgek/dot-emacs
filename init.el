@@ -205,14 +205,13 @@
 ;;; ediff
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 
-;;; ace jump mode
-(require 'ace-jump-mode)
-(define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
-(ace-jump-mode-enable-mark-sync)
-(define-key global-map (kbd "C-x SPC") 'ace-jump-mode-pop-mark)
+;;; avy
+(require 'avy)
+(global-set-key (kbd "C-:") 'avy-goto-char)
 
-;;; *** smartparens ***
-;; (require 'smartparens-config)
+;;; ace window mode
+(require 'ace-window)
+(global-set-key (kbd "M-'") 'ace-window)
 
 ;;; *** paredit ***
 
@@ -375,7 +374,8 @@
 (require 'cider)
 (require 'cider-macroexpansion)
 (makehookedfun clojure-mode-hook
-  (nice-paredit-on))
+  (nice-paredit-on)
+  (local-set-key (kbd "C-c z") #'cider-switch-to-repl-buffer))
 (makehookedfun cider-repl-mode-hook
   (paredit-mode))
 (setq cider-repl-display-help-banner nil)
@@ -426,6 +426,31 @@
 (setq org-latex-to-pdf-process '("latexmk -pdf %f")) ;use latexmk to do pdfs
 (setq org-export-latex-listings 'minted)
 ;(add-to-list 'org-export-latex-default-packages-alist '("" "minted"))
+
+(defun orgtbl-to-latex-booktabs (table params)
+  "Convert the Orgtbl mode TABLE to LaTeX using booktabs package."
+  (let* ((alignment (mapconcat (lambda (x) (if x "r" "l"))
+                               org-table-last-alignment ""))
+         (params2
+          (list
+           :tstart "\\toprule"
+           :tend "\\bottomrule\n"
+           :lstart "" :lend " \\\\" :sep " & "
+           :efmt "%s\\,(%s)" :hline "\\midrule")))
+    (orgtbl-to-generic table (org-combine-plists params2 params))))
+
+(eval-after-load "org-table"
+  '(progn
+     (setq orgtbl-radio-table-templates
+           (delete-if (lambda (x) (equal (car x) 'latex-mode))
+                      orgtbl-radio-table-templates))
+     (add-to-list 'orgtbl-radio-table-templates
+                  '(latex-mode "% BEGIN RECEIVE ORGTBL %n\n"
+                               "% END RECEIVE ORGTBL %n\n"
+                               "\\begin{comment}\n#+ORGTBL: SEND %n "
+                               "orgtbl-to-latex-booktabs :splice nil "
+                               ":skip 0 :no-escape t\n"
+                               "| | |\n\\end{comment}\n"))))
 
 ;;; export with CSS classes instead of explicit colours
 (setq org-html-htmlize-output-type 'css)
@@ -537,6 +562,7 @@ RECURRENCES occasions."
 (setq uniquify-separator "/")
 (setq uniquify-after-kill-buffer-p t) ; rename after killing uniquified
 (setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
+(setq uniquify-min-dir-content 0)
 
 ;; binds hippie-expand to M-/
 (global-set-key (kbd "M-/") 'hippie-expand)
@@ -557,6 +583,8 @@ RECURRENCES occasions."
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
 (setq TeX-newline-function 'newline-and-indent)
+;; (add-to-list 'LaTeX-verbatim-environments "Verbatim")
+;; (add-to-list 'LaTeX-verbatim-environments "lstlisting")
 ;; RefTeX
 (require 'reftex)
 (setq reftex-plug-into-AUCTeX t)        ;AUCTeX-RefTeX interface
