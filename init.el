@@ -749,7 +749,7 @@ RECURRENCES occasions."
 (require 'lorem-ipsum)
 
 ;;; *** ledger stuff ***
-(require 'ledger)
+(require 'ledger-mode)
 
 ;; modified ledger-accounts puts names in list rather than tree
 (defun ledger-find-all-accounts ()
@@ -1242,7 +1242,7 @@ call to other-window-repeat or switch-prev-window."
     ("f5e56ac232ff858afb08294fc3a519652ce8a165272e3c65165c42d6fe0262a0" default)))
  '(package-selected-packages
    (quote
-    (go-mode ess cider auctex avy ace-window counsel swiper ivy exec-path-from-shell elpy))))
+    (ledger-mode go-mode ess cider auctex avy ace-window counsel swiper ivy exec-path-from-shell elpy))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

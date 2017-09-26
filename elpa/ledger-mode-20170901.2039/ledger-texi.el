@@ -1,6 +1,6 @@
-;;; ldg-texi.el --- Helper code for use with the "ledger" command-line tool
+;;; ledger-texi.el --- Helper code for use with the "ledger" command-line tool
 
-;; Copyright (C) 2003-2013 John Wiegley (johnw AT gnu DOT org)
+;; Copyright (C) 2003-2016 John Wiegley (johnw AT gnu DOT org)
 
 ;; This file is not part of GNU Emacs.
 
@@ -16,22 +16,24 @@
 ;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with GNU Emacs; see the file COPYING.  If not, write to the
-;; Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-;; MA 02111-1307, USA.
+;; Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+;; MA 02110-1301 USA.
+;;; Code:
+(defvar ledger-binary-path)
 
 (defgroup ledger-texi nil
-"Options for working on Ledger texi documentation"
-:group 'ledger)
+  "Options for working on Ledger texi documentation"
+  :group 'ledger)
 
 (defcustom ledger-texi-sample-doc-path "~/ledger/doc/sample.dat"
-"Location for sample data to be used in texi tests"
-:type 'file
-:group 'ledger-texi)
+  "Location for sample data to be used in texi tests"
+  :type 'file
+  :group 'ledger-texi)
 
 (defcustom ledger-texi-normalization-args "--args-only --columns 80"
-"texi normalization for producing ledger output"
-:type 'string
-:group 'ledger-texi)
+  "texi normalization for producing ledger output"
+  :type 'string
+  :group 'ledger-texi)
 
 (defun ledger-update-test ()
   (interactive)
@@ -104,17 +106,17 @@
   (if (string-match "\\$LEDGER" command)
       (replace-match (format "%s -f \"%s\" %s" ledger-binary-path
                              data-file ledger-texi-normalization-args) t t command)
-      (concat (format "%s -f \"%s\" %s " ledger-binary-path
-		      data-file ledger-texi-normalization-args) command)))
+    (concat (format "%s -f \"%s\" %s " ledger-binary-path
+                    data-file ledger-texi-normalization-args) command)))
 
 (defun ledger-texi-invoke-command (command)
   (with-temp-buffer (shell-command command t (current-buffer))
-		    (if (= (point-min) (point-max))
-			(progn
-			  (push-mark nil t)
-			  (message "Command '%s' yielded no result at %d" command (point))
-			  (ding))
-			(buffer-string))))
+                    (if (= (point-min) (point-max))
+                        (progn
+                          (push-mark nil t)
+                          (message "Command '%s' yielded no result at %d" command (point))
+                          (ding))
+                      (buffer-string))))
 
 (defun ledger-texi-write-test-data (name input)
   (let ((path (expand-file-name name temporary-file-directory)))
@@ -159,7 +161,7 @@
 
         (let ((section-name (if (string= section "smex")
                                 "smallexample"
-				"example"))
+                              "example"))
               (output (ledger-texi-invoke-command
                        (ledger-texi-expand-command command data-file))))
           (insert "@" section-name ?\n output
@@ -169,4 +171,4 @@
         (ledger-texi-write-test example-name command input output
                                 "../test/manual")))))
 
-(provide 'ldg-texi)
+(provide 'ledger-texi)

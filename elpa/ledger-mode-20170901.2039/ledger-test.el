@@ -1,6 +1,6 @@
-;;; ldg-test.el --- Helper code for use with the "ledger" command-line tool
+;;; ledger-test.el --- Helper code for use with the "ledger" command-line tool
 
-;; Copyright (C) 2003-2013 John Wiegley (johnw AT gnu DOT org)
+;; Copyright (C) 2003-2016 John Wiegley (johnw AT gnu DOT org)
 
 ;; This file is not part of GNU Emacs.
 
@@ -16,8 +16,16 @@
 ;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with GNU Emacs; see the file COPYING.  If not, write to the
-;; Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-;; MA 02111-1307, USA.
+;; Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+;; MA 02110-1301 USA.
+
+;;; Commentary:
+
+;;; Code:
+
+(declare-function ledger-mode "ledger-mode") ; TODO: fix this cyclic dependency
+(require 'org)
+(require 'outline)
 
 (defgroup ledger-test nil
   "Definitions for the Ledger testing framework"
@@ -32,6 +40,33 @@
   "Directory where the Ledger debug binary is located."
   :type 'file
   :group 'ledger-test)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun ledger-create-test ()
+  "Create a regression test."
+  (interactive)
+  (save-restriction
+    (org-narrow-to-subtree)
+    (save-excursion
+      (let (text beg)
+        (goto-char (point-min))
+        (forward-line 1)
+        (setq beg (point))
+        (search-forward ":PROPERTIES:")
+        (goto-char (line-beginning-position))
+        (setq text (buffer-substring-no-properties beg (point)))
+        (goto-char (point-min))
+        (re-search-forward ":ID:\\s-+\\([^-]+\\)")
+        (find-file-other-window
+         (format "~/src/ledger/test/regress/%s.test" (match-string 1)))
+        (sit-for 0)
+        (insert text)
+        (goto-char (point-min))
+        (while (not (eobp))
+          (goto-char (line-beginning-position))
+          (delete-char 3)
+          (forward-line 1))))))
 
 (defun ledger-test-org-narrow-to-entry ()
   (outline-back-to-heading)
@@ -71,9 +106,9 @@
         (ledger-mode)
         (if input
             (insert input)
-	    (insert "2012-03-17 Payee\n")
-	    (insert "    Expenses:Food                $20\n")
-	    (insert "    Assets:Cash\n"))
+          (insert "2012-03-17 Payee\n")
+          (insert "    Expenses:Food                $20\n")
+          (insert "    Assets:Cash\n"))
         (insert "\ntest reg\n")
         (if output
             (insert output))
@@ -94,7 +129,9 @@
         (let ((prev-directory default-directory))
           (cd ledger-source-directory)
           (unwind-protect
-	       (async-shell-command (format "\"%s\" %s" command args))
+              (async-shell-command (format "\"%s\" %s" command args))
             (cd prev-directory)))))))
 
-(provide 'ldg-test)
+(provide 'ledger-test)
+
+;;; ledger-test.el ends here

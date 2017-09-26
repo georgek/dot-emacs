@@ -1,6 +1,6 @@
-;;; ldg-context.el --- Helper code for use with the "ledger" command-line tool
+;;; ledger-context.el --- Helper code for use with the "ledger" command-line tool
 
-;; Copyright (C) 2003-2013 John Wiegley (johnw AT gnu DOT org)
+;; Copyright (C) 2003-2016 John Wiegley (johnw AT gnu DOT org)
 
 ;; This file is not part of GNU Emacs.
 
@@ -16,8 +16,8 @@
 ;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with GNU Emacs; see the file COPYING.  If not, write to the
-;; Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-;; MA 02111-1307, USA.
+;; Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+;; MA 02110-1301 USA.
 
 
 ;;; Commentary:
@@ -25,31 +25,56 @@
 
 ;;; Code:
 
-(eval-when-compile
-  (require 'cl))
+(require 'ledger-regex)
 
+;; ledger-*-string constants are assembled in the
+;; `ledger-single-line-config' macro to form the regex and list of
+;; elements
+(defconst ledger-indent-string "\\(^[ \t]+\\)")
+(defconst ledger-status-string "\\(*\\|!\\)?")
+(defconst ledger-account-string "[\\[(]?\\(.*?\\)[])]?")
+(defconst ledger-separator-string "\\(\\s-\\s-+\\)")
+(defconst ledger-amount-string ledger-amount-regexp)
+(defconst ledger-commoditized-amount-string ledger-commoditized-amount-regexp)
+(defconst ledger-comment-string "[ \t]*;[ \t]*\\(.*?\\)")
+(defconst ledger-nil-string "\\([ \t]+\\)")
+(defconst ledger-date-string "^\\([0-9]\\{4\\}[/-][01]?[0-9][/-][0123]?[0-9]\\)")
+(defconst ledger-code-string "\\((.*)\\)?")
+(defconst ledger-payee-string "\\(.*[^[:space:]]\\)")
+
+
+(defun ledger-get-regex-str (name)
+  "Get the ledger regex of type NAME."
+  (symbol-value (intern (concat "ledger-" (symbol-name name) "-string"))))
+
+(defun ledger-line-regex (elements)
+  "Get a regex to match ELEMENTS on a single line."
+  (concat (apply 'concat (mapcar 'ledger-get-regex-str elements)) "[ \t]*$"))
+
+(defmacro ledger-single-line-config (&rest elements)
+  "Take list of ELEMENTS and return regex and element list for use in context-at-point"
+  `(list (ledger-line-regex (quote ,elements)) (quote ,elements)))
 
 (defconst ledger-line-config
-  '((xact
-     (("^\\(\\([0-9][0-9][0-9][0-9]/\\)?[01]?[0-9]/[0123]?[0-9]\\)[ \t]+\\(\\([!*]\\)[ \t]\\)?[ \t]*\\((\\(.*\\))\\)?[ \t]*\\(.*?\\)[ \t]*;\\(.*\\)[ \t]*$"
-       (date nil status nil nil code payee comment))
-      ("^\\(\\([0-9][0-9][0-9][0-9]/\\)?[01]?[0-9]/[0123]?[0-9]\\)[ \t]+\\(\\([!*]\\)[ \t]\\)?[ \t]*\\((\\(.*\\))\\)?[ \t]*\\(.*\\)[ \t]*$"
-       (date nil status nil nil code payee))))
-    (acct-transaction
-     (("^\\([ \t]+;\\|;\\)\\s-?\\(.*\\)"
-       (indent comment))
-      ("\\(^[ \t]+\\)\\([*! ]?\\)\\(.*?\\)\\s-\\s-[ \t]+\\([$€£]\\s-?\\)\\(-?[0-9]*\\(\\.[0-9]*\\)?\\)[ \t]*;[ \t]*\\(.*\\)[ \t]*$"
-       (indent status account commodity amount nil comment)) ;checked 2013-04-06 
-      ("\\(^[ \t]+\\)\\([*! ]?\\)\\(.*?\\)\\s-\\s-[ \t]+\\([$€£]\\s-?\\)\\(-?[0-9]*\\(\\.[0-9]*\\)?\\)$"
-       (indent status account commodity amount))  ;checked 2013-04-06 
-      ("\\(^[ \t]+\\)\\([*! ]?\\)\\(.*?\\)\\s-\\s-[ \t]+\\(-?[0-9]+\\.[0-9]*\\)[ \t]+\\(.*?\\)[ \t]*\\(;[ \t]*\\(.*?\\)[ \t]*$\\|@+\\)"
-       (indent status account amount nil commodity comment)) ;checked 2013-04-06 
-      ("\\(^[ \t]+\\)\\([*! ]?\\)\\(.*?\\)\\s-\\s-[ \t]+\\(-?[0-9]+\\.[0-9]*\\)[ \t]+\\(.*\\)"
-       (indent status account amount nil commodity))  ;checked 2013-04-06 
-      ("\\(^[ \t]+\\)\\([*! ]?\\)\\(.*?\\)[ \t]*;[ \t]*\\(.*?\\)[ \t]*$"
-       (indent status account comment))
-      ("\\(^[ \t]+\\)\\([*! ]?\\)\\(.*?\\)[ \t]*$"
-       (indent status account))))))
+  (list (list 'xact (list (ledger-single-line-config date nil status nil code nil payee separator comment)
+                          (ledger-single-line-config date nil status nil code nil payee)
+                          (ledger-single-line-config date nil status nil payee separator comment)
+                          (ledger-single-line-config date nil status nil payee)
+                          (ledger-single-line-config date nil code nil payee separator comment)
+                          (ledger-single-line-config date nil code nil payee)
+                          (ledger-single-line-config date nil payee separator comment)
+                          (ledger-single-line-config date nil payee)))
+        (list 'acct-transaction (list (ledger-single-line-config indent comment)
+                                      (ledger-single-line-config indent status nil account separator commoditized-amount separator comment)
+                                      (ledger-single-line-config indent status nil account separator commoditized-amount)
+                                      (ledger-single-line-config indent status nil account separator amount)
+                                      (ledger-single-line-config indent status nil account separator comment)
+                                      (ledger-single-line-config indent status nil account)
+                                      (ledger-single-line-config indent account separator commoditized-amount separator comment)
+                                      (ledger-single-line-config indent account separator commoditized-amount)
+                                      (ledger-single-line-config indent account separator amount)
+                                      (ledger-single-line-config indent account separator comment)
+                                      (ledger-single-line-config indent account)))))
 
 (defun ledger-extract-context-info (line-type pos)
   "Get context info for current line with LINE-TYPE.
@@ -85,7 +110,7 @@ Leave point at the beginning of the thing under point"
     (cond ((looking-at "^[0-9/.=-]+\\(\\s-+\\*\\)?\\(\\s-+(.+?)\\)?\\s-+")
            (goto-char (match-end 0))
            'transaction)
-          ((looking-at "^\\s-+\\([*!]\\s-+\\)?[[(]?\\(.\\)")
+          ((looking-at "^\\s-+\\([*!]\\s-+\\)?[[(]?\\([^\\s-]\\)")
            (goto-char (match-beginning 2))
            'posting)
           ((looking-at "^\\(sun\\|mon\\|tue\\|wed\\|thu\\|fri\\|sat\\)\\s-+")
@@ -148,7 +173,7 @@ specified line, returns nil."
     (let ((left (forward-line offset)))
       (if (not (equal left 0))
           nil
-	  (ledger-context-at-point)))))
+        (ledger-context-at-point)))))
 
 (defun ledger-context-line-type (context-info)
   (nth 0 context-info))
@@ -178,6 +203,6 @@ specified line, returns nil."
 (defun ledger-context-goto-field-end (context-info field-name)
   (goto-char (ledger-context-field-end-position context-info field-name)))
 
-(provide 'ldg-context)
+(provide 'ledger-context)
 
-;;; ldg-report.el ends here
+;;; ledger-context.el ends here
