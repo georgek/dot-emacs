@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: shebang
-# key: !
-# group: meta
-# --
-#!/usr/bin/env python
-
