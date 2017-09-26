@@ -1,5 +1,15 @@
 ;;;; my .emacs file
 
+(require 'package)
+(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
+                    (not (gnutls-available-p))))
+       (url (concat (if no-ssl "http" "https") "://melpa.org/packages/")))
+  (add-to-list 'package-archives (cons "melpa" url) t))
+(package-initialize)
+
+(when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize))
+
 ;;; init path stuff
 (or (boundp 'init-path)
     (setq init-path (file-name-directory load-file-name)))
@@ -1155,7 +1165,8 @@ call to other-window-repeat or switch-prev-window."
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("f5e56ac232ff858afb08294fc3a519652ce8a165272e3c65165c42d6fe0262a0" default))))
+    ("f5e56ac232ff858afb08294fc3a519652ce8a165272e3c65165c42d6fe0262a0" default)))
+ '(package-selected-packages (quote (counsel swiper ivy exec-path-from-shell elpy))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
