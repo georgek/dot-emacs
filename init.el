@@ -5,6 +5,7 @@
                     (not (gnutls-available-p))))
        (url (concat (if no-ssl "http" "https") "://melpa.org/packages/")))
   (add-to-list 'package-archives (cons "melpa" url) t))
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 (package-initialize)
 
 (when (memq window-system '(mac ns x))
@@ -53,9 +54,6 @@
 
 (require 'cl-lib)
 
-;; remove old org from load path
-(setq load-path (cl-remove-if (lambda (x) (string-match-p "org$" x)) load-path))
-
 ;; add paths
 ;; (add-to-path-init load-path ".")
 (add-to-path-init load-path "site-lisp")
@@ -64,9 +62,6 @@
 ;; this adds stuff that I'm currently working on
 (load-init "working" t)
 (load-init "gk-utils")
-
-;; org development version
-;; (add-to-list 'load-path "~/src/org-mode/lisp/")
 
 ;; load stuff in other files
 ;; (load-library "gk-gtags")
@@ -382,7 +377,7 @@
 
 ;;; *** org-mode settings ***
 (require 'org)
-(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+(require 'org-bullets)
 
 (makehookedfun org-mode-hook
   (auto-fill-mode)
@@ -398,11 +393,8 @@
    org-directory))
 (setq org-return-follows-link t)
 
-(require 'org-bullets)
-
 ;; src
 (setq org-src-fontify-natively t)
-;; add lisp
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((lisp . t)
@@ -1242,7 +1234,7 @@ call to other-window-repeat or switch-prev-window."
     ("f5e56ac232ff858afb08294fc3a519652ce8a165272e3c65165c42d6fe0262a0" default)))
  '(package-selected-packages
    (quote
-    (magit ledger-mode go-mode ess cider auctex avy ace-window counsel swiper ivy exec-path-from-shell elpy))))
+    (ox-twbs ox-reveal org-bullets org-plus-contrib org magit ledger-mode go-mode ess cider auctex avy ace-window counsel swiper ivy exec-path-from-shell elpy))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
