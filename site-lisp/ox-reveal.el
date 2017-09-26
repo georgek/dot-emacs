@@ -1043,7 +1043,7 @@ contextual information."
                 (org-string-nw-p date))
        (concat "<h2 class=\"date\">" date "</h2>"))
      (when (plist-get info :time-stamp-file)
-       (concat "<p class=\"date\">"
+       (concat "<p id=\"created-date\" class=\"date\">"
                (org-html--translate "Created" info)
                ": "
                (format-time-string
