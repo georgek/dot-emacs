@@ -1,16 +1,5 @@
 ;;;; my .emacs file
 
-(require 'package)
-(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
-                    (not (gnutls-available-p))))
-       (url (concat (if no-ssl "http" "https") "://melpa.org/packages/")))
-  (add-to-list 'package-archives (cons "melpa" url) t))
-(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
-(package-initialize)
-
-(when (memq window-system '(mac ns x))
-  (exec-path-from-shell-initialize))
-
 ;;; init path stuff
 (or (boundp 'init-path)
     (setq init-path (file-name-directory load-file-name)))
@@ -25,14 +14,14 @@
       (when (and (file-directory-p file)
                  (string-match "\\`[[:alnum:]]" file))
         (add-to-list 'load-path (expand-file-name file default-directory))))))
-
-(setq inhibit-splash-screen t)
-(setq inhibit-default-init t)
-;; ignore case in completion
-(setq completion-ignore-case t)
-(setq pcomplete-ignore-case t)
-
-(global-font-lock-mode 1)
+;;; things that are needed at work
+(defun load-directory (dir)
+  (let ((load-it (lambda (f)
+                   (load-file (concat (file-name-as-directory dir) f)))))
+    (mapc load-it (directory-files dir nil "\\.el$"))))
+(let ((work-dir (concat init-path "/work-config/")))
+  (when (file-directory-p work-dir)
+    (load-directory work-dir)))
 
 ;; set window title, turn toolbars and stuff off
 (setq frame-title-format '("%b - GNU Emacs"))
@@ -54,6 +43,14 @@
 
 (require 'cl-lib)
 
+(setq inhibit-splash-screen t)
+(setq inhibit-default-init t)
+;; ignore case in completion
+(setq completion-ignore-case t)
+(setq pcomplete-ignore-case t)
+
+(global-font-lock-mode 1)
+
 ;; add paths
 ;; (add-to-path-init load-path ".")
 (add-to-path-init load-path "site-lisp")
@@ -63,8 +60,16 @@
 (load-init "working" t)
 (load-init "gk-utils")
 
-;; load stuff in other files
-;; (load-library "gk-gtags")
+(require 'package)
+(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
+                    (not (gnutls-available-p))))
+       (url (concat (if no-ssl "http" "https") "://melpa.org/packages/")))
+  (add-to-list 'package-archives (cons "melpa" url) t))
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+(package-initialize)
+
+(when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize))
 
 ;;; Zenburn
 (add-to-path-init custom-theme-load-path "themes")
