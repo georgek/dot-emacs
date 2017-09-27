@@ -570,8 +570,6 @@ RECURRENCES occasions."
                 "init.el")))
 
 ;; AUCTeX
-(load "auctex.el" t t t)
-(load "preview-latex.el" t t t)
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
 (setq TeX-newline-function 'newline-and-indent)
