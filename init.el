@@ -1224,7 +1224,7 @@ call to other-window-repeat or switch-prev-window."
     ("f5e56ac232ff858afb08294fc3a519652ce8a165272e3c65165c42d6fe0262a0" default)))
  '(package-selected-packages
    (quote
-    (paren-face paredit message-x lorem-ipsum htmlize gnus-alias diminish elisp-slime-nav dash-functional dna-mode slime yasnippet-snippets ox-twbs ox-reveal org-bullets org-plus-contrib org magit ledger-mode go-mode ess cider auctex avy ace-window counsel swiper ivy exec-path-from-shell elpy))))
+    (web-mode sr-speedbar paren-face paredit message-x lorem-ipsum htmlize gnus-alias diminish elisp-slime-nav dash-functional dna-mode slime yasnippet-snippets ox-twbs ox-reveal org-bullets org-plus-contrib org magit ledger-mode go-mode ess cider auctex avy ace-window counsel swiper ivy exec-path-from-shell elpy))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
