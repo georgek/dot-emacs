@@ -8,7 +8,7 @@
 ;; Author:    Harley Gorrell <harley@panix.com>
 ;; Github:    https://raw.github.com/jhgorrell/dna-mode-el/master/dna-mode.el
 ;; URL:       http://www.mahalito.net/~harley/elisp/dna-mode.el
-;; License:   GPL v2
+;; License:   GPL v3+
 ;; Keywords:  dna, emacs, editing
 ;; Version:   $Revision: 1.50 $
 
@@ -52,6 +52,22 @@
 ;;; History:
 ;;  2003-03-16: Updated URL and contact info
 ;;  2004-04-20: Added dna-color-bases-region to the keymap for Mike.
+
+;;; License
+;;
+;; This file is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 3, or (at your option)
+;; any later version.
+;;
+;; This file is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+;;
 
 ;;; User customizable vars start here
 
@@ -180,7 +196,7 @@ automaticly as they cant work together.
 (defvar dna-font-lock-keywords
   '(
     ;; Fasta
-    ("^\\(>\\)\\([-_.|/a-zA-Z0-9]+\\)\\([ \t]+.*\\)?"
+    ("^\\(>\\)\\([-_.|a-zA-Z0-9]+\\)\\([ \t]+.*\\)?"
      (1 font-lock-keyword-face)
      (2 font-lock-function-name-face)
      (3 font-lock-comment-face nil t))
