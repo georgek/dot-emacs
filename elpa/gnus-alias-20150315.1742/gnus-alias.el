@@ -1,14 +1,15 @@
-;;; @(#) gnus-alias.el -- an alternative to gnus-posting-styles
-;;; @(#) $Id: gnus-alias.el,v 1.4 2003/08/16 23:05:10 jcasa Exp $
+;;; gnus-alias.el --- an alternative to gnus-posting-styles
 
 ;; This file is not part of Emacs
 
 ;; Copyright (C) 2001 by Joseph L. Casadonte Jr.
-;; Author:          Joe Casadonte (emacs@northbound-train.com)
-;; Maintainer:      Joe Casadonte (emacs@northbound-train.com)
+;; Author:          Joe Casadonte <emacs@northbound-train.com>
+;; Maintainer:      Mark A. Hershberger <mah@everybody.org>
 ;; Created:         September 08, 2001
 ;; Keywords:        personality, identity, news, mail, gnus
-;; Latest Version:  http://www.northbound-train.com/emacs.html
+;; Package-Version: 20150315.1742
+;; Version:         1.6
+;; Latest Version:  http://github.com/hexmode/gnus-alias/
 
 ;; COPYRIGHT NOTICE
 
@@ -30,8 +31,8 @@
 ;;; Commentary:
 ;;
 ;;  gnus-alias provides a simple mechanism to switch Identities when
-;;  using message-mode.  An Identity is one or more of the following
-;;  elements:
+;;  using a message-mode or a message-mode derived mode.  An Identity
+;;  is one or more of the following elements:
 ;;
 ;;  o From - sets the From header (i.e. the sender)
 ;;  o Organization - sets the Organization header (a common, optional header)
@@ -183,7 +184,7 @@
 ;;  o It's possible for a loop to be created when having one Identity
 ;;    refer to another.  This might be fixed at some point.
 
-;;; To Do (Real Soon Now):
+;;; To Do (maybe never):
 ;;
 ;;  o reply-using et al
 ;;  o Fix abbrev cache (or get rid of it)
@@ -196,9 +197,6 @@
 ;;  o fix known bugs
 ;;  o `message-narrow-to-headers' doesn't work on reply-buffer; maybe
 ;;    a gnus-alias-narrow-to-headers function
-
-;;; To Do (maybe never):
-;;
 ;;  o Could have GADI functions return a new 'split' to be fed back
 ;;    into GADI
 ;;  o GADI functions could return an Identity instead of just t or nil
@@ -236,15 +234,9 @@
 (eval-when-compile
   ;; silence the old byte-compiler
   (defvar byte-compile-dynamic)
-  (set (make-local-variable 'byte-compile-dynamic) t)
+  (set (make-local-variable 'byte-compile-dynamic) t))
 
-  (require 'message)
-
-  ;; variables/functions from other packages
-  (defvar message-reply-buffer)
-  (defvar message-signature-separator)
-  (defvar message-mode-map)
-  )
+(require 'message)
 
 ;;; **************************************************************************
 ;;; ***** customization routines
@@ -687,7 +679,7 @@ one."
   (gnus-alias-ensure-message-mode)
 
   ;; do we need to prompt for identity?
-  (when (and (not identity) (interactive-p))
+  (when (and (not identity) (called-interactively-p 'interactive))
     (setq identity (gnus-alias-identity-prompt)))
 
   ;; call internal function
@@ -720,7 +712,7 @@ one."
 ;;; **************************************************************************
 (defun gnus-alias-ensure-message-mode ()
   "Assert that the current buffer is a message buffer."
-  (when (not (eq major-mode 'message-mode))
+  (when (not (derived-mode-p 'message-mode))
     (gnus-alias-error "Must be in `message-mode'.? ")))
 
 ;;; **************************************************************************
@@ -1093,61 +1085,61 @@ above circumstances rather then generate an error."
 
       (save-restriction
 	(goto-char (point-min))
-	(save-match-data 
+	(save-match-data
 	  (when (re-search-forward "<#\\(mml\\|part\\)" nil t)
 	    (narrow-to-region (point-min) (match-beginning 0))))
 
-	;; add From maybe
-	(when from
-	  (gnus-alias-remove-header "From")
+      ;; add From maybe
+      (when from
+        (gnus-alias-remove-header "From")
 
-	  (message-position-on-field "From")
-	  (insert (gnus-alias-get-value from))
+        (message-position-on-field "From")
+        (insert (gnus-alias-get-value from))
 
-	  (when gnus-alias-use-buttonized-from
-	    ;; do something with widgets here
-	    ;;        (gnus-alias-buttonize-from)
-	    ))
+        (when gnus-alias-use-buttonized-from
+          ;; do something with widgets here
+;;        (gnus-alias-buttonize-from)
+          ))
 
-	;; add Organization maybe
-	(when org
-	  (gnus-alias-remove-header "Organization")
+      ;; add Organization maybe
+      (when org
+        (gnus-alias-remove-header "Organization")
 
-	  (gnus-alias-position-on-field "Organization")
-	  (insert (gnus-alias-get-value org)))
+        (gnus-alias-position-on-field "Organization")
+        (insert (gnus-alias-get-value org)))
 
-	;; add extra headers maybe
-	(when extras
-	  (setq extras-list extras)
-	  (while extras-list
-	    (setq current-extra (car extras-list))
-	    (setq extra-hdr (gnus-alias-get-value (car current-extra)))
-	    (setq extra-val (gnus-alias-get-value (cdr current-extra)))
+      ;; add extra headers maybe
+      (when extras
+        (setq extras-list extras)
+        (while extras-list
+          (setq current-extra (car extras-list))
+          (setq extra-hdr (gnus-alias-get-value (car current-extra)))
+          (setq extra-val (gnus-alias-get-value (cdr current-extra)))
 
-	    (gnus-alias-remove-header extra-hdr)
+          (gnus-alias-remove-header extra-hdr)
 
-	    (gnus-alias-position-on-field extra-hdr)
-	    (insert extra-val)
+          (gnus-alias-position-on-field extra-hdr)
+          (insert extra-val)
 
-	    (setq extras-list (cdr extras-list))
-	    ))
+          (setq extras-list (cdr extras-list))
+          ))
 
-	;; add body maybe
-	(when body
-	  (gnus-alias-remove-current-body)
-	  (gnus-alias-goto-sig)
-	  (insert (gnus-alias-get-value body))
-	  (unless (bolp) (insert "\n")))
+      ;; add body maybe
+      (when body
+        (gnus-alias-remove-current-body)
+        (gnus-alias-goto-sig)
+        (insert (gnus-alias-get-value body))
+        (unless (bolp) (insert "\n")))
 
-	;; remove old signature
-	(gnus-alias-remove-sig)
+      ;; remove old signature
+      (gnus-alias-remove-sig)
 
-	;; add signature maybe
-	(when sig
-	  (goto-char (point-max))
-	  (unless (bolp) (insert "\n"))
-	  (insert "-- \n")
-	  (insert (gnus-alias-get-value sig))))
+      ;; add signature maybe
+      (when sig
+        (goto-char (point-max))
+        (unless (bolp) (insert "\n"))
+        (insert "-- \n")
+        (insert (gnus-alias-get-value sig))))
 
       ;; remember last Identity used
       (setq gnus-alias-current-identity identity)))
@@ -1175,7 +1167,8 @@ If none of the above, return \"\"."
      ;; .........................
      ;; FILE
      ((and (> (length element) 0)
-           (file-exists-p element))
+           (and (file-exists-p element)
+                (not (file-directory-p element))))
       (with-temp-buffer
         (insert-file-contents element nil)
         (buffer-string)))
@@ -1228,10 +1221,10 @@ responsible for the subsequent mess)."
 
 	(save-restriction
 	  (goto-char (point-min))
-	  (save-match-data 
+	  (save-match-data
 	    (when (re-search-forward "<#\\(mml\\|part\\)" nil t)
 	      (narrow-to-region (point-min) (match-beginning 0))))
-	  
+
           ;; remove From
           (when from (gnus-alias-remove-header "From"))
 
@@ -1284,7 +1277,6 @@ responsible for the subsequent mess)."
       ;; remove it if there's something to remove
       (when current-body
         (save-restriction
-;          (widen)
 
           ;; find body and narrow to it
           (message-goto-eoh)
@@ -1437,5 +1429,3 @@ PREFIX is an optional prefeix to each header block."
 (run-hooks 'gnus-alias-load-hook)
 
 ;;; gnus-alias.el ends here
-;;; **************************************************************************
-;;;; *****  EOF  *****  EOF  *****  EOF  *****  EOF  *****  EOF  *************

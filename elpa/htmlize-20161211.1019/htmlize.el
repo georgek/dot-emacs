@@ -1,10 +1,11 @@
-;;; htmlize.el --- Convert buffer text and decorations to HTML.
+;;; htmlize.el --- Convert buffer text and decorations to HTML. -*- lexical-binding: t -*-
 
-;; Copyright (C) 1997-2003,2005,2006,2009,2011,2012 Hrvoje Niksic
+;; Copyright (C) 1997-2003,2005,2006,2009,2011,2012,2014,2017 Hrvoje Niksic
 
-;; Author: Hrvoje Niksic <hniksic@xemacs.org>
+;; Author: Hrvoje Niksic <hniksic@gmail.com>
 ;; Keywords: hypermedia, extensions
-;; Version: 1.47
+;; Package-Version: 20161211.1019
+;; Version: 1.51
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -24,7 +25,7 @@
 ;;; Commentary:
 
 ;; This package converts the buffer text and the associated
-;; decorations to HTML.  Mail to <hniksic@xemacs.org> to discuss
+;; decorations to HTML.  Mail to <hniksic@gmail.com> to discuss
 ;; features and additions.  All suggestions are more than welcome.
 
 ;; To use it, just switch to the buffer you want HTML-ized and type
@@ -65,18 +66,10 @@
 ;; with using the full power of the CL extensions, except that one
 ;; might learn to like them too much.
 
-;; The latest version is available as a git repository at:
+;; The latest version is available at:
 ;;
-;;        <http://fly.srk.fer.hr/~hniksic/emacs/htmlize.git>
+;;        <https://github.com/hniksic/emacs-htmlize>
 ;;
-;; The snapshot of the latest release can be obtained at:
-;;
-;;        <http://fly.srk.fer.hr/~hniksic/emacs/htmlize.el.cgi>
-;;
-;; You can find a sample of htmlize's output (possibly generated with
-;; an older version) at:
-;;
-;;        <http://fly.srk.fer.hr/~hniksic/emacs/htmlize.el.html>
 
 ;; Thanks go to the many people who have sent reports and contributed
 ;; comments, suggestions, and fixes.  They include Ron Gut, Bob
@@ -99,7 +92,7 @@
   (defvar font-lock-support-mode)
   (defvar global-font-lock-mode))
 
-(defconst htmlize-version "1.47")
+(defconst htmlize-version "1.51")
 
 (defgroup htmlize nil
   "Convert buffer text and faces to HTML."
@@ -151,7 +144,9 @@ embedded in the HTML as data URIs."
 Normally when htmlize encounters text covered by the `display' property
 that specifies an image, it generates an `alt' attribute containing the
 original text.  If the text is larger than `htmlize-max-alt-text' characters,
-this will not be done.")
+this will not be done."
+  :type 'integer
+  :group 'htmlize)
 
 (defcustom htmlize-transform-image 'htmlize-default-transform-image
   "Function called to modify the image descriptor.
@@ -294,6 +289,23 @@ If the `rgb.txt' file is not found (which will be the case if you're
 running Emacs on non-X11 systems), this option is ignored."
   :type 'boolean
   :group 'htmlize)
+
+(defvar htmlize-face-overrides nil
+  "Overrides for face definitions.
+
+Normally face definitions are taken from Emacs settings for fonts
+in the current frame.  For faces present in this plist, the
+definitions will be used instead.  Keys in the plist are symbols
+naming the face and values are the overriding definitions.  For
+example:
+
+  (setq htmlize-face-overrides
+        '(font-lock-warning-face \"black\"
+          font-lock-function-name-face \"red\"
+          font-lock-comment-face \"blue\"
+          default (:foreground \"dark-green\" :background \"yellow\")))
+
+This variable can be also be `let' bound when running `htmlize-buffer'.")
 
 (defcustom htmlize-html-major-mode nil
   "The mode the newly created HTML buffer will be put in.
@@ -1186,7 +1198,7 @@ If no rgb.txt file is found, return nil."
 ;; htmlize supports attrlist by converting them to fstructs, the same
 ;; as with regular faces.
 
-(defun htmlize-attrlist-to-fstruct (attrlist)
+(defun htmlize-attrlist-to-fstruct (attrlist &optional name)
   ;; Like htmlize-face-to-fstruct, but accepts an ATTRLIST as input.
   (let ((fstruct (make-htmlize-fstruct)))
     (cond ((eq (car attrlist) 'foreground-color)
@@ -1204,7 +1216,7 @@ If no rgb.txt file is found, return nil."
 		   (value (pop attrlist)))
 	       (when (and value (not (eq value 'unspecified)))
 		 (htmlize-face-set-from-keyword-attr fstruct attr value))))))
-    (setf (htmlize-fstruct-css-name fstruct) "ATTRLIST")
+    (setf (htmlize-fstruct-css-name fstruct) (or name "custom"))
     fstruct))
 
 (defun htmlize-decode-face-prop (prop)
@@ -1241,6 +1253,17 @@ If no rgb.txt file is found, return nil."
         (t
          (apply #'nconc (mapcar #'htmlize-decode-face-prop prop)))))
 
+(defun htmlize-get-override-fstruct (face)
+  (let* ((raw-def (plist-get htmlize-face-overrides face))
+         (def (cond ((stringp raw-def) (list :foreground raw-def))
+                    ((listp raw-def) raw-def)
+                    (t
+                     (error (format (concat "face override must be an "
+                                            "attribute list or string, got %s")
+                                    raw-def))))))
+    (and def
+         (htmlize-attrlist-to-fstruct def (symbol-name face)))))
+
 (defun htmlize-make-face-map (faces)
   ;; Return a hash table mapping Emacs faces to htmlize's fstructs.
   ;; The keys are either face symbols or attrlists, so the test
@@ -1252,7 +1275,8 @@ If no rgb.txt file is found, return nil."
 	;; Haven't seen FACE yet; convert it to an fstruct and cache
 	;; it.
 	(let ((fstruct (if (symbolp face)
-			   (htmlize-face-to-fstruct face)
+                           (or (htmlize-get-override-fstruct face)
+                               (htmlize-face-to-fstruct face))
 			 (htmlize-attrlist-to-fstruct face))))
 	  (setf (gethash face face-map) fstruct)
 	  (let* ((css-name (htmlize-fstruct-css-name fstruct))
@@ -1926,7 +1950,6 @@ corresponding source file."
 
 ;; Local Variables:
 ;; byte-compile-warnings: (not cl-functions lexical unresolved obsolete)
-;; lexical-binding: t
 ;; End:
 
 ;;; htmlize.el ends here

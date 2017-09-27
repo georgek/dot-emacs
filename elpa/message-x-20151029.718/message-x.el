@@ -1,10 +1,11 @@
-;;; message-x.el -- customizable completion in message headers
+;;; message-x.el --- customizable completion in message headers
 ;; Copyright (C) 1998 Kai Großjohann
 
 ;; $Id: message-x.el,v 1.23 2001/05/30 21:04:47 grossjoh Exp $
 
 ;; Author: Kai Grossjohann <grossjohann@ls6.informatik.uni-dortmund.de>
 ;; Keywords: news, mail, compose, completion
+;; Package-Version: 20151029.718
 
 ;; This file is not part of GNU Emacs.
 
@@ -217,6 +218,7 @@ cases, `message-x-call-completion-function' returns non-nil."
                   t)
                  (t nil))))))
 
+;;;###autoload
 (defun message-x-tab (&optional skip-completion)
   "Smart completion or indentation in message buffers.
 
