@@ -605,6 +605,7 @@ from distutils.version import LooseVersion
 
 
 def latest(package, version=None):
+    return None
     try:
         pypi = xmlrpclib.ServerProxy('https://pypi.python.org/pypi')
         latest = pypi.package_releases(package)[0]

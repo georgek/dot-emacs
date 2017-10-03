@@ -69,7 +69,9 @@
 (package-initialize)
 
 (when (memq window-system '(mac ns x))
-  (exec-path-from-shell-initialize))
+  (exec-path-from-shell-initialize)
+  (exec-path-from-shell-copy-env "WORKON_HOME")
+  (exec-path-from-shell-copy-env "PROJECT_HOME"))
 
 ;;; Zenburn
 (add-to-path-init custom-theme-load-path "themes")
