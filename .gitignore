@@ -23,3 +23,5 @@ site-lisp/bbdb/*
 eshell/
 /recentf
 /work-config/*
+
+*.pyc
