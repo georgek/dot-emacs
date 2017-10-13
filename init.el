@@ -456,12 +456,12 @@
 (setq org-default-notes-file (orgdr "notes.org"))
 (global-set-key (kbd "C-c c") 'org-capture)
 (setq org-capture-templates
-      '(("t" "Todo" entry (file+headline (orgdr "todo.org") "Misc (Captured)")
+      `(("t" "Todo" entry (file+headline ,(orgdr "todo.org") "Misc (Captured)")
          "* TODO %?\n %U\n %a")
-        ("d" "Diary" entry (file+headline (orgdr "diary.org") "Captured"))
-        ("j" "Journal" entry (file+datetree (orgdr "journal.org"))
+        ("d" "Diary" entry (file+headline ,(orgdr "diary.org") "Captured"))
+        ("j" "Journal" entry (file+datetree ,(orgdr "journal.org"))
          "* %? %^g\nEntered on %U\n %i")
-        ("i" "Idea" entry (file (orgdr "ideas.org"))
+        ("i" "Idea" entry (file ,(orgdr "ideas.org"))
          "* %?\n %U\n %a")))
 
 ;; agenda stuff
