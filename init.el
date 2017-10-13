@@ -1049,42 +1049,6 @@ call to other-window-repeat or switch-prev-window."
  '("\\.\\(fasta\\|fa\\|exp\\|ace\\|gb\\)\\'" . dna-mode))
 
 ;;; Python
-;; (require 'python)
-;; (setq
-;;   python-shell-interpreter "ipython3"
-;;   python-shell-interpreter-args ""
-;;   python-shell-prompt-regexp "In \\[[0-9]+\\]: "
-;;   python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
-;;   python-shell-completion-setup-code
-;;   "from IPython.core.completerlib import module_completion"
-;;   python-shell-completion-module-string-code
-;;   "';'.join(module_completion('''%s'''))\n"
-;;   python-shell-completion-string-code
-;;   "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
-
-;; (defun python-eval-defun-key (arg)
-;;      (interactive "P")
-;;      (let (beg ol)
-;;        (save-excursion
-;;          (end-of-defun)
-;;          (beginning-of-defun)
-;;          (setq beg (point))
-;;          (end-of-defun)
-;;          (setq ol (make-overlay beg (point))))
-;;        (overlay-put ol 'face 'highlight)
-;;        (unwind-protect
-;;            (progn
-;;              (python-shell-send-defun arg)
-;;              (sit-for 0.1))
-;;          (delete-overlay ol))))
-
-;; (makehookedfun python-mode-hook
-;;   (local-set-key (kbd "C-c C-c") #'python-eval-defun-key)
-;;   (local-set-key (kbd "C-c C-k") #'python-shell-send-buffer)
-;;   (local-set-key (kbd "C-c C-z") #'python-shell-switch-to-shell)
-;;   (local-set-key (kbd "C-c z") #'python-shell-switch-to-shell)
-;;   (turn-on-eldoc-mode))
-
 (elpy-enable)
 (elpy-use-ipython)
 (setq elpy-rpc-backend "jedi")
