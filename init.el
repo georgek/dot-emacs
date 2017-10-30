@@ -405,6 +405,7 @@
 ;;; export
 (setq org-export-allow-bind-keywords t)
 (require 'htmlize)
+(require 'ox-md)
 ;;; org-reveal
 (require 'ox-reveal)
 (setq org-reveal-root ".")
