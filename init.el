@@ -67,6 +67,7 @@
 
 (when (memq window-system '(mac ns x))
   (exec-path-from-shell-initialize)
+  (exec-path-from-shell-copy-env "LD_LIBRARY_PATH")
   (exec-path-from-shell-copy-env "WORKON_HOME")
   (exec-path-from-shell-copy-env "PROJECT_HOME"))
 
