@@ -25,3 +25,5 @@ eshell/
 /work-config/*
 
 *.pyc
+
+elpa/
