@@ -2,7 +2,7 @@
 (zenburn-with-color-variables
   (custom-theme-set-faces
    'zenburn
-   `(font-lock-builtin-face ((t (:foreground ,zenburn-cyan))))
+   `(font-lock-builtin-face ((t (:foreground ,zenburn-blue-1))))
    `(paren-face ((t (:foreground "#989888"))))
    ;; ledger
    `(ledger-font-payee-uncleared-face
