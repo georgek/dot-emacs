@@ -383,7 +383,9 @@
   (org-bullets-mode 1)
   (flyspell-mode 1)
   (local-set-key (kbd "M-p") #'org-metaup)
-  (local-set-key (kbd "M-n") #'org-metadown))
+  (local-set-key (kbd "M-n") #'org-metadown)
+  (local-set-key (kbd "C-M->") #'org-metaright)
+  (local-set-key (kbd "C-M-<") #'org-metaleft))
 
 (setq org-directory "~/org/")
 (defmacro orgdr (&optional filename)
