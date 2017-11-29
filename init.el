@@ -1222,6 +1222,8 @@ call to other-window-repeat or switch-prev-window."
 (makehookedfun web-mode-hook
   (local-set-key (kbd "C-c C-c") #'browse-url-of-file))
 
+(add-to-list 'auto-mode-alist '("\\.less\\'" . css-mode))
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
