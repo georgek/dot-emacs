@@ -80,44 +80,44 @@
 
 ;;; ivy
 ;; (add-to-path-init load-path "site-lisp/swiper")
-(require 'ivy)
-(require 'counsel)
-(require 'swiper)
-(ivy-mode 1)
-(setq ivy-use-virtual-buffers t)
-(setq enable-recursive-minibuffers t)
-(global-set-key (kbd "C-s") 'swiper)
-(global-unset-key (kbd "C-r"))
-(global-set-key (kbd "C-c C-r") 'ivy-resume)
-(global-set-key (kbd "<f6>") 'ivy-resume)
-(global-set-key (kbd "C-x C-b") 'ivy-switch-buffer)
-(global-set-key (kbd "M-x") 'counsel-M-x)
-(global-set-key (kbd "C-x C-f") 'counsel-find-file)
-(global-set-key (kbd "<f1> f") 'counsel-describe-function)
-(global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-(global-set-key (kbd "<f1> l") 'counsel-find-library)
-(global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
-(global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-(global-set-key (kbd "C-c g") 'counsel-git)
-(global-set-key (kbd "C-c j") 'counsel-git-grep)
-(global-set-key (kbd "C-c k") 'counsel-ag)
-(global-set-key (kbd "C-x l") 'counsel-locate)
-(global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
-(define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+;; (require 'ivy)
+;; (require 'counsel)
+;; (require 'swiper)
+;; (ivy-mode 1)
+;; (setq ivy-use-virtual-buffers t)
+;; (setq enable-recursive-minibuffers t)
+;; (global-set-key (kbd "C-s") 'swiper)
+;; (global-unset-key (kbd "C-r"))
+;; (global-set-key (kbd "C-c C-r") 'ivy-resume)
+;; (global-set-key (kbd "<f6>") 'ivy-resume)
+;; (global-set-key (kbd "C-x C-b") 'ivy-switch-buffer)
+;; (global-set-key (kbd "M-x") 'counsel-M-x)
+;; (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+;; (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+;; (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+;; (global-set-key (kbd "<f1> l") 'counsel-find-library)
+;; (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+;; (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+;; (global-set-key (kbd "C-c g") 'counsel-git)
+;; (global-set-key (kbd "C-c j") 'counsel-git-grep)
+;; (global-set-key (kbd "C-c k") 'counsel-ag)
+;; (global-set-key (kbd "C-x l") 'counsel-locate)
+;; (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+;; (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
 
 ;; ido mode
-;; (require 'ido)
-;; (require 'ido-hacks)
-;; (setq ido-enable-flex-matching t)
-;; (setq ido-everywhere t)
-;; (ido-mode t)
-;; (ido-hacks-mode t)
-;; ;; disable annoying buffer list
-;; (global-set-key (kbd "\C-x\C-b") 'ido-switch-buffer)
-;; ;; some buffers to ignore
-;; (setq ido-ignore-buffers '("\\` " "*Group*" "*Article*" "*Messages*"
-;;                            "\\`*magit" "*Completions*" "*Help*"
-;;                            ".newsrc-dribble" "\\`*trace"))
+(require 'ido)
+(require 'ido-hacks)
+(setq ido-enable-flex-matching t)
+(setq ido-everywhere t)
+(ido-mode t)
+(ido-hacks-mode t)
+;; disable annoying buffer list
+(global-set-key (kbd "\C-x\C-b") 'ido-switch-buffer)
+;; some buffers to ignore
+(setq ido-ignore-buffers '("\\` " "*Group*" "*Article*" "*Messages*"
+                           "\\`*magit" "*Completions*" "*Help*"
+                           ".newsrc-dribble" "\\`*trace"))
 
 ;; deletes the current frame, unless this is the last frame in which case it
 ;; kills emacs
@@ -1181,7 +1181,7 @@ call to other-window-repeat or switch-prev-window."
     ("f5e56ac232ff858afb08294fc3a519652ce8a165272e3c65165c42d6fe0262a0" default)))
  '(package-selected-packages
    (quote
-    (django-snippets django-mode ggtags zenburn-theme web-mode sr-speedbar paren-face paredit message-x lorem-ipsum htmlize gnus-alias diminish elisp-slime-nav dash-functional dna-mode slime yasnippet-snippets ox-twbs ox-reveal org-bullets org-plus-contrib org magit ledger-mode go-mode ess cider auctex avy ace-window counsel swiper ivy exec-path-from-shell elpy))))
+    (ido-hacks django-snippets django-mode ggtags zenburn-theme web-mode sr-speedbar paren-face paredit message-x lorem-ipsum htmlize gnus-alias diminish elisp-slime-nav dash-functional dna-mode slime yasnippet-snippets ox-twbs ox-reveal org-bullets org-plus-contrib org magit ledger-mode go-mode ess cider auctex avy ace-window counsel swiper ivy exec-path-from-shell elpy))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
