@@ -460,7 +460,7 @@
       `(("t" "Todo" entry (file+headline ,(orgdr "todo.org") "Misc (Captured)")
          "* TODO %?\n %U\n %a")
         ("d" "Diary" entry (file+headline ,(orgdr "diary.org") "Captured"))
-        ("j" "Journal" entry (file+datetree ,(orgdr "journal.org"))
+        ("j" "Journal" entry (file+olp+datetree ,(orgdr "journal.org"))
          "* %? %^g\nEntered on %U\n %i")
         ("i" "Idea" entry (file ,(orgdr "ideas.org"))
          "* %?\n %U\n %a")))
