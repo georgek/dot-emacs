@@ -62,7 +62,7 @@
 
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
-(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+;; (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
 (package-initialize)
 
 (when (memq window-system '(mac ns x))
@@ -387,7 +387,6 @@
   (local-set-key (kbd "C-M->") #'org-metaright)
   (local-set-key (kbd "C-M-<") #'org-metaleft))
 
-(setq org-directory "~/org/")
 (defmacro orgdr (&optional filename)
   (if filename
    `(concat org-directory ,filename)
@@ -1243,7 +1242,7 @@ call to other-window-repeat or switch-prev-window."
     ("f5e56ac232ff858afb08294fc3a519652ce8a165272e3c65165c42d6fe0262a0" default)))
  '(package-selected-packages
    (quote
-    (web-mode sr-speedbar paren-face paredit message-x lorem-ipsum htmlize gnus-alias diminish elisp-slime-nav dash-functional dna-mode slime yasnippet-snippets ox-twbs ox-reveal org-bullets org-plus-contrib org magit ledger-mode go-mode ess cider auctex avy ace-window counsel swiper ivy exec-path-from-shell elpy))))
+    (dockerfile-mode markdown-mode ob-ipython ein ox-pandoc web-mode sr-speedbar paren-face paredit message-x lorem-ipsum htmlize gnus-alias diminish elisp-slime-nav dash-functional dna-mode slime yasnippet-snippets ox-twbs ox-reveal org-bullets org-plus-contrib org magit ledger-mode go-mode ess cider auctex avy ace-window counsel swiper ivy exec-path-from-shell elpy))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
