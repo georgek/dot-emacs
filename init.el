@@ -477,15 +477,16 @@
 (global-set-key (kbd "C-c l") 'org-store-link)
 (global-set-key (kbd "C-c a") 'org-agenda)
 (global-set-key (kbd "C-~") (lambda () (interactive) (org-agenda nil "n")))
-(setq org-agenda-files (list (orgdr) (orgdr "personal/")))
+(setq org-agenda-files (list (orgdr)))
 (setq org-agenda-include-diary t)
 (setq org-agenda-span 14)
-;; (setq org-agenda-ndays 14)              ;old version of span
-(setq org-agenda-time-grid '((daily today remove-match)
-                             ""
-                             (0800 1000 1200 1400 1600 1800 2000)))
+(setq org-agenda-start-on-weekday nil)
 (setq org-agenda-window-setup 'current-window)
 (setq org-agenda-restore-windows-after-quit t)
+(setq org-agenda-prefix-format '((agenda . " %i %-12:c%?-12t% s")
+                                 (todo .   " %i %-12:c")
+                                 (tags .   " %i %-12:c")
+                                 (search . " %i %-12:c")))
 
 (setq org-time-stamp-custom-formats
       '("<%A, %e %B %Y>" . "<%A, %e %B %Y %H:%M>"))
@@ -500,10 +501,6 @@
 (require 'org-clock)
 (require 'org-timer)
 (setq org-timer-default-timer 25)
-(add-hook 'org-clock-in-hook '(lambda () 
-                                (if (not org-timer-current-timer) 
-                                    (org-timer-set-timer '(16)))))
-(add-hook 'org-clock-cancel-hook 'org-timer-cancel-timer)
 
 (setq org-clock-clocked-in-display 'frame-title)
 (setq org-timer-display 'frame-title)
