@@ -396,18 +396,26 @@
 
 ;; src
 (setq org-src-fontify-natively t)
+(require 'ob-ipython)
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((lisp . t)
    (sqlite . t)
    (R . t)
    (shell . t)
-   (python . t)))
+   (python . t)
+   (ipython . t)))
+
+;;; a named source block
+(add-to-list 'org-structure-template-alist
+             '("S" "#+NAME: ?\n#+BEGIN_SRC \n\n#+END_SRC")
+             '("N" "#+NAME: ?"))
 
 ;;; export
 (setq org-export-allow-bind-keywords t)
 (require 'htmlize)
 (require 'ox-md)
+(require 'ox-pandoc)
 ;;; org-reveal
 (require 'ox-reveal)
 (setq org-reveal-root ".")
