@@ -613,6 +613,10 @@ RECURRENCES occasions."
 (require 'magit)
 (global-set-key (kbd "C-c i") 'magit-status)
 (global-set-key (kbd "C-c b") 'magit-blame)
+(magit-add-section-hook 'magit-status-sections-hook
+                        'magit-insert-unpushed-to-upstream
+                        'magit-insert-unpushed-to-upstream-or-recent
+                        'replace)
 
 ;; smerge-mode
 (setq smerge-command-prefix (kbd "C-c v"))
