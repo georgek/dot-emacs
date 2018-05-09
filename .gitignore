@@ -27,3 +27,4 @@ eshell/
 *.pyc
 
 elpa/
+abbrev_defs

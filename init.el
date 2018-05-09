@@ -62,7 +62,7 @@
 
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
-;; (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
+(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
 (package-initialize)
 
 (when (memq window-system '(mac ns x))
@@ -85,33 +85,6 @@
 
 ;; global keys
 (global-set-key (kbd "C-M-/") 'indent-region)
-
-;;; ivy
-;; (add-to-path-init load-path "site-lisp/swiper")
-;; (require 'ivy)
-;; (require 'counsel)
-;; (require 'swiper)
-;; (ivy-mode 1)
-;; (setq ivy-use-virtual-buffers t)
-;; (setq enable-recursive-minibuffers t)
-;; (global-set-key (kbd "C-s") 'swiper)
-;; (global-unset-key (kbd "C-r"))
-;; (global-set-key (kbd "C-c C-r") 'ivy-resume)
-;; (global-set-key (kbd "<f6>") 'ivy-resume)
-;; (global-set-key (kbd "C-x C-b") 'ivy-switch-buffer)
-;; (global-set-key (kbd "M-x") 'counsel-M-x)
-;; (global-set-key (kbd "C-x C-f") 'counsel-find-file)
-;; (global-set-key (kbd "<f1> f") 'counsel-describe-function)
-;; (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-;; (global-set-key (kbd "<f1> l") 'counsel-find-library)
-;; (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
-;; (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-;; (global-set-key (kbd "C-c g") 'counsel-git)
-;; (global-set-key (kbd "C-c j") 'counsel-git-grep)
-;; (global-set-key (kbd "C-c k") 'counsel-ag)
-;; (global-set-key (kbd "C-x l") 'counsel-locate)
-;; (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
-;; (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
 
 ;; ido mode
 (require 'ido)
@@ -395,15 +368,13 @@
 
 ;; src
 (setq org-src-fontify-natively t)
-(require 'ob-ipython)
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((lisp . t)
    (sqlite . t)
    (R . t)
    (shell . t)
-   (python . t)
-   (ipython . t)))
+   (python . t)))
 
 ;;; a named source block
 (add-to-list 'org-structure-template-alist
@@ -416,9 +387,9 @@
 (require 'ox-md)
 (require 'ox-pandoc)
 ;;; org-reveal
-(require 'ox-reveal)
-(setq org-reveal-root ".")
-(setq org-reveal-init-script "zoomKey: 'shift'")
+;; (require 'ox-reveal)
+;; (setq org-reveal-root ".")
+;; (setq org-reveal-init-script "zoomKey: 'shift'")
 
 ;;; twbs
 (require 'ox-twbs)
@@ -1094,7 +1065,7 @@ call to other-window-repeat or switch-prev-window."
 (define-key message-mode-map (kbd "C-c C-p") 'gnus-alias-select-identity)
 
 ;; message-x for auto-completion (using bbdb) in message-mode
-(require 'message-x)
+;; (require 'message-x)
 
 ;; gnus
 ;; all mails should be always displayed in the mailbox
@@ -1202,7 +1173,7 @@ call to other-window-repeat or switch-prev-window."
     ("f5e56ac232ff858afb08294fc3a519652ce8a165272e3c65165c42d6fe0262a0" default)))
  '(package-selected-packages
    (quote
-    (ido-hacks django-snippets django-mode ggtags zenburn-theme dockerfile-mode markdown-mode ob-ipython ein ox-pandoc web-mode sr-speedbar paren-face paredit message-x lorem-ipsum htmlize gnus-alias diminish elisp-slime-nav dash-functional dna-mode slime yasnippet-snippets ox-twbs ox-reveal org-bullets org-plus-contrib org magit ledger-mode go-mode ess cider auctex avy ace-window counsel swiper ivy exec-path-from-shell elpy))))
+    (ido-hacks django-snippets django-mode ggtags zenburn-theme dockerfile-mode markdown-mode ob-ipython ein ox-pandoc web-mode sr-speedbar paren-face paredit lorem-ipsum htmlize gnus-alias diminish elisp-slime-nav dash-functional dna-mode slime yasnippet-snippets ox-twbs org-bullets org-plus-contrib magit ledger-mode go-mode ess cider auctex avy ace-window exec-path-from-shell elpy))))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
