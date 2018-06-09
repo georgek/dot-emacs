@@ -1,8 +1,0 @@
-# -*- coding: utf-8 -*-
-# key: modelform
-# name: modelform
-# contributor: Brandon Height <bmheight@gmail.com>
-# --
-class ${1:MyModelForm}(ModelForm):
-    class Meta:
-        model = ${2:MyModel}
