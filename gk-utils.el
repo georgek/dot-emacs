@@ -30,3 +30,8 @@
        (defun ,function ()
          ,@body)
        (add-hook ',hook #',function))))
+
+(defun unfill-paragraph ()
+  (interactive)
+  (let ((fill-column most-positive-fixnum))
+    (fill-paragraph nil)))
