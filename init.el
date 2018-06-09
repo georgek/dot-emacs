@@ -991,10 +991,10 @@ call to other-window-repeat or switch-prev-window."
 
 (global-set-key (kbd "M-i") 'ido-goto-symbol)
 
-;;; Go
+;;; Go (golang)
 (require 'go-mode)
 
-(setq go-mode-gopath "~/code/go")
+(setq go-mode-gopath "~/gopath")
 (defun go-mode-electric-return (&optional arg)
   (interactive "P")
   (newline arg)
@@ -1007,11 +1007,19 @@ call to other-window-repeat or switch-prev-window."
   (interactive)
   (let ((str (concat "export GOPATH=" go-mode-gopath "; go install")))
     (compile str)))
+(defun go-mode-test ()
+  (interactive)
+  (let ((str (concat "export GOPATH=" go-mode-gopath ";"
+                     "go test -v && go vet && golint")))
+    (compile str)))
+
 
 (makehookedfun go-mode-hook
   (local-set-key (kbd "C-c C-c") #'go-mode-compile)
+  (local-set-key (kbd "C-c C-t") #'go-mode-test)
   (local-set-key (kbd "RET") #'go-mode-electric-return)
-  (local-set-key (kbd "{") #'go-mode-electric-brace))
+  (local-set-key (kbd "{") #'go-mode-electric-brace)
+  (local-set-key (kbd "M-.") #'godef-jump))
 
 ;;; ESS (R)
 (add-to-path-init load-path "site-lisp/ess/lisp")
