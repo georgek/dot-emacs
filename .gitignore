@@ -14,6 +14,8 @@ mail.el
 
 share
 var
+elpa
+url
 
 #bbdb
 site-lisp/bbdb/*
