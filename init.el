@@ -1,16 +1,5 @@
 ;;;; my .emacs file
 
-(require 'package)
-(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
-                    (not (gnutls-available-p))))
-       (url (concat (if no-ssl "http" "https") "://melpa.org/packages/")))
-  (add-to-list 'package-archives (cons "melpa" url) t))
-(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
-(package-initialize)
-
-(when (memq window-system '(mac ns x))
-  (exec-path-from-shell-initialize))
-
 ;;; init path stuff
 (or (boundp 'init-path)
     (setq init-path (file-name-directory load-file-name)))
@@ -25,14 +14,14 @@
       (when (and (file-directory-p file)
                  (string-match "\\`[[:alnum:]]" file))
         (add-to-list 'load-path (expand-file-name file default-directory))))))
-
-(setq inhibit-splash-screen t)
-(setq inhibit-default-init t)
-;; ignore case in completion
-(setq completion-ignore-case t)
-(setq pcomplete-ignore-case t)
-
-(global-font-lock-mode 1)
+;;; things that are needed at work
+(defun load-directory (dir)
+  (let ((load-it (lambda (f)
+                   (load-file (concat (file-name-as-directory dir) f)))))
+    (mapc load-it (directory-files dir nil "\\.el$"))))
+(let ((work-dir (concat init-path "/work-config/")))
+  (when (file-directory-p work-dir)
+    (load-directory work-dir)))
 
 ;; set window title, turn toolbars and stuff off
 (setq frame-title-format '("%b - GNU Emacs"))
@@ -54,6 +43,14 @@
 
 (require 'cl-lib)
 
+(setq inhibit-splash-screen t)
+(setq inhibit-default-init t)
+;; ignore case in completion
+(setq completion-ignore-case t)
+(setq pcomplete-ignore-case t)
+
+(global-font-lock-mode 1)
+
 ;; add paths
 ;; (add-to-path-init load-path ".")
 (add-to-path-init load-path "site-lisp")
@@ -62,6 +59,17 @@
 ;; this adds stuff that I'm currently working on
 (load-init "working" t)
 (load-init "gk-utils")
+
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
+(package-initialize)
+
+(when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize)
+  (exec-path-from-shell-copy-env "LD_LIBRARY_PATH")
+  (exec-path-from-shell-copy-env "WORKON_HOME")
+  (exec-path-from-shell-copy-env "PROJECT_HOME"))
 
 ;;; Zenburn
 (add-to-path-init custom-theme-load-path "themes")
@@ -77,33 +85,6 @@
 
 ;; global keys
 (global-set-key (kbd "C-M-/") 'indent-region)
-
-;;; ivy
-;; (add-to-path-init load-path "site-lisp/swiper")
-;; (require 'ivy)
-;; (require 'counsel)
-;; (require 'swiper)
-;; (ivy-mode 1)
-;; (setq ivy-use-virtual-buffers t)
-;; (setq enable-recursive-minibuffers t)
-;; (global-set-key (kbd "C-s") 'swiper)
-;; (global-unset-key (kbd "C-r"))
-;; (global-set-key (kbd "C-c C-r") 'ivy-resume)
-;; (global-set-key (kbd "<f6>") 'ivy-resume)
-;; (global-set-key (kbd "C-x C-b") 'ivy-switch-buffer)
-;; (global-set-key (kbd "M-x") 'counsel-M-x)
-;; (global-set-key (kbd "C-x C-f") 'counsel-find-file)
-;; (global-set-key (kbd "<f1> f") 'counsel-describe-function)
-;; (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-;; (global-set-key (kbd "<f1> l") 'counsel-find-library)
-;; (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
-;; (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-;; (global-set-key (kbd "C-c g") 'counsel-git)
-;; (global-set-key (kbd "C-c j") 'counsel-git-grep)
-;; (global-set-key (kbd "C-c k") 'counsel-ag)
-;; (global-set-key (kbd "C-x l") 'counsel-locate)
-;; (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
-;; (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
 
 ;; ido mode
 (require 'ido)
@@ -375,9 +356,10 @@
   (org-bullets-mode 1)
   (flyspell-mode 1)
   (local-set-key (kbd "M-p") #'org-metaup)
-  (local-set-key (kbd "M-n") #'org-metadown))
+  (local-set-key (kbd "M-n") #'org-metadown)
+  (local-set-key (kbd "C-M->") #'org-metaright)
+  (local-set-key (kbd "C-M-<") #'org-metaleft))
 
-(setq org-directory "~/org/")
 (defmacro orgdr (&optional filename)
   (if filename
    `(concat org-directory ,filename)
@@ -394,13 +376,20 @@
    (shell . t)
    (python . t)))
 
+;;; a named source block
+(add-to-list 'org-structure-template-alist
+             '("S" "#+NAME: ?\n#+BEGIN_SRC \n\n#+END_SRC")
+             '("N" "#+NAME: ?"))
+
 ;;; export
 (setq org-export-allow-bind-keywords t)
 (require 'htmlize)
+(require 'ox-md)
+(require 'ox-pandoc)
 ;;; org-reveal
-(require 'ox-reveal)
-(setq org-reveal-root ".")
-(setq org-reveal-init-script "zoomKey: 'shift'")
+;; (require 'ox-reveal)
+;; (setq org-reveal-root ".")
+;; (setq org-reveal-init-script "zoomKey: 'shift'")
 
 ;;; twbs
 (require 'ox-twbs)
@@ -446,27 +435,28 @@
 (setq org-default-notes-file (orgdr "notes.org"))
 (global-set-key (kbd "C-c c") 'org-capture)
 (setq org-capture-templates
-      '(("t" "Todo" entry (file+headline (orgdr "todo.org") "Misc (Captured)")
+      `(("t" "Todo" entry (file+headline ,(orgdr "todo.org") "Misc (Captured)")
          "* TODO %?\n %U\n %a")
-        ("d" "Diary" entry (file+headline (orgdr "diary.org") "Captured"))
-        ("j" "Journal" entry (file+datetree (orgdr "journal.org"))
+        ("d" "Diary" entry (file+headline ,(orgdr "diary.org") "Captured"))
+        ("j" "Journal" entry (file+olp+datetree ,(orgdr "journal.org"))
          "* %? %^g\nEntered on %U\n %i")
-        ("i" "Idea" entry (file (orgdr "ideas.org"))
+        ("i" "Idea" entry (file ,(orgdr "ideas.org"))
          "* %?\n %U\n %a")))
 
 ;; agenda stuff
 (global-set-key (kbd "C-c l") 'org-store-link)
 (global-set-key (kbd "C-c a") 'org-agenda)
 (global-set-key (kbd "C-~") (lambda () (interactive) (org-agenda nil "n")))
-(setq org-agenda-files (list (orgdr) (orgdr "personal/")))
+(setq org-agenda-files (list (orgdr)))
 (setq org-agenda-include-diary t)
 (setq org-agenda-span 14)
-;; (setq org-agenda-ndays 14)              ;old version of span
-(setq org-agenda-time-grid '((daily today remove-match)
-                             ""
-                             (0800 1000 1200 1400 1600 1800 2000)))
+(setq org-agenda-start-on-weekday nil)
 (setq org-agenda-window-setup 'current-window)
 (setq org-agenda-restore-windows-after-quit t)
+(setq org-agenda-prefix-format '((agenda . " %i %-12:c%?-12t% s")
+                                 (todo .   " %i %-12:c")
+                                 (tags .   " %i %-12:c")
+                                 (search . " %i %-12:c")))
 
 (setq org-time-stamp-custom-formats
       '("<%A, %e %B %Y>" . "<%A, %e %B %Y %H:%M>"))
@@ -481,10 +471,6 @@
 (require 'org-clock)
 (require 'org-timer)
 (setq org-timer-default-timer 25)
-(add-hook 'org-clock-in-hook '(lambda () 
-                                (if (not org-timer-current-timer) 
-                                    (org-timer-set-timer '(16)))))
-(add-hook 'org-clock-cancel-hook 'org-timer-cancel-timer)
 
 (setq org-clock-clocked-in-display 'frame-title)
 (setq org-timer-display 'frame-title)
@@ -597,6 +583,10 @@ RECURRENCES occasions."
 (require 'magit)
 (global-set-key (kbd "C-c i") 'magit-status)
 (global-set-key (kbd "C-c b") 'magit-blame)
+(magit-add-section-hook 'magit-status-sections-hook
+                        'magit-insert-unpushed-to-upstream
+                        'magit-insert-unpushed-to-upstream-or-recent
+                        'replace)
 
 ;; smerge-mode
 (setq smerge-command-prefix (kbd "C-c v"))
@@ -937,7 +927,7 @@ call to other-window-repeat or switch-prev-window."
   (let ((wind prev-window))
     (setq prev-window (selected-window))
     (select-window wind)))
-(global-set-key (kbd "M-'") 'switch-prev-window)
+;; (global-set-key (kbd "M-'") 'switch-prev-window)
 (global-set-key (kbd "C-M-'") 'other-frame)
 
 ;; ido imenu from emacswiki
@@ -1083,7 +1073,7 @@ call to other-window-repeat or switch-prev-window."
 (define-key message-mode-map (kbd "C-c C-p") 'gnus-alias-select-identity)
 
 ;; message-x for auto-completion (using bbdb) in message-mode
-(require 'message-x)
+;; (require 'message-x)
 
 ;; gnus
 ;; all mails should be always displayed in the mailbox
@@ -1179,6 +1169,8 @@ call to other-window-repeat or switch-prev-window."
 (makehookedfun web-mode-hook
   (local-set-key (kbd "C-c C-c") #'browse-url-of-file))
 
+(add-to-list 'auto-mode-alist '("\\.less\\'" . css-mode))
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -1189,7 +1181,7 @@ call to other-window-repeat or switch-prev-window."
     ("f5e56ac232ff858afb08294fc3a519652ce8a165272e3c65165c42d6fe0262a0" default)))
  '(package-selected-packages
    (quote
-    (yaml-mode edit-indirect markdown-mode markdown-mode+ ido-hacks django-snippets django-mode ggtags zenburn-theme web-mode sr-speedbar paren-face paredit message-x lorem-ipsum htmlize gnus-alias diminish elisp-slime-nav dash-functional dna-mode slime yasnippet-snippets ox-twbs ox-reveal org-bullets org-plus-contrib org magit ledger-mode go-mode ess cider auctex avy ace-window counsel swiper ivy exec-path-from-shell elpy))))
+    (yaml-mode edit-indirect markdown-mode markdown-mode+ ido-hacks django-snippets django-mode ggtags zenburn-theme dockerfile-mode markdown-mode ob-ipython ein ox-pandoc web-mode sr-speedbar paren-face paredit message-x lorem-ipsum htmlize gnus-alias diminish elisp-slime-nav dash-functional dna-mode slime yasnippet-snippets ox-twbs ox-reveal org-bullets org-plus-contrib org magit ledger-mode go-mode ess cider auctex avy ace-window counsel swiper ivy exec-path-from-shell elpy))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

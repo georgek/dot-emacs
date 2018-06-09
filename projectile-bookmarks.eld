@@ -1,1 +1,0 @@
-("~/hes/thesis/" "~/phdwork/thesis/" "~/.emacs.d/" "~/work/potato-paper/" "~/org/" "~/work/wheat-paper/" "~/cv/" "~/src/html5-boilerplate/" "~/src/mod_tile/" "~/code/learn/")

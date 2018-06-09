@@ -24,4 +24,9 @@ site-lisp/bbdb/*
 /ido.last
 eshell/
 /recentf
+/work-config/*
+
 *.pyc
+
+elpa/
+abbrev_defs
