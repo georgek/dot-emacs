@@ -621,12 +621,18 @@ RECURRENCES occasions."
          (apply 'company-complete-common nil)))
     (yas-expand)))
 
+;;; company
+(require 'company)
+(add-hook 'after-init-hook 'global-company-mode)
 (add-hook 'company-mode-hook
           (lambda ()
             (substitute-key-definition
              'company-complete-common
              'company-yasnippet-or-completion
              company-active-map)))
+
+(setq company-idle-delay 0)
+(setq company-minimum-prefix-length 1)
 
 ;; keep backup files neatly out of the way in .~/
 (setq backup-directory-alist '(("." . ".~")))
