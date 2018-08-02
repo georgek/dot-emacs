@@ -186,6 +186,7 @@
 
 ;;; ace window mode
 (require 'ace-window)
+(setq aw-scope 'frame)
 (global-set-key (kbd "M-'") 'ace-window)
 
 ;;; *** paredit ***
