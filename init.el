@@ -1177,6 +1177,13 @@ call to other-window-repeat or switch-prev-window."
 
 (add-to-list 'auto-mode-alist '("\\.less\\'" . css-mode))
 
+;;; JS
+(require 'js2-mode)
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+(require 'typescript-mode)
+(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
+(require 'rjsx-mode)
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
