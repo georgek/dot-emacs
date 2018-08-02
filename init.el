@@ -91,11 +91,15 @@
 (global-set-key (kbd "C-M-/") 'indent-region)
 
 ;; ido mode
+(require 'flx-ido)
 (require 'ido)
 (ido-mode t)
 (ido-everywhere t)
+(flx-ido-mode t)
 (require 'ido-completing-read+)
 (ido-ubiquitous-mode t)
+(setq ido-enable-flex-matching t)
+(setq ido-use-faces nil)
 ;; ;; disable annoying buffer list
 (global-set-key (kbd "\C-x\C-b") 'ido-switch-buffer)
 ;; ;; some buffers to ignore
