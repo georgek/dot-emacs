@@ -41,6 +41,10 @@
 (setq split-height-threshold 160)
 (setq split-width-threshold 160)
 
+;;; rat stuff
+(setq mouse-autoselect-window t)
+(setq mouse-wheel-progressive-speed nil)
+
 (require 'cl-lib)
 
 (setq inhibit-splash-screen t)
