@@ -991,14 +991,6 @@ call to other-window-repeat or switch-prev-window."
 (require 'go-mode)
 
 (setq go-mode-gopath "~/gopath")
-;; (defun go-mode-electric-return (&optional arg)
-;;   (interactive "P")
-;;   (newline arg)
-;;   (go-mode-indent-line))
-;; (defun go-mode-electric-brace (&optional arg)
-;;   (interactive "P")
-;;   (insert-char ?{ arg)
-;;   (go-mode-electric-return))
 (defun go-mode-compile ()
   (interactive)
   (let ((str (concat "export GOPATH=" go-mode-gopath "; go install")))
@@ -1009,12 +1001,9 @@ call to other-window-repeat or switch-prev-window."
                      "go test -v && go vet && golint")))
     (compile str)))
 
-
 (makehookedfun go-mode-hook
   (local-set-key (kbd "C-c C-c") #'go-mode-compile)
   (local-set-key (kbd "C-c C-t") #'go-mode-test)
-  (local-set-key (kbd "RET") #'go-mode-electric-return)
-  (local-set-key (kbd "{") #'go-mode-electric-brace)
   (local-set-key (kbd "M-.") #'godef-jump))
 
 ;;; ESS (R)
