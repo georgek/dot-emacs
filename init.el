@@ -296,10 +296,13 @@
                  'ielm-send-input))
 
 ;;; *** scheme ***
+(require 'geiser-mode)
 (makehookedfun scheme-mode-hook
   (nice-paredit-on)
-  ;; (smartparens-strict-mode)
-  )
+  (geiser-mode))
+(setq geiser-default-implementation 'mit)
+;; Get around geiser bug not associating repls with buffers.
+(setq geiser-active-implementations '(mit))
 
 ;;; *** SLIME ***
 (setq inferior-lisp-program "/usr/bin/sbcl") ; your Lisp system
