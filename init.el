@@ -88,9 +88,10 @@
 
 ;; ido mode
 (require 'ido)
-(setq ido-enable-flex-matching t)
-(setq ido-everywhere t)
 (ido-mode t)
+(ido-everywhere t)
+(require 'ido-completing-read+)
+(ido-ubiquitous-mode t)
 ;; ;; disable annoying buffer list
 (global-set-key (kbd "\C-x\C-b") 'ido-switch-buffer)
 ;; ;; some buffers to ignore
