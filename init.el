@@ -88,17 +88,19 @@
 
 ;; ido mode
 (require 'ido)
-(require 'ido-hacks)
 (setq ido-enable-flex-matching t)
 (setq ido-everywhere t)
 (ido-mode t)
-(ido-hacks-mode t)
-;; disable annoying buffer list
+;; ;; disable annoying buffer list
 (global-set-key (kbd "\C-x\C-b") 'ido-switch-buffer)
-;; some buffers to ignore
+;; ;; some buffers to ignore
 (setq ido-ignore-buffers '("\\` " "*Group*" "*Article*" "*Messages*"
                            "\\`*magit" "*Completions*" "*Help*"
                            ".newsrc-dribble" "\\`*trace"))
+(require 'smex)
+(smex-initialize)
+(global-set-key (kbd "M-x") 'smex)
+(global-set-key (kbd "M-X") 'smex-major-mode-commands)
 
 ;; deletes the current frame, unless this is the last frame in which case it
 ;; kills emacs
@@ -985,14 +987,14 @@ call to other-window-repeat or switch-prev-window."
 (require 'go-mode)
 
 (setq go-mode-gopath "~/gopath")
-(defun go-mode-electric-return (&optional arg)
-  (interactive "P")
-  (newline arg)
-  (go-mode-indent-line))
-(defun go-mode-electric-brace (&optional arg)
-  (interactive "P")
-  (insert-char ?{ arg)
-  (go-mode-electric-return))
+;; (defun go-mode-electric-return (&optional arg)
+;;   (interactive "P")
+;;   (newline arg)
+;;   (go-mode-indent-line))
+;; (defun go-mode-electric-brace (&optional arg)
+;;   (interactive "P")
+;;   (insert-char ?{ arg)
+;;   (go-mode-electric-return))
 (defun go-mode-compile ()
   (interactive)
   (let ((str (concat "export GOPATH=" go-mode-gopath "; go install")))
