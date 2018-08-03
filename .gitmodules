@@ -1,6 +1,0 @@
-[submodule "cider"]
-	path = site-lisp/cider
-	url = https://github.com/clojure-emacs/cider.git
-[submodule "clojure-mode"]
-	path = site-lisp/clojure-mode
-	url = https://github.com/clojure-emacs/clojure-mode.git
