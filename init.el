@@ -164,7 +164,7 @@
 ;; matlab
 (add-to-list 'auto-mode-alist '("\\.m\\'" . matlab-mode))
 ;; XML
-(add-to-list 'auto-mode-alist '("\\.xml\\'" . nxml-mode))
+(add-to-list 'auto-mode-alist '("\\.xml\\'" . sgml-mode))
 
 ;;; info
 (require 'info)
