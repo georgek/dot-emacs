@@ -1053,6 +1053,9 @@ call to other-window-repeat or switch-prev-window."
 (setq python-shell-interpreter "ipython"
       python-shell-interpreter-args "-i --simple-prompt")
 (setq elpy-rpc-backend "jedi")
+(require 'sphinx-doc)
+(makehookedfun python-mode-hook
+  (sphinx-doc-mode t))
 
 ;;; mail stuff
 
