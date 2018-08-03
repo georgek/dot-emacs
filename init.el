@@ -17,9 +17,18 @@
   (setq initial-buffer-choice t)
   (setq initial-scratch-message "")
   (setq load-prefer-newer t)
+  (setq frame-title-format '("%b - GNU Emacs"))
   (scroll-bar-mode 0)
   (tool-bar-mode 0)
-  (menu-bar-mode 0))
+  (menu-bar-mode 0)
+  (blink-cursor-mode -1)
+  (global-unset-key (kbd "C-z"))
+  ;; disable as it ruins keyboard macros
+  (setq line-move-visual nil)
+  ;; prefer to split windows vertically even on tall monitor
+  (setq split-height-threshold 160)
+  (setq split-width-threshold 160)
+  (setq mouse-wheel-progressive-speed nil))
 
 (progn ;    `borg'
   (add-to-list 'load-path (expand-file-name "lib/borg" user-emacs-directory))
