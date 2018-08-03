@@ -65,6 +65,13 @@
 
 ;;; Long tail
 
+;; themes
+(add-to-list 'default-frame-alist '(font . "DejaVu Sans Mono"))
+(set-face-attribute 'default nil
+                    :height 105)
+(use-package zenburn-theme
+  :config (load-theme 'zenburn t))
+
 (use-package dash
   :config (dash-enable-font-lock))
 
