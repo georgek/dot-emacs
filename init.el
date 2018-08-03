@@ -75,9 +75,7 @@
 ;;; Long tail
 
 ;; themes
-(add-to-list 'default-frame-alist '(font . "DejaVu Sans Mono"))
-(set-face-attribute 'default nil
-                    :height 105)
+(set-frame-font "DejaVu Sans Mono-9")
 (use-package zenburn-theme
   :config (load-theme 'zenburn t))
 
