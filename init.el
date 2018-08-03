@@ -72,6 +72,14 @@
            (float-time (time-subtract (current-time)
                                       before-user-init-time))))
 
+(defmacro makehookedfun (hook &rest body)
+  (declare (indent 1))
+  (let ((function (intern (concat (symbol-name hook) "-function"))))
+    `(progn
+       (defun ,function ()
+         ,@body)
+       (add-hook ',hook #',function))))
+
 ;;; Long tail
 
 ;; themes
@@ -103,10 +111,93 @@
 (progn ;    `isearch'
   (setq isearch-allow-scroll t))
 
+(use-package paredit
+  :config
+  ;; electric return stuff
+  (defvar electrify-return-match
+    "[\]}\)\"]"
+    "If this regexp matches the text after the cursor, do an \"electric\"
+  return.")
+
+  (defun electrify-return-if-match (&optional arg)
+    "If the text after the cursor matches `electrify-return-match' then
+  open and indent an empty line between the cursor and the text.  Move the
+  cursor to the new line."
+    (interactive "P")
+    (let ((case-fold-search nil))
+      (if (looking-at electrify-return-match)
+          (save-excursion (newline-and-indent)))
+      (delete-horizontal-space t)
+      (newline arg)
+      (indent-according-to-mode)))
+
+  (defun paredit-with-electric-return ()
+    (paredit-mode +1)
+    (local-set-key (kbd "RET") 'electrify-return-if-match))
+
+  ;; use with eldoc
+  (eldoc-add-command
+   'paredit-backward-delete
+   'paredit-close-round)
+
+  (defun nice-paredit-on ()
+    (paredit-mode t)
+
+    (turn-on-eldoc-mode)
+    (eldoc-add-command
+     'paredit-backward-delete
+     'paredit-close-round)
+
+    (local-set-key (kbd "RET") 'electrify-return-if-match)
+    (eldoc-add-command 'electrify-return-if-match)
+
+    (show-paren-mode t)))
+
+(use-package macrostep)
+
 (use-package lisp-mode
   :config
-  (add-hook 'emacs-lisp-mode-hook 'outline-minor-mode)
-  (add-hook 'emacs-lisp-mode-hook 'reveal-mode)
+  (defun eval-buffer-key ()
+    (interactive)
+    (message "Evaluating buffer...")
+    (eval-buffer)
+    (message "Buffer evaluated."))
+
+  (defun eval-defun-key (edebug-it)
+    (interactive "P")
+    (let (beg ol)
+      (save-excursion
+        (end-of-defun)
+        (beginning-of-defun)
+        (setq beg (point))
+        (end-of-defun)
+        (setq ol (make-overlay beg (point))))
+      (overlay-put ol 'face 'highlight)
+      (unwind-protect
+          (progn
+            (eval-defun edebug-it)
+            (sit-for 0.1))
+        (delete-overlay ol))))
+
+  (defun elisp-magic-tab ()
+    (interactive)
+    (if (member (char-before) '(?\s ?\t ?\n))
+        (indent-for-tab-command)
+      (lisp-complete-symbol)))
+
+  (makehookedfun emacs-lisp-mode-hook
+    (outline-minor-mode)
+    (reveal-mode)
+    (nice-paredit-on)
+    (local-set-key (kbd "TAB") #'elisp-magic-tab)
+    (local-set-key (kbd "C-c C-k") #'eval-buffer-key)
+    (local-set-key (kbd "C-c C-c") #'eval-defun-key)
+    (local-set-key (kbd "C-c C-z") #'ielm-switch-to-buffer)
+    (local-set-key (kbd "C-c z") #'ielm-switch-to-buffer)
+    (local-set-key (kbd "C-c C-l") #'paredit-recentre-on-sexp)
+    (local-set-key (kbd "C-c e") #'macrostep-expand)
+    (local-set-key (kbd "C-c d") #'toggle-debug-on-error))
+
   (defun indent-spaces-mode ()
     (setq indent-tabs-mode nil))
   (add-hook 'lisp-interaction-mode-hook #'indent-spaces-mode))
