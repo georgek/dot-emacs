@@ -602,6 +602,7 @@ RECURRENCES occasions."
                         'magit-insert-unpushed-to-upstream
                         'magit-insert-unpushed-to-upstream-or-recent
                         'replace)
+(setq magit-completing-read-function #'magit-ido-completing-read)
 
 ;; smerge-mode
 (setq smerge-command-prefix (kbd "C-c v"))
