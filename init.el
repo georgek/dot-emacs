@@ -389,7 +389,8 @@
    (sqlite . t)
    (R . t)
    (shell . t)
-   (python . t)))
+   (python . t)
+   (js . t)))
 
 ;;; a named source block
 (add-to-list 'org-structure-template-alist
