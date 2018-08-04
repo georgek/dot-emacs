@@ -218,18 +218,19 @@
   :config
   (ido-ubiquitous-mode t))
 
-(use-package smex
+(use-package amx
   :config
-  (smex-initialize)
+  (amx-mode)
   :bind
-  (("M-x" . smex)
-   ("M-X" . smex-major-mode-commands)))
+  (("M-x" . amx)
+   ("M-X" . amx-major-mode-commands)))
 
 (use-package magit
   :defer t
   :bind (("C-c i"   . magit-status)
          ("C-c M-i" . magit-dispatch-popup))
   :config
+  (setq magit-completing-read-function #'magit-ido-completing-read)
   (magit-add-section-hook 'magit-status-sections-hook
                           'magit-insert-unpushed-to-upstream
                           'magit-insert-unpushed-to-upstream-or-recent

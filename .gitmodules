@@ -1,6 +1,9 @@
 [borg]
 	pushDefault = locutus
 	collective = emacsg
+[submodule "amx"]
+	path = lib/amx
+	url = git@github.com:DarwinAwardWinner/amx.git
 [submodule "auto-compile"]
 	path = lib/auto-compile
 	url = git@github.com:emacscollective/auto-compile.git
