@@ -82,6 +82,15 @@
 
 ;;; Long tail
 
+(use-package exec-path-from-shell
+  :init
+  (setq exec-path-from-shell-check-startup-files nil)
+  :config
+  (exec-path-from-shell-initialize)
+  (exec-path-from-shell-copy-env "LD_LIBRARY_PATH")
+  (exec-path-from-shell-copy-env "WORKON_HOME")
+  (exec-path-from-shell-copy-env "PROJECT_HOME"))
+
 ;; themes
 (set-frame-font "DejaVu Sans Mono-9")
 (use-package zenburn-theme
