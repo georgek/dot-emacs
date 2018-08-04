@@ -1,6 +1,9 @@
 [borg]
 	pushDefault = locutus
 	collective = emacsg
+[submodule "ace-window"]
+	path = lib/ace-window
+	url = git@github.com:abo-abo/ace-window.git
 [submodule "amx"]
 	path = lib/amx
 	url = git@github.com:DarwinAwardWinner/amx.git

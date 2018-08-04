@@ -284,6 +284,13 @@
   :bind
   (("C-:" . avy-goto-char)))
 
+(use-package ace-window
+  :config
+  (setq aw-scope 'frame)
+  :bind
+  (("M-'" . ace-window)))
+(global-set-key (kbd "C-M-'") 'other-frame)
+
 ;;; misc settings
 ;; set some default styles
 (setq c-default-style
