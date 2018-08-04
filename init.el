@@ -17,7 +17,7 @@
   (setq initial-buffer-choice t)
   (setq initial-scratch-message "")
   (setq load-prefer-newer t)
-  (setq frame-title-format '("%b - GNU Emacs"))
+  (setq frame-title-format '("%b - GNU Emacs - NEW CONFIG"))
   (scroll-bar-mode 0)
   (tool-bar-mode 0)
   (menu-bar-mode 0)
