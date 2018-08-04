@@ -278,6 +278,44 @@
   (add-to-list 'tramp-default-proxies-alist
                (list (regexp-quote (system-name)) nil nil)))
 
+;;; misc settings
+;; set some default styles
+(setq c-default-style
+      '((java-mode . "java")
+        (awk-mode . "awk")
+        (c-mode . "k&r")
+        (c++-mode . "stroustrup")
+        (other . "gnu")))
+
+;; column and line number
+(column-number-mode 1)
+(line-number-mode 1)
+
+;; enable auto fill mode globally
+(setq auto-fill-mode 1)
+;; default fill length
+(setq-default fill-column 78)
+
+(defun unfill-paragraph ()
+  "Unfill paragraph at or after point."
+  (interactive "*")
+  (let ((fill-column most-positive-fixnum))
+    (fill-paragraph nil (region-active-p))))
+
+;; enable auto revert globally
+(global-auto-revert-mode 1)
+
+;; set some default modes
+;; lex
+(add-to-list 'auto-mode-alist '("\\.l\\'" . c-mode))
+;; matlab
+(add-to-list 'auto-mode-alist '("\\.m\\'" . matlab-mode))
+;; XML
+(add-to-list 'auto-mode-alist '("\\.xml\\'" . sgml-mode))
+
+;;; ediff
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+
 (use-package exec-path-from-shell
   :init
   (setq exec-path-from-shell-check-startup-files nil)
