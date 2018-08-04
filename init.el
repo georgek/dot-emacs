@@ -208,6 +208,10 @@
          ("C-c M-i" . magit-dispatch-popup))
   :config
   (magit-add-section-hook 'magit-status-sections-hook
+                          'magit-insert-unpushed-to-upstream
+                          'magit-insert-unpushed-to-upstream-or-recent
+                          'replace)
+  (magit-add-section-hook 'magit-status-sections-hook
                           'magit-insert-modules
                           'magit-insert-stashes
                           'append))
