@@ -278,6 +278,12 @@
   (add-to-list 'tramp-default-proxies-alist
                (list (regexp-quote (system-name)) nil nil)))
 
+(use-package avy
+  :config
+  (setq avy-background t)
+  :bind
+  (("C-:" . avy-goto-char)))
+
 ;;; misc settings
 ;; set some default styles
 (setq c-default-style
