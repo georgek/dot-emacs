@@ -202,6 +202,18 @@
     (setq indent-tabs-mode nil))
   (add-hook 'lisp-interaction-mode-hook #'indent-spaces-mode))
 
+(use-package flx-ido
+  :config
+  (ido-mode t)
+  (ido-everywhere t)
+  (flx-ido-mode t)
+  (setq ido-enable-flex-matching t)
+  (setq ido-use-faces t)
+  (global-set-key (kbd "\C-x\C-b") 'ido-switch-buffer)
+  (setq ido-ignore-buffers '("\\` " "*Group*" "*Article*" "*Messages*"
+                             "\\`*magit" "*Completions*" "*Help*"
+                             ".newsrc-dribble" "\\`*trace")))
+
 (use-package magit
   :defer t
   :bind (("C-c i"   . magit-status)
