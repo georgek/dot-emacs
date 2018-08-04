@@ -82,15 +82,6 @@
 
 ;;; Long tail
 
-(use-package exec-path-from-shell
-  :init
-  (setq exec-path-from-shell-check-startup-files nil)
-  :config
-  (exec-path-from-shell-initialize)
-  (exec-path-from-shell-copy-env "LD_LIBRARY_PATH")
-  (exec-path-from-shell-copy-env "WORKON_HOME")
-  (exec-path-from-shell-copy-env "PROJECT_HOME"))
-
 ;; themes
 (set-frame-font "DejaVu Sans Mono-9")
 (use-package zenburn-theme
@@ -263,6 +254,14 @@
   (add-to-list 'tramp-default-proxies-alist
                (list (regexp-quote (system-name)) nil nil)))
 
+(use-package exec-path-from-shell
+  :init
+  (setq exec-path-from-shell-check-startup-files nil)
+  :config
+  (exec-path-from-shell-initialize)
+  (exec-path-from-shell-copy-env "WORKON_HOME")
+  (exec-path-from-shell-copy-env "PROJECT_HOME"))
+
 (progn ;     startup
   (message "Loading %s...done (%.3fs)" user-init-file
            (float-time (time-subtract (current-time)
@@ -280,6 +279,10 @@
                                 user-emacs-directory)))
     (when (file-exists-p file)
       (load file))))
+
+(when load-file-name
+  (find-file (concat (file-name-sans-extension load-file-name)
+                     ".el")))
 
 ;; Local Variables:
 ;; indent-tabs-mode: nil
