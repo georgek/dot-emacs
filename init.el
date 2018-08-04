@@ -214,6 +214,10 @@
                              "\\`*magit" "*Completions*" "*Help*"
                              ".newsrc-dribble" "\\`*trace")))
 
+(use-package ido-completing-read+
+  :config
+  (ido-ubiquitous-mode t))
+
 (use-package magit
   :defer t
   :bind (("C-c i"   . magit-status)
