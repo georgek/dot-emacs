@@ -218,6 +218,13 @@
   :config
   (ido-ubiquitous-mode t))
 
+(use-package smex
+  :config
+  (smex-initialize)
+  :bind
+  (("M-x" . smex)
+   ("M-X" . smex-major-mode-commands)))
+
 (use-package magit
   :defer t
   :bind (("C-c i"   . magit-status)
