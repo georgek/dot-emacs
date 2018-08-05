@@ -153,8 +153,6 @@
 
     (show-paren-mode t)))
 
-(use-package macrostep)
-
 (use-package lisp-mode
   :config
   (defun eval-buffer-key ()
@@ -188,19 +186,47 @@
   (makehookedfun emacs-lisp-mode-hook
     (outline-minor-mode)
     (reveal-mode)
-    (nice-paredit-on)
-    (local-set-key (kbd "TAB") #'elisp-magic-tab)
-    (local-set-key (kbd "C-c C-k") #'eval-buffer-key)
-    (local-set-key (kbd "C-c C-c") #'eval-defun-key)
-    (local-set-key (kbd "C-c C-z") #'ielm-switch-to-buffer)
-    (local-set-key (kbd "C-c z") #'ielm-switch-to-buffer)
-    (local-set-key (kbd "C-c C-l") #'paredit-recentre-on-sexp)
-    (local-set-key (kbd "C-c e") #'macrostep-expand)
-    (local-set-key (kbd "C-c d") #'toggle-debug-on-error))
+    (nice-paredit-on))
 
   (defun indent-spaces-mode ()
     (setq indent-tabs-mode nil))
-  (add-hook 'lisp-interaction-mode-hook #'indent-spaces-mode))
+
+  (makehookedfun lisp-interaction-mode-hook
+    (indent-spaces-mode))
+
+  :bind
+  (:map emacs-lisp-mode-map
+   ("TAB" . elisp-magic-tab)
+   ("C-c C-k" . eval-buffer-key)
+   ("C-c C-c" . eval-defun-key)
+   ("C-c C-l" . paredit-recentre-on-sexp)
+   ("C-c d" . toggle-debug-on-error)))
+
+(use-package macrostep
+  :bind
+  (:map emacs-lisp-mode-map
+   ("C-c e" . macrostep-expand)))
+
+(use-package ielm
+  :init
+  (defun ielm-switch-to-buffer ()
+    (interactive)
+    (let ((ielm-buffer (get-buffer "*ielm*")))
+      (if ielm-buffer
+          (pop-to-buffer ielm-buffer)
+        (ielm))))
+  (defalias 'p #'princ)
+
+  :config
+  (makehookedfun ielm-mode-hook
+    (nice-paredit-on))
+
+  :bind
+  (:map emacs-lisp-mode-map
+   ("C-c C-z" . ielm-switch-to-buffer)
+   ("C-c z" . ielm-switch-to-buffer)
+   :map ielm-map
+   ("C-<return>" . ielm-send-input)))
 
 (use-package flx-ido
   :config
