@@ -39,6 +39,9 @@
 [submodule "flx"]
 	path = lib/flx
 	url = git@github.com:lewang/flx.git
+[submodule "geiser"]
+	path = lib/geiser
+	url = git@gitlab.com:jaor/geiser.git
 [submodule "ghub"]
 	path = lib/ghub
 	url = git@github.com:magit/ghub.git

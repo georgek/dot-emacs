@@ -228,6 +228,20 @@
    :map ielm-map
    ("C-<return>" . ielm-send-input)))
 
+(use-package scheme
+  :config
+  (makehookedfun scheme-mode-hook
+    (nice-paredit-on)
+    (geiser-mode)))
+
+(use-package geiser
+  :commands (geiser-mode)
+  :load-path "lib/geiser/elisp"
+  :init
+  (setq geiser-default-implementation 'mit)
+  ;; Get around geiser bug not associating repls with buffers.
+  (setq geiser-active-implementations '(mit)))
+
 (use-package flx-ido
   :config
   (ido-mode t)
