@@ -266,6 +266,8 @@
                           'magit-insert-stashes
                           'append))
 
+(use-package org)
+
 (use-package man
   :defer t
   :config (setq Man-width 80))
