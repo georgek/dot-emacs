@@ -242,35 +242,20 @@
   ;; Get around geiser bug not associating repls with buffers.
   (setq geiser-active-implementations '(mit)))
 
-(use-package flx-ido
+(use-package ivy
+  :demand
   :config
-  (ido-mode t)
-  (ido-everywhere t)
-  (flx-ido-mode t)
-  (setq ido-enable-flex-matching t)
-  (setq ido-use-faces t)
-  (global-set-key (kbd "\C-x\C-b") 'ido-switch-buffer)
-  (setq ido-ignore-buffers '("\\` " "*Group*" "*Article*" "*Messages*"
-                             "\\`*magit" "*Completions*" "*Help*"
-                             ".newsrc-dribble" "\\`*trace")))
-
-(use-package ido-completing-read+
-  :config
-  (ido-ubiquitous-mode t))
-
-(use-package amx
-  :config
-  (amx-mode)
-  :bind
-  (("M-x" . amx)
-   ("M-X" . amx-major-mode-commands)))
+  (ivy-mode)
+  (counsel-mode)
+  (setq ivy-use-virtual-buffers t
+        enable-recursive-minibuffers t
+        ivy-count-format "(%d/%d) "))
 
 (use-package magit
   :defer t
   :bind (("C-c i"   . magit-status)
          ("C-c M-i" . magit-dispatch-popup))
   :config
-  (setq magit-completing-read-function #'magit-ido-completing-read)
   (magit-add-section-hook 'magit-status-sections-hook
                           'magit-insert-unpushed-to-upstream
                           'magit-insert-unpushed-to-upstream-or-recent
