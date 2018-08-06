@@ -244,6 +244,7 @@
 
 (use-package ivy
   :demand
+  :bind (("C-x C-b" . ivy-switch-buffer))
   :config
   (ivy-mode)
   (counsel-mode)
