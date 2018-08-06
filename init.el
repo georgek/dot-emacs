@@ -181,7 +181,7 @@
     (interactive)
     (if (member (char-before) '(?\s ?\t ?\n))
         (indent-for-tab-command)
-      (lisp-complete-symbol)))
+      (completion-at-point)))
 
   (makehookedfun emacs-lisp-mode-hook
     (outline-minor-mode)
