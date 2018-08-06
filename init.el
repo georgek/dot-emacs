@@ -39,6 +39,12 @@
   (require  'use-package)
   (setq use-package-verbose t))
 
+(use-package no-littering
+  :config
+  (use-package recentf)
+  (add-to-list 'recentf-exclude no-littering-var-directory)
+  (add-to-list 'recentf-exclude no-littering-etc-directory))
+
 (use-package auto-compile
   :demand t
   :config
@@ -374,7 +380,10 @@
  ;; ediff
  (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 
- (global-set-key (kbd "C-M-'") 'other-frame))
+ (global-set-key (kbd "C-M-'") 'other-frame)
+
+ ;; keep backup files neatly out of the way in .~/
+ (setq backup-directory-alist '(("." . ".~"))))
 
 (use-package exec-path-from-shell
   :init
