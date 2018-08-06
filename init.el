@@ -111,6 +111,18 @@
 (progn ;    `isearch'
   (setq isearch-allow-scroll t))
 
+(use-package company
+  :config
+  (setq company-backends
+        '((company-files
+           company-keywords
+           company-capf
+           company-yasnippet)
+          (company-abbrev company-dabbrev)))
+  (setq company-idle-delay 0.2)
+  (setq company-minimum-prefix-length 1)
+  (global-company-mode))
+
 (use-package paredit
   :config
   ;; electric return stuff
@@ -181,12 +193,14 @@
     (interactive)
     (if (member (char-before) '(?\s ?\t ?\n))
         (indent-for-tab-command)
-      (completion-at-point)))
+      (company-complete)))
 
   (makehookedfun emacs-lisp-mode-hook
     (outline-minor-mode)
     (reveal-mode)
-    (nice-paredit-on))
+    (nice-paredit-on)
+    (add-to-list (make-local-variable 'company-backends)
+                 'company-elisp))
 
   (defun indent-spaces-mode ()
     (setq indent-tabs-mode nil))
