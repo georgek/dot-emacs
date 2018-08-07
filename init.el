@@ -39,6 +39,13 @@
   (require  'use-package)
   (setq use-package-verbose t))
 
+;; theme
+(set-frame-font "DejaVu Sans Mono-9")
+(use-package zenburn-theme
+  :config
+  (load-theme 'zenburn t)
+  (load (expand-file-name "themes/zenburn-mods" user-emacs-directory)))
+
 (use-package no-littering
   :config
   (use-package recentf)
@@ -87,11 +94,6 @@
        (add-hook ',hook #',function))))
 
 ;;; Long tail
-
-;; themes
-(set-frame-font "DejaVu Sans Mono-9")
-(use-package zenburn-theme
-  :config (load-theme 'zenburn t))
 
 (use-package dash
   :config (dash-enable-font-lock))
