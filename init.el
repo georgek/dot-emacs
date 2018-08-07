@@ -286,7 +286,149 @@
                           'magit-insert-stashes
                           'append))
 
-(use-package org)
+(use-package org
+  :mode (("\\.org$" . org-mode))
+  :bind
+  (("C-c c" . org-capture)
+   ("C-c l" . org-store-link)
+   ("C-c a" . org-agenda)
+   ("C-~" . (lambda () (interactive) (org-agenda nil "n")))
+   :map org-mode-map
+   ("M-p" . org-metaup)
+   ("M-n" . org-metadown)
+   ("C-M->" . org-metaright)
+   ("C-M-<" . org-metaleft))
+  :hook ((org-mode . auto-fill-mode)
+         (org-mode . org-bullets-mode)
+         (org-mode . flyspell-mode))
+  :config
+  (use-package org-bullets)
+
+  (defmacro orgdr (&optional filename)
+    (if filename
+        `(concat org-directory ,filename)
+      org-directory))
+  (setq org-return-follows-link t)
+
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((lisp . t)
+     (sqlite . t)
+     (R . t)
+     (shell . t)
+     (python . t)))
+
+  ;; a named source block
+  (add-to-list 'org-structure-template-alist
+               '("S" "#+NAME: ?\n#+BEGIN_SRC \n\n#+END_SRC")
+               '("N" "#+NAME: ?"))
+
+  ;; exporting
+  (use-package htmlize)
+  (use-package ox-md)
+  (use-package ox-pandoc)
+  (use-package ox-twbs)
+  (use-package ox-latex)
+  (setq org-latex-to-pdf-process '("latexmk -pdf %f"))
+  (setq org-export-latex-listings 'minted)
+
+  (defun orgtbl-to-latex-booktabs (table params)
+    "Convert the Orgtbl mode TABLE to LaTeX using booktabs package."
+    (let* ((alignment (mapconcat (lambda (x) (if x "r" "l"))
+                                 org-table-last-alignment ""))
+           (params2
+            (list
+             :tstart "\\toprule"
+             :tend "\\bottomrule\n"
+             :lstart "" :lend " \\\\" :sep " & "
+             :efmt "%s\\,(%s)" :hline "\\midrule")))
+      (orgtbl-to-generic table (org-combine-plists params2 params))))
+
+  (eval-after-load "org-table"
+    '(progn
+       (setq orgtbl-radio-table-templates
+             (delete-if (lambda (x) (equal (car x) 'latex-mode))
+                        orgtbl-radio-table-templates))
+       (add-to-list 'orgtbl-radio-table-templates
+                    '(latex-mode "% BEGIN RECEIVE ORGTBL %n\n"
+                                 "% END RECEIVE ORGTBL %n\n"
+                                 "\\begin{comment}\n#+ORGTBL: SEND %n "
+                                 "orgtbl-to-latex-booktabs :splice nil "
+                                 ":skip 0 :no-escape t\n"
+                                 "| | |\n\\end{comment}\n"))))
+
+  ;; export with CSS classes instead of explicit colours
+  (setq org-html-htmlize-output-type 'css)
+  (setq org-html-htmlize-font-prefix "org-")
+
+  (setq org-twbs-htmlize-output-type 'css)
+  (setq org-twbs-htmlize-font-prefix "org-")
+
+  ;; capture
+  (setq org-default-notes-file (orgdr "notes.org"))
+  (setq org-capture-templates
+        `(("t" "Todo" entry (file+headline ,(orgdr "todo.org") "Misc (Captured)")
+           "* TODO %?\n %U\n %a")
+          ("d" "Diary" entry (file+headline ,(orgdr "diary.org") "Captured"))
+          ("j" "Journal" entry (file+olp+datetree ,(orgdr "journal.org"))
+           "* %? %^g\nEntered on %U\n %i")
+          ("i" "Idea" entry (file ,(orgdr "ideas.org"))
+           "* %?\n %U\n %a")))
+
+  ;; agenda stuff
+  (setq org-agenda-files (list (orgdr)))
+  (setq org-agenda-include-diary t)
+  (setq org-agenda-span 14)
+  (setq org-agenda-start-on-weekday nil)
+  (setq org-agenda-window-setup 'current-window)
+  (setq org-agenda-restore-windows-after-quit t)
+  (setq org-agenda-prefix-format '((agenda . " %i %-12:c%?-12t% s")
+                                   (todo .   " %i %-12:c")
+                                   (tags .   " %i %-12:c")
+                                   (search . " %i %-12:c")))
+
+  (setq org-time-stamp-custom-formats
+        '("<%A, %e %B %Y>" . "<%A, %e %B %Y %H:%M>"))
+  (setq org-log-done 'time)
+  (setq org-blank-before-new-entry 
+        '((heading . t) (plain-list-item . nil)))
+  (setq org-todo-keywords (quote((sequence "TODO" "WAITING" "|" "DONE"))))
+
+  (require 'org-clock)
+  (require 'org-timer)
+  (setq org-timer-default-timer 25)
+
+  (setq org-clock-clocked-in-display 'frame-title)
+  (setq org-timer-display 'frame-title)
+  (setq org-clock-frame-title-format
+        (append frame-title-format
+                '(" - Org clocked in: " org-mode-line-string)))
+
+  ;; use log drawer
+  (setq org-log-into-drawer t)
+
+  (defun diary-limited-cyclic (recurrences interval y m d)
+    "For use in emacs diary. Cyclic item with limited number of recurrences.
+Occurs every INTERVAL days, starting on YYYY-MM-DD, for a total of
+RECURRENCES occasions."
+    (let ((startdate (calendar-absolute-from-gregorian (list m d y)))
+          (today (calendar-absolute-from-gregorian date)))
+      (and (not (minusp (- today startdate)))
+           (zerop (% (- today startdate) interval))
+           (< (floor (- today startdate) interval) recurrences))))
+
+  ;; this code removes time grid lines that are within an appointment
+  (defun org-time-to-minutes (time)
+    "Convert an HHMM time to minutes"
+    (+ (* (/ time 100) 60) (% time 100)))
+
+  (defun org-time-from-minutes (minutes)
+    "Convert a number of minutes to an HHMM time"
+    (+ (* (/ minutes 60) 100) (% minutes 60)))
+
+  ;; setup default file readers
+  (eval-after-load "org"
+    '(setcdr (assoc "\\.pdf\\'" org-file-apps) "evince %s")))
 
 (use-package man
   :defer t
