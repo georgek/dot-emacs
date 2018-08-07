@@ -432,6 +432,12 @@ RECURRENCES occasions."
   (eval-after-load "org"
     '(setcdr (assoc "\\.pdf\\'" org-file-apps) "evince %s")))
 
+(use-package make-mode
+  :defer t
+  :bind
+  (:map makefile-mode-map
+   ("C-c C-c" . compile)))
+
 (use-package man
   :defer t
   :config (setq Man-width 80))
