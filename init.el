@@ -196,12 +196,6 @@
             (sit-for 0.1))
         (delete-overlay ol))))
 
-  (defun elisp-magic-tab ()
-    (interactive)
-    (if (member (char-before) '(?\s ?\t ?\n))
-        (indent-for-tab-command)
-      (company-complete)))
-
   (makehookedfun emacs-lisp-mode-hook
     (outline-minor-mode)
     (reveal-mode)
@@ -217,7 +211,6 @@
 
   :bind
   (:map emacs-lisp-mode-map
-   ("TAB" . elisp-magic-tab)
    ("C-c C-k" . eval-buffer-key)
    ("C-c C-c" . eval-defun-key)
    ("C-c C-l" . paredit-recentre-on-sexp)
