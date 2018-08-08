@@ -43,8 +43,7 @@
 (set-frame-font "DejaVu Sans Mono-9")
 (use-package zenburn-theme
   :config
-  (load-theme 'zenburn t)
-  (load (expand-file-name "themes/zenburn-mods" user-emacs-directory)))
+  (load-theme 'zenburn t))
 
 (use-package no-littering
   :config
