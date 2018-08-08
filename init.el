@@ -269,6 +269,15 @@
   ;; Get around geiser bug not associating repls with buffers.
   (setq geiser-active-implementations '(mit)))
 
+(use-package cider
+  :mode (("\\.clj$" . clojure-mode))
+  :hook ((clojure-mode . nice-paredit-on)
+         (cider-repl-mode . nice-paredit-on))
+  :bind (:map clojure-mode-map
+         ("C-c z" . cider-switch-to-repl-buffer)
+         ("C-c C-z" . cider-switch-to-repl-buffer))
+  :config (setq cider-repl-display-help-banner nil))
+
 (use-package ivy
   :demand
   :bind (("C-x C-b" . ivy-switch-buffer))
