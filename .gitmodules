@@ -63,6 +63,9 @@
 [submodule "hydra"]
 	path = lib/hydra
 	url = git@github.com:abo-abo/hydra.git
+[submodule "hyperspec"]
+	path = lib/hyperspec
+	url = git@github.com:emacsorphanage/hyperspec.git
 [submodule "ivy"]
 	path = lib/ivy
 	url = git@github.com:abo-abo/swiper.git
@@ -116,6 +119,9 @@
 [submodule "shut-up"]
 	path = lib/shut-up
 	url = git@github.com:cask/shut-up.git
+[submodule "slime"]
+	path = lib/slime
+	url = git@github.com:slime/slime.git
 [submodule "use-package"]
 	path = lib/use-package
 	url = git@github.com:jwiegley/use-package.git

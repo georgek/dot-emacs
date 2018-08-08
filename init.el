@@ -249,6 +249,19 @@
    :map ielm-map
    ("C-<return>" . ielm-send-input)))
 
+(use-package slime
+  :init (use-package hyperspec)
+  :commands slime
+  :hook ((lisp-mode . nice-paredit-on))
+  :bind
+  (:map lisp-mode-map
+   ("C-c C-z" . slime-switch-to-output-buffer)
+   ("C-c z" . slime-switch-to-output-buffer)
+   ("C-c e" . macrostep-expand))
+  :config
+  (setq inferior-lisp-program "sbcl")
+  (slime-setup '(slime-fancy slime-banner slime-asdf)))
+
 (use-package scheme
   :config
   (makehookedfun scheme-mode-hook
