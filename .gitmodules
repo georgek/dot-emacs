@@ -71,6 +71,9 @@
 [submodule "memoize"]
 	path = lib/memoize
 	url = git@github.com:skeeto/emacs-memoize.git
+[submodule "mic-paren"]
+	path = lib/mic-paren
+	url = git@github.com:emacsattic/mic-paren.git
 [submodule "no-littering"]
 	path = lib/no-littering
 	url = git@github.com:emacscollective/no-littering.git
