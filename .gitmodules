@@ -26,6 +26,9 @@
 [submodule "diff-hl"]
 	path = lib/diff-hl
 	url = git@github.com:dgutov/diff-hl.git
+[submodule "elisp-refs"]
+	path = lib/elisp-refs
+	url = git@github.com:Wilfred/refs.el.git
 [submodule "emacsql"]
 	path = lib/emacsql
 	url = git@github.com:skeeto/emacsql.git
@@ -36,6 +39,9 @@
 [submodule "exec-path-from-shell"]
 	path = lib/exec-path-from-shell
 	url = git@github.com:purcell/exec-path-from-shell.git
+[submodule "f"]
+	path = lib/f
+	url = git@github.com:rejeep/f.el.git
 [submodule "geiser"]
 	path = lib/geiser
 	url = git@gitlab.com:jaor/geiser.git
@@ -45,6 +51,9 @@
 [submodule "git-modes"]
 	path = lib/git-modes
 	url = git@github.com:magit/git-modes.git
+[submodule "helpful"]
+	path = lib/helpful
+	url = git@github.com:Wilfred/helpful.git
 [submodule "ht"]
 	path = lib/ht
 	url = git@github.com:Wilfred/ht.el.git
@@ -57,6 +66,9 @@
 [submodule "ivy"]
 	path = lib/ivy
 	url = git@github.com:abo-abo/swiper.git
+[submodule "loop"]
+	path = lib/loop
+	url = git@github.com:Wilfred/loop.el.git
 [submodule "macrostep"]
 	path = lib/macrostep
 	url = git@github.com:joddie/macrostep.git
@@ -101,6 +113,9 @@
 [submodule "s"]
 	path = lib/s
 	url = git@github.com:magnars/s.el.git
+[submodule "shut-up"]
+	path = lib/shut-up
+	url = git@github.com:cask/shut-up.git
 [submodule "use-package"]
 	path = lib/use-package
 	url = git@github.com:jwiegley/use-package.git

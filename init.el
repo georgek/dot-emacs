@@ -493,6 +493,15 @@ RECURRENCES occasions."
   :bind
   (("M-'" . ace-window)))
 
+(use-package helpful
+  :bind (("C-h f" . helpful-callable)
+         ("C-h v" . helpful-variable)
+         ("C-h k" . helpful-key)
+         ("C-h F" . helpful-function)
+         ("C-h C" . helpful-command)
+         :map emacs-lisp-mode-map
+         ("C-c C-d" . helpful-at-point)))
+
 (progn                                  ; misc settings
  ;; set some default styles
  (setq c-default-style
