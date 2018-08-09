@@ -28,7 +28,8 @@
   ;; prefer to split windows vertically even on tall monitor
   (setq split-height-threshold 160)
   (setq split-width-threshold 160)
-  (setq mouse-wheel-progressive-speed nil))
+  (setq mouse-wheel-progressive-speed nil)
+  (fset 'yes-or-no-p 'y-or-n-p))
 
 (progn ;    `borg'
   (add-to-list 'load-path (expand-file-name "lib/borg" user-emacs-directory))
