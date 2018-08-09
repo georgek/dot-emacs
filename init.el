@@ -134,6 +134,18 @@
           (company-abbrev company-dabbrev)))
   (setq company-idle-delay 0.2)
   (setq company-minimum-prefix-length 1)
+  (defun company-yasnippet-or-completion ()
+    "Solve company yasnippet conflicts."
+    (interactive)
+    (let ((yas-fallback-behavior
+           (apply 'company-complete-common nil)))
+      (yas-expand)))
+  (add-hook 'company-mode-hook
+            (lambda ()
+              (substitute-key-definition
+               'company-complete-common
+               'company-yasnippet-or-completion
+               company-active-map)))
   (global-company-mode))
 
 (use-package paredit
@@ -537,6 +549,17 @@ RECURRENCES occasions."
 
 (use-package eshell
   :bind (("C-c s" . eshell)))
+
+(use-package python
+  :mode ("\\.py\\'" . python-mode))
+
+(use-package elpy
+  :after python
+  :config
+  (elpy-enable)
+  (setq python-shell-interpreter "ipython"
+        python-shell-interpreter-args "-i --simple-prompt")
+  (setq elpy-rpc-backend "jedi"))
 
 (use-package man
   :defer t
