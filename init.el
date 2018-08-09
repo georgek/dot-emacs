@@ -472,6 +472,10 @@ RECURRENCES occasions."
   (:map makefile-mode-map
    ("C-c C-c" . compile)))
 
+(use-package compile
+  :config
+  (setq compilation-scroll-output 'first-error))
+
 (use-package cc-mode
   :config
   (setq c-auto-newline 1)
