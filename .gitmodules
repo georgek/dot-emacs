@@ -137,6 +137,12 @@
 [submodule "slime"]
 	path = lib/slime
 	url = git@github.com:slime/slime.git
+[submodule "slime-company"]
+	path = lib/slime-company
+	url = git@github.com:anwyn/slime-company.git
+[submodule "slime-complete-locals"]
+	path = lib/slime-complete-locals
+	url = git@github.com:joodie/slime-complete-locals.git
 [submodule "spinner"]
 	path = lib/spinner
 	url = git@github.com:Malabarba/spinner.el.git

@@ -242,8 +242,17 @@
    :map ielm-map
    ("C-<return>" . ielm-send-input)))
 
+(use-package slime-company
+  :commands (slime-company)
+  :config (setq slime-company-completion 'fuzzy))
+
+(use-package slime-complete-locals
+  :commands (slime-complete-locals))
+
 (use-package slime
-  :init (use-package hyperspec)
+  :mode (("\\.lisp$" . lisp-mode))
+  :init
+  (use-package hyperspec)
   :commands slime
   :hook ((lisp-mode . nice-paredit-on))
   :bind
@@ -253,7 +262,11 @@
    ("C-c e" . macrostep-expand))
   :config
   (setq inferior-lisp-program "sbcl")
-  (slime-setup '(slime-fancy slime-banner slime-asdf)))
+  (slime-setup '(slime-fancy
+                 slime-banner
+                 slime-asdf
+                 slime-company
+                 slime-complete-locals)))
 
 (use-package scheme
   :config
