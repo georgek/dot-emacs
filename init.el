@@ -118,6 +118,11 @@
 (progn ;    `isearch'
   (setq isearch-allow-scroll t))
 
+(use-package yasnippet
+  :config
+  (use-package yasnippet-snippets)
+  (yas-global-mode))
+
 (use-package company
   :config
   (setq company-backends
