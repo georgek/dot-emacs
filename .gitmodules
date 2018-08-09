@@ -8,9 +8,10 @@
 	path = lib/auctex
 	url = https://git.savannah.gnu.org/git/auctex.git
 	build-step = ./autogen.sh
-	build-step = ./configure
+	build-step = ./configure --without-texmf-dir
 	build-step = make
-	build-step = "(borg-update-autoloads \"auctex\")"
+	build-step = borg-update-autoloads
+	build-step = borg-makeinfo
 [submodule "auto-compile"]
 	path = lib/auto-compile
 	url = git@github.com:emacscollective/auto-compile.git
@@ -114,6 +115,8 @@
 [submodule "org"]
 	path = lib/org
 	url = git@code.orgmode.org:bzg/org-mode.git
+	build-nix-shell-packages = emacs git gnumake texinfo
+	build-step = make
 [submodule "org-bullets"]
 	path = lib/org-bullets
 	url = git@github.com:emacsorphanage/org-bullets.git
@@ -147,6 +150,7 @@
 [submodule "slime"]
 	path = lib/slime
 	url = git@github.com:slime/slime.git
+	build-step = make compile contrib-compile
 [submodule "slime-company"]
 	path = lib/slime-company
 	url = git@github.com:anwyn/slime-company.git
