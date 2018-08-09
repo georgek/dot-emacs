@@ -310,7 +310,8 @@
 (use-package magit
   :defer t
   :bind (("C-c i"   . magit-status)
-         ("C-c M-i" . magit-dispatch-popup))
+         ("C-c M-i" . magit-dispatch-popup)
+         ("C-c b"   . magit-blame))
   :config
   (magit-add-section-hook 'magit-status-sections-hook
                           'magit-insert-unpushed-to-upstream
