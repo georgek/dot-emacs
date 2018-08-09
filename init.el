@@ -452,6 +452,38 @@ RECURRENCES occasions."
   (:map makefile-mode-map
    ("C-c C-c" . compile)))
 
+(use-package cc-mode
+  :config
+  (setq c-auto-newline 1)
+  (setq c-hungry-delete-key 1))
+
+(use-package flyspell
+  :config (setq flyspell-issue-message-flag -1)
+  :hook ((text-mode . flyspell-mode)))
+
+(use-package uniquify
+  :demand t
+  :config
+  (setq uniquify-buffer-name-style 'reverse)
+  (setq uniquify-separator "/")
+  (setq uniquify-after-kill-buffer-p t) ; rename after killing uniquified
+  (setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
+  (setq uniquify-min-dir-content 0))
+
+(use-package hippie-expand
+  :bind (("M-/" . hippie-expand)))
+
+(use-package midnight
+  :demand t
+  :config
+  (setq midnight-mode t)
+  ;; some buffers that shouldn't be killed
+  (setq clean-buffer-list-kill-never-buffer-names
+        (append clean-buffer-list-kill-never-buffer-names
+                '("*slime-repl sbcl*"
+                  "*R*"
+                  "init.el"))))
+
 (use-package man
   :defer t
   :config (setq Man-width 80))
