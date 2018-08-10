@@ -626,6 +626,14 @@ RECURRENCES occasions."
          :map emacs-lisp-mode-map
          ("C-c C-d" . helpful-at-point)))
 
+(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
+(use-package gk-extra
+  :bind (("C-;" . gk-select-current-line)
+         ("C-M-;" . gk-comment-current-line)
+         :map c-mode-base-map
+         ("C-c C-h" . gk-c-c++-toggle))
+  :mode ("\\.h\\'" . gk-c-c++-header))
+
 (progn                                  ; misc settings
  ;; set some default styles
  (setq c-default-style
