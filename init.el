@@ -506,6 +506,10 @@ RECURRENCES occasions."
          :map gas-mode-map
          ("C-c C-c" . compile)))
 
+(use-package lorem-ipsum
+  :commands (lorem-ipsum-insert-paragraphs
+             lorem-ipsum-insert-sentences))
+
 (use-package flyspell
   :config (setq flyspell-issue-message-flag -1)
   :hook ((text-mode . flyspell-mode)))

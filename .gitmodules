@@ -104,6 +104,9 @@
 [submodule "loop"]
 	path = lib/loop
 	url = git@github.com:Wilfred/loop.el.git
+[submodule "lorem-ipsum"]
+	path = lib/lorem-ipsum
+	url = git@github.com:jschaf/emacs-lorem-ipsum.git
 [submodule "macrostep"]
 	path = lib/macrostep
 	url = git@github.com:joddie/macrostep.git
