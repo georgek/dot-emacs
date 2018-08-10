@@ -493,6 +493,16 @@ RECURRENCES occasions."
   (setq c-auto-newline 1)
   (setq c-hungry-delete-key 1))
 
+(use-package gas-mode
+  :config
+  (setq gas-comment-char ?@)
+  :mode (("\\.s\\'" . asm-mode))
+  :hook ((asm-mode-set-comment . (lambda () (setq asm-comment-char ?\#))))
+  :bind (:map asm-mode-map
+         ("C-c C-c" . compile)
+         :map gas-mode-map
+         ("C-c C-c" . compile)))
+
 (use-package flyspell
   :config (setq flyspell-issue-message-flag -1)
   :hook ((text-mode . flyspell-mode)))
