@@ -491,7 +491,10 @@ RECURRENCES occasions."
 (use-package cc-mode
   :config
   (setq c-auto-newline 1)
-  (setq c-hungry-delete-key 1))
+  (setq c-hungry-delete-key 1)
+  :bind (:map c-mode-base-map
+         ("C-c C-c" . compile)
+         ("C-m" . c-context-line-break)))
 
 (use-package gas-mode
   :config
