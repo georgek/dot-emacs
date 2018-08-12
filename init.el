@@ -643,6 +643,22 @@ RECURRENCES occasions."
          :map emacs-lisp-mode-map
          ("C-c C-d" . helpful-at-point)))
 
+(use-package go-mode
+  :mode "\\.go\\'"
+  :hook ((go-mode . (lambda () (set (make-local-variable 'compile-command)
+                                    "go install"))))
+  :config
+  (defun go-mode-compile ()
+    (interactive)
+    (compile "go install"))
+  (defun go-mode-test ()
+    (interactive)
+    (compile "go test -v && go vet && golint"))
+  :bind (:map go-mode-map
+         ("C-c C-c" . go-mode-compile)
+         ("C-c C-t" . go-mode-test)
+         ("M-." . godef-jump)))
+
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 (use-package gk-extra
   :bind (("C-;" . gk-select-current-line)

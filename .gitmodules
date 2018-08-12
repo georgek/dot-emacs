@@ -80,6 +80,9 @@
 [submodule "git-modes"]
 	path = lib/git-modes
 	url = git@github.com:magit/git-modes.git
+[submodule "go-mode"]
+	path = lib/go-mode
+	url = git@github.com:dominikh/go-mode.el.git
 [submodule "helpful"]
 	path = lib/helpful
 	url = git@github.com:Wilfred/helpful.git
