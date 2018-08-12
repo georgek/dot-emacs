@@ -651,6 +651,9 @@ RECURRENCES occasions."
          ("C-c C-h" . gk-c-c++-toggle))
   :mode ("\\.h\\'" . gk-c-c++-header))
 
+(use-package gk-other-window-repeat
+  :bind (("C-x o" . gk-other-window-repeat)))
+
 (progn                                  ; misc settings
  ;; set some default styles
  (setq c-default-style
