@@ -659,6 +659,26 @@ RECURRENCES occasions."
          ("C-c C-t" . go-mode-test)
          ("M-." . godef-jump)))
 
+(use-package ess
+  :init (require 'ess-site)
+  :config
+  (defun ess-eval-defun-key ()
+    (interactive)
+    (ess-eval-function-or-paragraph t))
+  (defun clear-shell ()
+   (interactive)
+   (let ((old-max comint-buffer-maximum-size))
+     (setq comint-buffer-maximum-size 0)
+     (comint-truncate-buffer)
+     (setq comint-buffer-maximum-size old-max)))
+  :bind (:map ess-mode-map
+         ("C-c z" . ess-switch-to-inferior-or-script-buffer)
+         ("C-c C-c" . ess-eval-defun-key)
+         ("C-c C-k" . ess-eval-buffer)
+         ("C-c C-b" . ess-force-buffer-current)
+         :map inferior-ess-mode-map
+         ("C-c M-o" . clear-shell)))
+
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 (use-package gk-extra
   :bind (("C-;" . gk-select-current-line)

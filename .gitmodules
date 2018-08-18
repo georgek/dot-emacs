@@ -56,6 +56,9 @@
 [submodule "epkg"]
 	path = lib/epkg
 	url = git@github.com:emacscollective/epkg.git
+[submodule "ess"]
+	path = lib/ess
+	url = git@github.com:emacs-ess/ESS.git
 [submodule "etexshow"]
 	path = lib/etexshow
 	url = git@github.com:pgundlach/etexshow.git
