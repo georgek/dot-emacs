@@ -657,8 +657,9 @@ RECURRENCES occasions."
 (defun comment-current-line ()
   "comments out the current line"
   (interactive)
-  (select-current-line)
-  (comment-dwim nil))
+  (save-excursion
+    (select-current-line)
+    (comment-dwim nil)))
 (global-set-key (kbd "C-M-;") 'comment-current-line)
 
 ;; function decides whether .h file is C or C++ header, sets C++ by
