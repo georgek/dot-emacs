@@ -76,6 +76,7 @@
   (exec-path-from-shell-copy-env "PROJECT_HOME"))
 
 ;;; Zenburn
+(set-frame-font "DejaVu Sans Mono-9")
 (add-to-path-init custom-theme-load-path "themes")
 (load-theme 'zenburn t)
 (load-init "themes/zenburn-mods")
