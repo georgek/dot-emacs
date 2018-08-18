@@ -165,7 +165,7 @@
 ;; matlab
 (add-to-list 'auto-mode-alist '("\\.m\\'" . matlab-mode))
 ;; XML
-(add-to-list 'auto-mode-alist '("\\.xml\\'" . nxml-mode))
+(add-to-list 'auto-mode-alist '("\\.xml\\'" . sgml-mode))
 
 ;;; info
 (require 'info)
@@ -390,7 +390,8 @@
    (sqlite . t)
    (R . t)
    (shell . t)
-   (python . t)))
+   (python . t)
+   (js . t)))
 
 ;;; a named source block
 (add-to-list 'org-structure-template-alist
@@ -1056,6 +1057,9 @@ call to other-window-repeat or switch-prev-window."
 (setq python-shell-interpreter "ipython"
       python-shell-interpreter-args "-i --simple-prompt")
 (setq elpy-rpc-backend "jedi")
+(require 'sphinx-doc)
+(makehookedfun python-mode-hook
+  (sphinx-doc-mode t))
 
 ;;; mail stuff
 
