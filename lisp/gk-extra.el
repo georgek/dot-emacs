@@ -38,4 +38,22 @@ to C++."
         ((string= major-mode "c++-mode")
          (c-mode))))
 
+;;;###autoload
+(defun gk-kill-client-or-daemon ()
+  "Kills emacs.  If running as daemon, the daemon is killed when
+  the last frame is killed."
+  (interactive)
+  (if (and (boundp 'server-clients)
+           (> (length server-clients) 0))
+      ;; daemon
+      (if (<= (length (frame-list)) 2)
+          (when (y-or-n-p "Last frame. Kill daemon?")
+            (save-some-buffers)
+            (delete-frame)
+            (kill-emacs))
+        ;; not the last frame so just delete it
+        (delete-frame))
+      ;; not daemon
+    (save-buffers-kill-emacs)))
+
 (provide 'gk-extra)

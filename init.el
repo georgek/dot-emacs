@@ -48,6 +48,14 @@
   :config
   (load-theme 'zenburn t))
 
+(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
+(use-package gk-extra
+  :demand
+  :bind (("C-;" . gk-select-current-line)
+         ("C-M-;" . gk-comment-current-line)
+         ("C-x C-c" . gk-kill-client-or-daemon))
+  :mode ("\\.h\\'" . gk-c-c++-header))
+
 (use-package no-littering
   :config
   (use-package recentf)
@@ -712,13 +720,6 @@ RECURRENCES occasions."
 
 (use-package rjsx-mode
   :mode "\\.jsx\\'")
-
-(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
-(use-package gk-extra
-  :demand
-  :bind (("C-;" . gk-select-current-line)
-         ("C-M-;" . gk-comment-current-line))
-  :mode ("\\.h\\'" . gk-c-c++-header))
 
 (use-package gk-other-window-repeat
   :bind (("C-x o" . gk-other-window-repeat)))
