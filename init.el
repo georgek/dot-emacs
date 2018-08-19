@@ -362,7 +362,8 @@
    ("C-M-<" . org-metaleft))
   :hook ((org-mode . auto-fill-mode)
          (org-mode . org-bullets-mode)
-         (org-mode . flyspell-mode))
+         (org-mode . flyspell-mode)
+         (org-mode . reveal-mode))
   :config
   (use-package org-bullets)
 
