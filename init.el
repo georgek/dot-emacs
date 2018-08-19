@@ -150,6 +150,10 @@
                company-active-map)))
   (global-company-mode))
 
+(use-package abbrev
+  :config
+  (setq save-abbrevs 'silently))
+
 (use-package paredit
   :config
   ;; electric return stuff
