@@ -697,6 +697,15 @@ RECURRENCES occasions."
   :bind (:map web-mode-hook
          ("C-c C-c" . browse-url-of-file)))
 
+(use-package js2-mode
+  :mode "\\.js\\'")
+
+(use-package typescript-mode
+  :mode "\\.ts\\'")
+
+(use-package rjsx-mode
+  :mode "\\.jsx\\'")
+
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 (use-package gk-extra
   :bind (("C-;" . gk-select-current-line)
