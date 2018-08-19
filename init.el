@@ -685,6 +685,18 @@ RECURRENCES occasions."
 (use-package minions
   :config (minions-mode 1))
 
+(use-package web-mode
+  :mode ("\\.phtml\\'"
+         "\\.tpl\\.php\\'"
+         "\\.[agj]sp\\'"
+         "\\.as[cp]x\\'"
+         "\\.erb\\'"
+         "\\.mustache\\'"
+         "\\.djhtml\\'"
+         "\\.html?\\'")
+  :bind (:map web-mode-hook
+         ("C-c C-c" . browse-url-of-file)))
+
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 (use-package gk-extra
   :bind (("C-;" . gk-select-current-line)
