@@ -494,7 +494,8 @@ RECURRENCES occasions."
   (setq c-hungry-delete-key 1)
   :bind (:map c-mode-base-map
          ("C-c C-c" . compile)
-         ("C-m" . c-context-line-break)))
+         ("C-m" . c-context-line-break)
+         ("C-c C-h" . gk-c-c++-toggle)))
 
 (use-package gas-mode
   :config
@@ -708,10 +709,9 @@ RECURRENCES occasions."
 
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 (use-package gk-extra
+  :demand
   :bind (("C-;" . gk-select-current-line)
-         ("C-M-;" . gk-comment-current-line)
-         :map c-mode-base-map
-         ("C-c C-h" . gk-c-c++-toggle))
+         ("C-M-;" . gk-comment-current-line))
   :mode ("\\.h\\'" . gk-c-c++-header))
 
 (use-package gk-other-window-repeat
