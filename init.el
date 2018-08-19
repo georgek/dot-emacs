@@ -682,6 +682,9 @@ RECURRENCES occasions."
 (use-package dna-mode
   :mode "\\.\\(fasta\\|fa\\|exp\\|ace\\|gb\\)\\'")
 
+(use-package minions
+  :config (minions-mode 1))
+
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 (use-package gk-extra
   :bind (("C-;" . gk-select-current-line)
