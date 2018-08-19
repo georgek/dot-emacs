@@ -679,6 +679,9 @@ RECURRENCES occasions."
          :map inferior-ess-mode-map
          ("C-c M-o" . clear-shell)))
 
+(use-package dna-mode
+  :mode "\\.\\(fasta\\|fa\\|exp\\|ace\\|gb\\)\\'")
+
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 (use-package gk-extra
   :bind (("C-;" . gk-select-current-line)
