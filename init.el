@@ -42,7 +42,7 @@
 
 ;; theme
 (defvar my-font "DejaVu Sans Mono-9")
-(set-default-font my-font)
+(set-frame-font my-font)
 (add-to-list 'default-frame-alist `(font . ,my-font))
 (use-package zenburn-theme
   :config
