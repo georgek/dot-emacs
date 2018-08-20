@@ -1,6 +1,219 @@
+[borg]
+	pushDefault = locutus
+	collective = emacsg
+[submodule "ace-window"]
+	path = lib/ace-window
+	url = git@github.com:abo-abo/ace-window.git
+[submodule "auctex"]
+	path = lib/auctex
+	url = https://git.savannah.gnu.org/git/auctex.git
+	build-step = ./autogen.sh
+	build-step = ./configure --without-texmf-dir
+	build-step = make
+	build-step = borg-update-autoloads
+	build-step = borg-makeinfo
+[submodule "auto-compile"]
+	path = lib/auto-compile
+	url = git@github.com:emacscollective/auto-compile.git
+[submodule "avy"]
+	path = lib/avy
+	url = git@github.com:abo-abo/avy.git
+[submodule "borg"]
+	path = lib/borg
+	url = git@github.com:emacscollective/borg.git
+[submodule "buttercup"]
+	path = lib/buttercup
+	url = git@github.com:jorgenschaefer/emacs-buttercup.git
 [submodule "cider"]
-	path = site-lisp/cider
-	url = https://github.com/clojure-emacs/cider.git
+	path = lib/cider
+	url = git@github.com:clojure-emacs/cider.git
 [submodule "clojure-mode"]
-	path = site-lisp/clojure-mode
-	url = https://github.com/clojure-emacs/clojure-mode.git
+	path = lib/clojure-mode
+	url = git@github.com:clojure-emacs/clojure-mode.git
+[submodule "closql"]
+	path = lib/closql
+	url = git@github.com:emacscollective/closql.git
+[submodule "company"]
+	path = lib/company
+	url = git@github.com:company-mode/company-mode.git
+[submodule "dash"]
+	path = lib/dash
+	url = git@github.com:magnars/dash.el.git
+	no-makeinfo = dash-template.texi
+[submodule "diff-hl"]
+	path = lib/diff-hl
+	url = git@github.com:dgutov/diff-hl.git
+[submodule "dna-mode"]
+	path = lib/dna-mode
+	url = git@github.com:jhgorrell/dna-mode-el.git
+[submodule "elisp-refs"]
+	path = lib/elisp-refs
+	url = git@github.com:Wilfred/refs.el.git
+[submodule "elpy"]
+	path = lib/elpy
+	url = git@github.com:jorgenschaefer/elpy.git
+[submodule "emacsql"]
+	path = lib/emacsql
+	url = git@github.com:skeeto/emacsql.git
+	no-byte-compile = emacsql-pg.el
+[submodule "epkg"]
+	path = lib/epkg
+	url = git@github.com:emacscollective/epkg.git
+[submodule "ess"]
+	path = lib/ess
+	url = git@github.com:emacs-ess/ESS.git
+[submodule "etexshow"]
+	path = lib/etexshow
+	url = git@github.com:pgundlach/etexshow.git
+[submodule "exec-path-from-shell"]
+	path = lib/exec-path-from-shell
+	url = git@github.com:purcell/exec-path-from-shell.git
+[submodule "f"]
+	path = lib/f
+	url = git@github.com:rejeep/f.el.git
+[submodule "find-file-in-project"]
+	path = lib/find-file-in-project
+	url = git@github.com:technomancy/find-file-in-project.git
+[submodule "gas-mode"]
+	path = lib/gas-mode
+	url = git@github.com:emacsattic/gas-mode.git
+[submodule "geiser"]
+	path = lib/geiser
+	url = git@gitlab.com:jaor/geiser.git
+[submodule "ghub"]
+	path = lib/ghub
+	url = git@github.com:magit/ghub.git
+[submodule "git-modes"]
+	path = lib/git-modes
+	url = git@github.com:magit/git-modes.git
+[submodule "go-mode"]
+	path = lib/go-mode
+	url = git@github.com:dominikh/go-mode.el.git
+[submodule "helpful"]
+	path = lib/helpful
+	url = git@github.com:Wilfred/helpful.git
+[submodule "highlight-indentation"]
+	path = lib/highlight-indentation
+	url = git@github.com:antonj/Highlight-Indentation-for-Emacs.git
+[submodule "ht"]
+	path = lib/ht
+	url = git@github.com:Wilfred/ht.el.git
+[submodule "htmlize"]
+	path = lib/htmlize
+	url = git@github.com:hniksic/emacs-htmlize.git
+[submodule "hydra"]
+	path = lib/hydra
+	url = git@github.com:abo-abo/hydra.git
+[submodule "hyperspec"]
+	path = lib/hyperspec
+	url = git@github.com:emacsorphanage/hyperspec.git
+[submodule "ivy"]
+	path = lib/ivy
+	url = git@github.com:abo-abo/swiper.git
+[submodule "js2-mode"]
+	path = lib/js2-mode
+	url = git@github.com:mooz/js2-mode.git
+[submodule "loop"]
+	path = lib/loop
+	url = git@github.com:Wilfred/loop.el.git
+[submodule "lorem-ipsum"]
+	path = lib/lorem-ipsum
+	url = git@github.com:jschaf/emacs-lorem-ipsum.git
+[submodule "macrostep"]
+	path = lib/macrostep
+	url = git@github.com:joddie/macrostep.git
+[submodule "magit"]
+	path = lib/magit
+	url = git@github.com:georgek/magit.git
+	recursive-byte-compile = true
+	info-path = Documentation
+[submodule "magit-popup"]
+	path = lib/magit-popup
+	url = git@github.com:magit/magit-popup.git
+[submodule "memoize"]
+	path = lib/memoize
+	url = git@github.com:skeeto/emacs-memoize.git
+[submodule "mic-paren"]
+	path = lib/mic-paren
+	url = git@github.com:emacsattic/mic-paren.git
+[submodule "minions"]
+	path = lib/minions
+	url = git@github.com:tarsius/minions.git
+[submodule "no-littering"]
+	path = lib/no-littering
+	url = git@github.com:emacscollective/no-littering.git
+[submodule "org"]
+	path = lib/org
+	url = git@code.orgmode.org:bzg/org-mode.git
+	build-nix-shell-packages = emacs git gnumake texinfo
+	build-step = make
+[submodule "org-bullets"]
+	path = lib/org-bullets
+	url = git@github.com:emacsorphanage/org-bullets.git
+[submodule "ox-pandoc"]
+	path = lib/ox-pandoc
+	url = git@github.com:kawabata/ox-pandoc.git
+[submodule "ox-twbs"]
+	path = lib/ox-twbs
+	url = git@github.com:marsmining/ox-twbs.git
+[submodule "packed"]
+	path = lib/packed
+	url = git@github.com:emacscollective/packed.git
+[submodule "paredit"]
+	path = lib/paredit
+	url = https://mumble.net/~campbell/git/paredit.git
+[submodule "paren-face"]
+	path = lib/paren-face
+	url = git@github.com:tarsius/paren-face.git
+[submodule "pyvenv"]
+	path = lib/pyvenv
+	url = git@github.com:jorgenschaefer/pyvenv.git
+[submodule "queue"]
+	path = lib/queue
+	url = git@github.com:emacsmirror/queue.git
+[submodule "rjsx-mode"]
+	path = lib/rjsx-mode
+	url = git@github.com:felipeochoa/rjsx-mode.git
+[submodule "s"]
+	path = lib/s
+	url = git@github.com:magnars/s.el.git
+[submodule "sesman"]
+	path = lib/sesman
+	url = git@github.com:vspinu/sesman.git
+[submodule "shut-up"]
+	path = lib/shut-up
+	url = git@github.com:cask/shut-up.git
+[submodule "slime"]
+	path = lib/slime
+	url = git@github.com:slime/slime.git
+	build-step = make compile contrib-compile
+[submodule "slime-company"]
+	path = lib/slime-company
+	url = git@github.com:anwyn/slime-company.git
+[submodule "slime-complete-locals"]
+	path = lib/slime-complete-locals
+	url = git@github.com:joodie/slime-complete-locals.git
+[submodule "spinner"]
+	path = lib/spinner
+	url = git@github.com:Malabarba/spinner.el.git
+[submodule "typescript-mode"]
+	path = lib/typescript-mode
+	url = git@github.com:ananthakumaran/typescript.el.git
+[submodule "use-package"]
+	path = lib/use-package
+	url = git@github.com:jwiegley/use-package.git
+[submodule "web-mode"]
+	path = lib/web-mode
+	url = git@github.com:fxbois/web-mode.git
+[submodule "with-editor"]
+	path = lib/with-editor
+	url = git@github.com:magit/with-editor.git
+[submodule "yasnippet"]
+	path = lib/yasnippet
+	url = git@github.com:joaotavora/yasnippet.git
+[submodule "yasnippet-snippets"]
+	path = lib/yasnippet-snippets
+	url = git@github.com:AndreaCrotti/yasnippet-snippets.git
+[submodule "zenburn-theme"]
+	path = lib/zenburn-theme
+	url = git@github.com:georgek/zenburn-emacs.git
