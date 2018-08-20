@@ -1,3 +1,12 @@
 #+TITLE: My Emacs configuration
 
 My config is now based on [[https://github.com/emacscollective/emacs.g][emacs.g]] and uses [[https://github.com/emacscollective/borg][borg]].
+
+* Usage
+
+#+BEGIN_SRC shell
+  git clone <this> ~/.emacs.d
+  cd ~/.emacs.d/
+  make bootstrap-borg
+  make bootstrap
+#+END_SRC
