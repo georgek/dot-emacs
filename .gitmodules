@@ -124,7 +124,7 @@
 	url = git@github.com:joddie/macrostep.git
 [submodule "magit"]
 	path = lib/magit
-	url = git@github.com:magit/magit.git
+	url = git@github.com:georgek/magit.git
 	recursive-byte-compile = true
 	info-path = Documentation
 [submodule "magit-popup"]
