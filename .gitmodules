@@ -185,7 +185,7 @@
 	url = git@github.com:cask/shut-up.git
 [submodule "slime"]
 	path = lib/slime
-	url = git@github.com:slime/slime.git
+	url = git@github.com:georgek/slime.git
 	build-step = make compile contrib-compile
 [submodule "slime-company"]
 	path = lib/slime-company
