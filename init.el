@@ -496,6 +496,9 @@ RECURRENCES occasions."
 (use-package markdown-mode
   :mode "\\.md\\'")
 
+(use-package yaml-mode
+  :mode "\\.yml\\'")
+
 (use-package make-mode
   :defer t
   :bind
