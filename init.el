@@ -493,6 +493,9 @@ RECURRENCES occasions."
   (eval-after-load "org"
     '(setcdr (assoc "\\.pdf\\'" org-file-apps) "evince %s")))
 
+(use-package markdown-mode
+  :mode "\\.md\\'")
+
 (use-package make-mode
   :defer t
   :bind
