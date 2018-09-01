@@ -598,7 +598,10 @@ RECURRENCES occasions."
   (elpy-enable)
   (setq python-shell-interpreter "ipython"
         python-shell-interpreter-args "-i --simple-prompt")
-  (setq elpy-rpc-backend "jedi"))
+  (setq elpy-rpc-backend "jedi")
+  :bind (:map elpy-mode-map
+         ("C->" . #'elpy-nav-indent-shift-right)
+         ("C-<" . #'elpy-nav-indent-shift-left)))
 
 (use-package man
   :defer t
