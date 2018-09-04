@@ -497,7 +497,7 @@ RECURRENCES occasions."
   :mode "\\.md\\'")
 
 (use-package yaml-mode
-  :mode "\\.yml\\'")
+  :mode "\\.ya?ml\\'")
 
 (use-package make-mode
   :defer t
