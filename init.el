@@ -204,6 +204,13 @@
 
     (show-paren-mode t)))
 
+(use-package smartparens
+  :hook ((python-mode . smartparens-mode))
+  :config (require 'smartparens-python)
+  :bind (:map smartparens-mode
+         ("C-)" . sp-forward-slurp-sexp)
+         ("C-(" . sp-backward-slurp-sexp)))
+
 (use-package lisp-mode
   :config
   (defun eval-buffer-key ()
