@@ -41,7 +41,7 @@
   (setq use-package-verbose t))
 
 ;; theme
-(defvar my-font "DejaVu Sans Mono-9")
+(defvar my-font "Ubuntu Mono-9")
 (set-frame-font my-font)
 (add-to-list 'default-frame-alist `(font . ,my-font))
 (use-package zenburn-theme
