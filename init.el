@@ -590,7 +590,10 @@ RECURRENCES occasions."
   :bind (("C-c s" . eshell)))
 
 (use-package python
-  :mode ("\\.py\\'" . python-mode))
+  :mode ("\\.py\\'" . python-mode)
+  :config
+  (setq python-prettify-symbols-alist
+        '(("lambda" . 955))))
 
 (use-package elpy
   :after python
