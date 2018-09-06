@@ -105,6 +105,14 @@
 
 ;;; Long tail
 
+(use-package projectile
+  :config
+  (projectile-mode +1)
+  (setq projectile-completion-system 'ivy)
+  (setq projectile-enable-caching)
+  :bind-keymap
+  ("C-c p" . projectile-command-map))
+
 (use-package dash
   :config (dash-enable-font-lock))
 

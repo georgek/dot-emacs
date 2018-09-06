@@ -62,6 +62,9 @@
 [submodule "epkg"]
 	path = lib/epkg
 	url = git@github.com:emacscollective/epkg.git
+[submodule "epl"]
+	path = lib/epl
+	url = git@github.com:cask/epl.git
 [submodule "ess"]
 	path = lib/ess
 	url = git@github.com:emacs-ess/ESS.git
@@ -171,6 +174,12 @@
 [submodule "paren-face"]
 	path = lib/paren-face
 	url = git@github.com:tarsius/paren-face.git
+[submodule "pkg-info"]
+	path = lib/pkg-info
+	url = git@github.com:lunaryorn/pkg-info.el.git
+[submodule "projectile"]
+	path = lib/projectile
+	url = git@github.com:bbatsov/projectile.git
 [submodule "pyvenv"]
 	path = lib/pyvenv
 	url = git@github.com:jorgenschaefer/pyvenv.git
