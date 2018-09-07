@@ -109,7 +109,7 @@
   :config
   (projectile-mode +1)
   (setq projectile-completion-system 'ivy)
-  (setq projectile-enable-caching)
+  (setq projectile-enable-caching t)
   :bind-keymap
   ("C-c p" . projectile-command-map))
 
