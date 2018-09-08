@@ -20,6 +20,7 @@
   (setq frame-title-format '("%b - GNU Emacs"))
   (scroll-bar-mode 0)
   (tool-bar-mode 0)
+  (tooltip-mode 0)
   (menu-bar-mode 0)
   (blink-cursor-mode -1)
   (global-unset-key (kbd "C-z"))
