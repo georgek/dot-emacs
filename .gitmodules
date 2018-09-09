@@ -113,6 +113,9 @@
 [submodule "hyperspec"]
 	path = lib/hyperspec
 	url = git@github.com:emacsorphanage/hyperspec.git
+[submodule "i3"]
+	path = lib/i3
+	url = git@github.com:vava/i3-emacs.git
 [submodule "ivy"]
 	path = lib/ivy
 	url = git@github.com:abo-abo/swiper.git
