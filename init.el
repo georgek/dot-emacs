@@ -362,7 +362,8 @@
   (magit-add-section-hook 'magit-status-sections-hook
                           'magit-insert-modules
                           'magit-insert-stashes
-                          'append))
+                          'append)
+  (setq vc-handled-backends (delq 'Git vc-handled-backends)))
 
 (use-package org
   :mode (("\\.org$" . org-mode))
