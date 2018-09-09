@@ -363,6 +363,10 @@
                           'magit-insert-modules
                           'magit-insert-stashes
                           'append)
+  (setq magit-module-sections-hook
+        '(magit-insert-modules-overview
+          magit-insert-modules-unpulled-from-upstream
+          magit-insert-modules-unpushed-to-upstream))
   (setq vc-handled-backends (delq 'Git vc-handled-backends)))
 
 (use-package org
