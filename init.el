@@ -588,13 +588,13 @@ RECURRENCES occasions."
   (setq TeX-auto-save t)
   (setq TeX-parse-self t)
   (setq TeX-newline-function 'newline-and-indent)
-  (setq reftex-default-bibliography '("bibliography"))
-  (add-to-list 'TeX-view-program-selection '(output-pdf "xdg-open")))
+  (setq reftex-default-bibliography '("bibliography")))
 
 (use-package latex
   :defer t
   :config
   (use-package preview)
+  (add-to-list 'TeX-view-program-selection '(output-pdf "xdg-open"))
   :hook ((LaTeX-mode . (lambda ()
                          (TeX-PDF-mode)
                          (auto-fill-mode)
