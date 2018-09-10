@@ -588,7 +588,8 @@ RECURRENCES occasions."
   (setq TeX-auto-save t)
   (setq TeX-parse-self t)
   (setq TeX-newline-function 'newline-and-indent)
-  (setq reftex-default-bibliography '("bibliography")))
+  (setq reftex-default-bibliography '("bibliography"))
+  (add-to-list 'TeX-view-program-selection '(output-pdf "xdg-open")))
 
 (use-package latex
   :defer t
