@@ -111,6 +111,7 @@
   (projectile-mode +1)
   (setq projectile-completion-system 'ivy)
   (setq projectile-enable-caching t)
+  (add-to-list 'projectile-globally-ignored-file-suffixes "~")
   :bind-keymap
   ("C-c p" . projectile-command-map))
 
