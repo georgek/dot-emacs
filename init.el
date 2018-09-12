@@ -45,7 +45,7 @@
 (use-package i3
   :config
   (require 'i3-integration)
-  (i3-one-window-per-frame-mode-on))
+  (i3-advise-visible-frame-list-on))
 
 ;; theme
 (defvar my-font "Ubuntu Mono-9")
