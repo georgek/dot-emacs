@@ -43,6 +43,10 @@
 
 ;; theme
 (defvar my-font "Ubuntu Mono-9")
+(dolist (face '(default fixed-pitch fixed-pitch-serif))
+ (set-face-attribute face nil :height 90 :family "Ubuntu Mono"))
+(dolist (face '(variable-pitch))
+ (set-face-attribute face nil :height 90 :family "Ubuntu"))
 (set-frame-font my-font)
 (add-to-list 'default-frame-alist `(font . ,my-font))
 (use-package zenburn-theme
