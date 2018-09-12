@@ -41,6 +41,12 @@
   (require  'use-package)
   (setq use-package-verbose t))
 
+;;; i3 integration
+(use-package i3
+  :config
+  (require 'i3-integration)
+  (i3-one-window-per-frame-mode-on))
+
 ;; theme
 (defvar my-font "Ubuntu Mono-9")
 (dolist (face '(default fixed-pitch fixed-pitch-serif))
