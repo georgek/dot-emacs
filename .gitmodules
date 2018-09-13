@@ -40,6 +40,9 @@
 	path = lib/dash
 	url = git@github.com:magnars/dash.el.git
 	no-makeinfo = dash-template.texi
+[submodule "deadgrep"]
+	path = lib/deadgrep
+	url = git@github.com:Wilfred/deadgrep.git
 [submodule "diff-hl"]
 	path = lib/diff-hl
 	url = git@github.com:dgutov/diff-hl.git

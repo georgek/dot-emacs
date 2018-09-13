@@ -704,6 +704,9 @@ RECURRENCES occasions."
          :map emacs-lisp-mode-map
          ("C-c C-d" . helpful-at-point)))
 
+(use-package deadgrep
+  :commands (deadgrep))
+
 (use-package go-mode
   :mode "\\.go\\'"
   :hook ((go-mode . (lambda () (set (make-local-variable 'compile-command)
