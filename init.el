@@ -398,6 +398,7 @@
          (org-mode . reveal-mode))
   :config
   (use-package org-bullets)
+  (setq org-startup-indented t)
 
   (defmacro orgdr (&optional filename)
     (if filename
