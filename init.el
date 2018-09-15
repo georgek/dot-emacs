@@ -338,9 +338,7 @@
   :commands (geiser-mode)
   :load-path "lib/geiser/elisp"
   :init
-  (setq geiser-default-implementation 'mit)
-  ;; Get around geiser bug not associating repls with buffers.
-  (setq geiser-active-implementations '(mit)))
+  (setq geiser-active-implementations '(racket guile)))
 
 (use-package cider
   :mode (("\\.clj$" . clojure-mode))
