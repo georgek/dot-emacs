@@ -213,6 +213,7 @@
    'paredit-close-round)
 
   (defun nice-paredit-on ()
+    (turn-off-smartparens-mode)
     (paredit-mode t)
 
     (turn-on-eldoc-mode)
@@ -226,8 +227,9 @@
     (show-paren-mode t)))
 
 (use-package smartparens
-  :hook ((python-mode . smartparens-mode))
-  :config (require 'smartparens-python)
+  :demand
+  :config
+  (smartparens-global-mode)
   :bind (:map smartparens-mode
          ("C-)" . sp-forward-slurp-sexp)
          ("C-(" . sp-backward-slurp-sexp)))
@@ -397,6 +399,7 @@
          (org-mode . reveal-mode))
   :config
   (use-package org-bullets)
+  (require 'smartparens-org)
   (setq org-startup-indented t)
 
   (defmacro orgdr (&optional filename)
@@ -526,7 +529,9 @@ RECURRENCES occasions."
     '(setcdr (assoc "\\.pdf\\'" org-file-apps) "evince %s")))
 
 (use-package markdown-mode
-  :mode "\\.md\\'")
+  :mode "\\.md\\'"
+  :config
+  (require 'smartparens-markdown))
 
 (use-package yaml-mode
   :mode "\\.ya?ml\\'")
@@ -599,7 +604,8 @@ RECURRENCES occasions."
   (setq TeX-auto-save t)
   (setq TeX-parse-self t)
   (setq TeX-newline-function 'newline-and-indent)
-  (setq reftex-default-bibliography '("bibliography")))
+  (setq reftex-default-bibliography '("bibliography"))
+  (require 'smartparens-latex))
 
 (use-package latex
   :defer t
@@ -626,7 +632,8 @@ RECURRENCES occasions."
   :mode ("\\.py\\'" . python-mode)
   :config
   (setq python-prettify-symbols-alist
-        '(("lambda" . 955))))
+        '(("lambda" . 955)))
+  (require 'smartparens-python))
 
 (use-package elpy
   :after python
@@ -759,10 +766,12 @@ RECURRENCES occasions."
          "\\.djhtml\\'"
          "\\.html?\\'")
   :bind (:map web-mode-hook
-         ("C-c C-c" . browse-url-of-file)))
+              ("C-c C-c" . browse-url-of-file))
+  :config (require 'smartparens-html))
 
 (use-package js2-mode
-  :mode "\\.js\\'")
+  :mode "\\.js\\'"
+  :config (require 'smartparens-javascript))
 
 (use-package typescript-mode
   :mode "\\.ts\\'")
