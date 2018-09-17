@@ -157,6 +157,9 @@
 
 (use-package company
   :config
+  (define-key company-active-map (kbd "<return>") nil)
+  (define-key company-active-map (kbd "RET") nil)
+  (define-key company-active-map (kbd "C-SPC") #'company-complete-selection)
   (setq company-backends
         '((company-files
            company-keywords
