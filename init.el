@@ -27,7 +27,7 @@
   (tool-bar-mode 0)
   (tooltip-mode 0)
   (menu-bar-mode 0)
-  (blink-cursor-mode -1)
+  (blink-cursor-mode 0)
   (global-unset-key (kbd "C-z"))
   ;; disable as it ruins keyboard macros
   (setq line-move-visual nil)
