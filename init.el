@@ -6,7 +6,7 @@
   (message "Loading Emacs...done (%.3fs)"
            (float-time (time-subtract before-user-init-time
                                       before-init-time)))
-  (setq gc-cons-threshold (* 10 1024 1024))
+  (setq gc-cons-threshold (* 256 1024 1024))
   (setq user-init-file (or load-file-name buffer-file-name))
   (setq user-emacs-directory (file-name-directory user-init-file))
   (message "Loading %s..." user-init-file)
@@ -858,7 +858,8 @@ RECURRENCES occasions."
                "Loading %s...done (%.3fs) [after-init]" user-init-file
                (float-time (time-subtract (current-time)
                                           before-user-init-time))))
-            t))
+            t)
+  (setq gc-cons-threshold (* 20 1024 1024)))
 
 (when load-file-name
   (find-file (concat (file-name-sans-extension load-file-name)
