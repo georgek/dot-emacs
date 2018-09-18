@@ -860,12 +860,6 @@ RECURRENCES occasions."
                                           before-user-init-time))))
             t))
 
-(progn ;     personalize
-  (let ((file (expand-file-name (concat (user-real-login-name) ".el")
-                                user-emacs-directory)))
-    (when (file-exists-p file)
-      (load file))))
-
 (when load-file-name
   (find-file (concat (file-name-sans-extension load-file-name)
                      ".el")))
