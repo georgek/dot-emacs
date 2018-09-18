@@ -12,6 +12,7 @@
                          (> (length (this-single-command-keys)) 1)
                          last-input-event))
         repeat-key-str
+	prev-window
         (nxt t))
     ;; save current window
     (setq prev-window (selected-window))
