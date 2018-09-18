@@ -385,8 +385,7 @@
   (setq magit-module-sections-hook
         '(magit-insert-modules-overview
           magit-insert-modules-unpulled-from-upstream
-          magit-insert-modules-unpushed-to-upstream))
-  (setq vc-handled-backends (delq 'Git vc-handled-backends)))
+          magit-insert-modules-unpushed-to-upstream)))
 
 (use-package org
   :mode (("\\.org$" . org-mode))
@@ -819,6 +818,7 @@ RECURRENCES occasions."
 
  ;; enable auto revert globally
  (global-auto-revert-mode 1)
+ (setq auto-revert-check-vc-info t)
 
  ;; set some default modes
  ;; lex
