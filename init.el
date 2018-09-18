@@ -62,7 +62,11 @@
 
 (use-package smart-mode-line
   :config
-  (sml/setup))
+  (sml/setup)
+  (setq sml/name-width 40)
+  (setq sml/replacer-regexp-list
+        '(("^~/\\.emacs\\.d/" ":ed:")
+          ("^/sudo:.*:" ":su:"))))
 
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 (use-package gk-extra
