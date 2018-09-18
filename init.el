@@ -18,7 +18,7 @@
   ;; (package-initialize)
   (setq inhibit-startup-buffer-menu t)
   (setq inhibit-startup-screen t)
-  (setq inhibit-startup-echo-area-message "locutus")
+  (setq inhibit-startup-echo-area-message "gk")
   (setq initial-buffer-choice t)
   (setq initial-scratch-message "")
   (setq load-prefer-newer t)
@@ -768,7 +768,11 @@ RECURRENCES occasions."
   :mode "\\.\\(fasta\\|fa\\|exp\\|ace\\|gb\\)\\'")
 
 (use-package minions
-  :config (minions-mode 1))
+  :unless noninteractive
+  :defer 2
+  :config
+  (minions-mode 1)
+  (setq minions-mode-line-lighter "^"))
 
 (use-package web-mode
   :mode ("\\.phtml\\'"
