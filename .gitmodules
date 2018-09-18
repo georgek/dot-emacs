@@ -49,6 +49,9 @@
 [submodule "dna-mode"]
 	path = lib/dna-mode
 	url = git@github.com:jhgorrell/dna-mode-el.git
+[submodule "ebuild-mode"]
+	path = lib/ebuild-mode
+	url = https://anongit.gentoo.org/git/proj/ebuild-mode.git
 [submodule "edit-indirect"]
 	path = lib/edit-indirect
 	url = git@github.com:Fanael/edit-indirect.git

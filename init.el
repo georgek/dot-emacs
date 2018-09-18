@@ -782,8 +782,9 @@ RECURRENCES occasions."
 (use-package rjsx-mode
   :mode "\\.jsx\\'")
 
-(use-package sh
-  :mode ("\\.ebuild\\'" . sh-mode))
+(use-package ebuild-mode
+  :mode ("\\.ebuild\\'"
+         "\\.eclass\\'"))
 
 (use-package gk-other-window-repeat
   :bind (("C-x o" . gk-other-window-repeat)))
