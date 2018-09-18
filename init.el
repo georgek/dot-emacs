@@ -60,6 +60,10 @@
   :config
   (load-theme 'zenburn t))
 
+(use-package smart-mode-line
+  :config
+  (sml/setup))
+
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 (use-package gk-extra
   :demand

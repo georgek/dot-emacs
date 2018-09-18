@@ -195,6 +195,9 @@
 [submodule "queue"]
 	path = lib/queue
 	url = git@github.com:emacsmirror/queue.git
+[submodule "rich-minority"]
+	path = lib/rich-minority
+	url = git@github.com:Malabarba/rich-minority.git
 [submodule "rjsx-mode"]
 	path = lib/rjsx-mode
 	url = git@github.com:felipeochoa/rjsx-mode.git
@@ -217,6 +220,9 @@
 [submodule "slime-complete-locals"]
 	path = lib/slime-complete-locals
 	url = git@github.com:joodie/slime-complete-locals.git
+[submodule "smart-mode-line"]
+	path = lib/smart-mode-line
+	url = git@github.com:Malabarba/smart-mode-line.git
 [submodule "smartparens"]
 	path = lib/smartparens
 	url = git@github.com:Fuco1/smartparens.git
