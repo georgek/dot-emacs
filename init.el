@@ -6,7 +6,11 @@
   (message "Loading Emacs...done (%.3fs)"
            (float-time (time-subtract before-user-init-time
                                       before-init-time)))
+  ;; increase temporarily during startup
   (setq gc-cons-threshold (* 256 1024 1024))
+  ;; disable temporarily during startup
+  (defvar file-name-handler-alist-old file-name-handler-alist)
+  (setq file-name-handler-alist nil)
   (setq user-init-file (or load-file-name buffer-file-name))
   (setq user-emacs-directory (file-name-directory user-init-file))
   (message "Loading %s..." user-init-file)
@@ -859,6 +863,8 @@ RECURRENCES occasions."
                (float-time (time-subtract (current-time)
                                           before-user-init-time))))
             t)
+  ;; restore after startup
+  (setq file-name-handler-alist file-name-handler-alist-old)
   (setq gc-cons-threshold (* 20 1024 1024)))
 
 (when load-file-name
