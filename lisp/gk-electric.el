@@ -3,7 +3,7 @@
 ;;; Code:
 
 (defvar gk-electrify-return-match
-  "[\]}\)\"]"
+  "[\]}\)]"
   "If this regexp matches the text after the cursor, do an \"electric\"
   return.")
 
