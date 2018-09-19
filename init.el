@@ -649,6 +649,12 @@ RECURRENCES occasions."
          ("C->" . #'elpy-nav-indent-shift-right)
          ("C-<" . #'elpy-nav-indent-shift-left)))
 
+(use-package pylint
+  :after python
+  :commands (pylint)
+  :hook ((python-mode . pylint-add-menu-items)
+         (python-mode . pylint-add-key-bindings)))
+
 (use-package man
   :defer t
   :config (setq Man-width 80))
