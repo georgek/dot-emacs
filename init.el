@@ -200,27 +200,10 @@
 
 (use-package paredit
   :config
-  ;; electric return stuff
-  (defvar electrify-return-match
-    "[\]}\)\"]"
-    "If this regexp matches the text after the cursor, do an \"electric\"
-  return.")
-
-  (defun electrify-return-if-match (&optional arg)
-    "If the text after the cursor matches `electrify-return-match' then
-  open and indent an empty line between the cursor and the text.  Move the
-  cursor to the new line."
-    (interactive "P")
-    (let ((case-fold-search nil))
-      (if (looking-at electrify-return-match)
-          (save-excursion (newline-and-indent)))
-      (delete-horizontal-space t)
-      (newline arg)
-      (indent-according-to-mode)))
-
+  (require 'gk-electric)
   (defun paredit-with-electric-return ()
     (paredit-mode +1)
-    (local-set-key (kbd "RET") 'electrify-return-if-match))
+    (local-set-key (kbd "RET") 'gk-electrify-return-if-match))
 
   ;; use with eldoc
   (eldoc-add-command
@@ -236,8 +219,8 @@
      'paredit-backward-delete
      'paredit-close-round)
 
-    (local-set-key (kbd "RET") 'electrify-return-if-match)
-    (eldoc-add-command 'electrify-return-if-match)
+    (local-set-key (kbd "RET") 'gk-electrify-return-if-match)
+    (eldoc-add-command 'gk-electrify-return-if-match)
 
     (show-paren-mode t)))
 
@@ -647,7 +630,9 @@ RECURRENCES occasions."
   :config
   (setq python-prettify-symbols-alist
         '(("lambda" . 955)))
-  (require 'smartparens-python))
+  (require 'smartparens-python)
+  :bind (:map python-mode-map
+         ("RET" . gk-electrify-return-if-match)))
 
 (use-package elpy
   :after python
