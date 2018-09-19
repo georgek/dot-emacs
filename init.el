@@ -245,7 +245,7 @@
   :demand
   :config
   (smartparens-global-mode)
-  :bind (:map smartparens-mode
+  :bind (:map smartparens-mode-map
          ("C-)" . sp-forward-slurp-sexp)
          ("C-(" . sp-backward-slurp-sexp)))
 
