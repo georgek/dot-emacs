@@ -67,10 +67,23 @@
 (use-package smart-mode-line
   :config
   (sml/setup)
-  (setq sml/name-width 40)
+  (setq sml/name-width 50)
   (setq sml/replacer-regexp-list
         '(("^~/\\.emacs\\.d/" ":ed:")
-          ("^/sudo:.*:" ":su:"))))
+          ("^/sudo:.*:" ":su:")))
+  (setq rm-blacklist
+        (format
+         "^ \\(%s\\)$"
+         (mapconcat #'identity
+                    '("Fly.*"
+                      "Projectile.*"
+                      "Reveal"
+                      "Counsel"
+                      "Ivy"
+                      "company"
+                      "yas"
+                      "ElDoc")
+                    "\\|"))))
 
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 (use-package gk-extra
