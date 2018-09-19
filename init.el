@@ -758,13 +758,6 @@ RECURRENCES occasions."
 (use-package dna-mode
   :mode "\\.\\(fasta\\|fa\\|exp\\|ace\\|gb\\)\\'")
 
-(use-package minions
-  :unless noninteractive
-  :defer 2
-  :config
-  (minions-mode 1)
-  (setq minions-mode-line-lighter "^"))
-
 (use-package web-mode
   :mode ("\\.phtml\\'"
          "\\.tpl\\.php\\'"

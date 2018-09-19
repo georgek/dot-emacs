@@ -154,9 +154,6 @@
 [submodule "mic-paren"]
 	path = lib/mic-paren
 	url = git@github.com:emacsattic/mic-paren.git
-[submodule "minions"]
-	path = lib/minions
-	url = git@github.com:tarsius/minions.git
 [submodule "no-littering"]
 	path = lib/no-littering
 	url = git@github.com:emacscollective/no-littering.git
