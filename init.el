@@ -35,7 +35,8 @@
   (setq split-height-threshold 160)
   (setq split-width-threshold 160)
   (setq mouse-wheel-progressive-speed nil)
-  (fset 'yes-or-no-p 'y-or-n-p))
+  (fset 'yes-or-no-p 'y-or-n-p)
+  (global-hl-line-mode +1))
 
 (progn ;    `borg'
   (add-to-list 'load-path (expand-file-name "lib/borg" user-emacs-directory))
