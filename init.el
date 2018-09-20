@@ -71,15 +71,9 @@
         (format
          "^ \\(%s\\)$"
          (mapconcat #'identity
-                    '("Fly.*"
-                      "Projectile.*"
-                      "Reveal"
-                      "Counsel"
-                      "Ivy"
-                      "company"
-                      "yas"
-                      "ElDoc"
-                      "||")
+                    '("Fly.*" "Projectile.*" "Reveal"
+                      "Counsel" "Ivy" "company" "yas"
+                      "ElDoc" "||" "WK" "VHl" "," "ws")
                     "\\|"))))
 
 (use-package smart-mode-line
@@ -249,6 +243,10 @@
   :bind (:map smartparens-mode-map
          ("C-)" . sp-forward-slurp-sexp)
          ("C-(" . sp-backward-slurp-sexp)))
+
+(use-package subword
+  :hook ((python-mode yaml-mode go-mode clojure-mode cider-repl-mode)
+         . subword-mode))
 
 (use-package lisp-mode
   :config
