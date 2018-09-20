@@ -736,6 +736,10 @@ RECURRENCES occasions."
          :map emacs-lisp-mode-map
          ("C-c C-d" . helpful-at-point)))
 
+(use-package which-key
+  :defer 5
+  :config (which-key-mode 1))
+
 (use-package deadgrep
   :commands (deadgrep))
 
