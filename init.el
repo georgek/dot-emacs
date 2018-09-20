@@ -84,6 +84,10 @@
         '(("^~/\\.emacs\\.d/" ":ed:")
           ("^/sudo:.*:" ":su:"))))
 
+(use-package volatile-highlights
+  :defer 2
+  :config (volatile-highlights-mode t))
+
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 (use-package gk-extra
   :demand

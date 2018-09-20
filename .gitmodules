@@ -235,6 +235,9 @@
 [submodule "use-package"]
 	path = lib/use-package
 	url = git@github.com:jwiegley/use-package.git
+[submodule "volatile-highlights"]
+	path = lib/volatile-highlights
+	url = git@github.com:k-talo/volatile-highlights.el.git
 [submodule "web-mode"]
 	path = lib/web-mode
 	url = git@github.com:fxbois/web-mode.git
