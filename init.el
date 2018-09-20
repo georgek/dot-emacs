@@ -833,6 +833,7 @@ RECURRENCES occasions."
  ;; enable auto revert globally
  (global-auto-revert-mode 1)
  (setq auto-revert-check-vc-info t)
+ (setq auto-revert-verbose nil)
 
  ;; set some default modes
  ;; lex
