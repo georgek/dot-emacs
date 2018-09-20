@@ -64,13 +64,8 @@
   :config
   (load-theme 'zenburn t))
 
-(use-package smart-mode-line
+(use-package rich-minority
   :config
-  (sml/setup)
-  (setq sml/name-width 50)
-  (setq sml/replacer-regexp-list
-        '(("^~/\\.emacs\\.d/" ":ed:")
-          ("^/sudo:.*:" ":su:")))
   (setq rm-blacklist
         (format
          "^ \\(%s\\)$"
@@ -84,6 +79,14 @@
                       "yas"
                       "ElDoc")
                     "\\|"))))
+
+(use-package smart-mode-line
+  :config
+  (sml/setup)
+  (setq sml/name-width 50)
+  (setq sml/replacer-regexp-list
+        '(("^~/\\.emacs\\.d/" ":ed:")
+          ("^/sudo:.*:" ":su:"))))
 
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 (use-package gk-extra
