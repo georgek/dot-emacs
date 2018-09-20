@@ -77,7 +77,8 @@
                       "Ivy"
                       "company"
                       "yas"
-                      "ElDoc")
+                      "ElDoc"
+                      "||")
                     "\\|"))))
 
 (use-package smart-mode-line
