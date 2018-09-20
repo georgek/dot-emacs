@@ -847,7 +847,13 @@ RECURRENCES occasions."
  (global-set-key (kbd "C-M-'") 'other-frame)
 
  ;; keep backup files neatly out of the way in .~/
- (setq backup-directory-alist '(("." . ".~"))))
+ (setq backup-directory-alist '(("." . ".~")))
+
+ ;; use character folding in search (a matches á etc)
+ (setq search-default-mode 'char-fold-to-regexp)
+
+ ;; rat yank doesn't move cursor
+ (setq mouse-yank-at-point t))
 
 (use-package exec-path-from-shell
   :init
