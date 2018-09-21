@@ -92,6 +92,13 @@
   :defer 2
   :config (global-hl-todo-mode))
 
+(use-package whitespace
+  :hook (prog-mode . whitespace-mode)
+  :config
+  (setq whitespace-style '(face tabs empty trailing lines-tail))
+  ;; highlight lines with more than `fill-column' characters
+  (setq whitespace-line-column nil))
+
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 (use-package gk-extra
   :demand
