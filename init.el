@@ -88,6 +88,10 @@
   :defer 2
   :config (volatile-highlights-mode t))
 
+(use-package hl-todo
+  :defer 2
+  :config (global-hl-todo-mode))
+
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 (use-package gk-extra
   :demand
