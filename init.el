@@ -253,7 +253,11 @@
 
 (use-package smartparens
   :demand
+  :hook ((python-mode) . smartparens-strict-mode)
   :config
+  (require 'smartparens-config)
+  (setq sp-base-key-bindings 'paredit)
+  (setq sp-autoskip-closing-pair 'always)
   (smartparens-global-mode)
   :bind (:map smartparens-mode-map
          ("C-)" . sp-forward-slurp-sexp)
