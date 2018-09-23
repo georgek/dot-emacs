@@ -253,7 +253,6 @@
 
 (use-package smartparens
   :demand
-  :hook ((python-mode) . smartparens-strict-mode)
   :config
   (require 'smartparens-config)
   (setq sp-base-key-bindings 'paredit)
