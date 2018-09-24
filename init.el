@@ -404,6 +404,9 @@
                           'magit-insert-unpushed-to-upstream-or-recent
                           'replace)
   (magit-add-section-hook 'magit-status-sections-hook
+                          'magit-insert-unpushed-to-pushremote
+                          'magit-insert-unpushed-to-upstream)
+  (magit-add-section-hook 'magit-status-sections-hook
                           'magit-insert-modules
                           'magit-insert-stashes
                           'append)
