@@ -36,6 +36,9 @@
 [submodule "company"]
 	path = lib/company
 	url = git@github.com:company-mode/company-mode.git
+[submodule "copy-as-format"]
+	path = lib/copy-as-format
+	url = git@github.com:sshaw/copy-as-format.git
 [submodule "dash"]
 	path = lib/dash
 	url = git@github.com:magnars/dash.el.git

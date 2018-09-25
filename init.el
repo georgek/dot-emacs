@@ -826,6 +826,14 @@ RECURRENCES occasions."
   :mode ("\\.ebuild\\'"
          "\\.eclass\\'"))
 
+(use-package copy-as-format
+  :bind (("C-c w g" . copy-as-format-github)
+         ("C-c w h" . copy-as-format-hipchat)
+         ("C-c w j" . copy-as-format-jira)
+         ("C-c w m" . copy-as-format-markdown)
+         ("C-c w o" . copy-as-format-org-mode)
+         ("C-c w s" . copy-as-format-slack)))
+
 (use-package gk-other-window-repeat
   :bind (("C-x o" . gk-other-window-repeat)))
 
