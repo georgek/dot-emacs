@@ -763,7 +763,7 @@ RECURRENCES occasions."
 (use-package go-mode
   :mode "\\.go\\'"
   :hook ((go-mode . (lambda () (set (make-local-variable 'compile-command)
-                                    "go install"))))
+                               "go install"))))
   :config
   (defun go-mode-compile ()
     (interactive)
