@@ -36,7 +36,8 @@
   (setq split-width-threshold 160)
   (setq mouse-wheel-progressive-speed nil)
   (fset 'yes-or-no-p 'y-or-n-p)
-  (global-hl-line-mode +1))
+  (global-hl-line-mode +1)
+  (setq-default indent-tabs-mode nil))
 
 (progn ;    `borg'
   (add-to-list 'load-path (expand-file-name "lib/borg" user-emacs-directory))
@@ -62,6 +63,10 @@
 (set-frame-font my-font)
 (add-to-list 'default-frame-alist `(font . ,my-font))
 (use-package zenburn-theme
+  :init
+  (setq zenburn-use-variable-pitch t)
+  (setq zenburn-scale-org-headlines t)
+  (setq zenburn-scale-outline-headlines t)
   :config
   (load-theme 'zenburn t))
 
