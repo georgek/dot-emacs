@@ -817,6 +817,10 @@ RECURRENCES occasions."
               ("C-c C-c" . browse-url-of-file))
   :config (require 'smartparens-html))
 
+(use-package css-mode
+  :bind (:map css-mode-map
+              ("RET" . gk-electrify-return-if-match)))
+
 (use-package js2-mode
   :mode "\\.js\\'"
   :config (require 'smartparens-javascript))
