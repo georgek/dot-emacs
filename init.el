@@ -813,7 +813,7 @@ RECURRENCES occasions."
          "\\.mustache\\'"
          "\\.djhtml\\'"
          "\\.html?\\'")
-  :bind (:map web-mode-hook
+  :bind (:map web-mode-map
               ("C-c C-c" . browse-url-of-file))
   :config (require 'smartparens-html))
 
