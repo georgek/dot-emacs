@@ -836,7 +836,9 @@ RECURRENCES occasions."
          "\\.eclass\\'"))
 
 (use-package ledger-mode
-  :mode ("\\.ledger\\'"))
+  :mode ("\\.ledger\\'")
+  :bind (:map ledger-mode-map
+              ("C-c C-c" . ledger-report)))
 
 (use-package copy-as-format
   :bind (("C-c w g" . copy-as-format-github)
