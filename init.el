@@ -835,6 +835,9 @@ RECURRENCES occasions."
   :mode ("\\.ebuild\\'"
          "\\.eclass\\'"))
 
+(use-package ledger-mode
+  :mode ("\\.ledger\\'"))
+
 (use-package copy-as-format
   :bind (("C-c w g" . copy-as-format-github)
          ("C-c w h" . copy-as-format-hipchat)

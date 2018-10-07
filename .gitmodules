@@ -137,6 +137,9 @@
 [submodule "js2-mode"]
 	path = lib/js2-mode
 	url = git@github.com:mooz/js2-mode.git
+[submodule "ledger-mode"]
+	path = lib/ledger-mode
+	url = git@github.com:ledger/ledger-mode.git
 [submodule "loop"]
 	path = lib/loop
 	url = git@github.com:Wilfred/loop.el.git
