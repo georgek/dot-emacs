@@ -779,7 +779,8 @@ RECURRENCES occasions."
   :bind (:map go-mode-map
          ("C-c C-c" . go-mode-compile)
          ("C-c C-t" . go-mode-test)
-         ("M-." . godef-jump)))
+         ("M-." . godef-jump)
+         ("RET" . gk-electrify-return-if-match)))
 
 (use-package ess
   :init (require 'ess-site)
