@@ -767,9 +767,15 @@ RECURRENCES occasions."
 
 (use-package go-mode
   :mode "\\.go\\'"
-  :hook ((go-mode . (lambda () (set (make-local-variable 'compile-command)
-                               "go install"))))
+  :hook (go-mode . (lambda () (set (make-local-variable 'compile-command)
+                              "go install")))
   :config
+  (require 'go-eldoc)
+  (add-hook 'go-mode-hook 'go-eldoc-setup)
+  (require 'company-go)
+  (add-hook 'go-mode-hook (lambda () (set (make-local-variable
+                                      'company-backends)
+                                     '(company-go))))
   (defun go-mode-compile ()
     (interactive)
     (compile "go install"))
