@@ -767,13 +767,14 @@ RECURRENCES occasions."
 
 (use-package go-mode
   :mode "\\.go\\'"
-  :hook ((go-mode . (lambda () (set (make-local-variable 'compile-command)
-                               "go install")))
-         (go-mode . (lambda ()
-                      (whitespace-mode -1)
-                      (set (make-local-variable 'whitespace-style)
-                           '(face trailing lines-tail))
-                      (whitespace-mode 1))))
+  :hook (go-mode . (lambda ()
+                     (set (make-local-variable 'compile-command)
+                          "go install")
+                     (whitespace-mode -1)
+                     (set (make-local-variable 'whitespace-style)
+                          '(face trailing lines-tail))
+                     (whitespace-mode 1)
+                     (setq tab-width 4)))
   :config
   (require 'go-eldoc)
   (add-hook 'go-mode-hook 'go-eldoc-setup)
