@@ -767,9 +767,21 @@ RECURRENCES occasions."
 
 (use-package go-mode
   :mode "\\.go\\'"
-  :hook ((go-mode . (lambda () (set (make-local-variable 'compile-command)
-                               "go install"))))
+  :hook (go-mode . (lambda ()
+                     (set (make-local-variable 'compile-command)
+                          "go install")
+                     (whitespace-mode -1)
+                     (set (make-local-variable 'whitespace-style)
+                          '(face trailing lines-tail))
+                     (whitespace-mode 1)
+                     (setq tab-width 4)))
   :config
+  (require 'go-eldoc)
+  (add-hook 'go-mode-hook 'go-eldoc-setup)
+  (require 'company-go)
+  (add-hook 'go-mode-hook (lambda () (set (make-local-variable
+                                      'company-backends)
+                                     '(company-go))))
   (defun go-mode-compile ()
     (interactive)
     (compile "go install"))
@@ -779,7 +791,8 @@ RECURRENCES occasions."
   :bind (:map go-mode-map
          ("C-c C-c" . go-mode-compile)
          ("C-c C-t" . go-mode-test)
-         ("M-." . godef-jump)))
+         ("M-." . godef-jump)
+         ("RET" . gk-electrify-return-if-match)))
 
 (use-package ess
   :init (require 'ess-site)

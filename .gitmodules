@@ -36,6 +36,9 @@
 [submodule "company"]
 	path = lib/company
 	url = git@github.com:company-mode/company-mode.git
+[submodule "company-go"]
+	path = lib/company-go
+	url = git@github.com:emacsmirror/company-go.git
 [submodule "copy-as-format"]
 	path = lib/copy-as-format
 	url = git@github.com:sshaw/copy-as-format.git
@@ -101,6 +104,9 @@
 [submodule "git-modes"]
 	path = lib/git-modes
 	url = git@github.com:magit/git-modes.git
+[submodule "go-eldoc"]
+	path = lib/go-eldoc
+	url = git@github.com:syohex/emacs-go-eldoc.git
 [submodule "go-mode"]
 	path = lib/go-mode
 	url = git@github.com:dominikh/go-mode.el.git
