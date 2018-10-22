@@ -97,6 +97,10 @@
   :defer 2
   :config (global-hl-todo-mode))
 
+(use-package editorconfig
+  :config
+  (editorconfig-mode 1))
+
 (use-package whitespace
   :hook (prog-mode . whitespace-mode)
   :config
