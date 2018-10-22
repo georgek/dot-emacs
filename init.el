@@ -418,7 +418,8 @@
   (setq magit-module-sections-hook
         '(magit-insert-modules-overview
           magit-insert-modules-unpulled-from-upstream
-          magit-insert-modules-unpushed-to-upstream)))
+          magit-insert-modules-unpushed-to-upstream))
+  (setq magit-prefer-remote-upstream t))
 
 (use-package org
   :mode (("\\.org$" . org-mode))
