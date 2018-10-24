@@ -104,7 +104,7 @@
 (use-package whitespace
   :hook (prog-mode . whitespace-mode)
   :config
-  (setq whitespace-style '(face tabs trailing lines-tail))
+  (setq whitespace-style '(face tab-mark trailing lines-tail))
   ;; highlight lines with more than `fill-column' characters
   (setq whitespace-line-column nil))
 
