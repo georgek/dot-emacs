@@ -750,7 +750,7 @@ RECURRENCES occasions."
 
 (use-package ace-window
   :config
-  (setq aw-scope 'visible)
+  (setq aw-scope 'frame)
   :bind
   (("M-'" . ace-window)))
 
