@@ -35,6 +35,8 @@
   (setq split-height-threshold 160)
   (setq split-width-threshold 160)
   (setq mouse-wheel-progressive-speed nil)
+  (setq focus-follows-mouse t)
+  (setq mouse-autoselect-window t)
   (fset 'yes-or-no-p 'y-or-n-p)
   (global-hl-line-mode +1)
   (setq-default indent-tabs-mode nil))
@@ -424,7 +426,8 @@
   (setq magit-module-sections-hook
         '(magit-insert-modules-overview
           magit-insert-modules-unpulled-from-upstream
-          magit-insert-modules-unpushed-to-upstream)))
+          magit-insert-modules-unpushed-to-upstream))
+  (setq magit-branch-prefer-remote-upstream '("master" "develop")))
 
 (use-package org
   :mode (("\\.org$" . org-mode))
@@ -751,7 +754,7 @@ RECURRENCES occasions."
 
 (use-package ace-window
   :config
-  (setq aw-scope 'visible)
+  (setq aw-scope 'frame)
   :bind
   (("M-'" . ace-window)))
 
