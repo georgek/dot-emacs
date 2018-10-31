@@ -104,9 +104,7 @@
 (use-package whitespace
   :config
   (defun nice-whitespace-on ()
-    (if indent-tabs-mode
-        (setq whitespace-style '(face tab-mark trailing lines-tail))
-      (setq whitespace-style '(face tabs tab-mark trailing lines-tail)))
+    (setq whitespace-style '(face tabs tab-mark trailing lines-tail))
     ;; highlight lines with more than `fill-column' characters
     (setq whitespace-line-column nil)
     (whitespace-mode 1))
@@ -775,14 +773,7 @@ RECURRENCES occasions."
 
 (use-package go-mode
   :mode "\\.go\\'"
-  :hook (go-mode . (lambda ()
-                     (set (make-local-variable 'compile-command)
-                          "go install")
-                     (whitespace-mode -1)
-                     (set (make-local-variable 'whitespace-style)
-                          '(face trailing lines-tail))
-                     (whitespace-mode 1)
-                     (setq tab-width 4)))
+  :hook (go-mode . (lambda () (setq tab-width 4)))
   :config
   (require 'go-eldoc)
   (add-hook 'go-mode-hook 'go-eldoc-setup)
