@@ -104,11 +104,15 @@
   (editorconfig-mode 1))
 
 (use-package whitespace
-  :hook (prog-mode . whitespace-mode)
   :config
-  (setq whitespace-style '(face tabs trailing lines-tail))
-  ;; highlight lines with more than `fill-column' characters
-  (setq whitespace-line-column nil))
+  (defun nice-whitespace-on ()
+    (if indent-tabs-mode
+        (setq whitespace-style '(face tab-mark trailing lines-tail))
+      (setq whitespace-style '(face tabs tab-mark trailing lines-tail)))
+    ;; highlight lines with more than `fill-column' characters
+    (setq whitespace-line-column nil)
+    (whitespace-mode 1))
+  :hook (prog-mode . nice-whitespace-on))
 
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 (use-package gk-extra
