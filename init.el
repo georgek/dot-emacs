@@ -172,6 +172,7 @@
 (use-package projectile
   :config
   (projectile-mode +1)
+  (setq projectile-indexing-method 'alien)
   (setq projectile-completion-system 'ivy)
   (setq projectile-enable-caching nil)
   (add-to-list 'projectile-globally-ignored-file-suffixes "~")
