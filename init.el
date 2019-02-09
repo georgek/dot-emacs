@@ -417,7 +417,8 @@
         '(magit-insert-modules-overview
           magit-insert-modules-unpulled-from-upstream
           magit-insert-modules-unpushed-to-upstream))
-  (setq magit-branch-prefer-remote-upstream '("master" "develop")))
+  (setq magit-branch-prefer-remote-upstream '("master" "develop"))
+  (setq magit-section-visibility-indicator nil))
 
 (use-package org
   :mode (("\\.org$" . org-mode))
