@@ -213,6 +213,7 @@
   (define-key company-active-map (kbd "<return>") nil)
   (define-key company-active-map (kbd "RET") nil)
   (define-key company-active-map (kbd "C-SPC") #'company-complete-selection)
+  (define-key company-active-map (kbd "M-SPC") #'company-complete-selection)
   (setq company-backends
         '((company-files
            company-keywords
@@ -221,18 +222,6 @@
           (company-abbrev company-dabbrev)))
   (setq company-idle-delay 0.2)
   (setq company-minimum-prefix-length 1)
-  (defun company-yasnippet-or-completion ()
-    "Solve company yasnippet conflicts."
-    (interactive)
-    (let ((yas-fallback-behavior
-           (apply 'company-complete-common nil)))
-      (yas-expand)))
-  (add-hook 'company-mode-hook
-            (lambda ()
-              (substitute-key-definition
-               'company-complete-common
-               'company-yasnippet-or-completion
-               company-active-map)))
   (global-company-mode))
 
 (use-package abbrev
