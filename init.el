@@ -476,6 +476,7 @@
   (use-package ox-pandoc)
   (use-package ox-twbs)
   (use-package ox-latex)
+  (use-package ox-reveal)
   (setq org-latex-to-pdf-process '("latexmk -pdf %f"))
   (setq org-export-latex-listings 'minted)
 
