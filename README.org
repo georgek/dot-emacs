@@ -14,7 +14,7 @@ My config is now based on [[https://github.com/emacscollective/emacs.g][emacs.g]
 Note that the bootstrap process by default will attempt to connect to Github,
 Gitlab and code.orgmode.org via SSH. If you don't have SSH keys set up for any
 of these (and don't want to set them up) then do the following before doing
-`make boo strap`:
+~make bootstrap~:
 
 #+BEGIN_SRC shell
   git config --global url.https://github.com/.insteadOf git@github.com:
