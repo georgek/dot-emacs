@@ -583,7 +583,7 @@ RECURRENCES occasions."
    ("C-c C-c" . compile)))
 
 (use-package dockerfile-mode
-  :mode "Dockerfile\\'")
+  :mode "Dockerfile")
 
 (use-package compile
   :config
