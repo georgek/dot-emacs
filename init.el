@@ -827,6 +827,9 @@ RECURRENCES occasions."
               ("C-c C-c" . browse-url-of-file))
   :config (require 'smartparens-html))
 
+(use-package jinja2-mode
+  :mode ("\\.j2\\'"))
+
 (use-package css-mode
   :bind (:map css-mode-map
               ("RET" . gk-electrify-return-if-match)))

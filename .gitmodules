@@ -146,6 +146,9 @@
 [submodule "ivy"]
 	path = lib/ivy
 	url = git@github.com:abo-abo/swiper.git
+[submodule "jinja2-mode"]
+	path = lib/jinja2-mode
+	url = git@github.com:paradoxxxzero/jinja2-mode.git
 [submodule "js2-mode"]
 	path = lib/js2-mode
 	url = git@github.com:mooz/js2-mode.git
