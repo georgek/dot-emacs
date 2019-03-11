@@ -420,6 +420,9 @@
   (setq magit-branch-prefer-remote-upstream '("master" "develop"))
   (setq magit-section-visibility-indicator nil))
 
+(use-package forge
+  :after magit)
+
 (use-package org
   :mode (("\\.org$" . org-mode))
   :bind
