@@ -604,7 +604,7 @@ RECURRENCES occasions."
 (use-package gas-mode
   :config
   (setq gas-comment-char ?@)
-  :mode (("\\.s\\'" . asm-mode))
+  :mode (("\\.[sS]\\'" . asm-mode))
   :hook ((asm-mode-set-comment . (lambda () (setq asm-comment-char ?\#))))
   :bind (:map asm-mode-map
          ("C-c C-c" . compile)
