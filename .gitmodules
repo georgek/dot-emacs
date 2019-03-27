@@ -101,9 +101,6 @@
 [submodule "forge"]
 	path = lib/forge
 	url = git@github.com:magit/forge.git
-[submodule "gas-mode"]
-	path = lib/gas-mode
-	url = git@github.com:emacsattic/gas-mode.git
 [submodule "geiser"]
 	path = lib/geiser
 	url = git@gitlab.com:jaor/geiser.git

@@ -601,15 +601,7 @@ RECURRENCES occasions."
          ("C-m" . c-context-line-break)
          ("C-c C-h" . gk-c-c++-toggle)))
 
-(use-package gas-mode
-  :config
-  (setq gas-comment-char ?@)
-  :mode (("\\.[sS]\\'" . asm-mode))
-  :hook ((asm-mode-set-comment . (lambda () (setq asm-comment-char ?\#))))
-  :bind (:map asm-mode-map
-         ("C-c C-c" . compile)
-         :map gas-mode-map
-         ("C-c C-c" . compile)))
+(use-package asm-mode)
 
 (use-package lorem-ipsum
   :commands (lorem-ipsum-insert-paragraphs
