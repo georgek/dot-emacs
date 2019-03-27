@@ -599,7 +599,8 @@ RECURRENCES occasions."
   :bind (:map c-mode-base-map
          ("C-c C-c" . compile)
          ("C-m" . c-context-line-break)
-         ("C-c C-h" . gk-c-c++-toggle)))
+         ("C-c C-h" . gk-c-c++-toggle)
+         ("RET" . gk-electrify-return-if-match)))
 
 (use-package asm-mode)
 
