@@ -585,6 +585,9 @@ RECURRENCES occasions."
 (use-package dockerfile-mode
   :mode "Dockerfile")
 
+(use-package groovy-mode
+  :mode "Jenkinsfile")
+
 (use-package compile
   :config
   (setq compilation-scroll-output 'first-error))
