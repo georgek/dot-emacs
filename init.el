@@ -420,6 +420,9 @@
   (setq magit-branch-prefer-remote-upstream '("master" "develop"))
   (setq magit-section-visibility-indicator nil))
 
+(use-package forge
+  :after magit)
+
 (use-package org
   :mode (("\\.org$" . org-mode))
   :bind
@@ -599,17 +602,10 @@ RECURRENCES occasions."
   :bind (:map c-mode-base-map
          ("C-c C-c" . compile)
          ("C-m" . c-context-line-break)
-         ("C-c C-h" . gk-c-c++-toggle)))
+         ("C-c C-h" . gk-c-c++-toggle)
+         ("RET" . gk-electrify-return-if-match)))
 
-(use-package gas-mode
-  :config
-  (setq gas-comment-char ?@)
-  :mode (("\\.s\\'" . asm-mode))
-  :hook ((asm-mode-set-comment . (lambda () (setq asm-comment-char ?\#))))
-  :bind (:map asm-mode-map
-         ("C-c C-c" . compile)
-         :map gas-mode-map
-         ("C-c C-c" . compile)))
+(use-package asm-mode)
 
 (use-package lorem-ipsum
   :commands (lorem-ipsum-insert-paragraphs
