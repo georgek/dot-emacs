@@ -602,7 +602,9 @@ RECURRENCES occasions."
          ("C-c C-h" . gk-c-c++-toggle)
          ("RET" . gk-electrify-return-if-match)))
 
-(use-package asm-mode)
+(use-package asm-mode
+  :bind (:map asm-mode-map
+         ("C-c C-c" . compile)))
 
 (use-package lorem-ipsum
   :commands (lorem-ipsum-insert-paragraphs
