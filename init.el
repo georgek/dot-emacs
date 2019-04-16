@@ -766,7 +766,8 @@ RECURRENCES occasions."
   :config (which-key-mode 1))
 
 (use-package deadgrep
-  :commands (deadgrep))
+  :commands (deadgrep)
+  :bind (("C-z" . deadgrep)))
 
 (use-package go-mode
   :mode "\\.go\\'"
