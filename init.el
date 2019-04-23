@@ -397,6 +397,10 @@
         enable-recursive-minibuffers t
         ivy-count-format "(%d/%d) "))
 
+(use-package transient
+  :config
+  (setq transient-display-buffer-action '(display-buffer-below-selected)))
+
 (use-package magit
   :defer t
   :bind (("C-c i"   . magit-status)
