@@ -856,6 +856,9 @@ RECURRENCES occasions."
   :bind (:map ledger-mode-map
               ("C-c C-c" . ledger-report)))
 
+(use-package rust-mode
+  :mode "\\.rs\\'")
+
 (use-package copy-as-format
   :bind (("C-c w g" . copy-as-format-github)
          ("C-c w h" . copy-as-format-hipchat)
