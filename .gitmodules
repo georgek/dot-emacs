@@ -155,6 +155,9 @@
 [submodule "js2-mode"]
 	path = lib/js2-mode
 	url = git@github.com:mooz/js2-mode.git
+[submodule "julia-mode"]
+	path = lib/julia-mode
+	url = git@github.com:JuliaEditorSupport/julia-emacs.git
 [submodule "ledger-mode"]
 	path = lib/ledger-mode
 	url = git@github.com:ledger/ledger-mode.git
