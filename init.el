@@ -260,6 +260,7 @@
   (require 'smartparens-config)
   (setq sp-base-key-bindings 'paredit)
   (setq sp-autoskip-closing-pair 'always)
+  (setq sp-escape-quotes-after-insert nil)  ; disable for c-mode
   (smartparens-global-mode)
   :bind (:map smartparens-mode-map
          ("C-)" . sp-forward-slurp-sexp)
@@ -395,6 +396,10 @@
   (setq ivy-use-virtual-buffers t
         enable-recursive-minibuffers t
         ivy-count-format "(%d/%d) "))
+
+(use-package transient
+  :config
+  (setq transient-display-buffer-action '(display-buffer-below-selected)))
 
 (use-package magit
   :defer t
@@ -605,7 +610,9 @@ RECURRENCES occasions."
          ("C-c C-h" . gk-c-c++-toggle)
          ("RET" . gk-electrify-return-if-match)))
 
-(use-package asm-mode)
+(use-package asm-mode
+  :bind (:map asm-mode-map
+         ("C-c C-c" . compile)))
 
 (use-package lorem-ipsum
   :commands (lorem-ipsum-insert-paragraphs
@@ -852,6 +859,9 @@ RECURRENCES occasions."
   :mode ("\\.ledger\\'")
   :bind (:map ledger-mode-map
               ("C-c C-c" . ledger-report)))
+
+(use-package rust-mode
+  :mode "\\.rs\\'")
 
 (use-package copy-as-format
   :bind (("C-c w g" . copy-as-format-github)
