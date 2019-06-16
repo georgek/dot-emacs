@@ -384,8 +384,7 @@
          (cider-repl-mode . nice-paredit-on))
   :bind (:map clojure-mode-map
          ("C-c z" . cider-switch-to-repl-buffer)
-         ("C-c C-z" . cider-switch-to-repl-buffer))
-  :config (setq cider-repl-display-help-banner nil))
+         ("C-c C-z" . cider-switch-to-repl-buffer)))
 
 (use-package ivy
   :demand
@@ -404,7 +403,6 @@
 (use-package magit
   :defer t
   :bind (("C-c i"   . magit-status)
-         ("C-c M-i" . magit-dispatch-popup)
          ("C-c b"   . magit-blame))
   :config
   (magit-add-section-hook 'magit-status-sections-hook
