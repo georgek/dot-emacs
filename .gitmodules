@@ -1,6 +1,9 @@
 [borg]
 	pushDefault = locutus
 	collective = emacsg
+[submodule "a"]
+	path = lib/a
+	url = git@github.com:plexus/a.el.git
 [submodule "ace-window"]
 	path = lib/ace-window
 	url = git@github.com:abo-abo/ace-window.git
@@ -216,6 +219,12 @@
 [submodule "paren-face"]
 	path = lib/paren-face
 	url = git@github.com:tarsius/paren-face.git
+[submodule "parseclj"]
+	path = lib/parseclj
+	url = git@github.com:clojure-emacs/parseclj.git
+[submodule "parseedn"]
+	path = lib/parseedn
+	url = git@github.com:clojure-emacs/parseedn.git
 [submodule "pkg-info"]
 	path = lib/pkg-info
 	url = git@github.com:lunaryorn/pkg-info.el.git
