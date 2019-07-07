@@ -160,6 +160,7 @@
                                       before-user-init-time))))
 
 (defmacro makehookedfun (hook &rest body)
+  "Defines a function using BODY that is hooked to HOOK."
   (declare (indent 1))
   (let ((function (intern (concat (symbol-name hook) "-function"))))
     `(progn
@@ -534,7 +535,7 @@
   (setq org-time-stamp-custom-formats
         '("<%A, %e %B %Y>" . "<%A, %e %B %Y %H:%M>"))
   (setq org-log-done 'time)
-  (setq org-blank-before-new-entry 
+  (setq org-blank-before-new-entry
         '((heading . t) (plain-list-item . nil)))
   (setq org-todo-keywords (quote((sequence "TODO" "WAITING" "|" "DONE"))))
 
