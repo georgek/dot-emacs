@@ -78,7 +78,7 @@
         (format
          "^ \\(%s\\)$"
          (mapconcat #'identity
-                    '("Fly.*" "Projectile.*" "Reveal"
+                    '("Fly" "Projectile.*" "Reveal"
                       "Counsel" "Ivy" "company" "yas"
                       "ElDoc" "||" "WK" "VHl" "," "ws")
                     "\\|"))))
@@ -160,6 +160,7 @@
                                       before-user-init-time))))
 
 (defmacro makehookedfun (hook &rest body)
+  "Defines a function using BODY that is hooked to HOOK."
   (declare (indent 1))
   (let ((function (intern (concat (symbol-name hook) "-function"))))
     `(progn
@@ -537,7 +538,7 @@
   (setq org-time-stamp-custom-formats
         '("<%A, %e %B %Y>" . "<%A, %e %B %Y %H:%M>"))
   (setq org-log-done 'time)
-  (setq org-blank-before-new-entry 
+  (setq org-blank-before-new-entry
         '((heading . t) (plain-list-item . nil)))
   (setq org-todo-keywords (quote((sequence "TODO" "WAITING" "|" "DONE"))))
 
@@ -619,6 +620,17 @@ RECURRENCES occasions."
   :commands (lorem-ipsum-insert-paragraphs
              lorem-ipsum-insert-sentences))
 
+(use-package flycheck
+  :config
+  (global-flycheck-mode)
+  (setq-default flycheck-disabled-checkers
+                '(c/c++-clang))
+  :bind (:map
+         flycheck-mode-map
+         ("C-c C-n" . flycheck-next-error)
+         ("C-c C-p" . flycheck-previous-error)
+         ("C-c C-l" . flycheck-list-errors)))
+
 (use-package flyspell
   :config (setq flyspell-issue-message-flag -1)
   :hook ((text-mode . flyspell-mode)))
@@ -694,6 +706,9 @@ RECURRENCES occasions."
   (setq python-shell-interpreter "ipython"
         python-shell-interpreter-args "-i --simple-prompt")
   (setq elpy-rpc-backend "jedi")
+  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+  (unbind-key "C-c C-n" elpy-mode-map)
+  (unbind-key "C-c C-p" elpy-mode-map)
   :bind (:map elpy-mode-map
          ("C->" . #'elpy-nav-indent-shift-right)
          ("C-<" . #'elpy-nav-indent-shift-left)))
