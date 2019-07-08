@@ -621,6 +621,7 @@ RECURRENCES occasions."
              lorem-ipsum-insert-sentences))
 
 (use-package flycheck
+  :demand t
   :config
   (global-flycheck-mode)
   (setq-default flycheck-disabled-checkers
