@@ -623,6 +623,9 @@ RECURRENCES occasions."
 (use-package flycheck
   :demand t
   :config
+  (setq flycheck-global-modes
+        '(not
+          org-mode))
   (global-flycheck-mode)
   (setq-default flycheck-disabled-checkers
                 '(c/c++-clang))
