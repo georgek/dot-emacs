@@ -625,7 +625,8 @@ RECURRENCES occasions."
   :config
   (setq flycheck-global-modes
         '(not
-          org-mode))
+          org-mode
+          markdown-mode))
   (global-flycheck-mode)
   (setq-default flycheck-disabled-checkers
                 '(c/c++-clang))
