@@ -585,7 +585,7 @@ RECURRENCES occasions."
   (require 'smartparens-markdown))
 
 (use-package yaml-mode
-  :mode "\\.ya?ml\\'")
+  :mode "\\.\\(ya?\\|m\\)ml\\'")
 
 (use-package make-mode
   :defer t
@@ -860,6 +860,8 @@ RECURRENCES occasions."
   :mode ("\\.j2\\'"))
 
 (use-package css-mode
+  :mode ("\\.css\\'"
+         "\\.mss\\'")
   :bind (:map css-mode-map
               ("RET" . gk-electrify-return-if-match)))
 
