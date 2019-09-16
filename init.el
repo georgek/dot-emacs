@@ -422,6 +422,8 @@
           magit-insert-modules-unpulled-from-upstream
           magit-insert-modules-unpushed-to-upstream))
   (setq magit-branch-prefer-remote-upstream '("master" "develop"))
+  (setq magit-branch-adjust-remote-upstream-alist
+        '(("origin/master" "master" "release")))
   (setq magit-release-tag-regexp "\\`\
 \\(?1:\\(?:v\\(?:ersion\\)?\\|r\\(?:elease\\)?\\)?[-_]?\\)?\
 \\(?2:[0-9]+\\(?:\\.[0-9]+\\)*\\)\\(\\(a\\|b\\|rc\\)[0-9]+\\)?\\'")
