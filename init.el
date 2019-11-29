@@ -869,13 +869,20 @@ RECURRENCES occasions."
 
 (use-package js2-mode
   :mode "\\.js\\'"
-  :config (require 'smartparens-javascript))
+  :init
+  (setq-default js2-basic-offset 2)
+  :config
+  (require 'smartparens-javascript)
+  :bind (:map js2-mode-map
+              ("RET" . gk-electrify-return-if-match)))
 
 (use-package typescript-mode
   :mode "\\.ts\\'")
 
 (use-package rjsx-mode
-  :mode "\\.jsx\\'")
+  :mode "\\.jsx\\'"
+  :bind (:map rjsx-mode-map
+              ("RET" . gk-electrify-return-if-match)))
 
 (use-package ebuild-mode
   :mode ("\\.ebuild\\'"
