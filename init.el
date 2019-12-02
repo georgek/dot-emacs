@@ -268,7 +268,7 @@
          ("C-(" . sp-backward-slurp-sexp)))
 
 (use-package subword
-  :hook ((python-mode yaml-mode go-mode clojure-mode cider-repl-mode)
+  :hook ((python-mode yaml-mode go-mode clojure-mode cider-repl-mode js2-mode rjsx-mode)
          . subword-mode))
 
 (use-package lisp-mode
@@ -881,6 +881,8 @@ RECURRENCES occasions."
 
 (use-package rjsx-mode
   :mode "\\.jsx\\'"
+  :init
+  (setq-default js2-basic-offset 2)
   :bind (:map rjsx-mode-map
               ("RET" . gk-electrify-return-if-match)))
 
