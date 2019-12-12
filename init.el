@@ -713,6 +713,7 @@ RECURRENCES occasions."
   (elpy-enable)
   (setq python-shell-interpreter "ipython"
         python-shell-interpreter-args "-i --simple-prompt")
+  (setq elpy-rpc-virtualenv-path 'current)
   (setq elpy-rpc-backend "jedi")
   (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
   (unbind-key "C-c C-n" elpy-mode-map)
