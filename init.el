@@ -926,7 +926,7 @@ RECURRENCES occasions."
  ;; enable auto fill mode globally
  (setq auto-fill-mode 1)
  ;; default fill length
- (setq-default fill-column 78)
+ (setq-default fill-column 88)
 
  (defun unfill-paragraph ()
    "Unfill paragraph at or after point."
