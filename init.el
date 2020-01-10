@@ -268,7 +268,14 @@
          ("C-(" . sp-backward-slurp-sexp)))
 
 (use-package subword
-  :hook ((python-mode yaml-mode go-mode clojure-mode cider-repl-mode js2-mode rjsx-mode)
+  :hook ((python-mode
+          yaml-mode
+          go-mode
+          clojure-mode
+          cider-repl-mode
+          js2-mode
+          rjsx-mode
+          typescript-mode)
          . subword-mode))
 
 (use-package lisp-mode
