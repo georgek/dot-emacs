@@ -262,6 +262,7 @@
   (setq sp-base-key-bindings 'paredit)
   (setq sp-autoskip-closing-pair 'always)
   (setq sp-escape-quotes-after-insert nil)  ; disable for c-mode
+  (setq sp-ignore-modes-list '(web-mode))
   (smartparens-global-mode)
   :bind (:map smartparens-mode-map
          ("C-)" . sp-forward-slurp-sexp)
@@ -933,7 +934,7 @@ RECURRENCES occasions."
  ;; enable auto fill mode globally
  (setq auto-fill-mode 1)
  ;; default fill length
- (setq-default fill-column 78)
+ (setq-default fill-column 88)
 
  (defun unfill-paragraph ()
    "Unfill paragraph at or after point."
