@@ -886,7 +886,9 @@ RECURRENCES occasions."
               ("RET" . gk-electrify-return-if-match)))
 
 (use-package typescript-mode
-  :mode "\\.ts\\'")
+  :mode "\\.ts\\'"
+  :config
+  (setq typescript-indent-level 2))
 
 (use-package rjsx-mode
   :mode "\\.jsx\\'"
