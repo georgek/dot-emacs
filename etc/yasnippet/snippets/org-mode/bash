@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: bash
+# key: <bash
+# --
+#+BEGIN_SRC bash :results ${1:output verbatim}
+$0
+#+END_SRC
