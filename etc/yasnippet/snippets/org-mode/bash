@@ -2,6 +2,6 @@
 # name: bash
 # key: <bash
 # --
-#+BEGIN_SRC bash :results ${1:output verbatim}
-$0
+#+BEGIN_SRC bash :results ${1:output verbatim}$2
+  $0
 #+END_SRC
