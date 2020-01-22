@@ -209,6 +209,10 @@
   (use-package yasnippet-snippets)
   (yas-global-mode))
 
+(use-package lsp-mode
+  :hook ((js2-mode rjsx-mode typescript-mode) . lsp)
+  :commands lsp)
+
 (use-package company
   :config
   (define-key company-active-map (kbd "<return>") nil)
