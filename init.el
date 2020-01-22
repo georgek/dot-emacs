@@ -211,7 +211,15 @@
 
 (use-package lsp-mode
   :hook ((js2-mode rjsx-mode typescript-mode) . lsp)
-  :commands lsp)
+  :commands lsp
+  :config
+  (setq lsp-prefer-flymake nil))
+
+(use-package lsp-ui
+  :hook (lsp-mode . lsp-ui-mode)
+  :config
+  (setq lsp-ui-sideline-enable nil)
+  (setq lsp-ui-doc-enable nil))
 
 (use-package company
   :config
