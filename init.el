@@ -209,12 +209,6 @@
   (use-package yasnippet-snippets)
   (yas-global-mode))
 
-(use-package lsp-mode
-  :hook ((js2-mode rjsx-mode typescript-mode) . lsp)
-  :commands lsp
-  :config
-  (setq lsp-prefer-flymake nil))
-
 (use-package lsp-ui
   :hook (lsp-mode . lsp-ui-mode)
   :config
@@ -235,7 +229,22 @@
           (company-abbrev company-dabbrev)))
   (setq company-idle-delay 0.2)
   (setq company-minimum-prefix-length 1)
+  (setq company-tooltip-align-annotations t)
+  (setq company-frontends '(company-pseudo-tooltip-frontend
+                            company-echo-metadata-frontend))
   (global-company-mode))
+
+(use-package lsp-mode
+  :hook ((js2-mode rjsx-mode typescript-mode) . lsp)
+  :commands lsp
+  :config
+  (setq lsp-prefer-flymake nil)
+  (require 'company-lsp)
+  (setq company-lsp-cache-candidates 'auto)
+  (add-hook 'lsp-mode-hook
+            (lambda ()
+              (add-to-list (make-local-variable 'company-backends)
+                           'company-lsp))))
 
 (use-package abbrev
   :config
@@ -257,7 +266,7 @@
     (turn-off-smartparens-mode)
     (paredit-mode t)
 
-    (turn-on-eldoc-mode)
+     (turn-on-eldoc-mode)
     (eldoc-add-command
      'paredit-backward-delete
      'paredit-close-round)
@@ -318,9 +327,7 @@
   (makehookedfun emacs-lisp-mode-hook
     (outline-minor-mode)
     (reveal-mode)
-    (nice-paredit-on)
-    (add-to-list (make-local-variable 'company-backends)
-                 'company-elisp))
+    (nice-paredit-on))
 
   (defun indent-spaces-mode ()
     (setq indent-tabs-mode nil))
@@ -1004,7 +1011,7 @@ RECURRENCES occasions."
             t)
   ;; restore after startup
   (setq file-name-handler-alist file-name-handler-alist-old)
-  (setq gc-cons-threshold (* 20 1024 1024)))
+  (setq gc-cons-threshold (* 40 1024 1024)))
 
 (when load-file-name
   (find-file (concat (file-name-sans-extension load-file-name)
