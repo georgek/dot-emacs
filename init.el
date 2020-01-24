@@ -464,7 +464,7 @@
 
   (defmacro orgdr (&optional filename)
     (if filename
-        `(concat org-directory ,filename)
+        `(concat (file-name-as-directory org-directory) ,filename)
       org-directory))
   (setq org-return-follows-link t)
 
