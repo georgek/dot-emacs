@@ -903,7 +903,8 @@ RECURRENCES occasions."
   :config
   (require 'smartparens-javascript)
   :bind (:map js2-mode-map
-              ("RET" . gk-electrify-return-if-match)))
+              ("RET" . gk-electrify-return-if-match)
+              ("M-." . xref-find-definitions)))
 
 (use-package typescript-mode
   :mode "\\.ts\\'"
