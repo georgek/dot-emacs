@@ -455,7 +455,8 @@
 \\(?1:\\(?:v\\(?:ersion\\)?\\|r\\(?:elease\\)?\\)?[-_]?\\)?\
 \\(?2:[0-9]+\\(?:\\.[0-9]+\\)*\\)\\(\\(a\\|b\\|rc\\)[0-9]+\\)?\\'")
   (setq magit-section-visibility-indicator nil)
-  (setq magit-list-refs-sortby "-creatordate"))
+  (setq magit-list-refs-sortby "-creatordate")
+  (setq magit-diff-refine-hunk 'all))
 
 (use-package forge
   :after magit)
