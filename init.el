@@ -209,12 +209,6 @@
   (use-package yasnippet-snippets)
   (yas-global-mode))
 
-(use-package lsp-ui
-  :hook (lsp-mode . lsp-ui-mode)
-  :config
-  (setq lsp-ui-sideline-enable nil)
-  (setq lsp-ui-doc-enable nil))
-
 (use-package company
   :config
   (define-key company-active-map (kbd "<return>") nil)
