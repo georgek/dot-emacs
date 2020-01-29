@@ -418,6 +418,13 @@
         enable-recursive-minibuffers t
         ivy-count-format "(%d/%d) "))
 
+(use-package prescient
+  :config
+  (use-package ivy-prescient)
+  (use-package company-prescient)
+  (ivy-prescient-mode)
+  (company-prescient-mode))
+
 (use-package transient
   :config
   (setq transient-display-buffer-action '(display-buffer-below-selected)))

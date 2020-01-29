@@ -264,6 +264,9 @@
 [submodule "pkg-info"]
 	path = lib/pkg-info
 	url = git@github.com:lunaryorn/pkg-info.el.git
+[submodule "prescient"]
+	path = lib/prescient
+	url = git@github.com:raxod502/prescient.el.git
 [submodule "projectile"]
 	path = lib/projectile
 	url = git@github.com:bbatsov/projectile.git
