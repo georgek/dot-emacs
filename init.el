@@ -223,7 +223,22 @@
           (company-abbrev company-dabbrev)))
   (setq company-idle-delay 0.2)
   (setq company-minimum-prefix-length 1)
+  (setq company-tooltip-align-annotations t)
+  (setq company-frontends '(company-pseudo-tooltip-frontend
+                            company-echo-metadata-frontend))
   (global-company-mode))
+
+(use-package lsp-mode
+  :hook ((js2-mode rjsx-mode typescript-mode) . lsp)
+  :commands lsp
+  :config
+  (setq lsp-prefer-flymake nil)
+  (require 'company-lsp)
+  (setq company-lsp-cache-candidates 'auto)
+  (add-hook 'lsp-mode-hook
+            (lambda ()
+              (add-to-list (make-local-variable 'company-backends)
+                           'company-lsp))))
 
 (use-package abbrev
   :config
@@ -245,7 +260,7 @@
     (turn-off-smartparens-mode)
     (paredit-mode t)
 
-    (turn-on-eldoc-mode)
+     (turn-on-eldoc-mode)
     (eldoc-add-command
      'paredit-backward-delete
      'paredit-close-round)
@@ -306,9 +321,7 @@
   (makehookedfun emacs-lisp-mode-hook
     (outline-minor-mode)
     (reveal-mode)
-    (nice-paredit-on)
-    (add-to-list (make-local-variable 'company-backends)
-                 'company-elisp))
+    (nice-paredit-on))
 
   (defun indent-spaces-mode ()
     (setq indent-tabs-mode nil))
@@ -405,6 +418,13 @@
         enable-recursive-minibuffers t
         ivy-count-format "(%d/%d) "))
 
+(use-package prescient
+  :config
+  (use-package ivy-prescient)
+  (use-package company-prescient)
+  (ivy-prescient-mode)
+  (company-prescient-mode))
+
 (use-package transient
   :config
   (setq transient-display-buffer-action '(display-buffer-below-selected)))
@@ -436,7 +456,8 @@
 \\(?1:\\(?:v\\(?:ersion\\)?\\|r\\(?:elease\\)?\\)?[-_]?\\)?\
 \\(?2:[0-9]+\\(?:\\.[0-9]+\\)*\\)\\(\\(a\\|b\\|rc\\)[0-9]+\\)?\\'")
   (setq magit-section-visibility-indicator nil)
-  (setq magit-list-refs-sortby "-creatordate"))
+  (setq magit-list-refs-sortby "-creatordate")
+  (setq magit-diff-refine-hunk 'all))
 
 (use-package forge
   :after magit)
@@ -885,7 +906,8 @@ RECURRENCES occasions."
   :config
   (require 'smartparens-javascript)
   :bind (:map js2-mode-map
-              ("RET" . gk-electrify-return-if-match)))
+              ("RET" . gk-electrify-return-if-match)
+              ("M-." . xref-find-definitions)))
 
 (use-package typescript-mode
   :mode "\\.ts\\'"
@@ -994,7 +1016,7 @@ RECURRENCES occasions."
             t)
   ;; restore after startup
   (setq file-name-handler-alist file-name-handler-alist-old)
-  (setq gc-cons-threshold (* 20 1024 1024)))
+  (setq gc-cons-threshold (* 40 1024 1024)))
 
 (when load-file-name
   (find-file (concat (file-name-sans-extension load-file-name)
