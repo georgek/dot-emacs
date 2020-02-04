@@ -724,6 +724,8 @@ RECURRENCES occasions."
   (setq elpy-rpc-virtualenv-path 'current)
   (setq elpy-rpc-backend "jedi")
   (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+  (setq-default elpy-django-test-runner-args
+                '("test" "--noinput" "--keepdb" "--parallel" "--failfast"))
   (unbind-key "C-c C-n" elpy-mode-map)
   (unbind-key "C-c C-p" elpy-mode-map)
   :bind (:map elpy-mode-map
