@@ -420,6 +420,7 @@
 
 (use-package prescient
   :config
+  (use-package counsel)
   (use-package ivy-prescient)
   (use-package company-prescient)
   (ivy-prescient-mode)
