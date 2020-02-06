@@ -223,6 +223,9 @@
 [submodule "mic-paren"]
 	path = lib/mic-paren
 	url = git@github.com:emacsattic/mic-paren.git
+[submodule "multiple-cursors"]
+	path = lib/multiple-cursors
+	url = git@github.com:magnars/multiple-cursors.el.git
 [submodule "nim-mode"]
 	path = lib/nim-mode
 	url = git@github.com:nim-lang/nim-mode.git
