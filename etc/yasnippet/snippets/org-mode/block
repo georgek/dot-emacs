@@ -1,0 +1,6 @@
+# key: <bl
+# name: block
+# --
+#+begin_$1
+$0
+#+end_$1
