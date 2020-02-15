@@ -66,7 +66,7 @@
 (add-to-list 'default-frame-alist `(font . ,my-font))
 (use-package zenburn-theme
   :init
-  (setq zenburn-use-variable-pitch t)
+  (setq zenburn-use-variable-pitch nil)
   (setq zenburn-scale-org-headlines t)
   (setq zenburn-scale-outline-headlines t)
   :config
