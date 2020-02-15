@@ -761,6 +761,10 @@ RECURRENCES occasions."
   :hook ((python-mode . pylint-add-menu-items)
          (python-mode . pylint-add-key-bindings)))
 
+(use-package sh-script
+  :config
+  (add-to-list 'auto-mode-alist '("bash-fc" . sh-mode)))
+
 (use-package man
   :defer t
   :config (setq Man-width 80))
