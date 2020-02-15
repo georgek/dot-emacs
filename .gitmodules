@@ -85,6 +85,9 @@
 [submodule "editorconfig"]
 	path = lib/editorconfig
 	url = git@github.com:editorconfig/editorconfig-emacs.git
+[submodule "eimp"]
+	path = lib/eimp
+	url = git@github.com:nicferrier/eimp.git
 [submodule "elisp-refs"]
 	path = lib/elisp-refs
 	url = git@github.com:Wilfred/refs.el.git
@@ -237,6 +240,9 @@
 [submodule "org-bullets"]
 	path = lib/org-bullets
 	url = git@github.com:emacsorphanage/org-bullets.git
+[submodule "org-presie"]
+	path = lib/org-presie
+	url = git@github.com:nicferrier/org-presie.git
 [submodule "ox-pandoc"]
 	path = lib/ox-pandoc
 	url = git@github.com:kawabata/ox-pandoc.git
