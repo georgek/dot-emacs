@@ -669,6 +669,8 @@ RECURRENCES occasions."
   (global-flycheck-mode)
   (setq-default flycheck-disabled-checkers
                 '(c/c++-clang))
+  (setq flycheck-flake8rc "setup.cfg")
+  (flycheck-add-next-checker 'python-pycompile 'python-flake8)
   :bind (:map
          flycheck-mode-map
          ("C-c C-n" . flycheck-next-error)
