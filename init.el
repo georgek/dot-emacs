@@ -294,6 +294,10 @@
           typescript-mode)
          . subword-mode))
 
+(use-package multiple-cursors
+  :bind (("C->" . mc/mark-next-like-this)
+         ("C-<" . mc/mark-previous-like-this)))
+
 (use-package lisp-mode
   :config
   (defun eval-buffer-key ()
@@ -463,6 +467,8 @@
 
 (use-package forge
   :after magit)
+
+(use-package org-presie)
 
 (use-package org
   :mode (("\\.org$" . org-mode))
@@ -664,6 +670,8 @@ RECURRENCES occasions."
   (global-flycheck-mode)
   (setq-default flycheck-disabled-checkers
                 '(c/c++-clang))
+  (setq flycheck-flake8rc "setup.cfg")
+  (flycheck-add-next-checker 'python-pycompile 'python-flake8)
   :bind (:map
          flycheck-mode-map
          ("C-c C-n" . flycheck-next-error)
