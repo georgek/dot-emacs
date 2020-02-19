@@ -983,6 +983,7 @@ RECURRENCES occasions."
  (global-auto-revert-mode 1)
  (setq auto-revert-check-vc-info t)
  (setq auto-revert-verbose nil)
+ (setq auto-revert-remote-files t)
 
  ;; set some default modes
  ;; lex
