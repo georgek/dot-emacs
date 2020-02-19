@@ -564,6 +564,12 @@
            "* %?\n %U\n %a")))
 
   ;; agenda stuff
+  (custom-set-variables
+   '(org-agenda-custom-commands
+     '(("n" "Agenda and all TODOs"
+        ((agenda "")
+         (alltodo ""))
+        ((org-agenda-tag-filter '("-NOAGENDA")))))))
   (setq org-agenda-files (directory-files-recursively (orgdr) "\\.org$" nil))
   (setq org-agenda-include-diary t)
   (setq org-agenda-span 14)
