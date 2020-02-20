@@ -462,7 +462,8 @@
 \\(?2:[0-9]+\\(?:\\.[0-9]+\\)*\\)\\(\\(a\\|b\\|rc\\)[0-9]+\\)?\\'")
   (setq magit-section-visibility-indicator nil)
   (setq magit-list-refs-sortby "-creatordate")
-  (setq magit-diff-refine-hunk 'all))
+  (setq magit-diff-refine-hunk 'all)
+  (setq magit-refs-pad-commit-counts t))
 
 (use-package forge
   :after magit)
@@ -768,6 +769,10 @@ RECURRENCES occasions."
   :hook ((python-mode . pylint-add-menu-items)
          (python-mode . pylint-add-key-bindings)))
 
+(use-package sh-script
+  :config
+  (add-to-list 'auto-mode-alist '("bash-fc" . sh-mode)))
+
 (use-package man
   :defer t
   :config (setq Man-width 80))
@@ -810,7 +815,12 @@ RECURRENCES occasions."
   (add-to-list 'tramp-default-proxies-alist '(nil "\\`root\\'" "/ssh:%h:"))
   (add-to-list 'tramp-default-proxies-alist '("localhost" nil nil))
   (add-to-list 'tramp-default-proxies-alist
-               (list (regexp-quote (system-name)) nil nil)))
+               (list (regexp-quote (system-name)) nil nil))
+  ;; disable remote version control
+  (setq vc-ignore-dir-regexp
+        (format "\\(%s\\)\\|\\(%s\\)"
+                vc-ignore-dir-regexp
+                tramp-file-name-regexp)))
 
 (use-package avy
   :config
