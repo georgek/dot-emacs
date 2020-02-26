@@ -412,23 +412,17 @@
          ("C-c z" . cider-switch-to-repl-buffer)
          ("C-c C-z" . cider-switch-to-repl-buffer)))
 
-(use-package ivy
+(use-package selectrum
   :demand
   :bind (("C-x C-b" . ivy-switch-buffer))
   :config
-  (ivy-mode)
-  (counsel-mode)
-  (setq ivy-use-virtual-buffers t
-        enable-recursive-minibuffers t
-        ivy-count-format "(%d/%d) "))
+  (selectrum-mode +1))
 
 (use-package prescient
   :config
-  (use-package counsel)
-  (use-package ivy-prescient)
-  (use-package company-prescient)
-  (ivy-prescient-mode)
-  (company-prescient-mode))
+  (selectrum-prescient-mode +1)
+  (company-prescient-mode +1)
+  (prescient-persist-mode +1))
 
 (use-package transient
   :config
