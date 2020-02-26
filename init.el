@@ -174,7 +174,6 @@
   :config
   (projectile-mode +1)
   (setq projectile-indexing-method 'alien)
-  (setq projectile-completion-system 'ivy)
   (setq projectile-enable-caching nil)
   (add-to-list 'projectile-globally-ignored-file-suffixes "~")
   :bind-keymap
@@ -414,7 +413,7 @@
 
 (use-package selectrum
   :demand
-  :bind (("C-x C-b" . ivy-switch-buffer))
+  :bind (("C-x C-b" . switch-to-buffer))
   :config
   (selectrum-mode +1))
 
