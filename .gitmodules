@@ -173,9 +173,6 @@
 [submodule "i3"]
 	path = lib/i3
 	url = git@github.com:vava/i3-emacs.git
-[submodule "ivy"]
-	path = lib/ivy
-	url = git@github.com:abo-abo/swiper.git
 [submodule "jinja2-mode"]
 	path = lib/jinja2-mode
 	url = git@github.com:paradoxxxzero/jinja2-mode.git
@@ -300,6 +297,9 @@
 [submodule "s"]
 	path = lib/s
 	url = git@github.com:magnars/s.el.git
+[submodule "selectrum"]
+	path = lib/selectrum
+	url = git@github.com:raxod502/selectrum.git
 [submodule "sesman"]
 	path = lib/sesman
 	url = git@github.com:vspinu/sesman.git

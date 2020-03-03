@@ -173,8 +173,8 @@
 (use-package projectile
   :config
   (projectile-mode +1)
+  (setq projectile-completion-system 'default)
   (setq projectile-indexing-method 'alien)
-  (setq projectile-completion-system 'ivy)
   (setq projectile-enable-caching nil)
   (add-to-list 'projectile-globally-ignored-file-suffixes "~")
   :bind-keymap
@@ -412,23 +412,17 @@
          ("C-c z" . cider-switch-to-repl-buffer)
          ("C-c C-z" . cider-switch-to-repl-buffer)))
 
-(use-package ivy
+(use-package selectrum
   :demand
-  :bind (("C-x C-b" . ivy-switch-buffer))
+  :bind (("C-x C-b" . switch-to-buffer))
   :config
-  (ivy-mode)
-  (counsel-mode)
-  (setq ivy-use-virtual-buffers t
-        enable-recursive-minibuffers t
-        ivy-count-format "(%d/%d) "))
+  (selectrum-mode +1))
 
 (use-package prescient
   :config
-  (use-package counsel)
-  (use-package ivy-prescient)
-  (use-package company-prescient)
-  (ivy-prescient-mode)
-  (company-prescient-mode))
+  (selectrum-prescient-mode +1)
+  (company-prescient-mode +1)
+  (prescient-persist-mode +1))
 
 (use-package transient
   :config
@@ -564,7 +558,13 @@
            "* %?\n %U\n %a")))
 
   ;; agenda stuff
-  (setq org-agenda-files (list (orgdr)))
+  (custom-set-variables
+   '(org-agenda-custom-commands
+     '(("n" "Agenda and all TODOs"
+        ((agenda "")
+         (alltodo ""))
+        ((org-agenda-tag-filter '("-NOAGENDA")))))))
+  (setq org-agenda-files (directory-files-recursively (orgdr) "\\.org$" nil))
   (setq org-agenda-include-diary t)
   (setq org-agenda-span 14)
   (setq org-agenda-start-on-weekday nil)
@@ -991,6 +991,7 @@ RECURRENCES occasions."
  (global-auto-revert-mode 1)
  (setq auto-revert-check-vc-info t)
  (setq auto-revert-verbose nil)
+ (setq auto-revert-remote-files t)
 
  ;; set some default modes
  ;; lex
