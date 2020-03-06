@@ -670,6 +670,7 @@ RECURRENCES occasions."
   (global-flycheck-mode)
   (setq-default flycheck-disabled-checkers
                 '(c/c++-clang))
+  (setq flycheck-python-flake8-executable "flake8")
   (setq flycheck-flake8rc "setup.cfg")
   (flycheck-add-next-checker 'python-pycompile 'python-flake8)
   :bind (:map
@@ -752,7 +753,8 @@ RECURRENCES occasions."
   (elpy-enable)
   (setq python-shell-interpreter "ipython"
         python-shell-interpreter-args "-i --simple-prompt")
-  (setq elpy-rpc-virtualenv-path 'current)
+  (setq elpy-rpc-python-command "python3")
+  (setq elpy-rpc-virtualenv-path 'default)
   (setq elpy-rpc-backend "jedi")
   (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
   (setq-default elpy-django-test-runner-args
