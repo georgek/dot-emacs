@@ -621,7 +621,8 @@ RECURRENCES occasions."
 (use-package markdown-mode
   :mode "\\.md\\'"
   :config
-  (require 'smartparens-markdown))
+  (require 'smartparens-markdown)
+  (setq markdown-asymmetric-header t))
 
 (use-package yaml-mode
   :mode "\\.\\(ya?\\|m\\)ml\\'")
