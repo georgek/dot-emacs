@@ -752,7 +752,7 @@ RECURRENCES occasions."
   :after python
   :config
   (elpy-enable)
-  (setq python-shell-interpreter "ipython"
+  (setq python-shell-interpreter "python"
         python-shell-interpreter-args "-i --simple-prompt")
   (setq elpy-rpc-python-command "python3")
   (setq elpy-rpc-virtualenv-path 'default)
