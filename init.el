@@ -639,6 +639,9 @@ RECURRENCES occasions."
 (use-package groovy-mode
   :mode "Jenkinsfile")
 
+(use-package nginx-mode
+  :mode "nginx-mode")
+
 (use-package compile
   :config
   (setq compilation-scroll-output 'first-error))

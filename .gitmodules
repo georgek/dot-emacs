@@ -226,6 +226,9 @@
 [submodule "multiple-cursors"]
 	path = lib/multiple-cursors
 	url = git@github.com:magnars/multiple-cursors.el.git
+[submodule "nginx-mode"]
+	path = lib/nginx-mode
+	url = git@github.com:ajc/nginx-mode.git
 [submodule "nim-mode"]
 	path = lib/nim-mode
 	url = git@github.com:nim-lang/nim-mode.git
