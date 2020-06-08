@@ -949,6 +949,9 @@ RECURRENCES occasions."
   :bind (:map rjsx-mode-map
               ("RET" . gk-electrify-return-if-match)))
 
+(use-package add-node-modules-path
+  :hook (js2-mode typescript-mode rjsx-mode))
+
 (use-package ebuild-mode
   :mode ("\\.ebuild\\'"
          "\\.eclass\\'"))

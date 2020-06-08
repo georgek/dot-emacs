@@ -7,6 +7,9 @@
 [submodule "ace-window"]
 	path = lib/ace-window
 	url = git@github.com:abo-abo/ace-window.git
+[submodule "add-node-modules-path"]
+	path = lib/add-node-modules-path
+	url = git@github.com:codesuki/add-node-modules-path.git
 [submodule "async"]
 	path = lib/async
 	url = git@github.com:jwiegley/emacs-async.git
