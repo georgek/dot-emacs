@@ -117,7 +117,9 @@
   :demand
   :bind (("C-;" . gk-select-current-line)
          ("C-M-;" . gk-comment-current-line)
-         ("C-x C-c" . gk-kill-client-or-daemon))
+         ("C-x C-c" . gk-kill-client-or-daemon)
+         ("C-c d" . gk-insert-date)
+         ("C-c t" . gk-insert-time))
   :mode ("\\.h\\'" . gk-c-c++-header))
 
 (use-package no-littering
