@@ -117,7 +117,9 @@
   :demand
   :bind (("C-;" . gk-select-current-line)
          ("C-M-;" . gk-comment-current-line)
-         ("C-x C-c" . gk-kill-client-or-daemon))
+         ("C-x C-c" . gk-kill-client-or-daemon)
+         ("C-c d" . gk-insert-date)
+         ("C-c t" . gk-insert-time))
   :mode ("\\.h\\'" . gk-c-c++-header))
 
 (use-package no-littering
@@ -761,7 +763,7 @@ RECURRENCES occasions."
   :after python
   :config
   (elpy-enable)
-  (setq python-shell-interpreter "python"
+  (setq python-shell-interpreter "ipython"
         python-shell-interpreter-args "-i --simple-prompt")
   (setq elpy-rpc-python-command "python3")
   (setq elpy-rpc-virtualenv-path 'default)

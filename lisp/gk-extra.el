@@ -100,5 +100,15 @@ frame is killed."
              (set-buffer-modified-p nil)
              t))))
 
+(defun gk-insert-date ()
+  "Insert current date."
+  (interactive)
+  (insert (format-time-string "%Y-%m-%d")))
+
+(defun gk-insert-time ()
+  "Insert current time."
+  (interactive)
+  (insert (format-time-string "%Y-%m-%d %H:%M:%S")))
+
 (provide 'gk-extra)
 ;;; gk-extra.el ends here
