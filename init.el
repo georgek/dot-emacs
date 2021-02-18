@@ -1042,6 +1042,11 @@ RECURRENCES occasions."
  (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 
  (global-set-key (kbd "C-M-'") 'other-frame)
+ (global-set-key (kbd "M-SPC")
+                 (lambda ()
+                   (interactive)
+                   (insert " ")
+                   (backward-char)))
 
  ;; keep backup files neatly out of the way in .~/
  (setq backup-directory-alist '(("." . ".~")))
