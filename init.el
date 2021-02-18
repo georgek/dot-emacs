@@ -15,6 +15,9 @@
   (setq user-emacs-directory (file-name-directory user-init-file))
   (message "Loading %s..." user-init-file)
   (setq package-enable-at-startup nil)
+  ;; performance
+  (setq read-process-output-max (* 1024 1024))
+  (setq undo-limit (* 80 1024 1024))
   ;; (package-initialize)
   (setq inhibit-startup-buffer-menu t)
   (setq inhibit-startup-screen t)
@@ -223,7 +226,7 @@
            company-capf
            company-yasnippet)
           (company-abbrev company-dabbrev)))
-  (setq company-idle-delay 0.2)
+  (setq company-idle-delay 0.0)
   (setq company-minimum-prefix-length 1)
   (setq company-tooltip-align-annotations t)
   (setq company-frontends '(company-pseudo-tooltip-frontend
@@ -234,13 +237,9 @@
   :hook ((js2-mode rjsx-mode typescript-mode) . lsp)
   :commands lsp
   :config
+  (setq lsp-auto-configure t)
   (setq lsp-prefer-flymake nil)
-  (require 'company-lsp)
-  (setq company-lsp-cache-candidates 'auto)
-  (add-hook 'lsp-mode-hook
-            (lambda ()
-              (add-to-list (make-local-variable 'company-backends)
-                           'company-lsp))))
+  (setq lsp-diagnostics-provider :none))
 
 (use-package abbrev
   :config
@@ -932,10 +931,9 @@ RECURRENCES occasions."
   :bind (:map css-mode-map
               ("RET" . gk-electrify-return-if-match)))
 
+(setq-default js-indent-level 2)
 (use-package js2-mode
   :mode "\\.js\\'"
-  :init
-  (setq-default js2-basic-offset 2)
   :config
   (require 'smartparens-javascript)
   :bind (:map js2-mode-map
@@ -949,8 +947,9 @@ RECURRENCES occasions."
 
 (use-package rjsx-mode
   :mode "\\.jsx\\'"
-  :init
-  (setq-default js2-basic-offset 2)
+  :config
+  (setq js2-basic-offset 2
+        js-indent-level 2)
   :bind (:map rjsx-mode-map
               ("RET" . gk-electrify-return-if-match)))
 
