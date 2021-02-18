@@ -765,7 +765,7 @@ RECURRENCES occasions."
   (setq python-shell-interpreter "ipython"
         python-shell-interpreter-args "-i --simple-prompt")
   (setq elpy-rpc-python-command "python3")
-  (setq elpy-rpc-virtualenv-path 'default)
+  (setq elpy-rpc-virtualenv-path 'current)
   (setq elpy-rpc-backend "jedi")
   (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
   (setq-default elpy-django-test-runner-args
