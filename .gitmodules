@@ -51,9 +51,6 @@
 [submodule "company-go"]
 	path = lib/company-go
 	url = git@github.com:emacsmirror/company-go.git
-[submodule "company-lsp"]
-	path = lib/company-lsp
-	url = git@github.com:tigersoldier/company-lsp.git
 [submodule "copy-as-format"]
 	path = lib/copy-as-format
 	url = git@github.com:sshaw/copy-as-format.git
