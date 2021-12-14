@@ -50,10 +50,11 @@ frame is killed."
            (> (length server-clients) 0))
       ;; daemon
       (if (<= (length (frame-list)) 2)
-          (when (y-or-n-p "Last frame; kill daemon? ")
-            (save-some-buffers)
-            (delete-frame)
-            (kill-emacs))
+          (if (y-or-n-p "Last frame; kill daemon? ")
+              (progn (save-some-buffers)
+                     (delete-frame)
+                     (kill-emacs))
+            (delete-frame))
         ;; not the last frame so just delete it
         (delete-frame))
       ;; not daemon
