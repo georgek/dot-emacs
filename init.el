@@ -868,10 +868,8 @@ RECURRENCES occasions."
   :config
   (require 'go-eldoc)
   (add-hook 'go-mode-hook 'go-eldoc-setup)
-  (require 'company-go)
   (add-hook 'go-mode-hook (lambda () (set (make-local-variable
-                                      'company-backends)
-                                     '(company-go))))
+                                      'company-backends))))
   (defun go-mode-compile ()
     (interactive)
     (compile "go install"))
