@@ -488,7 +488,9 @@
   :config
   (use-package org-bullets)
   (require 'smartparens-org)
-  (setq org-startup-indented t)
+  (setq org-startup-indented t
+        org-src-preserve-indentation nil
+        org-edit-src-content-indentation 0)
 
   (defmacro orgdr (&optional filename)
     (if filename
