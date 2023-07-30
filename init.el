@@ -961,7 +961,9 @@ RECURRENCES occasions."
 (use-package ledger-mode
   :mode ("\\.ledger\\'")
   :bind (:map ledger-mode-map
-              ("C-c C-c" . ledger-report)))
+              ("C-c C-c" . ledger-report))
+  :config
+  (setq ledger-default-date-format ledger-iso-date-format))
 
 (use-package rust-mode
   :mode "\\.rs\\'")
