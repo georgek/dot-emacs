@@ -98,14 +98,14 @@
   :defer 2
   :config (global-hl-todo-mode))
 
-;; (use-package whitespace
-;;   :config
-;;   (defun nice-whitespace-on ()
-;;     (setq whitespace-style '(face tabs tab-mark trailing lines-tail))
-;;     ;; highlight lines with more than `fill-column' characters
-;;     (setq whitespace-line-column nil)
-;;     (whitespace-mode 1))
-;;   :hook (prog-mode . nice-whitespace-on))
+(use-package whitespace
+  :config
+  (defun nice-whitespace-on ()
+    (setq whitespace-style '(face tabs tab-mark trailing lines-tail))
+    ;; highlight lines with more than `fill-column' characters
+    (setq whitespace-line-column nil)
+    (whitespace-mode 1))
+  :hook (prog-mode . nice-whitespace-on))
 
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 (use-package gk-extra
