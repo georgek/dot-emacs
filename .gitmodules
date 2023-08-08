@@ -367,3 +367,6 @@
 [submodule "zenburn-theme"]
 	path = lib/zenburn-theme
 	url = git@github.com:georgek/zenburn-emacs.git
+[submodule "lib/compat"]
+	path = lib/compat
+	url = git@github.com:emacs-compat/compat.git
