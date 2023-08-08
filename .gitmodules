@@ -207,9 +207,6 @@
 [submodule "mic-paren"]
 	path = lib/mic-paren
 	url = git@github.com:emacsattic/mic-paren.git
-[submodule "multiple-cursors"]
-	path = lib/multiple-cursors
-	url = git@github.com:magnars/multiple-cursors.el.git
 [submodule "nginx-mode"]
 	path = lib/nginx-mode
 	url = git@github.com:ajc/nginx-mode.git
