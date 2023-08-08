@@ -197,6 +197,12 @@
 [submodule "ledger-mode"]
 	path = lib/ledger-mode
 	url = git@github.com:ledger/ledger-mode.git
+[submodule "lib/compat"]
+	path = lib/compat
+	url = git@github.com:emacs-compat/compat.git
+[submodule "lib/llama"]
+	path = lib/llama
+	url = https://git.sr.ht/~tarsius/llama
 [submodule "loop"]
 	path = lib/loop
 	url = git@github.com:Wilfred/loop.el.git
@@ -367,6 +373,3 @@
 [submodule "zenburn-theme"]
 	path = lib/zenburn-theme
 	url = git@github.com:georgek/zenburn-emacs.git
-[submodule "lib/compat"]
-	path = lib/compat
-	url = git@github.com:emacs-compat/compat.git
