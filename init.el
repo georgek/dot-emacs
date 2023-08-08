@@ -90,13 +90,13 @@
 ;;         '(("^~/\\.emacs\\.d/" ":ed:")
 ;;           ("^/sudo:.*:" ":su:"))))
 
-;; (use-package volatile-highlights
-;;   :defer 2
-;;   :config (volatile-highlights-mode t))
+(use-package volatile-highlights
+  :defer 2
+  :config (volatile-highlights-mode t))
 
-;; (use-package hl-todo
-;;   :defer 2
-;;   :config (global-hl-todo-mode))
+(use-package hl-todo
+  :defer 2
+  :config (global-hl-todo-mode))
 
 ;; (use-package whitespace
 ;;   :config
