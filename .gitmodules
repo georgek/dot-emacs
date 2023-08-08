@@ -87,9 +87,6 @@
 [submodule "edit-indirect"]
 	path = lib/edit-indirect
 	url = git@github.com:Fanael/edit-indirect.git
-[submodule "editorconfig"]
-	path = lib/editorconfig
-	url = git@github.com:editorconfig/editorconfig-emacs.git
 [submodule "eimp"]
 	path = lib/eimp
 	url = git@github.com:nicferrier/eimp.git
