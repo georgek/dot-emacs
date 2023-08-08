@@ -54,24 +54,24 @@
 [submodule "company-lsp"]
 	path = lib/company-lsp
 	url = git@github.com:tigersoldier/company-lsp.git
+[submodule "compat"]
+	path = lib/compat
+	url = git@github.com:emacs-compat/compat.git
 [submodule "copy-as-format"]
 	path = lib/copy-as-format
 	url = git@github.com:sshaw/copy-as-format.git
 [submodule "ctable"]
 	path = lib/ctable
 	url = git@github.com:kiwanami/emacs-ctable.git
+[submodule "dash"]
+	path = lib/dash
+	url = git@github.com:magnars/dash.el.git
 [submodule "deadgrep"]
 	path = lib/deadgrep
 	url = git@github.com:Wilfred/deadgrep.git
 [submodule "deferred"]
 	path = lib/deferred
 	url = git@github.com:kiwanami/emacs-deferred.git
-[submodule "compat"]
-	path = lib/compat
-	url = git@github.com:emacs-compat/compat.git
-[submodule "dash"]
-	path = lib/dash
-	url = git@github.com:magnars/dash.el.git
 [submodule "diff-hl"]
 	path = lib/diff-hl
 	url = git@github.com:dgutov/diff-hl.git
@@ -102,6 +102,9 @@
 [submodule "epc"]
 	path = lib/epc
 	url = git@github.com:kiwanami/emacs-epc.git
+[submodule "epkg"]
+	path = lib/epkg
+	url = git@github.com:emacscollective/epkg.git
 [submodule "epl"]
 	path = lib/epl
 	url = git@github.com:cask/epl.git
@@ -129,6 +132,12 @@
 [submodule "geiser"]
 	path = lib/geiser
 	url = git@gitlab.com:jaor/geiser.git
+[submodule "ghub"]
+	path = lib/ghub
+	url = https://github.com/magit/ghub
+[submodule "git-modes"]
+	path = lib/git-modes
+	url = git@github.com:magit/git-modes.git
 [submodule "go-eldoc"]
 	path = lib/go-eldoc
 	url = git@github.com:syohex/emacs-go-eldoc.git
@@ -186,6 +195,9 @@
 [submodule "ledger-mode"]
 	path = lib/ledger-mode
 	url = git@github.com:ledger/ledger-mode.git
+[submodule "llama"]
+	path = lib/llama
+	url = https://git.sr.ht/~tarsius/llama
 [submodule "loop"]
 	path = lib/loop
 	url = git@github.com:Wilfred/loop.el.git
@@ -198,6 +210,9 @@
 [submodule "macrostep"]
 	path = lib/macrostep
 	url = git@github.com:joddie/macrostep.git
+[submodule "magit"]
+	path = lib/magit
+	url = git@github.com:magit/magit.git
 [submodule "markdown-mode"]
 	path = lib/markdown-mode
 	url = git@github.com:jrblevin/markdown-mode.git
@@ -309,18 +324,6 @@
 [submodule "spinner"]
 	path = lib/spinner
 	url = git@github.com:Malabarba/spinner.el.git
-[submodule "epkg"]
-	path = lib/epkg
-	url = git@github.com:emacscollective/epkg.git
-[submodule "git-modes"]
-	path = lib/git-modes
-	url = git@github.com:magit/git-modes.git
-[submodule "llama"]
-	path = lib/llama
-	url = https://git.sr.ht/~tarsius/llama
-[submodule "magit"]
-	path = lib/magit
-	url = git@github.com:magit/magit.git
 [submodule "sqlite3"]
 	path = lib/sqlite3
 	url = git@github.com:pekingduck/emacs-sqlite3-api.git
@@ -348,6 +351,9 @@
 [submodule "with-editor"]
 	path = lib/with-editor
 	url = git@github.com:magit/with-editor.git
+[submodule "yaml"]
+	path = lib/yaml
+	url = https://github.com/zkry/yaml.el
 [submodule "yaml-mode"]
 	path = lib/yaml-mode
 	url = git@github.com:yoshiki/yaml-mode.git
