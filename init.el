@@ -14,19 +14,17 @@
   (setq user-init-file (or load-file-name buffer-file-name))
   (setq user-emacs-directory (file-name-directory user-init-file))
   (message "Loading %s..." user-init-file)
-  (setq package-enable-at-startup nil)
-  ;; (package-initialize)
+  (when (< emacs-major-version 27)
+    (setq package-enable-at-startup nil)
+    ;; (package-initialize)
+    (load-file (expand-file-name "early-init.el" user-emacs-directory)))
   (setq inhibit-startup-buffer-menu t)
   (setq inhibit-startup-screen t)
   (setq inhibit-startup-echo-area-message "gk")
   (setq initial-buffer-choice t)
   (setq initial-scratch-message "")
-  (setq load-prefer-newer t)
   (setq frame-title-format '("%b - GNU Emacs"))
-  (scroll-bar-mode 0)
-  (tool-bar-mode 0)
   (tooltip-mode 0)
-  (menu-bar-mode 0)
   (blink-cursor-mode 0)
   (global-unset-key (kbd "C-z"))
   ;; disable as it ruins keyboard macros
@@ -39,15 +37,20 @@
   (setq mouse-autoselect-window t)
   (fset 'yes-or-no-p 'y-or-n-p)
   (global-hl-line-mode +1)
-  (setq-default indent-tabs-mode nil))
+  (setq-default indent-tabs-mode nil)
+  (when (fboundp 'scroll-bar-mode)
+    (scroll-bar-mode 0))
+  (when (fboundp 'tool-bar-mode)
+    (tool-bar-mode 0))
+  (menu-bar-mode 0))
 
-(progn ;    `borg'
+(eval-and-compile ; `borg'
   (add-to-list 'load-path (expand-file-name "lib/borg" user-emacs-directory))
-  (require  'borg)
+  (require 'borg)
   (borg-initialize)
   (setq borg-compile-function 'borg-byte+native-compile))
 
-(progn ;    `use-package'
+(eval-and-compile ; `use-package'
   (require  'use-package)
   (setq use-package-verbose t))
 
@@ -129,23 +132,26 @@
 ;;   (add-to-list 'recentf-exclude no-littering-var-directory)
 ;;   (add-to-list 'recentf-exclude no-littering-etc-directory))
 
+(use-package dash
+  :config (global-dash-fontify-mode))
+
+(use-package eieio)
+
 (use-package auto-compile
-  :demand t
   :config
-  (auto-compile-on-load-mode)
-  (auto-compile-on-save-mode)
   (setq auto-compile-display-buffer               nil)
   (setq auto-compile-mode-line-counter            t)
   (setq auto-compile-source-recreate-deletes-dest t)
   (setq auto-compile-toggle-deletes-nonlib-dest   t)
-  (setq auto-compile-update-autoloads             t)
-  (add-hook 'auto-compile-inhibit-compile-hook
-            'auto-compile-inhibit-compile-detached-git-head))
+  (setq auto-compile-update-autoloads             t))
 
 (use-package epkg
   :defer t
-  :init (setq epkg-repository
-              (expand-file-name "var/epkgs/" user-emacs-directory)))
+  :init
+  (setq epkg-repository
+        (expand-file-name "var/epkgs/" user-emacs-directory))
+  (setq epkg-database-connector
+        (if (>= emacs-major-version 29) 'sqlite-builtin 'sqlite-module)))
 
 ;; (use-package custom
 ;;   :no-require t
@@ -182,9 +188,6 @@
 ;;   (add-to-list 'projectile-globally-ignored-file-suffixes "~")
 ;;   :bind-keymap
 ;;   ("C-c p" . projectile-command-map))
-
-;; (use-package dash
-;;   :config (dash-enable-font-lock))
 
 ;; (use-package diff-hl
 ;;   :config
@@ -247,6 +250,10 @@
 ;;   :config
 ;;   (setq save-abbrevs 'silently))
 
+(use-package server
+  :commands (server-running-p)
+  :config (or (server-running-p) (server-mode)))
+
 (use-package paredit
   :config
   (require 'gk-electric)
@@ -268,7 +275,7 @@
      'paredit-backward-delete
      'paredit-close-round)
 
-    (local-set-key (kbd "RET") 'gk-electrify-return-if-match)
+        (local-set-key (kbd "RET") 'gk-electrify-return-if-match)
     (eldoc-add-command 'gk-electrify-return-if-match)
 
     (show-paren-mode t)))
@@ -285,6 +292,24 @@
 ;;   :bind (:map smartparens-mode-map
 ;;          ("C-)" . sp-forward-slurp-sexp)
 ;;          ("C-(" . sp-backward-slurp-sexp)))
+
+(use-package diff-hl
+  :config
+  (setq diff-hl-draw-borders nil)
+  (global-diff-hl-mode)
+  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh t))
+
+(use-package diff-mode
+  :defer t
+  :config
+  (when (>= emacs-major-version 27)
+    (set-face-attribute 'diff-refine-changed nil :extend t)
+    (set-face-attribute 'diff-refine-removed nil :extend t)
+    (set-face-attribute 'diff-refine-added   nil :extend t)))
+
+(use-package dired
+  :defer t
+  :config (setq dired-listing-switches "-alh"))
 
 ;; (use-package subword
 ;;   :hook ((python-mode
@@ -332,8 +357,7 @@
 
   (defun indent-spaces-mode ()
     (setq indent-tabs-mode nil))
-
-  (makehookedfun lisp-interaction-mode-hook
+    (makehookedfun lisp-interaction-mode-hook
     (indent-spaces-mode))
 
   :bind
@@ -466,6 +490,26 @@
 ;;   :after magit)
 
 ;; (use-package org-presie)
+
+(use-package prog-mode
+  :config (global-prettify-symbols-mode)
+  (defun indicate-buffer-boundaries-left ()
+    (setq indicate-buffer-boundaries 'left))
+  (add-hook 'prog-mode-hook 'indicate-buffer-boundaries-left))
+
+(use-package recentf
+  :demand t
+  :config (add-to-list 'recentf-exclude "^/\\(?:ssh\\|su\\|sudo\\)?x?:"))
+
+(use-package smerge-mode
+  :defer t
+  :config
+  (when (>= emacs-major-version 27)
+    (set-face-attribute 'smerge-refined-removed nil :extend t)
+    (set-face-attribute 'smerge-refined-added   nil :extend t)))
+
+(progn ;    `text-mode'
+  (add-hook 'text-mode-hook 'indicate-buffer-boundaries-left))
 
 ;; (use-package org
 ;;   :mode (("\\.org$" . org-mode))
@@ -823,18 +867,17 @@
 ;; (progn ;    `text-mode'
 ;;   (add-hook 'text-mode-hook #'indicate-buffer-boundaries-left))
 
-;; (use-package tramp
-;;   :defer t
-;;   :config
-;;   (add-to-list 'tramp-default-proxies-alist '(nil "\\`root\\'" "/ssh:%h:"))
-;;   (add-to-list 'tramp-default-proxies-alist '("localhost" nil nil))
-;;   (add-to-list 'tramp-default-proxies-alist
-;;                (list (regexp-quote (system-name)) nil nil))
-;;   ;; disable remote version control
-;;   (setq vc-ignore-dir-regexp
-;;         (format "\\(%s\\)\\|\\(%s\\)"
-;;                 vc-ignore-dir-regexp
-;;                 tramp-file-name-regexp)))
+(use-package tramp
+  :defer t
+  :config
+  (add-to-list 'tramp-default-proxies-alist '(nil "\\`root\\'" "/ssh:%h:"))
+  (add-to-list 'tramp-default-proxies-alist '("localhost" nil nil))
+  (add-to-list 'tramp-default-proxies-alist
+               (list (regexp-quote (system-name)) nil nil))
+  (setq vc-ignore-dir-regexp
+        (format "\\(%s\\)\\|\\(%s\\)"
+                vc-ignore-dir-regexp
+                tramp-file-name-regexp)))
 
 ;; (use-package avy
 ;;   :config
@@ -1037,6 +1080,12 @@
 ;;   (exec-path-from-shell-initialize)
 ;;   (exec-path-from-shell-copy-env "WORKON_HOME")
 ;;   (exec-path-from-shell-copy-env "PROJECT_HOME"))
+
+(use-package tramp-sh
+  :defer t
+  :config (cl-pushnew 'tramp-own-remote-path tramp-remote-path))
+
+;;; Tequila worms
 
 (progn ;     startup
   (message "Loading %s...done (%.3fs)" user-init-file

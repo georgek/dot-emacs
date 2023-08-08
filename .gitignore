@@ -1,6 +1,7 @@
 /.cask
 /.hive-maint
 /custom.el
+/eln-cache
 /elpa
 /var
 /tramp

@@ -1,6 +1,6 @@
-[borg]
-	pushDefault = locutus
-	collective = emacsg
+[include]
+	path = .gitremotes
+	path = .borgconfig
 [submodule "a"]
 	path = lib/a
 	url = git@github.com:plexus/a.el.git
@@ -41,7 +41,7 @@
 	url = git@github.com:clojure-emacs/clojure-mode.git
 [submodule "closql"]
 	path = lib/closql
-	url = git@github.com:emacscollective/closql.git
+	url = git@github.com:magit/closql.git
 [submodule "commenter"]
 	path = lib/commenter
 	url = git@github.com:yuutayamada/commenter.git
@@ -60,16 +60,18 @@
 [submodule "ctable"]
 	path = lib/ctable
 	url = git@github.com:kiwanami/emacs-ctable.git
-[submodule "dash"]
-	path = lib/dash
-	url = git@github.com:magnars/dash.el.git
-	no-makeinfo = dash-template.texi
 [submodule "deadgrep"]
 	path = lib/deadgrep
 	url = git@github.com:Wilfred/deadgrep.git
 [submodule "deferred"]
 	path = lib/deferred
 	url = git@github.com:kiwanami/emacs-deferred.git
+[submodule "compat"]
+	path = lib/compat
+	url = git@github.com:emacs-compat/compat.git
+[submodule "dash"]
+	path = lib/dash
+	url = git@github.com:magnars/dash.el.git
 [submodule "diff-hl"]
 	path = lib/diff-hl
 	url = git@github.com:dgutov/diff-hl.git
@@ -99,14 +101,10 @@
 	url = git@github.com:jorgenschaefer/elpy.git
 [submodule "emacsql"]
 	path = lib/emacsql
-	url = git@github.com:skeeto/emacsql.git
-	no-byte-compile = emacsql-pg.el
+	url = git@github.com:magit/emacsql.git
 [submodule "epc"]
 	path = lib/epc
 	url = git@github.com:kiwanami/emacs-epc.git
-[submodule "epkg"]
-	path = lib/epkg
-	url = git@github.com:emacscollective/epkg.git
 [submodule "epl"]
 	path = lib/epl
 	url = git@github.com:cask/epl.git
@@ -134,12 +132,6 @@
 [submodule "geiser"]
 	path = lib/geiser
 	url = git@gitlab.com:jaor/geiser.git
-[submodule "ghub"]
-	path = lib/ghub
-	url = git@github.com:magit/ghub.git
-[submodule "git-modes"]
-	path = lib/git-modes
-	url = git@github.com:magit/git-modes.git
 [submodule "go-eldoc"]
 	path = lib/go-eldoc
 	url = git@github.com:syohex/emacs-go-eldoc.git
@@ -197,12 +189,6 @@
 [submodule "ledger-mode"]
 	path = lib/ledger-mode
 	url = git@github.com:ledger/ledger-mode.git
-[submodule "lib/compat"]
-	path = lib/compat
-	url = git@github.com:emacs-compat/compat.git
-[submodule "lib/llama"]
-	path = lib/llama
-	url = https://git.sr.ht/~tarsius/llama
 [submodule "loop"]
 	path = lib/loop
 	url = git@github.com:Wilfred/loop.el.git
@@ -215,14 +201,6 @@
 [submodule "macrostep"]
 	path = lib/macrostep
 	url = git@github.com:joddie/macrostep.git
-[submodule "magit"]
-	path = lib/magit
-	url = git@github.com:georgek/magit.git
-	recursive-byte-compile = true
-	info-path = Documentation
-[submodule "magit-popup"]
-	path = lib/magit-popup
-	url = git@github.com:magit/magit-popup.git
 [submodule "markdown-mode"]
 	path = lib/markdown-mode
 	url = git@github.com:jrblevin/markdown-mode.git
@@ -337,6 +315,21 @@
 [submodule "spinner"]
 	path = lib/spinner
 	url = git@github.com:Malabarba/spinner.el.git
+[submodule "epkg"]
+	path = lib/epkg
+	url = git@github.com:emacscollective/epkg.git
+[submodule "git-modes"]
+	path = lib/git-modes
+	url = git@github.com:magit/git-modes.git
+[submodule "llama"]
+	path = lib/llama
+	url = https://git.sr.ht/~tarsius/llama
+[submodule "magit"]
+	path = lib/magit
+	url = git@github.com:magit/magit.git
+[submodule "sqlite3"]
+	path = lib/sqlite3
+	url = git@github.com:pekingduck/emacs-sqlite3-api.git
 [submodule "transient"]
 	path = lib/transient
 	url = git@github.com:magit/transient.git
