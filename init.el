@@ -144,20 +144,12 @@
   (setq epkg-database-connector
         (if (>= emacs-major-version 29) 'sqlite-builtin 'sqlite-module)))
 
-;; (use-package custom
-;;   :no-require t
-;;   :config
-;;   (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-;;   (when (file-exists-p custom-file)
-;;     (load custom-file)))
-
-;; (use-package server
-;;   :config (or (server-running-p) (server-mode)))
-
-;; (progn ;     startup
-;;   (message "Loading early birds...done (%.3fs)"
-;;            (float-time (time-subtract (current-time)
-;;                                       before-user-init-time))))
+(use-package custom
+  :no-require t
+  :config
+  (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+  (when (file-exists-p custom-file)
+    (load custom-file)))
 
 (defmacro makehookedfun (hook &rest body)
   "Defines a function using BODY that is hooked to HOOK."
@@ -180,26 +172,26 @@
 ;;   :bind-keymap
 ;;   ("C-c p" . projectile-command-map))
 
-;; (use-package diff-hl
-;;   :config
-;;   (setq diff-hl-draw-borders nil)
-;;   (global-diff-hl-mode)
-;;   (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh t))
+(use-package diff-hl
+  :config
+  (setq diff-hl-draw-borders nil)
+  (global-diff-hl-mode)
+  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh t))
 
-;; (use-package dired
-;;   :defer t
-;;   :config (setq dired-listing-switches "-alh"))
+(use-package dired
+  :defer t
+  :config (setq dired-listing-switches "-alh"))
 
-;; (use-package eldoc
-;;   :when (version< "25" emacs-version)
-;;   :config (global-eldoc-mode))
+(use-package eldoc
+  :when (version< "25" emacs-version)
+  :config (global-eldoc-mode))
 
-;; (use-package help
-;;   :defer t
-;;   :config (temp-buffer-resize-mode))
+(use-package help
+  :defer t
+  :config (temp-buffer-resize-mode))
 
-;; (progn ;    `isearch'
-;;   (setq isearch-allow-scroll t))
+(progn ;    `isearch'
+  (setq isearch-allow-scroll t))
 
 ;; (use-package yasnippet
 ;;   :config
@@ -271,18 +263,18 @@
 
     (show-paren-mode t)))
 
-;; (use-package smartparens
-;;   :demand
-;;   :config
-;;   (require 'smartparens-config)
-;;   (setq sp-base-key-bindings 'paredit)
-;;   (setq sp-autoskip-closing-pair 'always)
-;;   (setq sp-escape-quotes-after-insert nil)  ; disable for c-mode
-;;   (setq sp-ignore-modes-list '(web-mode))
-;;   (smartparens-global-mode)
-;;   :bind (:map smartparens-mode-map
-;;          ("C-)" . sp-forward-slurp-sexp)
-;;          ("C-(" . sp-backward-slurp-sexp)))
+(use-package smartparens
+  :demand
+  :config
+  (require 'smartparens-config)
+  (setq sp-base-key-bindings 'paredit)
+  (setq sp-autoskip-closing-pair 'always)
+  (setq sp-escape-quotes-after-insert nil)  ; disable for c-mode
+  (setq sp-ignore-modes-list '(web-mode))
+  (smartparens-global-mode)
+  :bind (:map smartparens-mode-map
+         ("C-)" . sp-forward-slurp-sexp)
+         ("C-(" . sp-backward-slurp-sexp)))
 
 (use-package diff-hl
   :config
@@ -302,16 +294,16 @@
   :defer t
   :config (setq dired-listing-switches "-alh"))
 
-;; (use-package subword
-;;   :hook ((python-mode
-;;           yaml-mode
-;;           go-mode
-;;           clojure-mode
-;;           cider-repl-mode
-;;           js2-mode
-;;           rjsx-mode
-;;           typescript-mode)
-;;          . subword-mode))
+(use-package subword
+  :hook ((python-mode
+          yaml-mode
+          go-mode
+          clojure-mode
+          cider-repl-mode
+          js2-mode
+          rjsx-mode
+          typescript-mode)
+         . subword-mode))
 
 (use-package lisp-mode
   :config
@@ -354,10 +346,10 @@
    ("C-c C-l" . paredit-recentre-on-sexp)
    ("C-c d" . toggle-debug-on-error)))
 
-;; (use-package macrostep
-;;   :bind
-;;   (:map emacs-lisp-mode-map
-;;    ("C-c e" . macrostep-expand)))
+(use-package macrostep
+  :bind
+  (:map emacs-lisp-mode-map
+   ("C-c e" . macrostep-expand)))
 
 ;; (use-package ielm
 ;;   :init
@@ -438,9 +430,9 @@
 ;;   (company-prescient-mode +1)
 ;;   (prescient-persist-mode +1))
 
-;; (use-package transient
-;;   :config
-;;   (setq transient-display-buffer-action '(display-buffer-below-selected)))
+(use-package transient
+  :config
+  (setq transient-display-buffer-action '(display-buffer-below-selected)))
 
 (use-package magit
   :defer t
@@ -473,8 +465,8 @@
   (setq magit-diff-refine-hunk 'all)
   (setq magit-refs-pad-commit-counts t))
 
-;; (use-package forge
-;;   :after magit)
+(use-package forge
+  :after magit)
 
 ;; (use-package org-presie)
 
@@ -663,8 +655,8 @@
 ;;   (require 'smartparens-markdown)
 ;;   (setq markdown-asymmetric-header t))
 
-;; (use-package yaml-mode
-;;   :mode "\\.\\(ya?\\|m\\)ml\\'")
+(use-package yaml-mode
+  :mode "\\.\\(ya?\\|m\\)ml\\'")
 
 ;; (use-package make-mode
 ;;   :defer t
