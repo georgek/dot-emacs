@@ -121,11 +121,11 @@
          ("C-c t" . gk-insert-time))
   :mode ("\\.h\\'" . gk-c-c++-header))
 
-;; (use-package no-littering
-;;   :config
-;;   (use-package recentf)
-;;   (add-to-list 'recentf-exclude no-littering-var-directory)
-;;   (add-to-list 'recentf-exclude no-littering-etc-directory))
+(use-package no-littering
+  :config
+  (use-package recentf)
+  (add-to-list 'recentf-exclude no-littering-var-directory)
+  (add-to-list 'recentf-exclude no-littering-etc-directory))
 
 (use-package dash
   :config (global-dash-fontify-mode))
