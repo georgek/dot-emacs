@@ -732,16 +732,16 @@ RECURRENCES occasions."
 (use-package hippie-expand
   :bind (("M-/" . hippie-expand)))
 
-;; (use-package midnight
-;;   :demand t
-;;   :config
-;;   (setq midnight-mode t)
-;;   ;; some buffers that shouldn't be killed
-;;   (setq clean-buffer-list-kill-never-buffer-names
-;;         (append clean-buffer-list-kill-never-buffer-names
-;;                 '("*slime-repl sbcl*"
-;;                   "*R*"
-;;                   "init.el"))))
+(use-package midnight
+  :demand t
+  :config
+  (setq midnight-mode t)
+  ;; some buffers that shouldn't be killed
+  (setq clean-buffer-list-kill-never-buffer-names
+        (append clean-buffer-list-kill-never-buffer-names
+                '("*slime-repl sbcl*"
+                  "*R*"
+                  "init.el"))))
 
 ;; (use-package tex-site                   ; auctex
 ;;   :mode ("\\.tex\\'" . TeX-latex-mode)
