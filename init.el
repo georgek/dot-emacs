@@ -675,9 +675,9 @@ RECURRENCES occasions."
 ;; (use-package nginx-mode
 ;;   :mode "nginx-mode")
 
-;; (use-package compile
-;;   :config
-;;   (setq compilation-scroll-output 'first-error))
+(use-package compile
+  :config
+  (setq compilation-scroll-output 'first-error))
 
 ;; (use-package cc-mode
 ;;   :config
