@@ -729,8 +729,8 @@ RECURRENCES occasions."
   (setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
   (setq uniquify-min-dir-content 0))
 
-;; (use-package hippie-expand
-;;   :bind (("M-/" . hippie-expand)))
+(use-package hippie-expand
+  :bind (("M-/" . hippie-expand)))
 
 ;; (use-package midnight
 ;;   :demand t
