@@ -697,24 +697,24 @@ RECURRENCES occasions."
   :commands (lorem-ipsum-insert-paragraphs
              lorem-ipsum-insert-sentences))
 
-;; (use-package flycheck
-;;   :demand t
-;;   :config
-;;   (setq flycheck-global-modes
-;;         '(not
-;;           org-mode
-;;           markdown-mode))
-;;   (global-flycheck-mode)
-;;   (setq-default flycheck-disabled-checkers
-;;                 '(c/c++-clang))
-;;   (setq flycheck-python-flake8-executable "flake8")
-;;   (setq flycheck-flake8rc "setup.cfg")
-;;   (flycheck-add-next-checker 'python-pycompile 'python-flake8)
-;;   :bind (:map
-;;          flycheck-mode-map
-;;          ("C-c C-n" . flycheck-next-error)
-;;          ("C-c C-p" . flycheck-previous-error)
-;;          ("C-c C-l" . flycheck-list-errors)))
+(use-package flycheck
+  :demand t
+  :config
+  (setq flycheck-global-modes
+        '(not
+          org-mode
+          markdown-mode))
+  (global-flycheck-mode)
+  (setq-default flycheck-disabled-checkers
+                '(c/c++-clang))
+  (setq flycheck-python-flake8-executable "flake8")
+  (setq flycheck-flake8rc "setup.cfg")
+  (flycheck-add-next-checker 'python-pycompile 'python-flake8)
+  :bind (:map
+         flycheck-mode-map
+         ("C-c C-n" . flycheck-next-error)
+         ("C-c C-p" . flycheck-previous-error)
+         ("C-c C-l" . flycheck-list-errors)))
 
 ;; (use-package flyspell
 ;;   :config (setq flyspell-issue-message-flag -1)
