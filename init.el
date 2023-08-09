@@ -856,12 +856,6 @@ RECURRENCES occasions."
                 vc-ignore-dir-regexp
                 tramp-file-name-regexp)))
 
-;; (use-package avy
-;;   :config
-;;   (setq avy-background t)
-;;   :bind
-;;   (("C-:" . avy-goto-char)))
-
 (use-package ace-window
   :config
   (setq aw-scope 'frame)
