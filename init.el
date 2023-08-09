@@ -492,164 +492,164 @@
 (progn ;    `text-mode'
   (add-hook 'text-mode-hook 'indicate-buffer-boundaries-left))
 
-;; (use-package org
-;;   :mode (("\\.org$" . org-mode))
-;;   :bind
-;;   (("C-c c" . org-capture)
-;;    ("C-c l" . org-store-link)
-;;    ("C-c a" . org-agenda)
-;;    ("C-~" . (lambda () (interactive) (org-agenda nil "n")))
-;;    ("C-c C-x C-j" . org-clock-goto)
-;;    ("C-c C-x C-o" . org-clock-out)
-;;    ("C-c C-x C-x" . org-clock-in-last)
-;;    :map org-mode-map
-;;    ("M-p" . org-metaup)
-;;    ("M-n" . org-metadown)
-;;    ("C-M->" . org-metaright)
-;;    ("C-M-<" . org-metaleft))
-;;   :hook ((org-mode . auto-fill-mode)
-;;          (org-mode . org-bullets-mode)
-;;          (org-mode . flyspell-mode)
-;;          (org-mode . reveal-mode))
-;;   :config
-;;   (use-package org-bullets)
-;;   (require 'smartparens-org)
-;;   (setq org-startup-indented t
-;;         org-src-preserve-indentation nil
-;;         org-edit-src-content-indentation 0)
+(use-package org
+  :mode (("\\.org$" . org-mode))
+  :bind
+  (("C-c c" . org-capture)
+   ("C-c l" . org-store-link)
+   ("C-c a" . org-agenda)
+   ("C-~" . (lambda () (interactive) (org-agenda nil "n")))
+   ("C-c C-x C-j" . org-clock-goto)
+   ("C-c C-x C-o" . org-clock-out)
+   ("C-c C-x C-x" . org-clock-in-last)
+   :map org-mode-map
+   ("M-p" . org-metaup)
+   ("M-n" . org-metadown)
+   ("C-M->" . org-metaright)
+   ("C-M-<" . org-metaleft))
+  :hook ((org-mode . auto-fill-mode)
+         (org-mode . org-bullets-mode)
+         (org-mode . flyspell-mode)
+         (org-mode . reveal-mode))
+  :config
+  (use-package org-bullets)
+  (require 'smartparens-org)
+  (setq org-startup-indented t
+        org-src-preserve-indentation nil
+        org-edit-src-content-indentation 0)
 
-;;   (defmacro orgdr (&optional filename)
-;;     (if filename
-;;         `(concat (file-name-as-directory org-directory) ,filename)
-;;       org-directory))
-;;   (setq org-return-follows-link t)
+  (defmacro orgdr (&optional filename)
+    (if filename
+        `(concat (file-name-as-directory org-directory) ,filename)
+      org-directory))
+  (setq org-return-follows-link t)
 
-;;   (org-babel-do-load-languages
-;;    'org-babel-load-languages
-;;    '((lisp . t)
-;;      (sqlite . t)
-;;      (R . t)
-;;      (shell . t)
-;;      (python . t)))
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((lisp . t)
+     (sqlite . t)
+     (R . t)
+     (shell . t)
+     (python . t)))
 
-;;   ;; a named source block
-;;   (add-to-list 'org-structure-template-alist
-;;                '("S" "#+NAME: ?\n#+BEGIN_SRC \n\n#+END_SRC")
-;;                '("N" "#+NAME: ?"))
+  ;; a named source block
+  (add-to-list 'org-structure-template-alist
+               '("S" "#+NAME: ?\n#+BEGIN_SRC \n\n#+END_SRC")
+               '("N" "#+NAME: ?"))
 
-;;   ;; exporting
-;;   (use-package htmlize)
-;;   (use-package ox-md)
-;;   (use-package ox-pandoc)
-;;   (use-package ox-twbs)
-;;   (use-package ox-latex)
-;;   (use-package ox-reveal)
-;;   (setq org-latex-to-pdf-process '("latexmk -pdf %f"))
-;;   (setq org-export-latex-listings 'minted)
+  ;; exporting
+  (use-package htmlize)
+  (use-package ox-md)
+  (use-package ox-pandoc)
+  (use-package ox-twbs)
+  (use-package ox-latex)
+  (use-package ox-reveal)
+  (setq org-latex-to-pdf-process '("latexmk -pdf %f"))
+  (setq org-export-latex-listings 'minted)
 
-;;   (defun orgtbl-to-latex-booktabs (table params)
-;;     "Convert the Orgtbl mode TABLE to LaTeX using booktabs package."
-;;     (let* ((alignment (mapconcat (lambda (x) (if x "r" "l"))
-;;                                  org-table-last-alignment ""))
-;;            (params2
-;;             (list
-;;              :tstart "\\toprule"
-;;              :tend "\\bottomrule\n"
-;;              :lstart "" :lend " \\\\" :sep " & "
-;;              :efmt "%s\\,(%s)" :hline "\\midrule")))
-;;       (orgtbl-to-generic table (org-combine-plists params2 params))))
+  (defun orgtbl-to-latex-booktabs (table params)
+    "Convert the Orgtbl mode TABLE to LaTeX using booktabs package."
+    (let* ((alignment (mapconcat (lambda (x) (if x "r" "l"))
+                                 org-table-last-alignment ""))
+           (params2
+            (list
+             :tstart "\\toprule"
+             :tend "\\bottomrule\n"
+             :lstart "" :lend " \\\\" :sep " & "
+             :efmt "%s\\,(%s)" :hline "\\midrule")))
+      (orgtbl-to-generic table (org-combine-plists params2 params))))
 
-;;   (eval-after-load "org-table"
-;;     '(progn
-;;        (setq orgtbl-radio-table-templates
-;;              (delete-if (lambda (x) (equal (car x) 'latex-mode))
-;;                         orgtbl-radio-table-templates))
-;;        (add-to-list 'orgtbl-radio-table-templates
-;;                     '(latex-mode "% BEGIN RECEIVE ORGTBL %n\n"
-;;                                  "% END RECEIVE ORGTBL %n\n"
-;;                                  "\\begin{comment}\n#+ORGTBL: SEND %n "
-;;                                  "orgtbl-to-latex-booktabs :splice nil "
-;;                                  ":skip 0 :no-escape t\n"
-;;                                  "| | |\n\\end{comment}\n"))))
+  (eval-after-load "org-table"
+    '(progn
+       (setq orgtbl-radio-table-templates
+             (delete-if (lambda (x) (equal (car x) 'latex-mode))
+                        orgtbl-radio-table-templates))
+       (add-to-list 'orgtbl-radio-table-templates
+                    '(latex-mode "% BEGIN RECEIVE ORGTBL %n\n"
+                                 "% END RECEIVE ORGTBL %n\n"
+                                 "\\begin{comment}\n#+ORGTBL: SEND %n "
+                                 "orgtbl-to-latex-booktabs :splice nil "
+                                 ":skip 0 :no-escape t\n"
+                                 "| | |\n\\end{comment}\n"))))
 
-;;   ;; export with CSS classes instead of explicit colours
-;;   (setq org-html-htmlize-output-type 'css)
-;;   (setq org-html-htmlize-font-prefix "org-")
+  ;; export with CSS classes instead of explicit colours
+  (setq org-html-htmlize-output-type 'css)
+  (setq org-html-htmlize-font-prefix "org-")
 
-;;   (setq org-twbs-htmlize-output-type 'css)
-;;   (setq org-twbs-htmlize-font-prefix "org-")
+  (setq org-twbs-htmlize-output-type 'css)
+  (setq org-twbs-htmlize-font-prefix "org-")
 
-;;   ;; capture
-;;   (setq org-default-notes-file (orgdr "notes.org"))
-;;   (setq org-capture-templates
-;;         `(("t" "Todo" entry (file+headline ,(orgdr "todo.org") "Misc (Captured)")
-;;            "* TODO %?\n %U\n %a")
-;;           ("d" "Diary" entry (file+headline ,(orgdr "diary.org") "Captured"))
-;;           ("j" "Journal" entry (file+olp+datetree ,(orgdr "journal.org"))
-;;            "* %? %^g\nEntered on %U\n %i")
-;;           ("i" "Idea" entry (file ,(orgdr "ideas.org"))
-;;            "* %?\n %U\n %a")))
+  ;; capture
+  (setq org-default-notes-file (orgdr "notes.org"))
+  (setq org-capture-templates
+        `(("t" "Todo" entry (file+headline ,(orgdr "todo.org") "Misc (Captured)")
+           "* TODO %?\n %U\n %a")
+          ("d" "Diary" entry (file+headline ,(orgdr "diary.org") "Captured"))
+          ("j" "Journal" entry (file+olp+datetree ,(orgdr "journal.org"))
+           "* %? %^g\nEntered on %U\n %i")
+          ("i" "Idea" entry (file ,(orgdr "ideas.org"))
+           "* %?\n %U\n %a")))
 
-;;   ;; agenda stuff
-;;   (custom-set-variables
-;;    '(org-agenda-custom-commands
-;;      '(("n" "Agenda and all TODOs"
-;;         ((agenda "")
-;;          (alltodo ""))
-;;         ((org-agenda-tag-filter '("-NOAGENDA")))))))
-;;   (setq org-agenda-files (directory-files-recursively (orgdr) "\\.org$" nil))
-;;   (setq org-agenda-include-diary t)
-;;   (setq org-agenda-span 14)
-;;   (setq org-agenda-start-on-weekday nil)
-;;   (setq org-agenda-window-setup 'current-window)
-;;   (setq org-agenda-restore-windows-after-quit t)
-;;   (setq org-agenda-prefix-format '((agenda . " %i %-12:c%?-12t% s")
-;;                                    (todo .   " %i %-12:c")
-;;                                    (tags .   " %i %-12:c")
-;;                                    (search . " %i %-12:c")))
+  ;; agenda stuff
+  (custom-set-variables
+   '(org-agenda-custom-commands
+     '(("n" "Agenda and all TODOs"
+        ((agenda "")
+         (alltodo ""))
+        ((org-agenda-tag-filter '("-NOAGENDA")))))))
+  (setq org-agenda-files (directory-files-recursively (orgdr) "\\.org$" nil))
+  (setq org-agenda-include-diary t)
+  (setq org-agenda-span 14)
+  (setq org-agenda-start-on-weekday nil)
+  (setq org-agenda-window-setup 'current-window)
+  (setq org-agenda-restore-windows-after-quit t)
+  (setq org-agenda-prefix-format '((agenda . " %i %-12:c%?-12t% s")
+                                   (todo .   " %i %-12:c")
+                                   (tags .   " %i %-12:c")
+                                   (search . " %i %-12:c")))
 
-;;   (setq org-time-stamp-custom-formats
-;;         '("<%A, %e %B %Y>" . "<%A, %e %B %Y %H:%M>"))
-;;   (setq org-log-done 'time)
-;;   (setq org-blank-before-new-entry
-;;         '((heading . t) (plain-list-item . nil)))
-;;   (setq org-todo-keywords (quote((sequence "TODO" "WAITING" "|" "DONE"))))
+  (setq org-time-stamp-custom-formats
+        '("<%A, %e %B %Y>" . "<%A, %e %B %Y %H:%M>"))
+  (setq org-log-done 'time)
+  (setq org-blank-before-new-entry
+        '((heading . t) (plain-list-item . nil)))
+  (setq org-todo-keywords (quote((sequence "TODO" "WAITING" "|" "DONE"))))
 
-;;   (require 'org-clock)
-;;   (require 'org-timer)
-;;   (setq org-timer-default-timer 25)
+  (require 'org-clock)
+  (require 'org-timer)
+  (setq org-timer-default-timer 25)
 
-;;   (setq org-clock-clocked-in-display 'frame-title)
-;;   (setq org-timer-display 'frame-title)
-;;   (setq org-clock-frame-title-format
-;;         (append frame-title-format
-;;                 '(" - Org clocked in: " org-mode-line-string)))
+  (setq org-clock-clocked-in-display 'frame-title)
+  (setq org-timer-display 'frame-title)
+  (setq org-clock-frame-title-format
+        (append frame-title-format
+                '(" - Org clocked in: " org-mode-line-string)))
 
-;;   ;; use log drawer
-;;   (setq org-log-into-drawer t)
+  ;; use log drawer
+  (setq org-log-into-drawer t)
 
-;;   (defun diary-limited-cyclic (recurrences interval y m d)
-;;     "For use in emacs diary. Cyclic item with limited number of recurrences.
-;; Occurs every INTERVAL days, starting on YYYY-MM-DD, for a total of
-;; RECURRENCES occasions."
-;;     (let ((startdate (calendar-absolute-from-gregorian (list m d y)))
-;;           (today (calendar-absolute-from-gregorian date)))
-;;       (and (not (minusp (- today startdate)))
-;;            (zerop (% (- today startdate) interval))
-;;            (< (floor (- today startdate) interval) recurrences))))
+  (defun diary-limited-cyclic (recurrences interval y m d)
+    "For use in emacs diary. Cyclic item with limited number of recurrences.
+Occurs every INTERVAL days, starting on YYYY-MM-DD, for a total of
+RECURRENCES occasions."
+    (let ((startdate (calendar-absolute-from-gregorian (list m d y)))
+          (today (calendar-absolute-from-gregorian date)))
+      (and (not (minusp (- today startdate)))
+           (zerop (% (- today startdate) interval))
+           (< (floor (- today startdate) interval) recurrences))))
 
-;;   ;; this code removes time grid lines that are within an appointment
-;;   (defun org-time-to-minutes (time)
-;;     "Convert an HHMM time to minutes"
-;;     (+ (* (/ time 100) 60) (% time 100)))
+  ;; this code removes time grid lines that are within an appointment
+  (defun org-time-to-minutes (time)
+    "Convert an HHMM time to minutes"
+    (+ (* (/ time 100) 60) (% time 100)))
 
-;;   (defun org-time-from-minutes (minutes)
-;;     "Convert a number of minutes to an HHMM time"
-;;     (+ (* (/ minutes 60) 100) (% minutes 60)))
+  (defun org-time-from-minutes (minutes)
+    "Convert a number of minutes to an HHMM time"
+    (+ (* (/ minutes 60) 100) (% minutes 60)))
 
-;;   ;; setup default file readers
-;;   (eval-after-load "org"
-;;     '(setcdr (assoc "\\.pdf\\'" org-file-apps) "evince %s")))
+  ;; setup default file readers
+  (eval-after-load "org"
+    '(setcdr (assoc "\\.pdf\\'" org-file-apps) "evince %s")))
 
 ;; (use-package markdown-mode
 ;;   :mode "\\.md\\'"
