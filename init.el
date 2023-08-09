@@ -418,6 +418,7 @@
 ;;          ("C-c z" . cider-switch-to-repl-buffer)
 ;;          ("C-c C-z" . cider-switch-to-repl-buffer)))
 
+;;; TODO replace with vertico https://github.com/minad/vertico
 (use-package selectrum
   :demand
   :bind (("C-x C-b" . switch-to-buffer))
@@ -691,9 +692,9 @@
 ;;   :bind (:map asm-mode-map
 ;;          ("C-c C-c" . compile)))
 
-;; (use-package lorem-ipsum
-;;   :commands (lorem-ipsum-insert-paragraphs
-;;              lorem-ipsum-insert-sentences))
+(use-package lorem-ipsum
+  :commands (lorem-ipsum-insert-paragraphs
+             lorem-ipsum-insert-sentences))
 
 ;; (use-package flycheck
 ;;   :demand t
