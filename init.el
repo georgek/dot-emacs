@@ -716,9 +716,9 @@ RECURRENCES occasions."
          ("C-c C-p" . flycheck-previous-error)
          ("C-c C-l" . flycheck-list-errors)))
 
-;; (use-package flyspell
-;;   :config (setq flyspell-issue-message-flag -1)
-;;   :hook ((text-mode . flyspell-mode)))
+(use-package flyspell
+  :config (setq flyspell-issue-message-flag -1)
+  :hook ((text-mode . flyspell-mode)))
 
 ;; (use-package uniquify
 ;;   :demand t
