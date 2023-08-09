@@ -82,13 +82,14 @@
                       "ElDoc" "||" "WK" "VHl" "," "ws")
                     "\\|"))))
 
-;; (use-package smart-mode-line
-;;   :config
-;;   (sml/setup)
-;;   (setq sml/name-width 50)
-;;   (setq sml/replacer-regexp-list
-;;         '(("^~/\\.emacs\\.d/" ":ed:")
-;;           ("^/sudo:.*:" ":su:"))))
+(use-package smart-mode-line
+  :config
+  (sml/setup)
+  (setq sml/name-width 50)
+  (setq sml/extra-filler -6)
+  (setq sml/replacer-regexp-list
+        '(("^~/\\.emacs\\.d/" ":ed:")
+          ("^/sudo:.*:" ":su:"))))
 
 (use-package volatile-highlights
   :defer 2
