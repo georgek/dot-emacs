@@ -825,28 +825,24 @@ RECURRENCES occasions."
   (setq paren-sexp-mode 'mismatch)
   (paren-activate))
 
-;; (use-package prog-mode
-;;   :config (global-prettify-symbols-mode)
-;;   (defun indicate-buffer-boundaries-left ()
-;;     (setq indicate-buffer-boundaries 'left))
-;;   (add-hook 'prog-mode-hook #'indicate-buffer-boundaries-left))
+(use-package prog-mode
+  :config (global-prettify-symbols-mode)
+  (defun indicate-buffer-boundaries-left ()
+    (setq indicate-buffer-boundaries 'left))
+  (add-hook 'prog-mode-hook #'indicate-buffer-boundaries-left))
 
-;; (use-package recentf
-;;   :demand t
-;;   :config (add-to-list 'recentf-exclude "^/\\(?:ssh\\|su\\|sudo\\)?:"))
+(use-package savehist
+  :config (savehist-mode))
 
-;; (use-package savehist
-;;   :config (savehist-mode))
+(use-package saveplace
+  :when (version< "25" emacs-version)
+  :config (save-place-mode))
 
-;; (use-package saveplace
-;;   :when (version< "25" emacs-version)
-;;   :config (save-place-mode))
+(use-package simple
+  :config (column-number-mode))
 
-;; (use-package simple
-;;   :config (column-number-mode))
-
-;; (progn ;    `text-mode'
-;;   (add-hook 'text-mode-hook #'indicate-buffer-boundaries-left))
+(progn ;    `text-mode'
+  (add-hook 'text-mode-hook #'indicate-buffer-boundaries-left))
 
 (use-package tramp
   :defer t
