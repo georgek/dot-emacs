@@ -426,11 +426,11 @@
   :config
   (selectrum-mode +1))
 
-;; (use-package prescient
-;;   :config
-;;   (selectrum-prescient-mode +1)
-;;   (company-prescient-mode +1)
-;;   (prescient-persist-mode +1))
+(use-package prescient
+  :config
+  (selectrum-prescient-mode +1)
+  (company-prescient-mode +1)
+  (prescient-persist-mode +1))
 
 (use-package transient
   :config
