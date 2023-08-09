@@ -50,10 +50,10 @@
   (setq use-package-verbose t))
 
 ;;; i3 integration
-;; (use-package i3
-;;   :config
-;;   (require 'i3-integration)
-;;   (i3-advise-visible-frame-list-on))
+(use-package i3
+  :config
+  (require 'i3-integration)
+  (i3-advise-visible-frame-list-on))
 
 ;; theme
 (defvar my-font "Ubuntu Mono-9")
