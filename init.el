@@ -816,14 +816,14 @@ RECURRENCES occasions."
 ;;   :defer t
 ;;   :config (setq Man-width 80))
 
-;; (use-package paren-face
-;;   :config
-;;   (global-paren-face-mode))
+(use-package paren-face
+  :config
+  (global-paren-face-mode))
 
-;; (use-package mic-paren
-;;   :config
-;;   (setq paren-sexp-mode 'mismatch)
-;;   (paren-activate))
+(use-package mic-paren
+  :config
+  (setq paren-sexp-mode 'mismatch)
+  (paren-activate))
 
 ;; (use-package prog-mode
 ;;   :config (global-prettify-symbols-mode)
