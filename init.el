@@ -37,7 +37,8 @@
     (scroll-bar-mode 0))
   (when (fboundp 'tool-bar-mode)
     (tool-bar-mode 0))
-  (menu-bar-mode 0))
+  (menu-bar-mode 0)
+  (setq native-comp-async-report-warnings-errors 'silent))
 
 (eval-and-compile ; `borg'
   (add-to-list 'load-path (expand-file-name "lib/borg" user-emacs-directory))
