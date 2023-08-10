@@ -1096,9 +1096,13 @@ RECURRENCES occasions."
   :defer t
   :config (cl-pushnew 'tramp-own-remote-path tramp-remote-path))
 
+(use-package xref
+  :config
+  (setq xref-search-program 'ripgrep))
+
 ;;; Tequila worms
 
-(progn ;     startup
+(progn                                  ;     startup
   (message "Loading %s...done (%.3fs)" user-init-file
            (float-time (time-subtract (current-time)
                                       before-user-init-time)))
