@@ -424,11 +424,20 @@
   :demand
   :bind (("C-x C-b" . switch-to-buffer))
   :config
-  (vertico-mode))
+  (vertico-mode)
+  ;; Do not allow the cursor in the minibuffer prompt
+  (setq minibuffer-prompt-properties
+        '(read-only t cursor-intangible t face minibuffer-prompt))
+  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode))
+
+(use-package orderless
+  :init
+  (setq completion-styles '(orderless basic)
+        completion-category-defaults nil
+        completion-category-overrides '((file (styles partial-completion)))))
 
 (use-package prescient
   :config
-  (vertico-prescient-mode +1)
   (prescient-persist-mode +1))
 
 (use-package transient
