@@ -164,16 +164,6 @@
 
 ;; ;;; long tail
 
-;; (use-package projectile
-;;   :config
-;;   (projectile-mode +1)
-;;   (setq projectile-completion-system 'default)
-;;   (setq projectile-indexing-method 'alien)
-;;   (setq projectile-enable-caching nil)
-;;   (add-to-list 'projectile-globally-ignored-file-suffixes "~")
-;;   :bind-keymap
-;;   ("C-c p" . projectile-command-map))
-
 (use-package diff-hl
   :config
   (setq diff-hl-draw-borders nil)
