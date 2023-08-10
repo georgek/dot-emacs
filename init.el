@@ -95,6 +95,11 @@
         '(("^~/\\.emacs\\.d/" ":ed:")
           ("^/sudo:.*:" ":su:"))))
 
+(use-package undo-tree
+  :config
+  (global-undo-tree-mode)
+  (setq undo-tree-mode-lighter ""))
+
 (use-package volatile-highlights
   :defer 2
   :config (volatile-highlights-mode t))
@@ -126,7 +131,8 @@
   :config
   (use-package recentf)
   (add-to-list 'recentf-exclude no-littering-var-directory)
-  (add-to-list 'recentf-exclude no-littering-etc-directory))
+  (add-to-list 'recentf-exclude no-littering-etc-directory)
+  (no-littering-theme-backups))
 
 (use-package dash
   :config (global-dash-fontify-mode))

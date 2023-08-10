@@ -324,6 +324,9 @@
 [submodule "typescript-mode"]
 	path = lib/typescript-mode
 	url = git@github.com:ananthakumaran/typescript.el.git
+[submodule "undo-tree"]
+	path = lib/undo-tree
+	url = https://gitlab.com/tsc25/undo-tree
 [submodule "use-package"]
 	path = lib/use-package
 	url = git@github.com:jwiegley/use-package.git
