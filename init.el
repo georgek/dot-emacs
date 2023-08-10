@@ -856,12 +856,6 @@ RECURRENCES occasions."
                 vc-ignore-dir-regexp
                 tramp-file-name-regexp)))
 
-(use-package ace-window
-  :config
-  (setq aw-scope 'frame)
-  :bind
-  (("M-'" . ace-window)))
-
 ;; (use-package helpful
 ;;   :bind (("C-h f" . helpful-callable)
 ;;          ("C-h v" . helpful-variable)
@@ -989,8 +983,9 @@ RECURRENCES occasions."
 ;;          ("C-c w o" . copy-as-format-org-mode)
 ;;          ("C-c w s" . copy-as-format-slack)))
 
-;; (use-package gk-other-window-repeat
-;;   :bind (("C-x o" . gk-other-window-repeat)))
+(use-package gk-other-window-repeat
+  :bind (("C-x o" . gk-other-window-repeat)
+         ("M-'" . other-window)))
 
 (progn                                  ; misc settings
  ;; set some default styles
