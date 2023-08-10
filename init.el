@@ -167,11 +167,30 @@
 
 ;; ;;; long tail
 
+(use-package autorevert
+  :config
+   ;; enable auto revert globally
+ (global-auto-revert-mode 1)
+ (setq auto-revert-check-vc-info t)
+ (setq auto-revert-verbose nil)
+ (setq auto-revert-remote-files t))
+
 (use-package diff-hl
   :config
   (setq diff-hl-draw-borders nil)
   (global-diff-hl-mode)
   (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh t))
+
+(use-package diff-hl-flydiff
+  :config (diff-hl-flydiff-mode))
+
+(use-package diff-mode
+  :defer t
+  :config
+  (when (>= emacs-major-version 27)
+    (set-face-attribute 'diff-refine-changed nil :extend t)
+    (set-face-attribute 'diff-refine-removed nil :extend t)
+    (set-face-attribute 'diff-refine-added   nil :extend t)))
 
 (use-package dired
   :defer t
@@ -266,20 +285,6 @@
   :bind (:map smartparens-mode-map
          ("C-)" . sp-forward-slurp-sexp)
          ("C-(" . sp-backward-slurp-sexp)))
-
-(use-package diff-hl
-  :config
-  (setq diff-hl-draw-borders nil)
-  (global-diff-hl-mode)
-  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh t))
-
-(use-package diff-mode
-  :defer t
-  :config
-  (when (>= emacs-major-version 27)
-    (set-face-attribute 'diff-refine-changed nil :extend t)
-    (set-face-attribute 'diff-refine-removed nil :extend t)
-    (set-face-attribute 'diff-refine-added   nil :extend t)))
 
 (use-package dired
   :defer t
@@ -428,9 +433,34 @@
 
 (use-package magit
   :defer t
-  :bind (("C-c i"   . magit-status)
-         ("C-c b"   . magit-blame))
+  :commands (magit-add-section-hook)
+  ;;
+  ;; Key bindings
+  :bind (("C-c i" . magit-status)
+         ("C-c b" . magit-blame)
+         ("C-c g" . magit-dispatch)
+         ("C-c f" . magit-file-dispatch))
+  ;;
+  ;; Margin settings
+  :init
+    (setq magit-log-margin '(nil age magit-log-margin-width nil 15))
+  (setq magit-refs-margin-for-tags t)
+  ;;
+  ;; Global settings
   :config
+  (add-hook 'after-save-hook 'magit-after-save-refresh-status t)
+  (add-to-list 'magit-repository-directories (cons "~/.emacs.d/" 0))
+  (add-to-list 'magit-repository-directories (cons "~/.emacs.d/lib/" 1))
+  ;;
+  ;; Window management
+  (setq magit-display-buffer-function
+        'magit-display-buffer-traditional)
+  (add-hook 'magit-section-movement-hook 'magit-status-maybe-update-revision-buffer)
+  (add-hook 'magit-section-movement-hook 'magit-status-maybe-update-blob-buffer)
+  (add-hook 'magit-section-movement-hook 'magit-log-maybe-update-blob-buffer)
+  ;;
+  ;; Status buffer settings
+  (setq magit-section-visibility-indicator nil)
   (magit-add-section-hook 'magit-status-sections-hook
                           'magit-insert-unpushed-to-upstream
                           'magit-insert-unpushed-to-upstream-or-recent
@@ -446,19 +476,45 @@
         '(magit-insert-modules-overview
           magit-insert-modules-unpulled-from-upstream
           magit-insert-modules-unpushed-to-upstream))
+  ;;
+  ;; Branch settings
   (setq magit-branch-prefer-remote-upstream '("master" "develop"))
   (setq magit-branch-adjust-remote-upstream-alist
-        '(("origin/master" "master" "release")))
+        '(("origin/main" . ("main" "master" "next" "release" "maint"))
+          ("origin/master" . ("main" "master" "next" "release" "maint"))))
+  ;;
+  ;; Tag settings
   (setq magit-release-tag-regexp "\\`\
 \\(?1:\\(?:v\\(?:ersion\\)?\\|r\\(?:elease\\)?\\)?[-_]?\\)?\
 \\(?2:[0-9]+\\(?:\\.[0-9]+\\)*\\)\\(\\(a\\|b\\|rc\\)[0-9]+\\)?\\'")
-  (setq magit-section-visibility-indicator nil)
-  (setq magit-list-refs-sortby "-creatordate")
+  ;;
+  ;; Diff settings
   (setq magit-diff-refine-hunk 'all)
+  ;;
+  ;; Misc settings
+  (setq magit-list-refs-sortby "-creatordate")
   (setq magit-refs-pad-commit-counts t))
+
+(use-package magit-wip
+  :after magit
+  :config (magit-wip-mode))
 
 (use-package forge
   :after magit)
+
+(use-package git-commit
+  :defer t
+  :config
+  (setq git-commit-usage-message nil)
+  (remove-hook 'git-commit-setup-hook 'git-commit-setup-changelog-support)
+  (remove-hook 'git-commit-setup-hook 'git-commit-propertize-diff)
+  (add-hook 'git-commit-setup-hook 'git-commit-turn-on-flyspell t))
+
+(use-package git-rebase
+  :defer t
+  :config
+  (setq git-rebase-confirm-cancel nil)
+  (setq git-rebase-show-instructions nil))
 
 ;; (use-package org-presie)
 
@@ -999,12 +1055,6 @@ RECURRENCES occasions."
    (interactive "*")
    (let ((fill-column most-positive-fixnum))
      (fill-paragraph nil (region-active-p))))
-
- ;; enable auto revert globally
- (global-auto-revert-mode 1)
- (setq auto-revert-check-vc-info t)
- (setq auto-revert-verbose nil)
- (setq auto-revert-remote-files t)
 
  ;; set some default modes
  ;; lex
