@@ -237,18 +237,6 @@
 ;;                             company-echo-metadata-frontend))
 ;;   (global-company-mode))
 
-;; (use-package lsp-mode
-;;   :hook ((js2-mode rjsx-mode typescript-mode) . lsp)
-;;   :commands lsp
-;;   :config
-;;   (setq lsp-prefer-flymake nil)
-;;   (require 'company-lsp)
-;;   (setq company-lsp-cache-candidates 'auto)
-;;   (add-hook 'lsp-mode-hook
-;;             (lambda ()
-;;               (add-to-list (make-local-variable 'company-backends)
-;;                            'company-lsp))))
-
 (use-package server
   :commands (server-running-p)
   :config (or (server-running-p) (server-mode)))

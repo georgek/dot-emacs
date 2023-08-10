@@ -45,9 +45,6 @@
 [submodule "company-go"]
 	path = lib/company-go
 	url = git@github.com:emacsmirror/company-go.git
-[submodule "company-lsp"]
-	path = lib/company-lsp
-	url = git@github.com:tigersoldier/company-lsp.git
 [submodule "compat"]
 	path = lib/compat
 	url = git@github.com:emacs-compat/compat.git
@@ -198,9 +195,6 @@
 [submodule "lorem-ipsum"]
 	path = lib/lorem-ipsum
 	url = git@github.com:georgek/emacs-lorem-ipsum.git
-[submodule "lsp-mode"]
-	path = lib/lsp-mode
-	url = git@github.com:emacs-lsp/lsp-mode.git
 [submodule "macrostep"]
 	path = lib/macrostep
 	url = git@github.com:joddie/macrostep.git
