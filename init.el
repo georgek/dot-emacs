@@ -221,10 +221,6 @@
 ;;               (add-to-list (make-local-variable 'company-backends)
 ;;                            'company-lsp))))
 
-;; (use-package abbrev
-;;   :config
-;;   (setq save-abbrevs 'silently))
-
 (use-package server
   :commands (server-running-p)
   :config (or (server-running-p) (server-mode)))
@@ -846,14 +842,14 @@ RECURRENCES occasions."
                 vc-ignore-dir-regexp
                 tramp-file-name-regexp)))
 
-;; (use-package helpful
-;;   :bind (("C-h f" . helpful-callable)
-;;          ("C-h v" . helpful-variable)
-;;          ("C-h k" . helpful-key)
-;;          ("C-h F" . helpful-function)
-;;          ("C-h C" . helpful-command)
-;;          :map emacs-lisp-mode-map
-;;          ("C-c C-d" . helpful-at-point)))
+(use-package helpful
+  :bind (("C-h f" . helpful-callable)
+         ("C-h v" . helpful-variable)
+         ("C-h k" . helpful-key)
+         ("C-h F" . helpful-function)
+         ("C-h C" . helpful-command)
+         :map emacs-lisp-mode-map
+         ("C-c C-d" . helpful-at-point)))
 
 ;; (use-package which-key
 ;;   :defer 5
