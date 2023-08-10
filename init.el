@@ -541,7 +541,6 @@
   ;; exporting
   (use-package htmlize)
   (use-package ox-md)
-  (use-package ox-pandoc)
   (use-package ox-twbs)
   (use-package ox-latex)
   (use-package ox-reveal)

@@ -236,9 +236,6 @@
 [submodule "org-presie"]
 	path = lib/org-presie
 	url = git@github.com:nicferrier/org-presie.git
-[submodule "ox-pandoc"]
-	path = lib/ox-pandoc
-	url = git@github.com:kawabata/ox-pandoc.git
 [submodule "ox-reveal"]
 	path = lib/ox-reveal
 	url = git@github.com:yjwen/org-reveal.git
