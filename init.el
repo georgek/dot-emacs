@@ -341,26 +341,26 @@
   (:map emacs-lisp-mode-map
    ("C-c e" . macrostep-expand)))
 
-;; (use-package ielm
-;;   :init
-;;   (defun ielm-switch-to-buffer ()
-;;     (interactive)
-;;     (let ((ielm-buffer (get-buffer "*ielm*")))
-;;       (if ielm-buffer
-;;           (pop-to-buffer ielm-buffer)
-;;         (ielm))))
-;;   (defalias 'p #'princ)
+(use-package ielm
+  :init
+  (defun ielm-switch-to-buffer ()
+    (interactive)
+    (let ((ielm-buffer (get-buffer "*ielm*")))
+      (if ielm-buffer
+          (pop-to-buffer ielm-buffer)
+        (ielm))))
+  (defalias 'p #'princ)
 
-;;   :config
-;;   (makehookedfun ielm-mode-hook
-;;     (nice-paredit-on))
+  :config
+  (makehookedfun ielm-mode-hook
+    (nice-paredit-on))
 
-;;   :bind
-;;   (:map emacs-lisp-mode-map
-;;    ("C-c C-z" . ielm-switch-to-buffer)
-;;    ("C-c z" . ielm-switch-to-buffer)
-;;    :map ielm-map
-;;    ("C-<return>" . ielm-send-input)))
+  :bind
+  (:map emacs-lisp-mode-map
+   ("C-c C-z" . ielm-switch-to-buffer)
+   ("C-c z" . ielm-switch-to-buffer)
+   :map ielm-map
+   ("C-<return>" . ielm-send-input)))
 
 ;; (use-package lisp-mode
 ;;   :mode "\\.lisp\\'"
