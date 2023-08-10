@@ -420,17 +420,15 @@
 ;;          ("C-c z" . cider-switch-to-repl-buffer)
 ;;          ("C-c C-z" . cider-switch-to-repl-buffer)))
 
-;;; TODO replace with vertico https://github.com/minad/vertico
-(use-package selectrum
+(use-package vertico
   :demand
   :bind (("C-x C-b" . switch-to-buffer))
   :config
-  (selectrum-mode +1))
+  (vertico-mode))
 
 (use-package prescient
   :config
-  (selectrum-prescient-mode +1)
-  (company-prescient-mode +1)
+  (vertico-prescient-mode +1)
   (prescient-persist-mode +1))
 
 (use-package transient
@@ -780,7 +778,7 @@ RECURRENCES occasions."
   (setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
   (setq uniquify-min-dir-content 0))
 
-(use-package hippie-expand
+(use-package hippie-exp
   :bind (("M-/" . hippie-expand)))
 
 (use-package midnight

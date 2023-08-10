@@ -284,9 +284,6 @@
 [submodule "s"]
 	path = lib/s
 	url = git@github.com:magnars/s.el.git
-[submodule "selectrum"]
-	path = lib/selectrum
-	url = git@github.com:raxod502/selectrum.git
 [submodule "sesman"]
 	path = lib/sesman
 	url = git@github.com:vspinu/sesman.git
@@ -330,6 +327,9 @@
 [submodule "use-package"]
 	path = lib/use-package
 	url = git@github.com:jwiegley/use-package.git
+[submodule "vertico"]
+	path = lib/vertico
+	url = https://github.com/minad/vertico
 [submodule "volatile-highlights"]
 	path = lib/volatile-highlights
 	url = git@github.com:k-talo/volatile-highlights.el.git
