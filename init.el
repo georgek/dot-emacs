@@ -324,7 +324,7 @@
 
   (defun indent-spaces-mode ()
     (setq indent-tabs-mode nil))
-    (makehookedfun lisp-interaction-mode-hook
+  (makehookedfun lisp-interaction-mode-hook
     (indent-spaces-mode))
 
   :bind
@@ -855,9 +855,9 @@ RECURRENCES occasions."
 ;;   :defer 5
 ;;   :config (which-key-mode 1))
 
-;; (use-package deadgrep
-;;   :commands (deadgrep)
-;;   :bind (("C-z" . deadgrep)))
+(use-package deadgrep
+  :commands (deadgrep)
+  :bind (("C-z" . deadgrep)))
 
 ;; (use-package go-mode
 ;;   :mode "\\.go\\'"
