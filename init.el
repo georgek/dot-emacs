@@ -32,6 +32,9 @@
   (setq mouse-autoselect-window t)
   (fset 'yes-or-no-p 'y-or-n-p)
   (global-hl-line-mode +1)
+  ;; tab completion
+  (setq tab-always-indent 'complete)
+  (add-to-list 'completion-styles 'initials t)
   (setq-default indent-tabs-mode nil)
   (when (fboundp 'scroll-bar-mode)
     (scroll-bar-mode 0))
