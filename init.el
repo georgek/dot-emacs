@@ -813,12 +813,6 @@ RECURRENCES occasions."
          ("RET" . gk-electrify-return-if-match)))
 
 
-;; (use-package pylint
-;;   :after python
-;;   :commands (pylint)
-;;   :hook ((python-mode . pylint-add-menu-items)
-;;          (python-mode . pylint-add-key-bindings)))
-
 ;; (use-package sh-script
 ;;   :config
 ;;   (add-to-list 'auto-mode-alist '("bash-fc" . sh-mode)))

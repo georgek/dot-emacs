@@ -257,9 +257,6 @@
 [submodule "prescient"]
 	path = lib/prescient
 	url = git@github.com:raxod502/prescient.el.git
-[submodule "pylint"]
-	path = lib/pylint
-	url = git@github.com:emacsmirror/pylint.git
 [submodule "pyvenv"]
 	path = lib/pyvenv
 	url = git@github.com:jorgenschaefer/pyvenv.git
