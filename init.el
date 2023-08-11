@@ -812,6 +812,12 @@ RECURRENCES occasions."
   :bind (:map python-mode-map
               ("RET" . gk-electrify-return-if-match)))
 
+(use-package eglot
+  :hook (python-ts-mode . eglot-ensure)
+  :config
+  (setq eglot-autoshutdown t)
+  (setq eglot-send-changes-idle-time 0.1)
+  (setq eldoc-echo-area-use-multiline-p nil))
 
 ;; (use-package sh-script
 ;;   :config
