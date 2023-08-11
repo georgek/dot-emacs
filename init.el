@@ -442,11 +442,6 @@
          ("C-c g" . magit-dispatch)
          ("C-c f" . magit-file-dispatch))
   ;;
-  ;; Margin settings
-  :init
-    (setq magit-log-margin '(nil age magit-log-margin-width nil 15))
-  (setq magit-refs-margin-for-tags t)
-  ;;
   ;; Global settings
   :config
   (add-hook 'after-save-hook 'magit-after-save-refresh-status t)
