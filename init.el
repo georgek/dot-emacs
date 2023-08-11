@@ -204,7 +204,9 @@
 
 (use-package eldoc
   :when (version< "25" emacs-version)
-  :config (global-eldoc-mode))
+  :config
+  (global-eldoc-mode)
+  (setq eldoc-echo-area-use-multiline-p nil))
 
 (use-package help
   :defer t
@@ -424,6 +426,14 @@
   (setq completion-styles '(orderless basic)
         completion-category-defaults nil
         completion-category-overrides '((file (styles partial-completion)))))
+
+(use-package corfu
+  :init
+  (global-corfu-mode)
+  :config
+  (setq corfu-auto t
+        corfu-auto-delay 0.2
+        corfu-auto-prefix 0))
 
 (use-package prescient
   :config
@@ -816,16 +826,17 @@ RECURRENCES occasions."
 (use-package eglot
   :hook (python-ts-mode . eglot-ensure)
   :config
-  (setq eglot-autoshutdown t)
-  (setq eglot-send-changes-idle-time 0.1)
-  (setq eldoc-echo-area-use-multiline-p nil)
+  (setq eglot-autoshutdown t
+        eglot-send-changes-idle-time 0.1
+        eglot-events-buffer-size 0)
   ;; use flake8 by default
   (setq-default
    eglot-workspace-configuration
    '(:pylsp (:plugins (:pycodestyle (:enabled nil)
                        :mccabe (:enabled nil)
                        :pyflakes (:enabled nil)
-                       :flake8 (:enabled t))
+                       :flake8 (:enabled t)
+                       :rope-autoimport (:enabled t))
              :configurationSources ["flake8"]))))
 
 (use-package man
