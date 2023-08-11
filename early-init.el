@@ -1,5 +1,6 @@
 ;;; early-init.el --- earliest birds               -*- lexical-binding: t -*-
 
+(setq-default pgtk-wait-for-event-timeout 0)
 (setq load-prefer-newer t)
 
 (let ((dir (file-name-directory (or load-file-name buffer-file-name))))
