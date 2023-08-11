@@ -555,6 +555,7 @@
          (org-mode . reveal-mode))
   :config
   (use-package org-bullets)
+  (use-package org-tempo)
   (require 'smartparens-org)
   (setq org-startup-indented t
         org-src-preserve-indentation nil
@@ -576,8 +577,9 @@
 
   ;; a named source block
   (add-to-list 'org-structure-template-alist
-               '("S" "#+NAME: ?\n#+BEGIN_SRC \n\n#+END_SRC")
-               '("N" "#+NAME: ?"))
+               '("S" . "#+NAME: ?\n#+BEGIN_SRC \n\n#+END_SRC"))
+  (add-to-list 'org-structure-template-alist
+               '("N" . "#+NAME: ?"))
 
   ;; exporting
   (use-package htmlize)
