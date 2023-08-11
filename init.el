@@ -828,10 +828,6 @@ RECURRENCES occasions."
                        :flake8 (:enabled t))
              :configurationSources ["flake8"]))))
 
-;; (use-package sh-script
-;;   :config
-;;   (add-to-list 'auto-mode-alist '("bash-fc" . sh-mode)))
-
 (use-package man
   :defer t
   :config (setq Man-width 80))
@@ -884,10 +880,6 @@ RECURRENCES occasions."
          ("C-h C" . helpful-command)
          :map emacs-lisp-mode-map
          ("C-c C-d" . helpful-at-point)))
-
-;; (use-package which-key
-;;   :defer 5
-;;   :config (which-key-mode 1))
 
 (use-package deadgrep
   :commands (deadgrep)
