@@ -821,6 +821,10 @@ RECURRENCES occasions."
 ;; (use-package eshell
 ;;   :bind (("C-c s" . eshell)))
 
+(use-package direnv
+  :config
+  (direnv-mode))
+
 (use-package python
   :mode ("\\.py\\'" . python-mode)
   :config

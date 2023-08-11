@@ -66,6 +66,9 @@
 [submodule "diff-hl"]
 	path = lib/diff-hl
 	url = git@github.com:dgutov/diff-hl.git
+[submodule "direnv"]
+	path = lib/direnv
+	url = https://github.com/wbolster/emacs-direnv
 [submodule "dna-mode"]
 	path = lib/dna-mode
 	url = git@github.com:jhgorrell/dna-mode-el.git
