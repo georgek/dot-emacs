@@ -797,8 +797,8 @@ RECURRENCES occasions."
 ;;                        (auto-fill-mode)
 ;;                        (setq tab-stop-list (number-sequence 3 45 3))))))
 
-;; (use-package eshell
-;;   :bind (("C-c s" . eshell)))
+(use-package eshell
+  :bind (("C-c s" . eshell)))
 
 (use-package direnv
   :config
