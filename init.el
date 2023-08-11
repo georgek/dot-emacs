@@ -817,7 +817,15 @@ RECURRENCES occasions."
   :config
   (setq eglot-autoshutdown t)
   (setq eglot-send-changes-idle-time 0.1)
-  (setq eldoc-echo-area-use-multiline-p nil))
+  (setq eldoc-echo-area-use-multiline-p nil)
+  ;; use flake8 by default
+  (setq-default
+   eglot-workspace-configuration
+   '(:pylsp (:plugins (:pycodestyle (:enabled nil)
+                       :mccabe (:enabled nil)
+                       :pyflakes (:enabled nil)
+                       :flake8 (:enabled t))
+             :configurationSources ["flake8"]))))
 
 ;; (use-package sh-script
 ;;   :config
