@@ -286,6 +286,7 @@
 
 (use-package subword
   :hook ((python-mode
+          python-ts-mode
           yaml-mode
           go-mode
           clojure-mode
