@@ -69,9 +69,6 @@
 [submodule "direnv"]
 	path = lib/direnv
 	url = https://github.com/wbolster/emacs-direnv
-[submodule "dna-mode"]
-	path = lib/dna-mode
-	url = git@github.com:jhgorrell/dna-mode-el.git
 [submodule "dockerfile-mode"]
 	path = lib/dockerfile-mode
 	url = git@github.com:spotify/dockerfile-mode.git
