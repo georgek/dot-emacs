@@ -694,11 +694,11 @@ RECURRENCES occasions."
   (eval-after-load "org"
     '(setcdr (assoc "\\.pdf\\'" org-file-apps) "evince %s")))
 
-;; (use-package markdown-mode
-;;   :mode "\\.md\\'"
-;;   :config
-;;   (require 'smartparens-markdown)
-;;   (setq markdown-asymmetric-header t))
+(use-package markdown-mode
+  :mode "\\.md\\'"
+  :config
+  (require 'smartparens-markdown)
+  (setq markdown-asymmetric-header t))
 
 (use-package yaml-mode
   :mode "\\.\\(ya?\\|m\\)ml\\'")
