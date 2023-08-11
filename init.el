@@ -812,23 +812,6 @@ RECURRENCES occasions."
   :bind (:map python-mode-map
          ("RET" . gk-electrify-return-if-match)))
 
-(use-package elpy
-  :after python
-  :config
-  (elpy-enable)
-  (setq python-shell-interpreter "ipython"
-        python-shell-interpreter-args "-i --simple-prompt")
-  (setq elpy-rpc-python-command "python3")
-  (setq elpy-rpc-virtualenv-path 'default)
-  (setq elpy-rpc-backend "jedi")
-  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-  (setq-default elpy-django-test-runner-args
-                '("test" "--noinput" "--keepdb" "--parallel" "--failfast"))
-  (unbind-key "C-c C-n" elpy-mode-map)
-  (unbind-key "C-c C-p" elpy-mode-map)
-  :bind (:map elpy-mode-map
-         ("C->" . #'elpy-nav-indent-shift-right)
-         ("C-<" . #'elpy-nav-indent-shift-left)))
 
 ;; (use-package pylint
 ;;   :after python
