@@ -21,3 +21,8 @@ of these (and don't want to set them up) then do the following before doing
   git config --global url.https://gitlab.com/.insteadOf git@gitlab.com:
   git config --global url.https://code.orgmode.org/.insteadOf git@code.orgmode.org:
 #+END_SRC
+
+** Tree-Sitter
+
+Since tree-sitter grammars are platform dependent, they might need to be rebuilt with
+~M-x treesit-install-language-grammar~.
