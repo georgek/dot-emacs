@@ -823,9 +823,9 @@ RECURRENCES occasions."
 ;;   :config
 ;;   (add-to-list 'auto-mode-alist '("bash-fc" . sh-mode)))
 
-;; (use-package man
-;;   :defer t
-;;   :config (setq Man-width 80))
+(use-package man
+  :defer t
+  :config (setq Man-width 80))
 
 (use-package paren-face
   :config
