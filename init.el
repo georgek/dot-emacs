@@ -43,7 +43,7 @@
   (menu-bar-mode 0)
   (setq native-comp-async-report-warnings-errors 'silent))
 
-(eval-and-compile ; `borg'
+(eval-and-compile                       ; `borg'
   (add-to-list 'load-path (expand-file-name "lib/borg" user-emacs-directory))
   (require 'borg)
   (borg-initialize)
@@ -215,30 +215,6 @@
 (progn ;    `isearch'
   (setq isearch-allow-scroll t))
 
-;; (use-package yasnippet
-;;   :config
-;;   (use-package yasnippet-snippets)
-;;   (yas-global-mode))
-
-(use-package company
-  :config
-  (define-key company-active-map (kbd "<return>") nil)
-  (define-key company-active-map (kbd "RET") nil)
-  (define-key company-active-map (kbd "C-SPC") #'company-complete-selection)
-  (define-key company-active-map (kbd "M-SPC") #'company-complete-selection)
-  (setq company-backends
-        '((company-files
-           company-keywords
-           company-capf
-           company-yasnippet)
-          (company-abbrev company-dabbrev)))
-  (setq company-idle-delay 0.2)
-  (setq company-minimum-prefix-length 1)
-  (setq company-tooltip-align-annotations t)
-  (setq company-frontends '(company-pseudo-tooltip-frontend
-                            company-echo-metadata-frontend))
-  (global-company-mode))
-
 (use-package server
   :commands (server-running-p)
   :config (or (server-running-p) (server-mode)))
@@ -275,12 +251,12 @@
   (require 'smartparens-config)
   (setq sp-base-key-bindings 'paredit)
   (setq sp-autoskip-closing-pair 'always)
-  (setq sp-escape-quotes-after-insert nil)  ; disable for c-mode
+  (setq sp-escape-quotes-after-insert nil) ; disable for c-mode
   (setq sp-ignore-modes-list '(web-mode))
   (smartparens-global-mode)
   :bind (:map smartparens-mode-map
-         ("C-)" . sp-forward-slurp-sexp)
-         ("C-(" . sp-backward-slurp-sexp)))
+              ("C-)" . sp-forward-slurp-sexp)
+              ("C-(" . sp-backward-slurp-sexp)))
 
 (use-package dired
   :defer t
@@ -423,9 +399,38 @@
 
 (use-package orderless
   :init
-  (setq completion-styles '(orderless basic)
+  (setq completion-styles '(basic partial-completion orderless)
         completion-category-defaults nil
-        completion-category-overrides '((file (styles partial-completion)))))
+        completion-category-overrides '((file (styles basic partial-completion)))))
+
+(use-package yasnippet
+  :config
+  (use-package yasnippet-snippets)
+  (yas-global-mode +1))
+
+(use-package company
+  :demand
+  :config
+  (global-set-key (kbd "TAB") #'company-indent-or-complete-common)
+  (define-key company-active-map (kbd "<return>") nil)
+  (define-key company-active-map (kbd "TAB") #'company-complete-common)
+  (define-key company-active-map (kbd "RET") nil)
+  (define-key company-active-map (kbd "M-n") #'company-select-next-or-abort)
+  (define-key company-active-map (kbd "M-p") #'company-select-previous-or-abort)
+  (define-key company-active-map (kbd "C-SPC") #'company-complete-selection)
+  (define-key company-active-map (kbd "M-SPC") #'company-complete-selection)
+  (setq company-backends
+        '((company-files
+           company-keywords
+           company-capf
+           company-yasnippet)
+          (company-abbrev company-dabbrev)))
+  (setq company-idle-delay 0.2)
+  (setq company-minimum-prefix-length 1)
+  (setq company-tooltip-align-annotations t)
+  (setq company-frontends '(company-pseudo-tooltip-frontend
+                            company-echo-metadata-frontend))
+  (global-company-mode))
 
 (use-package prescient
   :config
