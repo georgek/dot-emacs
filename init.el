@@ -427,14 +427,6 @@
         completion-category-defaults nil
         completion-category-overrides '((file (styles partial-completion)))))
 
-(use-package corfu
-  :init
-  (global-corfu-mode)
-  :config
-  (setq corfu-auto t
-        corfu-auto-delay 0.2
-        corfu-auto-prefix 0))
-
 (use-package prescient
   :config
   (prescient-persist-mode +1))

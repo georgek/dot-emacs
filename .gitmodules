@@ -51,9 +51,6 @@
 [submodule "copy-as-format"]
 	path = lib/copy-as-format
 	url = git@github.com:sshaw/copy-as-format.git
-[submodule "corfu"]
-	path = lib/corfu
-	url = https://github.com/minad/corfu
 [submodule "ctable"]
 	path = lib/ctable
 	url = git@github.com:kiwanami/emacs-ctable.git
