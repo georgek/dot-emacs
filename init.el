@@ -39,6 +39,7 @@
   (when (fboundp 'tool-bar-mode)
     (tool-bar-mode 0))
   (menu-bar-mode 0)
+  (pixel-scroll-precision-mode)
   (setq native-comp-async-report-warnings-errors 'silent))
 
 (eval-and-compile                       ; `borg'
