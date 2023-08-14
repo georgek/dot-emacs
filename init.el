@@ -220,24 +220,24 @@
 ;;   (use-package yasnippet-snippets)
 ;;   (yas-global-mode))
 
-;; (use-package company
-;;   :config
-;;   (define-key company-active-map (kbd "<return>") nil)
-;;   (define-key company-active-map (kbd "RET") nil)
-;;   (define-key company-active-map (kbd "C-SPC") #'company-complete-selection)
-;;   (define-key company-active-map (kbd "M-SPC") #'company-complete-selection)
-;;   (setq company-backends
-;;         '((company-files
-;;            company-keywords
-;;            company-capf
-;;            company-yasnippet)
-;;           (company-abbrev company-dabbrev)))
-;;   (setq company-idle-delay 0.2)
-;;   (setq company-minimum-prefix-length 1)
-;;   (setq company-tooltip-align-annotations t)
-;;   (setq company-frontends '(company-pseudo-tooltip-frontend
-;;                             company-echo-metadata-frontend))
-;;   (global-company-mode))
+(use-package company
+  :config
+  (define-key company-active-map (kbd "<return>") nil)
+  (define-key company-active-map (kbd "RET") nil)
+  (define-key company-active-map (kbd "C-SPC") #'company-complete-selection)
+  (define-key company-active-map (kbd "M-SPC") #'company-complete-selection)
+  (setq company-backends
+        '((company-files
+           company-keywords
+           company-capf
+           company-yasnippet)
+          (company-abbrev company-dabbrev)))
+  (setq company-idle-delay 0.2)
+  (setq company-minimum-prefix-length 1)
+  (setq company-tooltip-align-annotations t)
+  (setq company-frontends '(company-pseudo-tooltip-frontend
+                            company-echo-metadata-frontend))
+  (global-company-mode))
 
 (use-package server
   :commands (server-running-p)
@@ -259,12 +259,12 @@
     (turn-off-smartparens-mode)
     (paredit-mode t)
 
-     (turn-on-eldoc-mode)
+    (turn-on-eldoc-mode)
     (eldoc-add-command
      'paredit-backward-delete
      'paredit-close-round)
 
-        (local-set-key (kbd "RET") 'gk-electrify-return-if-match)
+    (local-set-key (kbd "RET") 'gk-electrify-return-if-match)
     (eldoc-add-command 'gk-electrify-return-if-match)
 
     (show-paren-mode t)))
