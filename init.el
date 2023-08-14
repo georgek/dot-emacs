@@ -828,7 +828,8 @@ RECURRENCES occasions."
   :config
   (setq eglot-autoshutdown t
         eglot-send-changes-idle-time 0.1
-        eglot-events-buffer-size 0)
+        eglot-events-buffer-size 0
+        eglot-report-progress nil)
   ;; use flake8 by default
   (setq-default
    eglot-workspace-configuration
