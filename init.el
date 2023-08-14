@@ -616,7 +616,7 @@
   (eval-after-load "org-table"
     '(progn
        (setq orgtbl-radio-table-templates
-             (delete-if (lambda (x) (equal (car x) 'latex-mode))
+             (cl-delete-if (lambda (x) (equal (car x) 'latex-mode))
                         orgtbl-radio-table-templates))
        (add-to-list 'orgtbl-radio-table-templates
                     '(latex-mode "% BEGIN RECEIVE ORGTBL %n\n"
