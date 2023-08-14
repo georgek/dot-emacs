@@ -33,8 +33,6 @@
   (fset 'yes-or-no-p 'y-or-n-p)
   (global-hl-line-mode +1)
   ;; tab completion
-  (setq tab-always-indent 'complete)
-  (add-to-list 'completion-styles 'initials t)
   (setq-default indent-tabs-mode nil)
   (when (fboundp 'scroll-bar-mode)
     (scroll-bar-mode 0))
@@ -410,6 +408,8 @@
 
 (use-package company
   :demand
+  :init
+  (setq tab-always-indent 'complete)
   :config
   (global-set-key (kbd "TAB") #'company-indent-or-complete-common)
   (define-key company-active-map (kbd "<return>") nil)
