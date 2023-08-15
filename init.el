@@ -533,8 +533,6 @@
   (setq git-rebase-confirm-cancel nil)
   (setq git-rebase-show-instructions nil))
 
-;; (use-package org-presie)
-
 (use-package prog-mode
   :config (global-prettify-symbols-mode)
   (defun indicate-buffer-boundaries-left ()

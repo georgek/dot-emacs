@@ -224,9 +224,6 @@
 [submodule "org-bullets"]
 	path = lib/org-bullets
 	url = git@github.com:emacsorphanage/org-bullets.git
-[submodule "org-presie"]
-	path = lib/org-presie
-	url = git@github.com:nicferrier/org-presie.git
 [submodule "ox-reveal"]
 	path = lib/ox-reveal
 	url = git@github.com:yjwen/org-reveal.git
