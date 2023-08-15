@@ -437,6 +437,16 @@
                             company-echo-metadata-frontend))
   (global-company-mode))
 
+(use-package flymake
+  :hook
+  (emacs-lisp-mode . flymake-mode)
+  :config
+  (setq flymake-mode-line-lighter "!")
+  :bind (:map flymake-mode-map
+              ("C-c C-n" . flymake-goto-next-error)
+              ("C-c C-p" . flymake-goto-prev-error)
+              ("C-c C-l" . flymake-show-buffer-diagnostics)))
+
 (use-package prescient
   :config
   (prescient-persist-mode +1))
