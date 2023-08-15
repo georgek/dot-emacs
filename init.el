@@ -445,10 +445,6 @@
               ("C-c C-p" . flymake-goto-prev-error)
               ("C-c C-l" . flymake-show-buffer-diagnostics)))
 
-(use-package prescient
-  :config
-  (prescient-persist-mode +1))
-
 (use-package transient
   :config
   (setq transient-display-buffer-action '(display-buffer-below-selected)))
