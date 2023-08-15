@@ -818,12 +818,17 @@ RECURRENCES occasions."
 
 (use-package python
   :mode ("\\.py\\'" . python-ts-mode)
+  :init
+  (add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))
   :config
   (setq python-prettify-symbols-alist
         '(("lambda" . 955)))
   (require 'smartparens-python)
-  :bind (:map python-mode-map
-              ("RET" . gk-electrify-return-if-match)))
+  :bind
+  (:map python-mode-map
+        ("RET" . gk-electrify-return-if-match))
+  (:map python-ts-mode-map
+        ("RET" . gk-electrify-return-if-match)))
 
 (use-package eglot
   :hook (python-ts-mode . eglot-ensure)
