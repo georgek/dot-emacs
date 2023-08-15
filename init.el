@@ -961,11 +961,11 @@ RECURRENCES occasions."
 ;; (use-package jinja2-mode
 ;;   :mode ("\\.j2\\'"))
 
-;; (use-package css-mode
-;;   :mode ("\\.css\\'"
-;;          "\\.mss\\'")
-;;   :bind (:map css-mode-map
-;;               ("RET" . gk-electrify-return-if-match)))
+(use-package css-mode
+  :mode ("\\.css\\'"
+         "\\.mss\\'")
+  :bind (:map css-mode-map
+              ("RET" . gk-electrify-return-if-match)))
 
 ;; (use-package js2-mode
 ;;   :mode "\\.js\\'"
