@@ -397,14 +397,12 @@
   (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode))
 
 (use-package orderless
-  ;; TODO would be good to have orderless in all minibuffer stuff and basic/partial in
-  ;; in-buffer stuff. This set up is currently OK, but it would be good to have an
-  ;; override for the M-x menu but not sure what the symbol is
   :init
   (setq completion-styles '(basic partial-completion orderless)
         completion-category-defaults nil
         completion-category-overrides '((file (styles basic partial-completion))
-                                        (project-file (styles orderless)))))
+                                        (project-file (styles orderless))
+                                        (command (styles orderless)))))
 
 (use-package yasnippet
   :config
