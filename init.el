@@ -400,8 +400,8 @@
   :init
   (setq completion-styles '(basic partial-completion orderless)
         completion-category-defaults nil
-        completion-category-overrides '((file (styles basic partial-completion))
-                                        (project-file (styles orderless))
+        completion-category-overrides '((project-file (styles orderless))
+                                        (buffer (styles orderless))
                                         (command (styles orderless)))))
 
 (use-package yasnippet
