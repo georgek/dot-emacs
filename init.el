@@ -64,7 +64,7 @@
  (set-face-attribute face nil :height 90 :family "Ubuntu Mono"))
 (dolist (face '(variable-pitch))
  (set-face-attribute face nil :height 90 :family "Ubuntu"))
-(set-frame-font my-font)
+(set-frame-font my-font nil t)
 (add-to-list 'default-frame-alist `(font . ,my-font))
 (use-package zenburn-theme
   :init
