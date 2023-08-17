@@ -362,13 +362,13 @@
   :init
   (setq geiser-active-implementations '(racket guile)))
 
-;; (use-package cider
-;;   :mode (("\\.clj$" . clojure-mode))
-;;   :hook ((clojure-mode . nice-paredit-on)
-;;          (cider-repl-mode . nice-paredit-on))
-;;   :bind (:map clojure-mode-map
-;;          ("C-c z" . cider-switch-to-repl-buffer)
-;;          ("C-c C-z" . cider-switch-to-repl-buffer)))
+(use-package cider
+  :mode (("\\.clj$" . clojure-mode))
+  :hook ((clojure-mode . nice-paredit-on)
+         (cider-repl-mode . nice-paredit-on))
+  :bind (:map clojure-mode-map
+         ("C-c z" . cider-switch-to-repl-buffer)
+         ("C-c C-z" . cider-switch-to-repl-buffer)))
 
 (use-package vertico
   :demand
