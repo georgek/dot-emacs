@@ -58,14 +58,11 @@
   (require 'i3-integration)
   (i3-advise-visible-frame-list-on))
 
-;; theme
-(defvar my-font "Ubuntu Mono-9")
-(dolist (face '(default fixed-pitch fixed-pitch-serif))
- (set-face-attribute face nil :height 90 :family "Ubuntu Mono"))
-(dolist (face '(variable-pitch))
- (set-face-attribute face nil :height 90 :family "Ubuntu"))
+;;; theme
+(defconst my-font "UbuntuMono Nerd Font-9")
 (set-frame-font my-font nil t)
 (add-to-list 'default-frame-alist `(font . ,my-font))
+
 (use-package zenburn-theme
   :init
   (setq zenburn-use-variable-pitch nil)
@@ -74,26 +71,13 @@
   :config
   (load-theme 'zenburn t))
 
-(use-package rich-minority
+(use-package doom-modeline
+  :init (doom-modeline-mode +1)
   :config
-  (setq rm-blacklist
-        (format
-         "^ \\(%s\\)$"
-         (mapconcat #'identity
-                    '("Fly" "Projectile.*" "Reveal"
-                      "Counsel" "Ivy" "company" "yas"
-                      "ElDoc" "||" "WK" "VHl" "," "ws")
-                    "\\|"))))
+  (setq doom-modeline-height 16)
+  (setq doom-modeline-time nil))
 
-(use-package smart-mode-line
-  :config
-  (sml/setup)
-  (setq sml/name-width 50)
-  (setq sml/extra-filler -6)
-  (setq sml/replacer-regexp-list
-        '(("^~/\\.emacs\\.d/" ":ed:")
-          ("^/sudo:.*:" ":su:"))))
-
+;;; package config
 (use-package undo-tree
   :config
   (global-undo-tree-mode)
@@ -528,12 +512,6 @@
   :config
   (setq git-rebase-confirm-cancel nil)
   (setq git-rebase-show-instructions nil))
-
-(use-package prog-mode
-  :config (global-prettify-symbols-mode)
-  (defun indicate-buffer-boundaries-left ()
-    (setq indicate-buffer-boundaries 'left))
-  (add-hook 'prog-mode-hook 'indicate-buffer-boundaries-left))
 
 (use-package recentf
   :demand t

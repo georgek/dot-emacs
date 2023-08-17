@@ -72,6 +72,9 @@
 [submodule "dockerfile-mode"]
 	path = lib/dockerfile-mode
 	url = git@github.com:spotify/dockerfile-mode.git
+[submodule "doom-modeline"]
+	path = lib/doom-modeline
+	url = https://github.com/seagle0128/doom-modeline
 [submodule "ebuild-mode"]
 	path = lib/ebuild-mode
 	url = https://anongit.gentoo.org/git/proj/ebuild-mode.git
@@ -204,6 +207,9 @@
 [submodule "mic-paren"]
 	path = lib/mic-paren
 	url = git@github.com:emacsattic/mic-paren.git
+[submodule "nerd-icons"]
+	path = lib/nerd-icons
+	url = https://github.com/rainstormstudio/nerd-icons.el
 [submodule "nginx-mode"]
 	path = lib/nginx-mode
 	url = git@github.com:ajc/nginx-mode.git
@@ -254,9 +260,6 @@
 [submodule "queue"]
 	path = lib/queue
 	url = git@github.com:emacsmirror/queue.git
-[submodule "rich-minority"]
-	path = lib/rich-minority
-	url = git@github.com:Malabarba/rich-minority.git
 [submodule "rjsx-mode"]
 	path = lib/rjsx-mode
 	url = git@github.com:felipeochoa/rjsx-mode.git
@@ -269,6 +272,9 @@
 [submodule "sesman"]
 	path = lib/sesman
 	url = git@github.com:vspinu/sesman.git
+[submodule "shrink-path"]
+	path = lib/shrink-path
+	url = https://gitlab.com/bennya/shrink-path.el
 [submodule "shut-up"]
 	path = lib/shut-up
 	url = git@github.com:cask/shut-up.git
@@ -282,9 +288,6 @@
 [submodule "slime-complete-locals"]
 	path = lib/slime-complete-locals
 	url = git@github.com:joodie/slime-complete-locals.git
-[submodule "smart-mode-line"]
-	path = lib/smart-mode-line
-	url = git@github.com:Malabarba/smart-mode-line.git
 [submodule "smartparens"]
 	path = lib/smartparens
 	url = git@github.com:Fuco1/smartparens.git
