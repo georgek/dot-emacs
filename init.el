@@ -705,9 +705,6 @@ RECURRENCES occasions."
 (use-package dockerfile-mode
   :mode "Dockerfile")
 
-;; (use-package groovy-mode
-;;   :mode "Jenkinsfile")
-
 ;; (use-package nginx-mode
 ;;   :mode "nginx-mode")
 
