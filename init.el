@@ -545,7 +545,8 @@
   :hook ((org-mode . auto-fill-mode)
          (org-mode . org-bullets-mode)
          (org-mode . flyspell-mode)
-         (org-mode . reveal-mode))
+         (org-mode . reveal-mode)
+         (org-mode . (lambda () (yas-minor-mode -1))))
   :config
   (use-package org-bullets)
   (use-package org-tempo)
