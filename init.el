@@ -702,8 +702,8 @@ RECURRENCES occasions."
   (:map makefile-mode-map
    ("C-c C-c" . compile)))
 
-;; (use-package dockerfile-mode
-;;   :mode "Dockerfile")
+(use-package dockerfile-mode
+  :mode "Dockerfile")
 
 ;; (use-package groovy-mode
 ;;   :mode "Jenkinsfile")
