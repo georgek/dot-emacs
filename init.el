@@ -350,17 +350,17 @@
    ("C-c z" . slime-switch-to-output-buffer)
    ("C-c e" . macrostep-expand)))
 
-;; (use-package scheme
-;;   :config
-;;   (makehookedfun scheme-mode-hook
-;;     (nice-paredit-on)
-;;     (geiser-mode)))
+(use-package scheme
+  :config
+  (makehookedfun scheme-mode-hook
+    (nice-paredit-on)
+    (geiser-mode)))
 
-;; (use-package geiser
-;;   :commands (geiser-mode)
-;;   :load-path "lib/geiser/elisp"
-;;   :init
-;;   (setq geiser-active-implementations '(racket guile)))
+(use-package geiser
+  :commands (geiser-mode)
+  :load-path "lib/geiser/elisp"
+  :init
+  (setq geiser-active-implementations '(racket guile)))
 
 ;; (use-package cider
 ;;   :mode (("\\.clj$" . clojure-mode))
