@@ -945,18 +945,18 @@ RECURRENCES occasions."
 ;;          :map inferior-ess-mode-map
 ;;          ("C-c M-o" . clear-shell)))
 
-;; (use-package web-mode
-;;   :mode ("\\.phtml\\'"
-;;          "\\.tpl\\.php\\'"
-;;          "\\.[agj]sp\\'"
-;;          "\\.as[cp]x\\'"
-;;          "\\.erb\\'"
-;;          "\\.mustache\\'"
-;;          "\\.djhtml\\'"
-;;          "\\.html?\\'")
-;;   :bind (:map web-mode-map
-;;               ("C-c C-c" . browse-url-of-file))
-;;   :config (require 'smartparens-html))
+(use-package web-mode
+  :mode ("\\.phtml\\'"
+         "\\.tpl\\.php\\'"
+         "\\.[agj]sp\\'"
+         "\\.as[cp]x\\'"
+         "\\.erb\\'"
+         "\\.mustache\\'"
+         "\\.djhtml\\'"
+         "\\.html?\\'")
+  :bind (:map web-mode-map
+              ("C-c C-c" . browse-url-of-file))
+  :config (require 'smartparens-html))
 
 ;; (use-package jinja2-mode
 ;;   :mode ("\\.j2\\'"))
