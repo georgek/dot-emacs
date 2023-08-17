@@ -696,11 +696,11 @@ RECURRENCES occasions."
 (use-package yaml-mode
   :mode "\\.\\(ya?\\|m\\)ml\\'")
 
-;; (use-package make-mode
-;;   :defer t
-;;   :bind
-;;   (:map makefile-mode-map
-;;    ("C-c C-c" . compile)))
+(use-package make-mode
+  :defer t
+  :bind
+  (:map makefile-mode-map
+   ("C-c C-c" . compile)))
 
 ;; (use-package dockerfile-mode
 ;;   :mode "Dockerfile")
