@@ -705,8 +705,8 @@ RECURRENCES occasions."
 (use-package dockerfile-mode
   :mode "Dockerfile")
 
-;; (use-package nginx-mode
-;;   :mode "nginx-mode")
+(use-package nginx-mode
+  :mode "nginx-mode")
 
 (use-package compile
   :config
