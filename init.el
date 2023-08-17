@@ -757,34 +757,34 @@ RECURRENCES occasions."
                   "*R*"
                   "init.el"))))
 
-;; (use-package tex-site                   ; auctex
-;;   :mode ("\\.tex\\'" . TeX-latex-mode)
-;;   :init
-;;   (setq reftex-plug-into-AUCTeX t)
-;;   :config
-;;   (setq TeX-auto-save t)
-;;   (setq TeX-parse-self t)
-;;   (setq TeX-newline-function 'newline-and-indent)
-;;   (setq reftex-default-bibliography '("bibliography"))
-;;   (require 'smartparens-latex))
+(use-package tex-site                   ; auctex
+  :mode ("\\.tex\\'" . TeX-latex-mode)
+  :init
+  (setq reftex-plug-into-AUCTeX t)
+  :config
+  (setq TeX-auto-save t)
+  (setq TeX-parse-self t)
+  (setq TeX-newline-function 'newline-and-indent)
+  (setq reftex-default-bibliography '("bibliography"))
+  (require 'smartparens-latex))
 
-;; (use-package latex
-;;   :defer t
-;;   :config
-;;   (use-package preview)
-;;   (add-to-list 'TeX-view-program-selection '(output-pdf "xdg-open"))
-;;   :hook ((LaTeX-mode . (lambda ()
-;;                          (TeX-PDF-mode)
-;;                          (auto-fill-mode)
-;;                          (turn-on-orgtbl)
-;;                          (turn-on-reftex)))))
+(use-package latex
+  :defer t
+  :config
+  (use-package preview)
+  (add-to-list 'TeX-view-program-selection '(output-pdf "xdg-open"))
+  :hook ((LaTeX-mode . (lambda ()
+                         (TeX-PDF-mode)
+                         (auto-fill-mode)
+                         (turn-on-orgtbl)
+                         (turn-on-reftex)))))
 
-;; (use-package tex
-;;   :defer t
-;;   :hook ((TeX-mode . (lambda ()
-;;                        (TeX-PDF-mode)
-;;                        (auto-fill-mode)
-;;                        (setq tab-stop-list (number-sequence 3 45 3))))))
+(use-package tex
+  :defer t
+  :hook ((TeX-mode . (lambda ()
+                       (TeX-PDF-mode)
+                       (auto-fill-mode)
+                       (setq tab-stop-list (number-sequence 3 45 3))))))
 
 (use-package eshell
   :bind (("C-c s" . eshell)))
