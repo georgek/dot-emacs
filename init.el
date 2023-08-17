@@ -324,31 +324,31 @@
    :map ielm-map
    ("C-<return>" . ielm-send-input)))
 
-;; (use-package lisp-mode
-;;   :mode "\\.lisp\\'"
-;;   :hook ((lisp-mode . nice-paredit-on))
-;;   :config
-;;   (use-package hyperspec)
-;;   (use-package slime-company
-;;     :commands (slime-company)
-;;     :config (setq slime-company-completion 'fuzzy))
-;;   (use-package slime-complete-locals
-;;     :commands (slime-complete-locals))
-;;   (use-package slime
-;;     :demand
-;;     :commands (slime)
-;;     :config
-;;     (setq inferior-lisp-program "sbcl")
-;;     (slime-setup '(slime-fancy
-;;                    slime-banner
-;;                    slime-asdf
-;;                    slime-company
-;;                    slime-complete-locals)))
-;;   :bind
-;;   (:map lisp-mode-map
-;;    ("C-c C-z" . slime-switch-to-output-buffer)
-;;    ("C-c z" . slime-switch-to-output-buffer)
-;;    ("C-c e" . macrostep-expand)))
+(use-package lisp-mode
+  :mode "\\.lisp\\'"
+  :hook ((lisp-mode . nice-paredit-on))
+  :config
+  (use-package hyperspec)
+  (use-package slime-company
+    :commands (slime-company)
+    :config (setq slime-company-completion 'fuzzy))
+  (use-package slime-complete-locals
+    :commands (slime-complete-locals))
+  (use-package slime
+    :demand
+    :commands (slime)
+    :config
+    (setq inferior-lisp-program "sbcl")
+    (slime-setup '(slime-fancy
+                   slime-banner
+                   slime-asdf
+                   slime-company
+                   slime-complete-locals)))
+  :bind
+  (:map lisp-mode-map
+   ("C-c C-z" . slime-switch-to-output-buffer)
+   ("C-c z" . slime-switch-to-output-buffer)
+   ("C-c e" . macrostep-expand)))
 
 ;; (use-package scheme
 ;;   :config
