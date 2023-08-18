@@ -3,6 +3,11 @@
 ;;; Just some miscallenous stuff I've found from around the place
 ;;; Code:
 
+(defun gk-present ()
+  "Set the font size in this frame to be large."
+  (interactive)
+  (set-frame-font (font-spec :size 16) nil nil))
+
 ;;;###autoload
 (defun gk-select-current-line ()
   "Set the region to the current line."
