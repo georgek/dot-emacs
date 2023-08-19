@@ -16,6 +16,7 @@
   (setq inhibit-startup-buffer-menu t)
   (setq inhibit-startup-screen t)
   (setq inhibit-startup-echo-area-message "gk")
+  (setq inhibit-compacting-font-caches t)
   (setq initial-buffer-choice t)
   (setq initial-scratch-message "")
   (setq frame-title-format '("%b - GNU Emacs"))
@@ -856,9 +857,6 @@ RECURRENCES occasions."
 (use-package saveplace
   :when (version< "25" emacs-version)
   :config (save-place-mode))
-
-(use-package simple
-  :config (column-number-mode))
 
 (progn ;    `text-mode'
   (add-hook 'text-mode-hook #'indicate-buffer-boundaries-left))

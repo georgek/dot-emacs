@@ -3,6 +3,7 @@
 ;;; Just some miscallenous stuff I've found from around the place
 ;;; Code:
 
+;;;###autoload
 (defun gk-present ()
   "Set the font size in this frame to be large."
   (interactive)
