@@ -700,8 +700,10 @@ RECURRENCES occasions."
   (require 'smartparens-markdown)
   (setq markdown-asymmetric-header t))
 
-(use-package yaml-mode
-  :mode "\\.\\(ya?\\|m\\)ml\\'")
+(use-package yaml-ts-mode
+  :mode "\\.\\(ya?\\|m\\)ml\\'"
+  :init
+  (add-to-list 'major-mode-remap-alist '(yaml-mode . yaml-ts-mode)))
 
 (use-package make-mode
   :defer t
