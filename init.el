@@ -83,9 +83,17 @@
   (setq doom-modeline-height 16)
   (setq doom-modeline-time nil))
 
+(use-package marginalia
+  :bind (:map minibuffer-local-map
+              ("M-A" . marginalia-cycle))
+  :init
+  (marginalia-mode))
+
 (use-package nerd-icons-completion
+  :after marginalia
   :config
-  (nerd-icons-completion-mode))
+  (nerd-icons-completion-mode)
+  (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
 
 ;;; package config
 (use-package undo-tree
