@@ -257,9 +257,6 @@
 [submodule "pkg-info"]
 	path = lib/pkg-info
 	url = git@github.com:lunaryorn/pkg-info.el.git
-[submodule "pyvenv"]
-	path = lib/pyvenv
-	url = git@github.com:jorgenschaefer/pyvenv.git
 [submodule "queue"]
 	path = lib/queue
 	url = git@github.com:emacsmirror/queue.git
