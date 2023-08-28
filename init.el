@@ -83,6 +83,10 @@
   (setq doom-modeline-height 16)
   (setq doom-modeline-time nil))
 
+(use-package nerd-icons-completion
+  :config
+  (nerd-icons-completion-mode))
+
 ;;; package config
 (use-package undo-tree
   :config
