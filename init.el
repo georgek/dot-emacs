@@ -533,7 +533,7 @@
   :defer t
   :config
   (setq git-rebase-confirm-cancel nil)
-  (setq git-rebase-show-instructions nil))
+  (setq git-rebase-show-instructions t))
 
 (use-package recentf
   :demand t
