@@ -41,7 +41,8 @@
     (tool-bar-mode 0))
   (menu-bar-mode 0)
   (pixel-scroll-precision-mode)
-  (setq native-comp-async-report-warnings-errors 'silent))
+  (setq native-comp-async-report-warnings-errors 'silent)
+  (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory)))
 
 (eval-and-compile                       ; `borg'
   (add-to-list 'load-path (expand-file-name "lib/borg" user-emacs-directory))
@@ -59,11 +60,11 @@
   (require 'i3-integration)
   (i3-advise-visible-frame-list-on))
 
-;;; theme
+;;; Theme
 (defconst my-font "UbuntuMono Nerd Font-9")
 (set-frame-font my-font nil t)
 (add-to-list 'default-frame-alist `(font . ,my-font))
-;;; for modes that set the face explicitly
+;; for modes that set the face explicitly
 (dolist (face '(default fixed-pitch fixed-pitch-serif))
   (set-face-attribute face nil :height 90 :family "Ubuntu Mono"))
 (dolist (face '(variable-pitch))
@@ -95,7 +96,7 @@
   (nerd-icons-completion-mode)
   (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
 
-;;; package config
+;;; Global
 (use-package project
   :config
   (setq project-switch-commands #'project-find-file))
@@ -122,7 +123,6 @@
     (whitespace-mode 1))
   :hook (prog-mode . nice-whitespace-on))
 
-(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 (use-package gk-extra
   :demand
   :bind (("C-;" . gk-select-current-line)
@@ -144,6 +144,10 @@
 
 (use-package eieio)
 
+(use-package server
+  :commands (server-running-p)
+  :config (or (server-running-p) (server-mode)))
+
 (use-package auto-compile
   :config
   (setq auto-compile-display-buffer               nil)
@@ -152,31 +156,12 @@
   (setq auto-compile-toggle-deletes-nonlib-dest   t)
   (setq auto-compile-update-autoloads             t))
 
-(use-package epkg
-  :defer t
-  :init
-  (setq epkg-repository
-        (expand-file-name "var/epkgs/" user-emacs-directory))
-  (setq epkg-database-connector
-        (if (>= emacs-major-version 29) 'sqlite-builtin 'sqlite-module)))
-
 (use-package custom
   :no-require t
   :config
   (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
   (when (file-exists-p custom-file)
     (load custom-file)))
-
-(defmacro makehookedfun (hook &rest body)
-  "Defines a function using BODY that is hooked to HOOK."
-  (declare (indent 1))
-  (let ((function (intern (concat (symbol-name hook) "-function"))))
-    `(progn
-       (defun ,function ()
-         ,@body)
-       (add-hook ',hook #',function))))
-
-;; ;;; long tail
 
 (use-package autorevert
   :config
@@ -195,18 +180,6 @@
 (use-package diff-hl-flydiff
   :config (diff-hl-flydiff-mode))
 
-(use-package diff-mode
-  :defer t
-  :config
-  (when (>= emacs-major-version 27)
-    (set-face-attribute 'diff-refine-changed nil :extend t)
-    (set-face-attribute 'diff-refine-removed nil :extend t)
-    (set-face-attribute 'diff-refine-added   nil :extend t)))
-
-(use-package dired
-  :defer t
-  :config (setq dired-listing-switches "-alh"))
-
 (use-package eldoc
   :when (version< "25" emacs-version)
   :config
@@ -217,196 +190,79 @@
   :defer t
   :config (temp-buffer-resize-mode))
 
-(progn ;    `isearch'
-  (setq isearch-allow-scroll t))
+(use-package lorem-ipsum
+  :commands (lorem-ipsum-insert-paragraphs
+             lorem-ipsum-insert-sentences))
 
-(use-package server
-  :commands (server-running-p)
-  :config (or (server-running-p) (server-mode)))
-
-(use-package paredit
+(use-package direnv
   :config
-  (require 'gk-electric)
-  (defun paredit-with-electric-return ()
-    (paredit-mode +1)
-    (local-set-key (kbd "RET") 'gk-electrify-return-if-match))
+  (direnv-mode))
 
-  ;; use with eldoc
-  (eldoc-add-command
-   'paredit-backward-delete
-   'paredit-close-round)
-
-  (defun nice-paredit-on ()
-    (turn-off-smartparens-mode)
-    (paredit-mode t)
-
-    (turn-on-eldoc-mode)
-    (eldoc-add-command
-     'paredit-backward-delete
-     'paredit-close-round)
-
-    (local-set-key (kbd "RET") 'gk-electrify-return-if-match)
-    (eldoc-add-command 'gk-electrify-return-if-match)
-
-    (show-paren-mode t)))
-
-(use-package smartparens
-  :demand
-  :config
-  (require 'smartparens-config)
-  (setq sp-base-key-bindings 'paredit)
-  (setq sp-autoskip-closing-pair 'always)
-  (setq sp-escape-quotes-after-insert nil) ; disable for c-mode
-  (setq sp-ignore-modes-list
-        '(web-mode git-commit-elisp-text-mode emacs-lisp-mode))
-  (smartparens-global-mode)
-  :bind (:map smartparens-mode-map
-              ("C-)" . sp-forward-slurp-sexp)
-              ("C-(" . sp-backward-slurp-sexp)))
+(use-package recentf
+  :demand t
+  :config (add-to-list 'recentf-exclude "^/\\(?:ssh\\|su\\|sudo\\)?x?:"))
 
 (use-package dired
   :defer t
   :config (setq dired-listing-switches "-alh"))
 
-(use-package subword
-  :hook ((python-mode
-          python-ts-mode
-          yaml-mode
-          go-mode
-          clojure-mode
-          cider-repl-mode
-          js2-mode
-          rjsx-mode
-          typescript-mode)
-         . subword-mode))
-
-(use-package lisp-mode
+(use-package midnight
+  :demand t
   :config
-  (defun eval-buffer-key ()
-    (interactive)
-    (message "Evaluating buffer...")
-    (eval-buffer)
-    (message "Buffer evaluated."))
+  (setq midnight-mode t)
+  ;; some buffers that shouldn't be killed
+  (setq clean-buffer-list-kill-never-buffer-names
+        (append clean-buffer-list-kill-never-buffer-names
+                '("*slime-repl sbcl*"
+                  "*R*"
+                  "init.el"))))
 
-  (defun eval-defun-key (edebug-it)
-    (interactive "P")
-    (let (beg ol)
-      (save-excursion
-        (end-of-defun)
-        (beginning-of-defun)
-        (setq beg (point))
-        (end-of-defun)
-        (setq ol (make-overlay beg (point))))
-      (overlay-put ol 'face 'highlight)
-      (unwind-protect
-          (progn
-            (eval-defun edebug-it)
-            (sit-for 0.1))
-        (delete-overlay ol))))
-
-  (makehookedfun emacs-lisp-mode-hook
-    (outline-minor-mode)
-    (reveal-mode)
-    (nice-paredit-on))
-
-  (defun indent-spaces-mode ()
-    (setq indent-tabs-mode nil))
-  (makehookedfun lisp-interaction-mode-hook
-    (indent-spaces-mode))
-
-  :bind
-  (:map emacs-lisp-mode-map
-   ("C-c C-k" . eval-buffer-key)
-   ("C-c C-c" . eval-defun-key)
-   ("C-c C-l" . paredit-recentre-on-sexp)
-   ("C-c d" . toggle-debug-on-error)
-   ("M-p" . outline-move-subtree-up)
-   ("M-n" . outline-move-subtree-down)
-   ("<backtab>". outline-cycle)
-   ("M-S-<iso-lefttab>". outline-cycle-buffer)))
-
-(use-package macrostep
-  :bind
-  (:map emacs-lisp-mode-map
-   ("C-c e" . macrostep-expand)))
-
-(use-package ielm
-  :init
-  (defun ielm-switch-to-buffer ()
-    (interactive)
-    (let ((ielm-buffer (get-buffer "*ielm*")))
-      (if ielm-buffer
-          (pop-to-buffer ielm-buffer)
-        (ielm))))
-  (defalias 'p #'princ)
-
+(use-package uniquify
+  :demand t
   :config
-  (makehookedfun ielm-mode-hook
-    (nice-paredit-on))
+  (setq uniquify-buffer-name-style 'reverse)
+  (setq uniquify-separator "/")
+  (setq uniquify-after-kill-buffer-p t) ; rename after killing uniquified
+  (setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
+  (setq uniquify-min-dir-content 0))
 
-  :bind
-  (:map emacs-lisp-mode-map
-   ("C-c C-z" . ielm-switch-to-buffer)
-   ("C-c z" . ielm-switch-to-buffer)
-   :map ielm-map
-   ("C-<return>" . ielm-send-input)))
+(use-package hippie-exp
+  :bind (("M-/" . hippie-expand)))
 
-(use-package lisp-mode
-  :mode "\\.lisp\\'"
-  :hook ((lisp-mode . nice-paredit-on))
+(use-package gk-other-window-repeat
+  :bind (("C-x o" . gk-other-window-repeat)
+         ("M-'" . other-window)))
+
+(use-package savehist
+  :config (savehist-mode))
+
+(use-package saveplace
+  :when (version< "25" emacs-version)
+  :config (save-place-mode))
+
+(use-package xref
   :config
-  (use-package hyperspec)
-  (use-package slime-company
-    :commands (slime-company)
-    :config (setq slime-company-completion 'fuzzy))
-  (use-package slime-complete-locals
-    :commands (slime-complete-locals))
-  (use-package slime
-    :demand
-    :commands (slime)
-    :config
-    (setq inferior-lisp-program "sbcl")
-    (slime-setup '(slime-fancy
-                   slime-banner
-                   slime-asdf
-                   slime-company
-                   slime-complete-locals)))
-  :bind
-  (:map lisp-mode-map
-   ("C-c C-z" . slime-switch-to-output-buffer)
-   ("C-c z" . slime-switch-to-output-buffer)
-   ("C-c e" . macrostep-expand)))
-
-(use-package scheme
+  (setq xref-search-program 'ripgrep))
+(use-package tramp
+  :defer t
   :config
-  (makehookedfun scheme-mode-hook
-    (nice-paredit-on)
-    (geiser-mode)))
+  (add-to-list 'tramp-default-proxies-alist '(nil "\\`root\\'" "/ssh:%h:"))
+  (add-to-list 'tramp-default-proxies-alist '("localhost" nil nil))
+  (add-to-list 'tramp-default-proxies-alist
+               (list (regexp-quote (system-name)) nil nil))
+  (setq vc-ignore-dir-regexp
+        (format "\\(%s\\)\\|\\(%s\\)"
+                vc-ignore-dir-regexp
+                tramp-file-name-regexp)))
 
-(use-package geiser
-  :commands (geiser-mode)
-  :load-path "lib/geiser/elisp"
-  :init
-  (setq geiser-active-implementations '(racket guile)))
+(use-package tramp-sh
+  :defer t
+  :config (cl-pushnew 'tramp-own-remote-path tramp-remote-path))
 
-(use-package cider
-  :mode (("\\.clj$" . clojure-mode))
-  :hook ((clojure-mode . nice-paredit-on)
-         (cider-repl-mode . nice-paredit-on))
-  :bind (:map clojure-mode-map
-         ("C-c z" . cider-switch-to-repl-buffer)
-         ("C-c C-z" . cider-switch-to-repl-buffer)))
+(progn ;    `isearch'
+  (setq isearch-allow-scroll t))
 
-(use-package vertico
-  :demand
-  :bind (("C-x C-b" . switch-to-buffer))
-  :config
-  (vertico-mode)
-  ;; Do not allow the cursor in the minibuffer prompt
-  (setq minibuffer-prompt-properties
-        '(read-only t cursor-intangible t face minibuffer-prompt))
-  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode))
-
+;;; Completion
 (use-package orderless
   :init
   (setq completion-styles '(basic partial-completion orderless)
@@ -414,11 +270,6 @@
         completion-category-overrides '((project-file (styles orderless))
                                         (buffer (styles orderless))
                                         (command (styles orderless)))))
-
-(use-package yasnippet
-  :config
-  (use-package yasnippet-snippets)
-  (yas-global-mode +1))
 
 (use-package company
   :demand
@@ -455,6 +306,170 @@
               ("C-c C-n" . flymake-goto-next-error)
               ("C-c C-p" . flymake-goto-prev-error)
               ("C-c C-l" . flymake-show-buffer-diagnostics)))
+
+(use-package yasnippet
+  :config
+  (use-package yasnippet-snippets)
+  (yas-global-mode +1))
+
+(use-package vertico
+  :demand
+  :bind (("C-x C-b" . switch-to-buffer))
+  :config
+  (vertico-mode)
+  ;; Do not allow the cursor in the minibuffer prompt
+  (setq minibuffer-prompt-properties
+        '(read-only t cursor-intangible t face minibuffer-prompt))
+  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode))
+
+;;; Editing
+(use-package smartparens
+  :demand
+  :config
+  (require 'smartparens-config)
+  (setq sp-base-key-bindings 'paredit)
+  (setq sp-autoskip-closing-pair 'always)
+  (setq sp-escape-quotes-after-insert nil) ; disable for c-mode
+  (setq sp-ignore-modes-list
+        '(web-mode git-commit-elisp-text-mode emacs-lisp-mode))
+  (smartparens-global-mode)
+  :bind (:map smartparens-mode-map
+              ("C-)" . sp-forward-slurp-sexp)
+              ("C-(" . sp-backward-slurp-sexp)))
+
+(use-package subword
+  :hook ((python-mode
+          python-ts-mode
+          yaml-mode
+          go-mode
+          clojure-mode
+          cider-repl-mode
+          js2-mode
+          rjsx-mode
+          typescript-mode)
+         . subword-mode))
+
+(use-package macrostep
+  :bind
+  (:map emacs-lisp-mode-map
+   ("C-c e" . macrostep-expand)))
+
+(use-package paren-face
+  :config
+  (global-paren-face-mode))
+
+(use-package mic-paren
+  :config
+  (setq paren-sexp-mode 'mismatch)
+  (paren-activate))
+
+(use-package eglot
+  :hook (python-ts-mode . eglot-ensure)
+  :config
+  (setq eglot-autoshutdown t
+        eglot-send-changes-idle-time 0.1
+        eglot-events-buffer-size 0
+        eglot-report-progress nil
+        eglot-ignored-server-capabilities '(:documentHighlightProvider))
+  ;; use flake8 by default
+  (setq-default
+   eglot-workspace-configuration
+   '(:pylsp (:plugins (:pycodestyle (:enabled nil)
+                       :mccabe (:enabled nil)
+                       :pyflakes (:enabled nil)
+                       :flake8 (:enabled t)
+                       :rope-autoimport (:enabled t))
+             :configurationSources ["flake8"]))))
+
+(use-package flyspell
+  :config (setq flyspell-issue-message-flag -1)
+  :hook ((text-mode . flyspell-mode)))
+
+(use-package paredit
+  :config
+  (require 'gk-electric)
+  (defun paredit-with-electric-return ()
+    (paredit-mode +1)
+    (local-set-key (kbd "RET") 'gk-electrify-return-if-match))
+
+  ;; use with eldoc
+  (eldoc-add-command
+   'paredit-backward-delete
+   'paredit-close-round)
+
+  (defun nice-paredit-on ()
+    (turn-off-smartparens-mode)
+    (paredit-mode t)
+
+    (turn-on-eldoc-mode)
+    (eldoc-add-command
+     'paredit-backward-delete
+     'paredit-close-round)
+
+    (local-set-key (kbd "RET") 'gk-electrify-return-if-match)
+    (eldoc-add-command 'gk-electrify-return-if-match)
+
+    (show-paren-mode t)))
+
+;;; Special modes
+(use-package man
+  :defer t
+  :config (setq Man-width 80))
+(use-package ielm
+  :init
+  (defun ielm-switch-to-buffer ()
+    (interactive)
+    (let ((ielm-buffer (get-buffer "*ielm*")))
+      (if ielm-buffer
+          (pop-to-buffer ielm-buffer)
+        (ielm))))
+  (defalias 'p #'princ)
+
+  :config
+  (makehookedfun ielm-mode-hook
+    (nice-paredit-on))
+
+  :bind
+  (:map emacs-lisp-mode-map
+        ("C-c C-z" . ielm-switch-to-buffer)
+        ("C-c z" . ielm-switch-to-buffer)
+        :map ielm-map
+        ("C-<return>" . ielm-send-input)))
+(use-package epkg
+  :defer t
+  :init
+  (setq epkg-repository
+        (expand-file-name "var/epkgs/" user-emacs-directory))
+  (setq epkg-database-connector
+        (if (>= emacs-major-version 29) 'sqlite-builtin 'sqlite-module)))
+
+(use-package diff-mode
+  :defer t
+  :config
+  (when (>= emacs-major-version 27)
+    (set-face-attribute 'diff-refine-changed nil :extend t)
+    (set-face-attribute 'diff-refine-removed nil :extend t)
+    (set-face-attribute 'diff-refine-added   nil :extend t)))
+
+(use-package dired
+  :defer t
+  :config (setq dired-listing-switches "-alh"))
+
+(use-package compile
+  :config
+  (setq compilation-scroll-output 'first-error))
+
+(use-package eshell
+  :bind (("C-c s" . eshell)))
+
+(use-package helpful
+  :bind (("C-h f" . helpful-callable)
+         ("C-h v" . helpful-variable)
+         ("C-h k" . helpful-key)
+         ("C-h F" . helpful-function)
+         ("C-h C" . helpful-command)
+         :map emacs-lisp-mode-map
+         ("C-c C-d" . helpful-at-point)))
 
 (use-package transient
   :config
@@ -540,9 +555,58 @@
   (setq git-rebase-confirm-cancel nil)
   (setq git-rebase-show-instructions t))
 
-(use-package recentf
-  :demand t
-  :config (add-to-list 'recentf-exclude "^/\\(?:ssh\\|su\\|sudo\\)?x?:"))
+(use-package deadgrep
+  :commands (deadgrep)
+  :bind (("C-z" . deadgrep)))
+
+
+;;; Editing modes
+;; (use-package go-mode
+;;   :mode "\\.go\\'"
+;;   :hook (go-mode . (lambda () (setq tab-width 4)))
+;;   :config
+;;   (require 'go-eldoc)
+;;   (add-hook 'go-mode-hook 'go-eldoc-setup)
+;;   (defun go-mode-compile ()
+;;     (interactive)
+;;     (compile "go install"))
+;;   (defun go-mode-test ()
+;;     (interactive)
+;;     (compile "go test -v && go vet && golint"))
+;;   :bind (:map go-mode-map
+;;          ("C-c C-c" . go-mode-compile)
+;;          ("C-c C-t" . go-mode-test)
+;;          ("M-." . godef-jump)
+;;          ("RET" . gk-electrify-return-if-match)))
+
+;; (use-package ess
+;;   :init (require 'ess-site)
+;;   :config
+;;   (defun ess-eval-defun-key ()
+;;     (interactive)
+;;     (ess-eval-function-or-paragraph t))
+;;   (defun clear-shell ()
+;;    (interactive)
+;;    (let ((old-max comint-buffer-maximum-size))
+;;      (setq comint-buffer-maximum-size 0)
+;;      (comint-truncate-buffer)
+;;      (setq comint-buffer-maximum-size old-max)))
+;;   :bind (:map ess-mode-map
+;;          ("C-c z" . ess-switch-to-inferior-or-script-buffer)
+;;          ("C-c C-c" . ess-eval-defun-key)
+;;          ("C-c C-k" . ess-eval-buffer)
+;;          ("C-c C-b" . ess-force-buffer-current)
+;;          :map inferior-ess-mode-map
+;;          ("C-c M-o" . clear-shell)))
+
+(defmacro makehookedfun (hook &rest body)
+  "Defines a function using BODY that is hooked to HOOK."
+  (declare (indent 1))
+  (let ((function (intern (concat (symbol-name hook) "-function"))))
+    `(progn
+       (defun ,function ()
+         ,@body)
+       (add-hook ',hook #',function))))
 
 (use-package smerge-mode
   :defer t
@@ -550,6 +614,97 @@
   (when (>= emacs-major-version 27)
     (set-face-attribute 'smerge-refined-removed nil :extend t)
     (set-face-attribute 'smerge-refined-added   nil :extend t)))
+
+(use-package lisp-mode                  ; emacs-lisp-mode
+  :config
+  (defun eval-buffer-key ()
+    (interactive)
+    (message "Evaluating buffer...")
+    (eval-buffer)
+    (message "Buffer evaluated."))
+
+  (defun eval-defun-key (edebug-it)
+    (interactive "P")
+    (let (beg ol)
+      (save-excursion
+        (end-of-defun)
+        (beginning-of-defun)
+        (setq beg (point))
+        (end-of-defun)
+        (setq ol (make-overlay beg (point))))
+      (overlay-put ol 'face 'highlight)
+      (unwind-protect
+          (progn
+            (eval-defun edebug-it)
+            (sit-for 0.1))
+        (delete-overlay ol))))
+
+  (makehookedfun emacs-lisp-mode-hook
+    (outline-minor-mode)
+    (reveal-mode)
+    (nice-paredit-on))
+
+  (defun indent-spaces-mode ()
+    (setq indent-tabs-mode nil))
+  (makehookedfun lisp-interaction-mode-hook
+    (indent-spaces-mode))
+
+  :bind
+  (:map emacs-lisp-mode-map
+   ("C-c C-k" . eval-buffer-key)
+   ("C-c C-c" . eval-defun-key)
+   ("C-c C-l" . paredit-recentre-on-sexp)
+   ("C-c d" . toggle-debug-on-error)
+   ("M-p" . outline-move-subtree-up)
+   ("M-n" . outline-move-subtree-down)
+   ("<backtab>". outline-cycle)
+   ("M-S-<iso-lefttab>". outline-cycle-buffer)))
+
+(use-package lisp-mode
+  :mode "\\.lisp\\'"
+  :hook ((lisp-mode . nice-paredit-on))
+  :config
+  (use-package hyperspec)
+  (use-package slime-company
+    :commands (slime-company)
+    :config (setq slime-company-completion 'fuzzy))
+  (use-package slime-complete-locals
+    :commands (slime-complete-locals))
+  (use-package slime
+    :demand
+    :commands (slime)
+    :config
+    (setq inferior-lisp-program "sbcl")
+    (slime-setup '(slime-fancy
+                   slime-banner
+                   slime-asdf
+                   slime-company
+                   slime-complete-locals)))
+  :bind
+  (:map lisp-mode-map
+   ("C-c C-z" . slime-switch-to-output-buffer)
+   ("C-c z" . slime-switch-to-output-buffer)
+   ("C-c e" . macrostep-expand)))
+
+(use-package cider
+  :mode (("\\.clj$" . clojure-mode))
+  :hook ((clojure-mode . nice-paredit-on)
+         (cider-repl-mode . nice-paredit-on))
+  :bind (:map clojure-mode-map
+         ("C-c z" . cider-switch-to-repl-buffer)
+         ("C-c C-z" . cider-switch-to-repl-buffer)))
+
+(use-package geiser
+  :commands (geiser-mode)
+  :load-path "lib/geiser/elisp"
+  :init
+  (setq geiser-active-implementations '(racket guile)))
+
+(use-package scheme
+  :config
+  (makehookedfun scheme-mode-hook
+    (nice-paredit-on)
+    (geiser-mode)))
 
 (progn ;    `text-mode'
   (add-hook 'text-mode-hook 'indicate-buffer-boundaries-left))
@@ -740,10 +895,6 @@ RECURRENCES occasions."
 (use-package nginx-mode
   :mode "nginx-mode")
 
-(use-package compile
-  :config
-  (setq compilation-scroll-output 'first-error))
-
 (use-package cc-mode
   :config
   (setq c-auto-newline 1)
@@ -757,37 +908,6 @@ RECURRENCES occasions."
 (use-package asm-mode
   :bind (:map asm-mode-map
          ("C-c C-c" . compile)))
-
-(use-package lorem-ipsum
-  :commands (lorem-ipsum-insert-paragraphs
-             lorem-ipsum-insert-sentences))
-
-(use-package flyspell
-  :config (setq flyspell-issue-message-flag -1)
-  :hook ((text-mode . flyspell-mode)))
-
-(use-package uniquify
-  :demand t
-  :config
-  (setq uniquify-buffer-name-style 'reverse)
-  (setq uniquify-separator "/")
-  (setq uniquify-after-kill-buffer-p t) ; rename after killing uniquified
-  (setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
-  (setq uniquify-min-dir-content 0))
-
-(use-package hippie-exp
-  :bind (("M-/" . hippie-expand)))
-
-(use-package midnight
-  :demand t
-  :config
-  (setq midnight-mode t)
-  ;; some buffers that shouldn't be killed
-  (setq clean-buffer-list-kill-never-buffer-names
-        (append clean-buffer-list-kill-never-buffer-names
-                '("*slime-repl sbcl*"
-                  "*R*"
-                  "init.el"))))
 
 (use-package tex-site                   ; auctex
   :mode ("\\.tex\\'" . TeX-latex-mode)
@@ -818,13 +938,6 @@ RECURRENCES occasions."
                        (auto-fill-mode)
                        (setq tab-stop-list (number-sequence 3 45 3))))))
 
-(use-package eshell
-  :bind (("C-c s" . eshell)))
-
-(use-package direnv
-  :config
-  (direnv-mode))
-
 (use-package python
   :mode ("\\.py\\'" . python-ts-mode)
   :init
@@ -839,115 +952,14 @@ RECURRENCES occasions."
   (:map python-ts-mode-map
         ("RET" . gk-electrify-return-if-match)))
 
-(use-package eglot
-  :hook (python-ts-mode . eglot-ensure)
-  :config
-  (setq eglot-autoshutdown t
-        eglot-send-changes-idle-time 0.1
-        eglot-events-buffer-size 0
-        eglot-report-progress nil
-        eglot-ignored-server-capabilities '(:documentHighlightProvider))
-  ;; use flake8 by default
-  (setq-default
-   eglot-workspace-configuration
-   '(:pylsp (:plugins (:pycodestyle (:enabled nil)
-                       :mccabe (:enabled nil)
-                       :pyflakes (:enabled nil)
-                       :flake8 (:enabled t)
-                       :rope-autoimport (:enabled t))
-             :configurationSources ["flake8"]))))
-
-(use-package man
-  :defer t
-  :config (setq Man-width 80))
-
-(use-package paren-face
-  :config
-  (global-paren-face-mode))
-
-(use-package mic-paren
-  :config
-  (setq paren-sexp-mode 'mismatch)
-  (paren-activate))
-
 (use-package prog-mode
   :config (global-prettify-symbols-mode)
   (defun indicate-buffer-boundaries-left ()
     (setq indicate-buffer-boundaries 'left))
   (add-hook 'prog-mode-hook #'indicate-buffer-boundaries-left))
 
-(use-package savehist
-  :config (savehist-mode))
-
-(use-package saveplace
-  :when (version< "25" emacs-version)
-  :config (save-place-mode))
-
 (progn ;    `text-mode'
   (add-hook 'text-mode-hook #'indicate-buffer-boundaries-left))
-
-(use-package tramp
-  :defer t
-  :config
-  (add-to-list 'tramp-default-proxies-alist '(nil "\\`root\\'" "/ssh:%h:"))
-  (add-to-list 'tramp-default-proxies-alist '("localhost" nil nil))
-  (add-to-list 'tramp-default-proxies-alist
-               (list (regexp-quote (system-name)) nil nil))
-  (setq vc-ignore-dir-regexp
-        (format "\\(%s\\)\\|\\(%s\\)"
-                vc-ignore-dir-regexp
-                tramp-file-name-regexp)))
-
-(use-package helpful
-  :bind (("C-h f" . helpful-callable)
-         ("C-h v" . helpful-variable)
-         ("C-h k" . helpful-key)
-         ("C-h F" . helpful-function)
-         ("C-h C" . helpful-command)
-         :map emacs-lisp-mode-map
-         ("C-c C-d" . helpful-at-point)))
-
-(use-package deadgrep
-  :commands (deadgrep)
-  :bind (("C-z" . deadgrep)))
-
-;; (use-package go-mode
-;;   :mode "\\.go\\'"
-;;   :hook (go-mode . (lambda () (setq tab-width 4)))
-;;   :config
-;;   (require 'go-eldoc)
-;;   (add-hook 'go-mode-hook 'go-eldoc-setup)
-;;   (defun go-mode-compile ()
-;;     (interactive)
-;;     (compile "go install"))
-;;   (defun go-mode-test ()
-;;     (interactive)
-;;     (compile "go test -v && go vet && golint"))
-;;   :bind (:map go-mode-map
-;;          ("C-c C-c" . go-mode-compile)
-;;          ("C-c C-t" . go-mode-test)
-;;          ("M-." . godef-jump)
-;;          ("RET" . gk-electrify-return-if-match)))
-
-;; (use-package ess
-;;   :init (require 'ess-site)
-;;   :config
-;;   (defun ess-eval-defun-key ()
-;;     (interactive)
-;;     (ess-eval-function-or-paragraph t))
-;;   (defun clear-shell ()
-;;    (interactive)
-;;    (let ((old-max comint-buffer-maximum-size))
-;;      (setq comint-buffer-maximum-size 0)
-;;      (comint-truncate-buffer)
-;;      (setq comint-buffer-maximum-size old-max)))
-;;   :bind (:map ess-mode-map
-;;          ("C-c z" . ess-switch-to-inferior-or-script-buffer)
-;;          ("C-c C-c" . ess-eval-defun-key)
-;;          ("C-c C-k" . ess-eval-buffer)
-;;          ("C-c C-b" . ess-force-buffer-current)
-;;          :map inferior-ess-mode-map
-;;          ("C-c M-o" . clear-shell)))
 
 (use-package web-mode
   :mode ("\\.phtml\\'"
@@ -1018,10 +1030,6 @@ RECURRENCES occasions."
 ;;          ("C-c w o" . copy-as-format-org-mode)
 ;;          ("C-c w s" . copy-as-format-slack)))
 
-(use-package gk-other-window-repeat
-  :bind (("C-x o" . gk-other-window-repeat)
-         ("M-'" . other-window)))
-
 (progn                                  ; misc settings
  ;; set some default styles
  (setq c-default-style
@@ -1080,14 +1088,6 @@ RECURRENCES occasions."
 ;;   (exec-path-from-shell-initialize)
 ;;   (exec-path-from-shell-copy-env "WORKON_HOME")
 ;;   (exec-path-from-shell-copy-env "PROJECT_HOME"))
-
-(use-package tramp-sh
-  :defer t
-  :config (cl-pushnew 'tramp-own-remote-path tramp-remote-path))
-
-(use-package xref
-  :config
-  (setq xref-search-program 'ripgrep))
 
 ;;; Tree-sitter stuff
 
