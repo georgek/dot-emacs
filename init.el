@@ -565,6 +565,12 @@
          (org-mode . flyspell-mode)
          (org-mode . reveal-mode)
          (org-mode . (lambda () (yas-minor-mode -1))))
+  :init
+  (defmacro orgdr (&optional filename)
+    (if filename
+        `(concat (file-name-as-directory org-directory) ,filename)
+      org-directory))
+
   :config
   (use-package org-bullets)
   (use-package org-tempo)
@@ -573,10 +579,6 @@
         org-src-preserve-indentation nil
         org-edit-src-content-indentation 0)
 
-  (defmacro orgdr (&optional filename)
-    (if filename
-        `(concat (file-name-as-directory org-directory) ,filename)
-      org-directory))
   (setq org-return-follows-link t)
 
   (org-babel-do-load-languages
