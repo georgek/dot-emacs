@@ -75,6 +75,7 @@
   :config
   (setq doom-modeline-height 16)
   (setq doom-modeline-time nil))
+
 (use-package nerd-icons-completion
   :after marginalia
   :config
@@ -293,7 +294,10 @@
   :bind (:map minibuffer-local-map
               ("M-A" . marginalia-cycle))
   :init
-  (marginalia-mode))
+  (marginalia-mode)
+  :config
+  (setq marginalia-align 'right
+        marginalia-field-width 40))
 
 (use-package orderless
   :init
