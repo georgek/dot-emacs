@@ -319,7 +319,11 @@
    ("C-c C-k" . eval-buffer-key)
    ("C-c C-c" . eval-defun-key)
    ("C-c C-l" . paredit-recentre-on-sexp)
-   ("C-c d" . toggle-debug-on-error)))
+   ("C-c d" . toggle-debug-on-error)
+   ("M-p" . outline-move-subtree-up)
+   ("M-n" . outline-move-subtree-down)
+   ("<backtab>". outline-cycle)
+   ("M-S-<iso-lefttab>". outline-cycle-buffer)))
 
 (use-package macrostep
   :bind
