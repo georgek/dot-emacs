@@ -257,7 +257,7 @@
   (setq sp-base-key-bindings 'paredit)
   (setq sp-autoskip-closing-pair 'always)
   (setq sp-escape-quotes-after-insert nil) ; disable for c-mode
-  (setq sp-ignore-modes-list '(web-mode))
+  (setq sp-ignore-modes-list '(web-mode git-commit-elisp-text-mode))
   (smartparens-global-mode)
   :bind (:map smartparens-mode-map
               ("C-)" . sp-forward-slurp-sexp)
