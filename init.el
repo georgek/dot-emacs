@@ -96,6 +96,10 @@
   (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
 
 ;;; package config
+(use-package project
+  :config
+  (setq project-switch-commands #'project-find-file))
+
 (use-package undo-tree
   :config
   (global-undo-tree-mode)
