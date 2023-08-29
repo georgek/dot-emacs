@@ -70,6 +70,17 @@
 (dolist (face '(variable-pitch))
  (set-face-attribute face nil :height 90 :family "Ubuntu"))
 
+(use-package doom-modeline
+  :init (doom-modeline-mode +1)
+  :config
+  (setq doom-modeline-height 16)
+  (setq doom-modeline-time nil))
+(use-package nerd-icons-completion
+  :after marginalia
+  :config
+  (nerd-icons-completion-mode)
+  (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
+
 (use-package zenburn-theme
   :init
   (setq zenburn-use-variable-pitch nil)
@@ -78,75 +89,9 @@
   :config
   (load-theme 'zenburn t))
 
-(use-package doom-modeline
-  :init (doom-modeline-mode +1)
-  :config
-  (setq doom-modeline-height 16)
-  (setq doom-modeline-time nil))
-
-(use-package marginalia
-  :bind (:map minibuffer-local-map
-              ("M-A" . marginalia-cycle))
-  :init
-  (marginalia-mode))
-
-(use-package nerd-icons-completion
-  :after marginalia
-  :config
-  (nerd-icons-completion-mode)
-  (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
-
 ;;; Global
-(use-package project
-  :config
-  (setq project-switch-commands #'project-find-file))
-
-(use-package undo-tree
-  :config
-  (global-undo-tree-mode)
-  (setq undo-tree-mode-lighter ""))
-
-(use-package volatile-highlights
-  :defer 2
-  :config (volatile-highlights-mode t))
-
-(use-package hl-todo
-  :defer 2
-  :config (global-hl-todo-mode))
-
-(use-package whitespace
-  :config
-  (defun nice-whitespace-on ()
-    (setq whitespace-style '(face tabs tab-mark trailing lines-tail))
-    ;; highlight lines with more than `fill-column' characters
-    (setq whitespace-line-column nil)
-    (whitespace-mode 1))
-  :hook (prog-mode . nice-whitespace-on))
-
-(use-package gk-extra
-  :demand
-  :bind (("C-;" . gk-select-current-line)
-         ("C-M-;" . gk-comment-current-line)
-         ("C-x C-c" . gk-kill-client-or-daemon)
-         ("C-c d" . gk-insert-date)
-         ("C-c t" . gk-insert-time))
-  :mode ("\\.h\\'" . gk-c-c++-header))
-
-(use-package no-littering
-  :config
-  (use-package recentf)
-  (add-to-list 'recentf-exclude no-littering-var-directory)
-  (add-to-list 'recentf-exclude no-littering-etc-directory)
-  (no-littering-theme-backups))
-
-(use-package dash
-  :config (global-dash-fontify-mode))
-
-(use-package eieio)
-
-(use-package server
-  :commands (server-running-p)
-  :config (or (server-running-p) (server-mode)))
+(progn ;    `isearch'
+  (setq isearch-allow-scroll t))
 
 (use-package auto-compile
   :config
@@ -156,13 +101,6 @@
   (setq auto-compile-toggle-deletes-nonlib-dest   t)
   (setq auto-compile-update-autoloads             t))
 
-(use-package custom
-  :no-require t
-  :config
-  (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-  (when (file-exists-p custom-file)
-    (load custom-file)))
-
 (use-package autorevert
   :config
    ;; enable auto revert globally
@@ -170,6 +108,16 @@
  (setq auto-revert-check-vc-info t)
  (setq auto-revert-verbose nil)
  (setq auto-revert-remote-files t))
+
+(use-package custom
+  :no-require t
+  :config
+  (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+  (when (file-exists-p custom-file)
+    (load custom-file)))
+
+(use-package dash
+  :config (global-dash-fontify-mode))
 
 (use-package diff-hl
   :config
@@ -180,31 +128,45 @@
 (use-package diff-hl-flydiff
   :config (diff-hl-flydiff-mode))
 
+(use-package direnv
+  :config
+  (direnv-mode))
+
+(use-package eieio)
+
 (use-package eldoc
   :when (version< "25" emacs-version)
   :config
   (global-eldoc-mode)
   (setq eldoc-echo-area-use-multiline-p nil))
 
+(use-package gk-extra
+  :demand
+  :bind (("C-;" . gk-select-current-line)
+         ("C-M-;" . gk-comment-current-line)
+         ("C-x C-c" . gk-kill-client-or-daemon)
+         ("C-c d" . gk-insert-date)
+         ("C-c t" . gk-insert-time))
+  :mode ("\\.h\\'" . gk-c-c++-header))
+
+(use-package gk-other-window-repeat
+  :bind (("C-x o" . gk-other-window-repeat)
+         ("M-'" . other-window)))
+
 (use-package help
   :defer t
   :config (temp-buffer-resize-mode))
 
+(use-package hippie-exp
+  :bind (("M-/" . hippie-expand)))
+
+(use-package hl-todo
+  :defer 2
+  :config (global-hl-todo-mode))
+
 (use-package lorem-ipsum
   :commands (lorem-ipsum-insert-paragraphs
              lorem-ipsum-insert-sentences))
-
-(use-package direnv
-  :config
-  (direnv-mode))
-
-(use-package recentf
-  :demand t
-  :config (add-to-list 'recentf-exclude "^/\\(?:ssh\\|su\\|sudo\\)?x?:"))
-
-(use-package dired
-  :defer t
-  :config (setq dired-listing-switches "-alh"))
 
 (use-package midnight
   :demand t
@@ -217,21 +179,20 @@
                   "*R*"
                   "init.el"))))
 
-(use-package uniquify
-  :demand t
+(use-package no-littering
   :config
-  (setq uniquify-buffer-name-style 'reverse)
-  (setq uniquify-separator "/")
-  (setq uniquify-after-kill-buffer-p t) ; rename after killing uniquified
-  (setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
-  (setq uniquify-min-dir-content 0))
+  (use-package recentf)
+  (add-to-list 'recentf-exclude no-littering-var-directory)
+  (add-to-list 'recentf-exclude no-littering-etc-directory)
+  (no-littering-theme-backups))
 
-(use-package hippie-exp
-  :bind (("M-/" . hippie-expand)))
+(use-package project
+  :config
+  (setq project-switch-commands #'project-find-file))
 
-(use-package gk-other-window-repeat
-  :bind (("C-x o" . gk-other-window-repeat)
-         ("M-'" . other-window)))
+(use-package recentf
+  :demand t
+  :config (add-to-list 'recentf-exclude "^/\\(?:ssh\\|su\\|sudo\\)?x?:"))
 
 (use-package savehist
   :config (savehist-mode))
@@ -240,9 +201,10 @@
   :when (version< "25" emacs-version)
   :config (save-place-mode))
 
-(use-package xref
-  :config
-  (setq xref-search-program 'ripgrep))
+(use-package server
+  :commands (server-running-p)
+  :config (or (server-running-p) (server-mode)))
+
 (use-package tramp
   :defer t
   :config
@@ -259,18 +221,38 @@
   :defer t
   :config (cl-pushnew 'tramp-own-remote-path tramp-remote-path))
 
-(progn ;    `isearch'
-  (setq isearch-allow-scroll t))
+(use-package undo-tree
+  :config
+  (global-undo-tree-mode)
+  (setq undo-tree-mode-lighter ""))
+
+(use-package uniquify
+  :demand t
+  :config
+  (setq uniquify-buffer-name-style 'reverse)
+  (setq uniquify-separator "/")
+  (setq uniquify-after-kill-buffer-p t) ; rename after killing uniquified
+  (setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
+  (setq uniquify-min-dir-content 0))
+
+(use-package volatile-highlights
+  :defer 2
+  :config (volatile-highlights-mode t))
+
+(use-package whitespace
+  :config
+  (defun nice-whitespace-on ()
+    (setq whitespace-style '(face tabs tab-mark trailing lines-tail))
+    ;; highlight lines with more than `fill-column' characters
+    (setq whitespace-line-column nil)
+    (whitespace-mode 1))
+  :hook (prog-mode . nice-whitespace-on))
+
+(use-package xref
+  :config
+  (setq xref-search-program 'ripgrep))
 
 ;;; Completion
-(use-package orderless
-  :init
-  (setq completion-styles '(basic partial-completion orderless)
-        completion-category-defaults nil
-        completion-category-overrides '((project-file (styles orderless))
-                                        (buffer (styles orderless))
-                                        (command (styles orderless)))))
-
 (use-package company
   :demand
   :init
@@ -307,10 +289,19 @@
               ("C-c C-p" . flymake-goto-prev-error)
               ("C-c C-l" . flymake-show-buffer-diagnostics)))
 
-(use-package yasnippet
-  :config
-  (use-package yasnippet-snippets)
-  (yas-global-mode +1))
+(use-package marginalia
+  :bind (:map minibuffer-local-map
+              ("M-A" . marginalia-cycle))
+  :init
+  (marginalia-mode))
+
+(use-package orderless
+  :init
+  (setq completion-styles '(basic partial-completion orderless)
+        completion-category-defaults nil
+        completion-category-overrides '((project-file (styles orderless))
+                                        (buffer (styles orderless))
+                                        (command (styles orderless)))))
 
 (use-package vertico
   :demand
@@ -322,7 +313,69 @@
         '(read-only t cursor-intangible t face minibuffer-prompt))
   (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode))
 
-;;; Editing
+(use-package yasnippet
+  :config
+  (use-package yasnippet-snippets)
+  (yas-global-mode +1))
+
+;;; General editing
+(use-package eglot
+  :hook (python-ts-mode . eglot-ensure)
+  :config
+  (setq eglot-autoshutdown t
+        eglot-send-changes-idle-time 0.1
+        eglot-events-buffer-size 0
+        eglot-report-progress nil
+        eglot-ignored-server-capabilities '(:documentHighlightProvider))
+  ;; use flake8 by default
+  (setq-default
+   eglot-workspace-configuration
+   '(:pylsp (:plugins (:pycodestyle (:enabled nil)
+                       :mccabe (:enabled nil)
+                       :pyflakes (:enabled nil)
+                       :flake8 (:enabled t)
+                       :rope-autoimport (:enabled t))
+             :configurationSources ["flake8"]))))
+
+(use-package flyspell
+  :config (setq flyspell-issue-message-flag -1)
+  :hook ((text-mode . flyspell-mode)))
+
+(use-package macrostep
+  :bind
+  (:map emacs-lisp-mode-map
+   ("C-c e" . macrostep-expand)))
+
+(use-package mic-paren
+  :config
+  (setq paren-sexp-mode 'mismatch)
+  (paren-activate))
+
+(use-package paredit
+  :config
+  (require 'gk-electric)
+  (defun paredit-with-electric-return ()
+    (paredit-mode +1)
+    (local-set-key (kbd "RET") 'gk-electrify-return-if-match))
+  ;; use with eldoc
+  (eldoc-add-command
+   'paredit-backward-delete
+   'paredit-close-round)
+  (defun nice-paredit-on ()
+    (turn-off-smartparens-mode)
+    (paredit-mode t)
+    (turn-on-eldoc-mode)
+    (eldoc-add-command
+     'paredit-backward-delete
+     'paredit-close-round)
+    (local-set-key (kbd "RET") 'gk-electrify-return-if-match)
+    (eldoc-add-command 'gk-electrify-return-if-match)
+    (show-paren-mode t)))
+
+(use-package paren-face
+  :config
+  (global-paren-face-mode))
+
 (use-package smartparens
   :demand
   :config
@@ -349,99 +402,15 @@
           typescript-mode)
          . subword-mode))
 
-(use-package macrostep
-  :bind
-  (:map emacs-lisp-mode-map
-   ("C-c e" . macrostep-expand)))
-
-(use-package paren-face
-  :config
-  (global-paren-face-mode))
-
-(use-package mic-paren
-  :config
-  (setq paren-sexp-mode 'mismatch)
-  (paren-activate))
-
-(use-package eglot
-  :hook (python-ts-mode . eglot-ensure)
-  :config
-  (setq eglot-autoshutdown t
-        eglot-send-changes-idle-time 0.1
-        eglot-events-buffer-size 0
-        eglot-report-progress nil
-        eglot-ignored-server-capabilities '(:documentHighlightProvider))
-  ;; use flake8 by default
-  (setq-default
-   eglot-workspace-configuration
-   '(:pylsp (:plugins (:pycodestyle (:enabled nil)
-                       :mccabe (:enabled nil)
-                       :pyflakes (:enabled nil)
-                       :flake8 (:enabled t)
-                       :rope-autoimport (:enabled t))
-             :configurationSources ["flake8"]))))
-
-(use-package flyspell
-  :config (setq flyspell-issue-message-flag -1)
-  :hook ((text-mode . flyspell-mode)))
-
-(use-package paredit
-  :config
-  (require 'gk-electric)
-  (defun paredit-with-electric-return ()
-    (paredit-mode +1)
-    (local-set-key (kbd "RET") 'gk-electrify-return-if-match))
-
-  ;; use with eldoc
-  (eldoc-add-command
-   'paredit-backward-delete
-   'paredit-close-round)
-
-  (defun nice-paredit-on ()
-    (turn-off-smartparens-mode)
-    (paredit-mode t)
-
-    (turn-on-eldoc-mode)
-    (eldoc-add-command
-     'paredit-backward-delete
-     'paredit-close-round)
-
-    (local-set-key (kbd "RET") 'gk-electrify-return-if-match)
-    (eldoc-add-command 'gk-electrify-return-if-match)
-
-    (show-paren-mode t)))
-
 ;;; Special modes
-(use-package man
-  :defer t
-  :config (setq Man-width 80))
-(use-package ielm
-  :init
-  (defun ielm-switch-to-buffer ()
-    (interactive)
-    (let ((ielm-buffer (get-buffer "*ielm*")))
-      (if ielm-buffer
-          (pop-to-buffer ielm-buffer)
-        (ielm))))
-  (defalias 'p #'princ)
 
+(use-package compile
   :config
-  (makehookedfun ielm-mode-hook
-    (nice-paredit-on))
+  (setq compilation-scroll-output 'first-error))
 
-  :bind
-  (:map emacs-lisp-mode-map
-        ("C-c C-z" . ielm-switch-to-buffer)
-        ("C-c z" . ielm-switch-to-buffer)
-        :map ielm-map
-        ("C-<return>" . ielm-send-input)))
-(use-package epkg
-  :defer t
-  :init
-  (setq epkg-repository
-        (expand-file-name "var/epkgs/" user-emacs-directory))
-  (setq epkg-database-connector
-        (if (>= emacs-major-version 29) 'sqlite-builtin 'sqlite-module)))
+(use-package deadgrep
+  :commands (deadgrep)
+  :bind (("C-z" . deadgrep)))
 
 (use-package diff-mode
   :defer t
@@ -455,12 +424,25 @@
   :defer t
   :config (setq dired-listing-switches "-alh"))
 
-(use-package compile
-  :config
-  (setq compilation-scroll-output 'first-error))
-
 (use-package eshell
   :bind (("C-c s" . eshell)))
+
+(use-package forge
+  :after magit)
+
+(use-package git-commit
+  :defer t
+  :config
+  (setq git-commit-usage-message nil)
+  (remove-hook 'git-commit-setup-hook 'git-commit-setup-changelog-support)
+  (remove-hook 'git-commit-setup-hook 'git-commit-propertize-diff)
+  (add-hook 'git-commit-setup-hook 'git-commit-turn-on-flyspell t))
+
+(use-package git-rebase
+  :defer t
+  :config
+  (setq git-rebase-confirm-cancel nil)
+  (setq git-rebase-show-instructions t))
 
 (use-package helpful
   :bind (("C-h f" . helpful-callable)
@@ -471,9 +453,31 @@
          :map emacs-lisp-mode-map
          ("C-c C-d" . helpful-at-point)))
 
-(use-package transient
+(use-package ielm
+  :init
+  (defun ielm-switch-to-buffer ()
+    (interactive)
+    (let ((ielm-buffer (get-buffer "*ielm*")))
+      (if ielm-buffer
+          (pop-to-buffer ielm-buffer)
+        (ielm))))
+  (defalias 'p #'princ)
   :config
-  (setq transient-display-buffer-action '(display-buffer-below-selected)))
+  (makehookedfun ielm-mode-hook
+    (nice-paredit-on))
+  :bind
+  (:map emacs-lisp-mode-map
+        ("C-c C-z" . ielm-switch-to-buffer)
+        ("C-c z" . ielm-switch-to-buffer)
+        :map ielm-map
+        ("C-<return>" . ielm-send-input)))
+(use-package epkg
+  :defer t
+  :init
+  (setq epkg-repository
+        (expand-file-name "var/epkgs/" user-emacs-directory))
+  (setq epkg-database-connector
+        (if (>= emacs-major-version 29) 'sqlite-builtin 'sqlite-module)))
 
 (use-package magit
   :defer t
@@ -538,67 +542,16 @@
   :after magit
   :config (magit-wip-mode))
 
-(use-package forge
-  :after magit)
-
-(use-package git-commit
+(use-package man
   :defer t
-  :config
-  (setq git-commit-usage-message nil)
-  (remove-hook 'git-commit-setup-hook 'git-commit-setup-changelog-support)
-  (remove-hook 'git-commit-setup-hook 'git-commit-propertize-diff)
-  (add-hook 'git-commit-setup-hook 'git-commit-turn-on-flyspell t))
+  :config (setq Man-width 80))
 
-(use-package git-rebase
-  :defer t
+(use-package transient
   :config
-  (setq git-rebase-confirm-cancel nil)
-  (setq git-rebase-show-instructions t))
-
-(use-package deadgrep
-  :commands (deadgrep)
-  :bind (("C-z" . deadgrep)))
+  (setq transient-display-buffer-action '(display-buffer-below-selected)))
 
 
 ;;; Editing modes
-;; (use-package go-mode
-;;   :mode "\\.go\\'"
-;;   :hook (go-mode . (lambda () (setq tab-width 4)))
-;;   :config
-;;   (require 'go-eldoc)
-;;   (add-hook 'go-mode-hook 'go-eldoc-setup)
-;;   (defun go-mode-compile ()
-;;     (interactive)
-;;     (compile "go install"))
-;;   (defun go-mode-test ()
-;;     (interactive)
-;;     (compile "go test -v && go vet && golint"))
-;;   :bind (:map go-mode-map
-;;          ("C-c C-c" . go-mode-compile)
-;;          ("C-c C-t" . go-mode-test)
-;;          ("M-." . godef-jump)
-;;          ("RET" . gk-electrify-return-if-match)))
-
-;; (use-package ess
-;;   :init (require 'ess-site)
-;;   :config
-;;   (defun ess-eval-defun-key ()
-;;     (interactive)
-;;     (ess-eval-function-or-paragraph t))
-;;   (defun clear-shell ()
-;;    (interactive)
-;;    (let ((old-max comint-buffer-maximum-size))
-;;      (setq comint-buffer-maximum-size 0)
-;;      (comint-truncate-buffer)
-;;      (setq comint-buffer-maximum-size old-max)))
-;;   :bind (:map ess-mode-map
-;;          ("C-c z" . ess-switch-to-inferior-or-script-buffer)
-;;          ("C-c C-c" . ess-eval-defun-key)
-;;          ("C-c C-k" . ess-eval-buffer)
-;;          ("C-c C-b" . ess-force-buffer-current)
-;;          :map inferior-ess-mode-map
-;;          ("C-c M-o" . clear-shell)))
-
 (defmacro makehookedfun (hook &rest body)
   "Defines a function using BODY that is hooked to HOOK."
   (declare (indent 1))
@@ -608,57 +561,132 @@
          ,@body)
        (add-hook ',hook #',function))))
 
-(use-package smerge-mode
+(progn ;    `text-mode'
+  (add-hook 'text-mode-hook #'indicate-buffer-boundaries-left))
+
+(progn ;    `text-mode'
+  (add-hook 'text-mode-hook 'indicate-buffer-boundaries-left))
+
+(use-package add-node-modules-path
+  :hook (js2-mode typescript-mode rjsx-mode))
+
+(use-package asm-mode
+  :bind (:map asm-mode-map
+         ("C-c C-c" . compile)))
+
+(use-package cc-mode
+  :config
+  (setq c-auto-newline 1)
+  (setq c-hungry-delete-key 1)
+  :bind (:map c-mode-base-map
+         ("C-c C-c" . compile)
+         ("C-m" . c-context-line-break)
+         ("C-c C-h" . gk-c-c++-toggle)
+         ("RET" . gk-electrify-return-if-match)))
+
+(use-package cider
+  :mode (("\\.clj$" . clojure-mode))
+  :hook ((clojure-mode . nice-paredit-on)
+         (cider-repl-mode . nice-paredit-on))
+  :bind (:map clojure-mode-map
+         ("C-c z" . cider-switch-to-repl-buffer)
+         ("C-c C-z" . cider-switch-to-repl-buffer)))
+
+(use-package copy-as-format
+  :bind (("C-c w g" . copy-as-format-github)
+         ("C-c w h" . copy-as-format-hipchat)
+         ("C-c w j" . copy-as-format-jira)
+         ("C-c w m" . copy-as-format-markdown)
+         ("C-c w o" . copy-as-format-org-mode)
+         ("C-c w s" . copy-as-format-slack)))
+
+(use-package css-mode
+  :mode ("\\.css\\'"
+         "\\.mss\\'")
+  :bind (:map css-mode-map
+              ("RET" . gk-electrify-return-if-match)))
+
+(use-package dockerfile-mode
+  :mode "Dockerfile")
+
+(use-package ebuild-mode
+  :mode ("\\.ebuild\\'"
+         "\\.eclass\\'"))
+
+(use-package ess
+  :init (require 'ess-site)
+  :config
+  (defun ess-eval-defun-key ()
+    (interactive)
+    (ess-eval-function-or-paragraph t))
+  (defun clear-shell ()
+   (interactive)
+   (let ((old-max comint-buffer-maximum-size))
+     (setq comint-buffer-maximum-size 0)
+     (comint-truncate-buffer)
+     (setq comint-buffer-maximum-size old-max)))
+  :bind (:map ess-mode-map
+         ("C-c z" . ess-switch-to-inferior-or-script-buffer)
+         ("C-c C-c" . ess-eval-defun-key)
+         ("C-c C-k" . ess-eval-buffer)
+         ("C-c C-b" . ess-force-buffer-current)
+         :map inferior-ess-mode-map
+         ("C-c M-o" . clear-shell)))
+
+(use-package geiser
+  :commands (geiser-mode)
+  :load-path "lib/geiser/elisp"
+  :init
+  (setq geiser-active-implementations '(racket guile)))
+
+(use-package go-mode
+  :mode "\\.go\\'"
+  :hook (go-mode . (lambda () (setq tab-width 4)))
+  :config
+  (require 'go-eldoc)
+  (add-hook 'go-mode-hook 'go-eldoc-setup)
+  (defun go-mode-compile ()
+    (interactive)
+    (compile "go install"))
+  (defun go-mode-test ()
+    (interactive)
+    (compile "go test -v && go vet && golint"))
+  :bind (:map go-mode-map
+         ("C-c C-c" . go-mode-compile)
+         ("C-c C-t" . go-mode-test)
+         ("M-." . godef-jump)
+         ("RET" . gk-electrify-return-if-match)))
+
+(use-package jinja2-mode
+  :mode ("\\.j2\\'"))
+
+(use-package js2-mode
+  :mode "\\.js\\'"
+  :init
+  (setq-default js2-basic-offset 2)
+  :config
+  (require 'smartparens-javascript)
+  :bind (:map js2-mode-map
+              ("RET" . gk-electrify-return-if-match)
+              ("M-." . xref-find-definitions)))
+
+(use-package latex
   :defer t
   :config
-  (when (>= emacs-major-version 27)
-    (set-face-attribute 'smerge-refined-removed nil :extend t)
-    (set-face-attribute 'smerge-refined-added   nil :extend t)))
+  (use-package preview)
+  (add-to-list 'TeX-view-program-selection '(output-pdf "xdg-open"))
+  :hook ((LaTeX-mode . (lambda ()
+                         (TeX-PDF-mode)
+                         (auto-fill-mode)
+                         (turn-on-orgtbl)
+                         (turn-on-reftex)))))
 
-(use-package lisp-mode                  ; emacs-lisp-mode
+(use-package ledger-mode
+  :mode ("\\.ledger\\'")
+  :bind (:map ledger-mode-map
+              ("C-c C-c" . ledger-report))
   :config
-  (defun eval-buffer-key ()
-    (interactive)
-    (message "Evaluating buffer...")
-    (eval-buffer)
-    (message "Buffer evaluated."))
-
-  (defun eval-defun-key (edebug-it)
-    (interactive "P")
-    (let (beg ol)
-      (save-excursion
-        (end-of-defun)
-        (beginning-of-defun)
-        (setq beg (point))
-        (end-of-defun)
-        (setq ol (make-overlay beg (point))))
-      (overlay-put ol 'face 'highlight)
-      (unwind-protect
-          (progn
-            (eval-defun edebug-it)
-            (sit-for 0.1))
-        (delete-overlay ol))))
-
-  (makehookedfun emacs-lisp-mode-hook
-    (outline-minor-mode)
-    (reveal-mode)
-    (nice-paredit-on))
-
-  (defun indent-spaces-mode ()
-    (setq indent-tabs-mode nil))
-  (makehookedfun lisp-interaction-mode-hook
-    (indent-spaces-mode))
-
-  :bind
-  (:map emacs-lisp-mode-map
-   ("C-c C-k" . eval-buffer-key)
-   ("C-c C-c" . eval-defun-key)
-   ("C-c C-l" . paredit-recentre-on-sexp)
-   ("C-c d" . toggle-debug-on-error)
-   ("M-p" . outline-move-subtree-up)
-   ("M-n" . outline-move-subtree-down)
-   ("<backtab>". outline-cycle)
-   ("M-S-<iso-lefttab>". outline-cycle-buffer)))
+  (setq ledger-default-date-format ledger-iso-date-format))
 
 (use-package lisp-mode
   :mode "\\.lisp\\'"
@@ -686,28 +714,61 @@
    ("C-c z" . slime-switch-to-output-buffer)
    ("C-c e" . macrostep-expand)))
 
-(use-package cider
-  :mode (("\\.clj$" . clojure-mode))
-  :hook ((clojure-mode . nice-paredit-on)
-         (cider-repl-mode . nice-paredit-on))
-  :bind (:map clojure-mode-map
-         ("C-c z" . cider-switch-to-repl-buffer)
-         ("C-c C-z" . cider-switch-to-repl-buffer)))
-
-(use-package geiser
-  :commands (geiser-mode)
-  :load-path "lib/geiser/elisp"
-  :init
-  (setq geiser-active-implementations '(racket guile)))
-
-(use-package scheme
+(use-package lisp-mode                  ; emacs-lisp-mode
   :config
-  (makehookedfun scheme-mode-hook
-    (nice-paredit-on)
-    (geiser-mode)))
+  (defun eval-buffer-key ()
+    (interactive)
+    (message "Evaluating buffer...")
+    (eval-buffer)
+    (message "Buffer evaluated."))
+  (defun eval-defun-key (edebug-it)
+    (interactive "P")
+    (let (beg ol)
+      (save-excursion
+        (end-of-defun)
+        (beginning-of-defun)
+        (setq beg (point))
+        (end-of-defun)
+        (setq ol (make-overlay beg (point))))
+      (overlay-put ol 'face 'highlight)
+      (unwind-protect
+          (progn
+            (eval-defun edebug-it)
+            (sit-for 0.1))
+        (delete-overlay ol))))
+  (makehookedfun emacs-lisp-mode-hook
+    (outline-minor-mode)
+    (reveal-mode)
+    (nice-paredit-on))
+  (defun indent-spaces-mode ()
+    (setq indent-tabs-mode nil))
+  (makehookedfun lisp-interaction-mode-hook
+    (indent-spaces-mode))
+  :bind
+  (:map emacs-lisp-mode-map
+   ("C-c C-k" . eval-buffer-key)
+   ("C-c C-c" . eval-defun-key)
+   ("C-c C-l" . paredit-recentre-on-sexp)
+   ("C-c d" . toggle-debug-on-error)
+   ("M-p" . outline-move-subtree-up)
+   ("M-n" . outline-move-subtree-down)
+   ("<backtab>". outline-cycle)
+   ("M-S-<iso-lefttab>". outline-cycle-buffer)))
 
-(progn ;    `text-mode'
-  (add-hook 'text-mode-hook 'indicate-buffer-boundaries-left))
+(use-package make-mode
+  :defer t
+  :bind
+  (:map makefile-mode-map
+   ("C-c C-c" . compile)))
+
+(use-package markdown-mode
+  :mode "\\.md\\'"
+  :config
+  (require 'smartparens-markdown)
+  (setq markdown-asymmetric-header t))
+
+(use-package nginx-mode
+  :mode "nginx-mode")
 
 (use-package org
   :mode (("\\.org$" . org-mode))
@@ -734,7 +795,6 @@
     (if filename
         `(concat (file-name-as-directory org-directory) ,filename)
       org-directory))
-
   :config
   (use-package org-bullets)
   (use-package org-tempo)
@@ -742,9 +802,7 @@
   (setq org-startup-indented t
         org-src-preserve-indentation nil
         org-edit-src-content-indentation 0)
-
   (setq org-return-follows-link t)
-
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((lisp . t)
@@ -752,13 +810,11 @@
      (R . t)
      (shell . t)
      (python . t)))
-
   ;; a named source block
   (add-to-list 'org-structure-template-alist
                '("S" . "#+NAME: ?\n#+BEGIN_SRC \n\n#+END_SRC"))
   (add-to-list 'org-structure-template-alist
                '("N" . "#+NAME: ?"))
-
   ;; exporting
   (use-package htmlize)
   (use-package ox-md)
@@ -767,7 +823,6 @@
   (use-package ox-reveal)
   (setq org-latex-to-pdf-process '("latexmk -pdf %f"))
   (setq org-export-latex-listings 'minted)
-
   (defun orgtbl-to-latex-booktabs (table params)
     "Convert the Orgtbl mode TABLE to LaTeX using booktabs package."
     (let* ((alignment (mapconcat (lambda (x) (if x "r" "l"))
@@ -779,7 +834,6 @@
              :lstart "" :lend " \\\\" :sep " & "
              :efmt "%s\\,(%s)" :hline "\\midrule")))
       (orgtbl-to-generic table (org-combine-plists params2 params))))
-
   (eval-after-load "org-table"
     '(progn
        (setq orgtbl-radio-table-templates
@@ -792,14 +846,11 @@
                                  "orgtbl-to-latex-booktabs :splice nil "
                                  ":skip 0 :no-escape t\n"
                                  "| | |\n\\end{comment}\n"))))
-
   ;; export with CSS classes instead of explicit colours
   (setq org-html-htmlize-output-type 'css)
   (setq org-html-htmlize-font-prefix "org-")
-
   (setq org-twbs-htmlize-output-type 'css)
   (setq org-twbs-htmlize-font-prefix "org-")
-
   ;; capture
   (setq org-default-notes-file (orgdr "notes.org"))
   (setq org-capture-templates
@@ -810,7 +861,6 @@
            "* %? %^g\nEntered on %U\n %i")
           ("i" "Idea" entry (file ,(orgdr "ideas.org"))
            "* %?\n %U\n %a")))
-
   ;; agenda stuff
   (custom-set-variables
    '(org-agenda-custom-commands
@@ -828,27 +878,22 @@
                                    (todo .   " %i %-12:c")
                                    (tags .   " %i %-12:c")
                                    (search . " %i %-12:c")))
-
   (setq org-time-stamp-custom-formats
         '("<%A, %e %B %Y>" . "<%A, %e %B %Y %H:%M>"))
   (setq org-log-done 'time)
   (setq org-blank-before-new-entry
         '((heading . t) (plain-list-item . nil)))
   (setq org-todo-keywords (quote((sequence "TODO" "WAITING" "|" "DONE"))))
-
   (require 'org-clock)
   (require 'org-timer)
   (setq org-timer-default-timer 25)
-
   (setq org-clock-clocked-in-display 'frame-title)
   (setq org-timer-display 'frame-title)
   (setq org-clock-frame-title-format
         (append frame-title-format
                 '(" - Org clocked in: " org-mode-line-string)))
-
   ;; use log drawer
   (setq org-log-into-drawer t)
-
   (defun diary-limited-cyclic (recurrences interval y m d)
     "For use in emacs diary. Cyclic item with limited number of recurrences.
 Occurs every INTERVAL days, starting on YYYY-MM-DD, for a total of
@@ -858,85 +903,22 @@ RECURRENCES occasions."
       (and (not (minusp (- today startdate)))
            (zerop (% (- today startdate) interval))
            (< (floor (- today startdate) interval) recurrences))))
-
   ;; this code removes time grid lines that are within an appointment
   (defun org-time-to-minutes (time)
     "Convert an HHMM time to minutes"
     (+ (* (/ time 100) 60) (% time 100)))
-
   (defun org-time-from-minutes (minutes)
     "Convert a number of minutes to an HHMM time"
     (+ (* (/ minutes 60) 100) (% minutes 60)))
-
   ;; setup default file readers
   (eval-after-load "org"
     '(setcdr (assoc "\\.pdf\\'" org-file-apps) "evince %s")))
 
-(use-package markdown-mode
-  :mode "\\.md\\'"
-  :config
-  (require 'smartparens-markdown)
-  (setq markdown-asymmetric-header t))
-
-(use-package yaml-ts-mode
-  :mode "\\.\\(ya?\\|m\\)ml\\'"
-  :init
-  (add-to-list 'major-mode-remap-alist '(yaml-mode . yaml-ts-mode)))
-
-(use-package make-mode
-  :defer t
-  :bind
-  (:map makefile-mode-map
-   ("C-c C-c" . compile)))
-
-(use-package dockerfile-mode
-  :mode "Dockerfile")
-
-(use-package nginx-mode
-  :mode "nginx-mode")
-
-(use-package cc-mode
-  :config
-  (setq c-auto-newline 1)
-  (setq c-hungry-delete-key 1)
-  :bind (:map c-mode-base-map
-         ("C-c C-c" . compile)
-         ("C-m" . c-context-line-break)
-         ("C-c C-h" . gk-c-c++-toggle)
-         ("RET" . gk-electrify-return-if-match)))
-
-(use-package asm-mode
-  :bind (:map asm-mode-map
-         ("C-c C-c" . compile)))
-
-(use-package tex-site                   ; auctex
-  :mode ("\\.tex\\'" . TeX-latex-mode)
-  :init
-  (setq reftex-plug-into-AUCTeX t)
-  :config
-  (setq TeX-auto-save t)
-  (setq TeX-parse-self t)
-  (setq TeX-newline-function 'newline-and-indent)
-  (setq reftex-default-bibliography '("bibliography"))
-  (require 'smartparens-latex))
-
-(use-package latex
-  :defer t
-  :config
-  (use-package preview)
-  (add-to-list 'TeX-view-program-selection '(output-pdf "xdg-open"))
-  :hook ((LaTeX-mode . (lambda ()
-                         (TeX-PDF-mode)
-                         (auto-fill-mode)
-                         (turn-on-orgtbl)
-                         (turn-on-reftex)))))
-
-(use-package tex
-  :defer t
-  :hook ((TeX-mode . (lambda ()
-                       (TeX-PDF-mode)
-                       (auto-fill-mode)
-                       (setq tab-stop-list (number-sequence 3 45 3))))))
+(use-package prog-mode
+  :config (global-prettify-symbols-mode)
+  (defun indicate-buffer-boundaries-left ()
+    (setq indicate-buffer-boundaries 'left))
+  (add-hook 'prog-mode-hook #'indicate-buffer-boundaries-left))
 
 (use-package python
   :mode ("\\.py\\'" . python-ts-mode)
@@ -952,14 +934,51 @@ RECURRENCES occasions."
   (:map python-ts-mode-map
         ("RET" . gk-electrify-return-if-match)))
 
-(use-package prog-mode
-  :config (global-prettify-symbols-mode)
-  (defun indicate-buffer-boundaries-left ()
-    (setq indicate-buffer-boundaries 'left))
-  (add-hook 'prog-mode-hook #'indicate-buffer-boundaries-left))
+(use-package rjsx-mode
+  :mode "\\.jsx\\'"
+  :init
+  (setq-default js2-basic-offset 2)
+  :bind (:map rjsx-mode-map
+              ("RET" . gk-electrify-return-if-match)))
 
-(progn ;    `text-mode'
-  (add-hook 'text-mode-hook #'indicate-buffer-boundaries-left))
+(use-package rust-mode
+  :mode "\\.rs\\'")
+
+(use-package scheme
+  :config
+  (makehookedfun scheme-mode-hook
+    (nice-paredit-on)
+    (geiser-mode)))
+
+(use-package smerge-mode
+  :defer t
+  :config
+  (when (>= emacs-major-version 27)
+    (set-face-attribute 'smerge-refined-removed nil :extend t)
+    (set-face-attribute 'smerge-refined-added   nil :extend t)))
+
+(use-package tex
+  :defer t
+  :hook ((TeX-mode . (lambda ()
+                       (TeX-PDF-mode)
+                       (auto-fill-mode)
+                       (setq tab-stop-list (number-sequence 3 45 3))))))
+
+(use-package tex-site                   ; auctex
+  :mode ("\\.tex\\'" . TeX-latex-mode)
+  :init
+  (setq reftex-plug-into-AUCTeX t)
+  :config
+  (setq TeX-auto-save t)
+  (setq TeX-parse-self t)
+  (setq TeX-newline-function 'newline-and-indent)
+  (setq reftex-default-bibliography '("bibliography"))
+  (require 'smartparens-latex))
+
+(use-package typescript-mode
+  :mode "\\.ts\\'"
+  :config
+  (setq typescript-indent-level 2))
 
 (use-package web-mode
   :mode ("\\.phtml\\'"
@@ -974,61 +993,10 @@ RECURRENCES occasions."
               ("C-c C-c" . browse-url-of-file))
   :config (require 'smartparens-html))
 
-;; (use-package jinja2-mode
-;;   :mode ("\\.j2\\'"))
-
-(use-package css-mode
-  :mode ("\\.css\\'"
-         "\\.mss\\'")
-  :bind (:map css-mode-map
-              ("RET" . gk-electrify-return-if-match)))
-
-;; (use-package js2-mode
-;;   :mode "\\.js\\'"
-;;   :init
-;;   (setq-default js2-basic-offset 2)
-;;   :config
-;;   (require 'smartparens-javascript)
-;;   :bind (:map js2-mode-map
-;;               ("RET" . gk-electrify-return-if-match)
-;;               ("M-." . xref-find-definitions)))
-
-;; (use-package typescript-mode
-;;   :mode "\\.ts\\'"
-;;   :config
-;;   (setq typescript-indent-level 2))
-
-;; (use-package rjsx-mode
-;;   :mode "\\.jsx\\'"
-;;   :init
-;;   (setq-default js2-basic-offset 2)
-;;   :bind (:map rjsx-mode-map
-;;               ("RET" . gk-electrify-return-if-match)))
-
-;; (use-package add-node-modules-path
-;;   :hook (js2-mode typescript-mode rjsx-mode))
-
-;; (use-package ebuild-mode
-;;   :mode ("\\.ebuild\\'"
-;;          "\\.eclass\\'"))
-
-;; (use-package ledger-mode
-;;   :mode ("\\.ledger\\'")
-;;   :bind (:map ledger-mode-map
-;;               ("C-c C-c" . ledger-report))
-;;   :config
-;;   (setq ledger-default-date-format ledger-iso-date-format))
-
-;; (use-package rust-mode
-;;   :mode "\\.rs\\'")
-
-;; (use-package copy-as-format
-;;   :bind (("C-c w g" . copy-as-format-github)
-;;          ("C-c w h" . copy-as-format-hipchat)
-;;          ("C-c w j" . copy-as-format-jira)
-;;          ("C-c w m" . copy-as-format-markdown)
-;;          ("C-c w o" . copy-as-format-org-mode)
-;;          ("C-c w s" . copy-as-format-slack)))
+(use-package yaml-ts-mode
+  :mode "\\.\\(ya?\\|m\\)ml\\'"
+  :init
+  (add-to-list 'major-mode-remap-alist '(yaml-mode . yaml-ts-mode)))
 
 (progn                                  ; misc settings
  ;; set some default styles
@@ -1080,14 +1048,6 @@ RECURRENCES occasions."
 
  ;; rat yank doesn't move cursor
  (setq mouse-yank-at-point t))
-
-;; (use-package exec-path-from-shell
-;;   :init
-;;   (setq exec-path-from-shell-check-startup-files nil)
-;;   :config
-;;   (exec-path-from-shell-initialize)
-;;   (exec-path-from-shell-copy-env "WORKON_HOME")
-;;   (exec-path-from-shell-copy-env "PROJECT_HOME"))
 
 ;;; Tree-sitter stuff
 
