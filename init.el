@@ -570,9 +570,6 @@
 (progn ;    `text-mode'
   (add-hook 'text-mode-hook #'indicate-buffer-boundaries-left))
 
-(progn ;    `text-mode'
-  (add-hook 'text-mode-hook 'indicate-buffer-boundaries-left))
-
 (use-package add-node-modules-path
   :hook (js2-mode typescript-mode rjsx-mode))
 
