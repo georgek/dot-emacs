@@ -74,7 +74,9 @@
   :init (doom-modeline-mode +1)
   :config
   (setq doom-modeline-height 16)
-  (setq doom-modeline-time nil))
+  (setq doom-modeline-time nil)
+  ;; this simple function works better while using direnv
+  (setq doom-modeline-env-python-command (lambda () '("python" "--version"))))
 
 (use-package nerd-icons-completion
   :after marginalia
