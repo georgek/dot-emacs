@@ -744,6 +744,10 @@
     (outline-minor-mode)
     (reveal-mode)
     (nice-paredit-on))
+  (makehookedfun lisp-data-mode-hook
+    (outline-minor-mode)
+    (reveal-mode)
+    (nice-paredit-on))
   (defun indent-spaces-mode ()
     (setq indent-tabs-mode nil))
   (makehookedfun lisp-interaction-mode-hook
