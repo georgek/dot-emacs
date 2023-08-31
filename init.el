@@ -1,6 +1,6 @@
 ;;; init.el --- user-init-file                    -*- lexical-binding: t -*-
 ;;; Early birds
-(progn ;     startup
+(progn ;             startup
   (defvar before-user-init-time (current-time)
     "Value of `current-time' when Emacs begins loading `user-init-file'.")
   (message "Loading Emacs...done (%.3fs)"
@@ -44,7 +44,7 @@
   (setq native-comp-async-report-warnings-errors 'silent)
   (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory)))
 
-(eval-and-compile                       ; `borg'
+(eval-and-compile ; `borg'
   (add-to-list 'load-path (expand-file-name "lib/borg" user-emacs-directory))
   (require 'borg)
   (borg-initialize)
@@ -61,14 +61,15 @@
   (i3-advise-visible-frame-list-on))
 
 ;;; Theme
-(defconst my-font "UbuntuMono Nerd Font-9")
-(set-frame-font my-font nil t)
-(add-to-list 'default-frame-alist `(font . ,my-font))
-;; for modes that set the face explicitly
-(dolist (face '(default fixed-pitch fixed-pitch-serif))
-  (set-face-attribute face nil :height 90 :family "Ubuntu Mono"))
-(dolist (face '(variable-pitch))
- (set-face-attribute face nil :height 90 :family "Ubuntu"))
+(progn ;     fonts
+  (defconst my-font "UbuntuMono Nerd Font-9")
+  (set-frame-font my-font nil t)
+  (add-to-list 'default-frame-alist `(font . ,my-font))
+  ;; for modes that set the face explicitly
+  (dolist (face '(default fixed-pitch fixed-pitch-serif))
+    (set-face-attribute face nil :height 90 :family "Ubuntu Mono"))
+  (dolist (face '(variable-pitch))
+    (set-face-attribute face nil :height 90 :family "Ubuntu")))
 
 (use-package doom-modeline
   :init (doom-modeline-mode +1)
