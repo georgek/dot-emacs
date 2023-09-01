@@ -207,6 +207,9 @@
 [submodule "nerd-icons-completion"]
 	path = lib/nerd-icons-completion
 	url = https://github.com/rainstormstudio/nerd-icons-completion
+[submodule "nerd-icons-dired"]
+	path = lib/nerd-icons-dired
+	url = https://github.com/rainstormstudio/nerd-icons-dired
 [submodule "nginx-mode"]
 	path = lib/nginx-mode
 	url = git@github.com:ajc/nginx-mode.git
