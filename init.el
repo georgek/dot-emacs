@@ -270,14 +270,16 @@
   :init
   (setq tab-always-indent 'complete)
   :config
-  (global-set-key (kbd "TAB") #'company-indent-or-complete-common)
-  (define-key company-active-map (kbd "<return>") nil)
-  (define-key company-active-map (kbd "TAB") #'company-complete-common)
-  (define-key company-active-map (kbd "RET") nil)
-  (define-key company-active-map (kbd "M-n") #'company-select-next-or-abort)
-  (define-key company-active-map (kbd "M-p") #'company-select-previous-or-abort)
-  (define-key company-active-map (kbd "C-SPC") #'company-complete-selection)
-  (define-key company-active-map (kbd "M-SPC") #'company-complete-selection)
+  (keymap-global-set "TAB" #'company-indent-or-complete-common)
+  (keymap-set company-active-map "<return>" nil)
+  (keymap-set company-active-map "TAB" #'company-complete-common)
+  (keymap-set company-active-map "RET" nil)
+  (keymap-set company-active-map "M-n" #'company-select-next-or-abort)
+  (keymap-set company-active-map "M-p" #'company-select-previous-or-abort)
+  (keymap-set company-active-map "C-SPC" #'company-complete-selection)
+  (keymap-set company-active-map "M-SPC" #'company-complete-selection)
+  (keymap-unset company-active-map "C-n")
+  (keymap-unset company-active-map "C-p")
   (setq company-backends
         '((company-files
            company-keywords
