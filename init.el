@@ -97,6 +97,10 @@
   :config
   (load-theme 'zenburn t))
 
+(use-package solaire-mode
+  :config
+  (solaire-global-mode +1))
+
 ;;; Global
 (progn ;    `isearch'
   (setq isearch-allow-scroll t))

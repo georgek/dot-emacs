@@ -288,6 +288,9 @@
 [submodule "smartparens"]
 	path = lib/smartparens
 	url = git@github.com:Fuco1/smartparens.git
+[submodule "solaire-mode"]
+	path = lib/solaire-mode
+	url = https://github.com/hlissner/emacs-solaire-mode
 [submodule "spinner"]
 	path = lib/spinner
 	url = git@github.com:Malabarba/spinner.el.git
