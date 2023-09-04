@@ -224,7 +224,7 @@
 	url = https://github.com/oantolin/orderless
 [submodule "org"]
 	path = lib/org
-	url = git@code.orgmode.org:bzg/org-mode.git
+	url = https://git.savannah.gnu.org/git/emacs/org-mode.git
 	build-nix-shell-packages = emacs git gnumake texinfo
 	build-step = make
 [submodule "org-bullets"]
