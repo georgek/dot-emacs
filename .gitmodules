@@ -13,11 +13,6 @@
 [submodule "auctex"]
 	path = lib/auctex
 	url = https://git.savannah.gnu.org/git/auctex.git
-	build-step = ./autogen.sh
-	build-step = ./configure --without-texmf-dir
-	build-step = make
-	build-step = borg-update-autoloads
-	build-step = borg-makeinfo
 [submodule "auto-compile"]
 	path = lib/auto-compile
 	url = git@github.com:emacscollective/auto-compile.git
@@ -42,9 +37,6 @@
 [submodule "company"]
 	path = lib/company
 	url = git@github.com:company-mode/company-mode.git
-[submodule "company-go"]
-	path = lib/company-go
-	url = git@github.com:emacsmirror/company-go.git
 [submodule "compat"]
 	path = lib/compat
 	url = git@github.com:emacs-compat/compat.git
@@ -225,8 +217,6 @@
 [submodule "org"]
 	path = lib/org
 	url = https://git.savannah.gnu.org/git/emacs/org-mode.git
-	build-nix-shell-packages = emacs git gnumake texinfo
-	build-step = make
 [submodule "org-bullets"]
 	path = lib/org-bullets
 	url = git@github.com:emacsorphanage/org-bullets.git
@@ -251,6 +241,9 @@
 [submodule "parseedn"]
 	path = lib/parseedn
 	url = git@github.com:clojure-emacs/parseedn.git
+[submodule "pfuture"]
+	path = lib/pfuture
+	url = https://github.com/Alexander-Miller/pfuture
 [submodule "pkg-info"]
 	path = lib/pkg-info
 	url = git@github.com:lunaryorn/pkg-info.el.git
@@ -278,7 +271,6 @@
 [submodule "slime"]
 	path = lib/slime
 	url = git@github.com:georgek/slime.git
-	build-step = make compile contrib-compile
 [submodule "slime-company"]
 	path = lib/slime-company
 	url = git@github.com:anwyn/slime-company.git
@@ -300,6 +292,12 @@
 [submodule "transient"]
 	path = lib/transient
 	url = git@github.com:magit/transient.git
+[submodule "treemacs"]
+	path = lib/treemacs
+	url = https://github.com/Alexander-Miller/treemacs
+[submodule "treemacs-nerd-icons"]
+	path = lib/treemacs-nerd-icons
+	url = https://github.com/rainstormstudio/treemacs-nerd-icons
 [submodule "treepy"]
 	path = lib/treepy
 	url = git@github.com:volrath/treepy.el.git

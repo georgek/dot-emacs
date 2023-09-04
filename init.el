@@ -79,6 +79,8 @@
   ;; this simple function works better while using direnv
   (setq doom-modeline-env-python-command (lambda () '("python" "--version"))))
 
+(use-package nerd-icons)
+
 (use-package nerd-icons-completion
   :after marginalia
   :config
@@ -89,6 +91,14 @@
   :hook
   (dired-mode . nerd-icons-dired-mode))
 
+(use-package solaire-mode
+  :config
+  (solaire-global-mode +1))
+
+(use-package treemacs-nerd-icons
+  :config
+  (treemacs-load-theme "nerd-icons"))
+
 (use-package zenburn-theme
   :init
   (setq zenburn-use-variable-pitch nil)
@@ -96,10 +106,6 @@
   (setq zenburn-scale-outline-headlines t)
   :config
   (load-theme 'zenburn t))
-
-(use-package solaire-mode
-  :config
-  (solaire-global-mode +1))
 
 ;;; Global
 (progn ;    `isearch'
@@ -570,6 +576,8 @@
   :config
   (setq transient-display-buffer-action '(display-buffer-below-selected)))
 
+(use-package treemacs
+  :bind ("C-x t" . treemacs))
 
 ;;; Editing modes
 (defmacro makehookedfun (hook &rest body)

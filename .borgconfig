@@ -1,3 +1,10 @@
+[submodule "auctex"]
+	build-step = ./autogen.sh
+	build-step = ./configure --without-texmf-dir
+	build-step = make
+	build-step = borg-update-autoloads
+	build-step = borg-makeinfo
+	info-path = doc
 [submodule "dash"]
 	no-byte-compile = dash-functional.el
 	no-makeinfo = dash-template.texi
@@ -5,5 +12,26 @@
 	no-byte-compile = emacsql-pg.el
 [submodule "magit"]
 	no-byte-compile = lisp/magit-libgit.el
+[submodule "org"]
+	build-step = touch local.mk
+	build-step = make all
+	load-path = lisp
+	load-path = contrib/lisp
+	info-path = doc
+[submodule "slime"]
+	load-path = .
+	load-path = contrib
+	info-path = doc
+	build-step = make compile contrib-compile
+	build-step = borg-makeinfo
 [submodule "sqlite3"]
 	build-step = make
+[submodule "treemacs"]
+	load-path = src/elisp
+	load-path = src/extra
+	no-byte-compile = src/extra/treemacs-all-the-icons.el
+	no-byte-compile = src/extra/treemacs-evil.el
+	no-byte-compile = src/extra/treemacs-mu4e.el
+	no-byte-compile = src/extra/treemacs-persp.el
+	no-byte-compile = src/extra/treemacs-perspective.el
+	no-byte-compile = src/extra/treemacs-projectile.el
