@@ -101,6 +101,7 @@
         solaire-mode-remap-alist))
 
 (use-package treemacs-nerd-icons
+  :after (treemacs nerd-icons)
   :config
   (treemacs-load-theme "nerd-icons"))
 
@@ -582,7 +583,13 @@
   (setq transient-display-buffer-action '(display-buffer-below-selected)))
 
 (use-package treemacs
-  :bind ("C-x t" . treemacs))
+  :bind ("C-x t" . #'treemacs-add-and-display-current-project-exclusively)
+  :config
+  (setq treemacs-is-never-other-window t
+        treemacs-follow-after-init t))
+
+(use-package treemacs-magit
+  :after (treemacs magit))
 
 ;;; Editing modes
 (defmacro makehookedfun (hook &rest body)
