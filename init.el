@@ -93,7 +93,12 @@
 
 (use-package solaire-mode
   :config
-  (solaire-global-mode +1))
+  (solaire-global-mode +1)
+  ;; treemacs fix: https://github.com/hlissner/emacs-solaire-mode/issues/51
+  (push '(treemacs-window-background-face . solaire-default-face)
+        solaire-mode-remap-alist)
+  (push '(treemacs-hl-line-face . solaire-hl-line-face)
+        solaire-mode-remap-alist))
 
 (use-package treemacs-nerd-icons
   :config
