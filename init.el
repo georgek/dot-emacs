@@ -323,7 +323,9 @@
 
 (use-package vertico
   :demand
-  :bind (("C-x C-b" . switch-to-buffer))
+  :bind (("C-x C-b" . switch-to-buffer)
+         :map vertico-map
+         ("C-<return>" . vertico-exit-input))
   :config
   (vertico-mode)
   ;; Do not allow the cursor in the minibuffer prompt
