@@ -592,6 +592,8 @@
 (use-package treemacs-magit
   :after (treemacs magit))
 
+(use-package vterm)
+
 ;;; Editing modes
 (defmacro makehookedfun (hook &rest body)
   "Defines a function using BODY that is hooked to HOOK."

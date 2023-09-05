@@ -316,6 +316,9 @@
 [submodule "volatile-highlights"]
 	path = lib/volatile-highlights
 	url = git@github.com:k-talo/volatile-highlights.el.git
+[submodule "vterm"]
+	path = lib/vterm
+	url = https://github.com/akermu/emacs-libvterm
 [submodule "web-mode"]
 	path = lib/web-mode
 	url = git@github.com:fxbois/web-mode.git

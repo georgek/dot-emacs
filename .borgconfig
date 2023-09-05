@@ -35,3 +35,8 @@
 	no-byte-compile = src/extra/treemacs-persp.el
 	no-byte-compile = src/extra/treemacs-perspective.el
 	no-byte-compile = src/extra/treemacs-projectile.el
+[submodule "vterm"]
+	build-step = mkdir -p build
+	build-step = cd build && cmake .. && make
+	build-step = borg-byte-compile
+	build-step = borg-update-autoloads
