@@ -795,7 +795,9 @@
    ("M-p" . outline-move-subtree-up)
    ("M-n" . outline-move-subtree-down)
    ("<backtab>". outline-cycle)
-   ("M-S-<iso-lefttab>". outline-cycle-buffer)))
+   ("M-S-<iso-lefttab>". outline-cycle-buffer)
+   :map lisp-interaction-mode-map
+   ("C-<return>" . #'eval-print-last-sexp)))
 
 (use-package make-mode
   :defer t
