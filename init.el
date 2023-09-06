@@ -133,6 +133,15 @@
  (setq auto-revert-verbose nil)
  (setq auto-revert-remote-files t))
 
+(use-package avy
+  :bind (("C-'" . #'avy-goto-char-timer)
+         ("C-#" . #'avy-resume)
+         :map isearch-mode-map
+         ("C-'" . #'avy-isearch))
+  :config
+  (setq avy-all-windows 'all-frames
+        avy-background t))
+
 (use-package custom
   :no-require t
   :config

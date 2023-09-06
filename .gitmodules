@@ -16,6 +16,9 @@
 [submodule "auto-compile"]
 	path = lib/auto-compile
 	url = git@github.com:emacscollective/auto-compile.git
+[submodule "avy"]
+	path = lib/avy
+	url = https://github.com/abo-abo/avy
 [submodule "borg"]
 	path = lib/borg
 	url = git@github.com:emacscollective/borg.git
