@@ -586,7 +586,8 @@
   :bind ("C-x t" . #'treemacs-add-and-display-current-project-exclusively)
   :config
   (setq treemacs-is-never-other-window t
-        treemacs-follow-after-init t)
+        treemacs-follow-after-init t
+        treemacs-default-visit-action #'treemacs-visit-node-close-treemacs)
   (treemacs-fringe-indicator-mode 'only-when-focused))
 
 (use-package treemacs-magit
