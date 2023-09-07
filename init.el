@@ -19,7 +19,8 @@
   (setq inhibit-compacting-font-caches t)
   (setq initial-buffer-choice t)
   (setq initial-scratch-message "")
-  (setq frame-title-format '("%b - GNU Emacs"))
+  (setq frame-title-format
+        '("%b - GNU Emacs [" (:eval (frame-parameter (selected-frame) 'window-id)) "]"))
   (tooltip-mode 0)
   (blink-cursor-mode 0)
   (global-unset-key (kbd "C-z"))
