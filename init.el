@@ -57,12 +57,22 @@
 
 ;;; i3 integration
 (use-package i3
+  :unless (string-empty-p (shell-command-to-string "pgrep -x i3"))
   :config
   (require 'i3-integration)
-  (i3-advise-visible-frame-list-on))
+  (i3-advise-visible-frame-list-on)
+  (setq avy-frame-list-function #'visible-frame-list))
+
+(use-package sway
+  :unless (string-empty-p (shell-command-to-string "pgrep -x sway"))
+  :config
+  (defun sway-visible-frame-list ()
+    "List of visible frames according to sway."
+    (mapcar #'car (sway-list-frames (sway-tree) t)))
+  (setq avy-frame-list-function #'sway-visible-frame-list))
 
 ;;; Theme
-(progn ;     fonts
+(progn                                  ;     fonts
   (defconst my-font "UbuntuMono Nerd Font-9")
   (set-frame-font my-font nil t)
   (add-to-list 'default-frame-alist `(font . ,my-font))
@@ -152,8 +162,7 @@ indent whitespace in front of the next line."
          ("C-'" . #'avy-isearch))
   :config
   (setq avy-all-windows 'all-frames
-        avy-background t
-        avy-frame-list-function #'visible-frame-list))
+        avy-background t))
 
 (use-package custom
   :no-require t
