@@ -114,6 +114,17 @@
   (load-theme 'zenburn t))
 
 ;;; Global
+(progn ;     advice
+  (defun kill-line--autoreindent (&optional arg)
+    "Kill excess whitespace when joining lines.
+If the next line is joined to the current line, kill the extra
+indent whitespace in front of the next line."
+    (when (and (eolp) (not (bolp)))
+      (save-excursion
+        (forward-char 1)
+        (delete-horizontal-space))))
+  (advice-add 'kill-line :before #'kill-line--autoreindent))
+
 (progn ;    `isearch'
   (setq isearch-allow-scroll t))
 
