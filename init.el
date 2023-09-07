@@ -55,7 +55,7 @@
   (require  'use-package)
   (setq use-package-verbose t))
 
-;;; i3 integration
+;;; WM integration
 (use-package i3
   :unless (string-empty-p (shell-command-to-string "pgrep -x i3"))
   :config
