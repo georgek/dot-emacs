@@ -151,7 +151,8 @@ indent whitespace in front of the next line."
          ("C-'" . #'avy-isearch))
   :config
   (setq avy-all-windows 'all-frames
-        avy-background t))
+        avy-background t
+        avy-frame-list-function #'visible-frame-list))
 
 (use-package custom
   :no-require t
