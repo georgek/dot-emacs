@@ -260,6 +260,15 @@ indent whitespace in front of the next line."
   :commands (server-running-p)
   :config (or (server-running-p) (server-mode)))
 
+(use-package shackle
+  :init
+  (setq shackle-rules
+        '((compilation-mode :noselect t))
+        shackle-default-alignment 'below
+        shackle-default-rule '(:select t))
+  :config
+  (shackle-mode))
+
 (use-package tramp
   :defer t
   :config

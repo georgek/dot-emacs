@@ -265,6 +265,9 @@
 [submodule "sesman"]
 	path = lib/sesman
 	url = git@github.com:vspinu/sesman.git
+[submodule "shackle"]
+	path = lib/shackle
+	url = https://depp.brause.cc/shackle.git
 [submodule "shrink-path"]
 	path = lib/shrink-path
 	url = https://gitlab.com/bennya/shrink-path.el
