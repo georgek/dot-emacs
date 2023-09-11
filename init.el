@@ -407,7 +407,7 @@ indent whitespace in front of the next line."
                        :pyflakes (:enabled nil)
                        :flake8 (:enabled t)
                        :rope-autoimport (:enabled t)
-                       :pylsp_mypy (:enabled :json-false))
+                       :pylsp_mypy (:enabled t))
              :configurationSources ["flake8"]))))
 
 (use-package flyspell
