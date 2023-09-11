@@ -195,6 +195,10 @@ indent whitespace in front of the next line."
   (global-eldoc-mode)
   (setq eldoc-echo-area-use-multiline-p nil))
 
+(use-package evil
+  :config
+  (evil-mode 1))
+
 (use-package gk-extra
   :demand
   :bind (("C-;" . gk-select-current-line)
