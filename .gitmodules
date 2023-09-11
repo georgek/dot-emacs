@@ -18,7 +18,7 @@
 	url = git@github.com:emacscollective/auto-compile.git
 [submodule "avy"]
 	path = lib/avy
-	url = https://github.com/abo-abo/avy
+	url = git@github.com:georgek/avy.git
 [submodule "borg"]
 	path = lib/borg
 	url = git@github.com:emacscollective/borg.git
@@ -288,7 +288,7 @@
 	url = git@github.com:joodie/slime-complete-locals.git
 [submodule "smartparens"]
 	path = lib/smartparens
-	url = git@github.com:Fuco1/smartparens.git
+	url = git@github.com:georgek/smartparens.git
 [submodule "solaire-mode"]
 	path = lib/solaire-mode
 	url = https://github.com/hlissner/emacs-solaire-mode
