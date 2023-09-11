@@ -100,6 +100,9 @@
 [submodule "etexshow"]
 	path = lib/etexshow
 	url = git@github.com:pgundlach/etexshow.git
+[submodule "evil"]
+	path = lib/evil
+	url = https://github.com/emacs-evil/evil
 [submodule "f"]
 	path = lib/f
 	url = git@github.com:rejeep/f.el.git
