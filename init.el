@@ -1081,10 +1081,8 @@ RECURRENCES occasions."
               ("C-c C-c" . browse-url-of-file))
   :config (require 'smartparens-html))
 
-(use-package yaml-ts-mode
-  :mode "\\.\\(ya?\\|m\\)ml\\'"
-  :init
-  (add-to-list 'major-mode-remap-alist '(yaml-mode . yaml-ts-mode)))
+(use-package yaml-mode
+  :mode "\\.\\(ya?\\|m\\)ml\\'")
 
 (progn                                  ; misc settings
  ;; set some default styles
