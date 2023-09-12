@@ -260,17 +260,20 @@ indent whitespace in front of the next line."
   :commands (server-running-p)
   :config (or (server-running-p) (server-mode)))
 
+
 (use-package shackle
+  :commands shackle-mode
   :config
   (setq shackle-rules
         '((compilation-mode :noselect t)
           (treemacs-mode :align left)
-          (("*Help*" helpful-mode) :align t :select t))
+          (("*Help*" helpful-mode) :align t :select t)
+          (magit-revision-mode :noselect t))
         shackle-default-rule '(:select t)
         shackle-default-alignment 'below
         shackle-default-size 0.4
         shackle-inhibit-window-quit-on-same-windows t)
-  (shackle-mode))
+  (shackle-mode 1))
 
 (use-package tramp
   :defer t
