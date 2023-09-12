@@ -837,7 +837,7 @@ indent whitespace in front of the next line."
   (:map emacs-lisp-mode-map
    ("C-c C-k" . eval-buffer-key)
    ("C-c C-c" . eval-defun-key)
-   ("C-c C-l" . paredit-recentre-on-sexp)
+   ("C-l" . paredit-recentre-on-sexp)
    ("C-c d" . toggle-debug-on-error)
    ("M-p" . outline-move-subtree-up)
    ("M-n" . outline-move-subtree-down)
