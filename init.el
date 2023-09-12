@@ -261,12 +261,15 @@ indent whitespace in front of the next line."
   :config (or (server-running-p) (server-mode)))
 
 (use-package shackle
-  :init
-  (setq shackle-rules
-        '((compilation-mode :noselect t))
-        shackle-default-alignment 'below
-        shackle-default-rule '(:select t))
   :config
+  (setq shackle-rules
+        '((compilation-mode :noselect t)
+          (treemacs-mode :align left)
+          (("*Help*" helpful-mode) :align t :select t))
+        shackle-default-rule '(:select t)
+        shackle-default-alignment 'below
+        shackle-default-size 0.4
+        shackle-inhibit-window-quit-on-same-windows t)
   (shackle-mode))
 
 (use-package tramp
