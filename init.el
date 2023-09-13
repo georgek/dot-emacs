@@ -43,7 +43,19 @@
   (menu-bar-mode 0)
   (pixel-scroll-precision-mode)
   (setq native-comp-async-report-warnings-errors 'silent)
-  (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory)))
+  (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
+  (defmacro orgdr (&optional filename)
+    (if filename
+        `(concat (file-name-as-directory org-directory) ,filename)
+      org-directory))
+  (defmacro makehookedfun (hook &rest body)
+  "Defines a function using BODY that is hooked to HOOK."
+  (declare (indent 1))
+  (let ((function (intern (concat (symbol-name hook) "-function"))))
+    `(progn
+       (defun ,function ()
+         ,@body)
+       (add-hook ',hook #',function)))))
 
 (eval-and-compile ; `borg'
   (add-to-list 'load-path (expand-file-name "lib/borg" user-emacs-directory))
@@ -643,15 +655,6 @@ indent whitespace in front of the next line."
 (use-package vterm)
 
 ;;; Editing modes
-(defmacro makehookedfun (hook &rest body)
-  "Defines a function using BODY that is hooked to HOOK."
-  (declare (indent 1))
-  (let ((function (intern (concat (symbol-name hook) "-function"))))
-    `(progn
-       (defun ,function ()
-         ,@body)
-       (add-hook ',hook #',function))))
-
 (progn ;    `text-mode'
   (add-hook 'text-mode-hook #'indicate-buffer-boundaries-left))
 
@@ -884,11 +887,6 @@ indent whitespace in front of the next line."
          (org-mode . flyspell-mode)
          (org-mode . reveal-mode)
          (org-mode . (lambda () (yas-minor-mode -1))))
-  :init
-  (defmacro orgdr (&optional filename)
-    (if filename
-        `(concat (file-name-as-directory org-directory) ,filename)
-      org-directory))
   :config
   (use-package org-bullets)
   (use-package org-tempo)
