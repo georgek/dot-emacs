@@ -1049,6 +1049,10 @@ RECURRENCES occasions."
     (set-face-attribute 'smerge-refined-removed nil :extend t)
     (set-face-attribute 'smerge-refined-added   nil :extend t)))
 
+(use-package sqlup-mode
+  :hook ((sql-mode . sqlup-mode)
+         (sql-interactive-mode . sqlup-mode)))
+
 (use-package tex
   :defer t
   :hook ((TeX-mode . (lambda ()

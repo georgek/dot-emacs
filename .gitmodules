@@ -298,6 +298,9 @@
 [submodule "sqlite3"]
 	path = lib/sqlite3
 	url = git@github.com:pekingduck/emacs-sqlite3-api.git
+[submodule "sqlup-mode"]
+	path = lib/sqlup-mode
+	url = https://github.com/Trevoke/sqlup-mode.el
 [submodule "sway"]
 	path = lib/sway
 	url = https://github.com/thblt/sway.el
