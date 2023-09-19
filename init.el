@@ -430,7 +430,8 @@ indent whitespace in front of the next line."
 
 (use-package flyspell
   :config (setq flyspell-issue-message-flag -1)
-  :hook ((text-mode . flyspell-mode)))
+  :hook ((text-mode . flyspell-mode)
+         (prog-mode . flyspell-prog-mode)))
 
 (use-package macrostep
   :bind
