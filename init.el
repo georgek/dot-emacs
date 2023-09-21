@@ -708,6 +708,7 @@ indent whitespace in front of the next line."
 (use-package ess
   :init (require 'ess-site)
   :config
+  (setq ess-r-package-auto-activate nil)
   (defun ess-eval-defun-key ()
     (interactive)
     (ess-eval-function-or-paragraph t))
