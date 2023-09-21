@@ -165,7 +165,7 @@ indent whitespace in front of the next line."
  (global-auto-revert-mode 1)
  (setq auto-revert-check-vc-info t)
  (setq auto-revert-verbose nil)
- (setq auto-revert-remote-files t))
+ (setq auto-revert-remote-files nil))
 
 (use-package avy
   :bind (("C-'" . #'avy-goto-char-timer)
