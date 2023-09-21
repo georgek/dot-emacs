@@ -387,7 +387,7 @@ indent whitespace in front of the next line."
   (setq completion-styles '(basic partial-completion orderless)
         completion-category-defaults nil
         completion-category-overrides '((project-file (styles orderless))
-                                        (file (styles orderless))
+                                        (file (styles basic partial-completion orderless))
                                         (buffer (styles orderless))
                                         (command (styles orderless)))))
 
