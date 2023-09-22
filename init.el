@@ -151,6 +151,10 @@ indent whitespace in front of the next line."
 (progn ;    `isearch'
   (setq isearch-allow-scroll t))
 
+(use-package auth-source
+  :config
+  (setq auth-sources '("~/.authinfo.gpg")))
+
 (use-package auto-compile
   :config
   (setq auto-compile-display-buffer               nil)
