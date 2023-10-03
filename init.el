@@ -908,11 +908,6 @@ indent whitespace in front of the next line."
      (R . t)
      (shell . t)
      (python . t)))
-  ;; a named source block
-  (add-to-list 'org-structure-template-alist
-               '("S" . "#+NAME: ?\n#+BEGIN_SRC \n\n#+END_SRC"))
-  (add-to-list 'org-structure-template-alist
-               '("N" . "#+NAME: ?"))
   ;; exporting
   (use-package htmlize)
   (use-package ox-md)
