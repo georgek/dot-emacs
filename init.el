@@ -414,7 +414,7 @@ indent whitespace in front of the next line."
 
 ;;; General editing
 (use-package eglot
-  :hook ((python-ts-mode dockerfile-mode yaml-mode) . eglot-ensure)
+  :hook ((python-ts-mode dockerfile-mode yaml-mode sh-mode) . eglot-ensure)
   :config
   (setq eglot-autoshutdown t
         eglot-send-changes-idle-time 0.1
