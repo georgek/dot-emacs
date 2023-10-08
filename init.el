@@ -910,6 +910,10 @@ indent whitespace in front of the next line."
      (python . t)))
   ;; exporting
   (use-package htmlize)
+  (use-package org-contrib
+    :config
+    (require 'ox-extra)
+    (ox-extras-activate '(ignore-headlines)))
   (use-package ox-hugo)
   (use-package ox-latex)
   (use-package ox-md)
