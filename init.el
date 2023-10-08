@@ -131,8 +131,8 @@
 (use-package zenburn-theme
   :init
   (setq zenburn-use-variable-pitch nil)
-  (setq zenburn-scale-org-headlines t)
-  (setq zenburn-scale-outline-headlines t)
+  (setq zenburn-scale-org-headlines nil)
+  (setq zenburn-scale-outline-headlines nil)
   :config
   (load-theme 'zenburn t))
 
