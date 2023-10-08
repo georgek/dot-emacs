@@ -617,7 +617,7 @@ indent whitespace in front of the next line."
           magit-insert-modules-unpushed-to-upstream))
   ;;
   ;; Branch settings
-  (setq magit-branch-prefer-remote-upstream '("master" "develop"))
+  (setq magit-branch-prefer-remote-upstream '("main" "master" "develop"))
   (setq magit-branch-adjust-remote-upstream-alist
         '(("origin/main" . ("main" "master" "next" "release" "maint"))
           ("origin/master" . ("main" "master" "next" "release" "maint"))))
