@@ -910,10 +910,11 @@ indent whitespace in front of the next line."
      (python . t)))
   ;; exporting
   (use-package htmlize)
-  (use-package ox-md)
-  (use-package ox-twbs)
+  (use-package ox-hugo)
   (use-package ox-latex)
+  (use-package ox-md)
   (use-package ox-reveal)
+  (use-package ox-twbs)
   (setq org-latex-to-pdf-process '("latexmk -pdf %f"))
   (setq org-export-latex-listings 'minted)
   (defun orgtbl-to-latex-booktabs (table params)

@@ -226,6 +226,9 @@
 [submodule "org-bullets"]
 	path = lib/org-bullets
 	url = git@github.com:emacsorphanage/org-bullets.git
+[submodule "ox-hugo"]
+	path = lib/ox-hugo
+	url = https://github.com/kaushalmodi/ox-hugo
 [submodule "ox-reveal"]
 	path = lib/ox-reveal
 	url = git@github.com:yjwen/org-reveal.git
@@ -304,6 +307,9 @@
 [submodule "sway"]
 	path = lib/sway
 	url = https://github.com/thblt/sway.el
+[submodule "tomelr"]
+	path = lib/tomelr
+	url = https://github.com/kaushalmodi/tomelr
 [submodule "transient"]
 	path = lib/transient
 	url = git@github.com:magit/transient.git
