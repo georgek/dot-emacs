@@ -897,7 +897,7 @@ indent whitespace in front of the next line."
   (use-package org-bullets)
   (use-package org-tempo)
   (require 'smartparens-org)
-  (setq org-startup-indented nil
+  (setq org-startup-indented t
         org-src-preserve-indentation nil
         org-edit-src-content-indentation 0)
   (setq org-return-follows-link t)
