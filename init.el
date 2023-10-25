@@ -991,6 +991,10 @@ indent whitespace in front of the next line."
   (setq org-clock-frame-title-format
         (append frame-title-format
                 '(" - Org clocked in: " org-mode-line-string)))
+  ;; refile
+  (setq org-refile-targets '((nil :maxlevel . 2)))
+  (setq org-refile-use-outline-path t)
+  (setq org-outline-path-complete-in-steps nil)
   ;; use log drawer
   (setq org-log-into-drawer t)
   (defun diary-limited-cyclic (recurrences interval y m d)
