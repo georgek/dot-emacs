@@ -4,9 +4,6 @@
 [submodule "a"]
 	path = lib/a
 	url = git@github.com:plexus/a.el.git
-[submodule "add-node-modules-path"]
-	path = lib/add-node-modules-path
-	url = git@github.com:codesuki/add-node-modules-path.git
 [submodule "async"]
 	path = lib/async
 	url = git@github.com:jwiegley/emacs-async.git

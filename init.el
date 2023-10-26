@@ -664,9 +664,6 @@ indent whitespace in front of the next line."
 (progn ;    `text-mode'
   (add-hook 'text-mode-hook #'indicate-buffer-boundaries-left))
 
-(use-package add-node-modules-path
-  :hook (js2-mode typescript-mode rjsx-mode))
-
 (use-package asm-mode
   :bind (:map asm-mode-map
          ("C-c C-c" . compile)))
