@@ -90,7 +90,7 @@
   (add-to-list 'default-frame-alist `(font . ,my-font))
   ;; for modes that set the face explicitly
   (dolist (face '(default fixed-pitch fixed-pitch-serif))
-    (set-face-attribute face nil :height 90 :family "Ubuntu Mono"))
+    (set-face-attribute face nil :height 90 :family "UbuntuMono Nerd Font"))
   (dolist (face '(variable-pitch))
     (set-face-attribute face nil :height 90 :family "Ubuntu")))
 
