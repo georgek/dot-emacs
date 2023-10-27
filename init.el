@@ -168,7 +168,7 @@ indent whitespace in front of the next line."
    ;; enable auto revert globally
  (global-auto-revert-mode 1)
  (setq auto-revert-check-vc-info t)
- (setq auto-revert-verbose nil)
+ (setq auto-revert-verbose t)
  (setq auto-revert-remote-files nil))
 
 (use-package avy
