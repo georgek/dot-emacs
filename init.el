@@ -590,6 +590,7 @@ indent whitespace in front of the next line."
   (add-hook 'after-save-hook 'magit-after-save-refresh-status t)
   (add-to-list 'magit-repository-directories (cons "~/.emacs.d/" 0))
   (add-to-list 'magit-repository-directories (cons "~/.emacs.d/lib/" 1))
+  (setq magit-auto-revert-mode nil)     ; using global-auto-revert
   ;;
   ;; Window management
   (setq magit-display-buffer-function
