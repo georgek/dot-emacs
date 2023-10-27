@@ -405,7 +405,20 @@ indent whitespace in front of the next line."
   ;; Do not allow the cursor in the minibuffer prompt
   (setq minibuffer-prompt-properties
         '(read-only t cursor-intangible t face minibuffer-prompt))
-  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode))
+  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+  ;; org-mode fixes
+  (defun org-enforce-basic-completion (&rest args)
+    (minibuffer-with-setup-hook
+        (:append
+         (lambda ()
+           (let ((map (make-sparse-keymap (current-local-map))))
+             (define-key map [tab] #'minibuffer-complete)
+             (use-local-map map))
+           (setq-local completion-styles (cons 'basic completion-styles)
+                       vertico-preselect 'prompt)))
+      (apply args)))
+  (advice-add #'org-make-tags-matcher :around #'org-enforce-basic-completion)
+  (advice-add #'org-agenda-filter :around #'org-enforce-basic-completion))
 
 (use-package yasnippet
   :config
