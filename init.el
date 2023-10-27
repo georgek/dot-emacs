@@ -958,7 +958,7 @@ indent whitespace in front of the next line."
            "* %? %^g\nEntered on %U\n %i")
           ("i" "Idea" entry (file ,(orgdr "ideas.org"))
            "* %?\n %U\n %a")))
-  ;; agenda stuff
+  ;; agenda
   (custom-set-variables
    '(org-agenda-custom-commands
      '(("n" "Agenda and all TODOs"
@@ -980,7 +980,10 @@ indent whitespace in front of the next line."
   (setq org-log-done 'time)
   (setq org-blank-before-new-entry
         '((heading . t) (plain-list-item . nil)))
+  ;; todo
   (setq org-todo-keywords (quote((sequence "TODO" "WAITING" "|" "DONE"))))
+  (setq org-agenda-todo-ignore-scheduled t)
+  ;; clocking
   (require 'org-clock)
   (require 'org-timer)
   (setq org-timer-default-timer 25)
