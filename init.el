@@ -972,10 +972,9 @@ indent whitespace in front of the next line."
           ("i" "Idea" entry (file ,(orgdr "ideas.org"))
            "* %?\n %U\n %a")))
   ;; agenda
-  (custom-set-variables
-   '(org-agenda-custom-commands
-     '(("h" tags-todo "-work")
-       ("w" tags-todo "-home"))))
+  (setq org-agenda-custom-commands
+        '(("h" tags-todo "-work")
+          ("w" tags-todo "-home")))
   (setq org-agenda-files (directory-files-recursively (orgdr) "\\.org$" nil))
   (setq org-agenda-include-diary t)
   (setq org-agenda-span 14)
@@ -992,8 +991,9 @@ indent whitespace in front of the next line."
   (setq org-blank-before-new-entry
         '((heading . t) (plain-list-item . nil)))
   ;; todo
-  (setq org-todo-keywords (quote((sequence "TODO" "WAITING" "|" "DONE"))))
-  (setq org-agenda-todo-ignore-scheduled t)
+  (setq org-todo-keywords '((sequence "TODO" "WAITING" "|" "DONE"))
+        org-agenda-todo-ignore-scheduled 'future
+        org-agenda-tags-todo-honor-ignore-options t)
   ;; clocking
   (require 'org-clock)
   (require 'org-timer)
