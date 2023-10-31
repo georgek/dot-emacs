@@ -982,7 +982,8 @@ indent whitespace in front of the next line."
   (setq org-agenda-custom-commands
         '(("h" tags-todo "-work")
           ("w" tags-todo "-home")
-          ("y" "Done yesterday" tags gk-closed-yesterday)))
+          ("y" "Done yesterday" ((tags "+TODO=\"STARTED\"")
+                                 (tags gk-closed-yesterday)))))
   (setq org-agenda-files (directory-files-recursively (orgdr) "\\.org$" nil))
   (setq org-agenda-include-diary t)
   (setq org-agenda-span 14)
