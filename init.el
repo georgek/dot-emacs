@@ -972,9 +972,17 @@ indent whitespace in front of the next line."
           ("i" "Idea" entry (file ,(orgdr "ideas.org"))
            "* %?\n %U\n %a")))
   ;; agenda
+  (defconst gk-closed-yesterday
+    (concat "+TODO=\"DONE\""
+            "+CLOSED>=\""
+            (format-time-string
+             "[%Y-%m-%d]"
+             (time-subtract (current-time) (days-to-time 1)))
+            "\""))
   (setq org-agenda-custom-commands
         '(("h" tags-todo "-work")
-          ("w" tags-todo "-home")))
+          ("w" tags-todo "-home")
+          ("y" "Done yesterday" tags gk-closed-yesterday)))
   (setq org-agenda-files (directory-files-recursively (orgdr) "\\.org$" nil))
   (setq org-agenda-include-diary t)
   (setq org-agenda-span 14)
