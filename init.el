@@ -998,6 +998,21 @@ indent whitespace in front of the next line."
   (setq org-log-done 'time)
   (setq org-blank-before-new-entry
         '((heading . t) (plain-list-item . nil)))
+  ;; (defun gk-material-agenda-icons (alist)
+  ;;   "Makes an org agenda alist"
+  ;;   (mapcar (lambda (cons)
+  ;;             `(,(car cons)
+  ;;               (,(nerd-icons-mdicon (concat "nf-md-" (cdr cons)) :height 1.2))
+  ;;               nil nil))
+  ;;           alist))
+  ;; (setq org-agenda-category-icon-alist
+  ;;       (append
+  ;;        (gk-material-agenda-icons
+  ;;         '(("Birthday" . "cake_variant")
+  ;;           ("Diary" . "calendar")))
+  ;;        '(("" '(space . (:width (11)))))))
+  ;; (setq org-agenda-category-icon-alist nil)
+
   ;; todo
   (setq org-todo-keywords '((sequence "TODO" "WAITING" "|" "DONE"))
         org-agenda-todo-ignore-scheduled 'future
