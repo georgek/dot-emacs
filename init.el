@@ -972,18 +972,18 @@ indent whitespace in front of the next line."
           ("i" "Idea" entry (file ,(orgdr "ideas.org"))
            "* %?\n %U\n %a")))
   ;; agenda
-  (defconst gk-closed-yesterday
-    (concat "+TODO=\"DONE\""
-            "+CLOSED>=\""
-            (format-time-string
-             "[%Y-%m-%d]"
-             (time-subtract (current-time) (days-to-time 1)))
-            "\""))
   (setq org-agenda-custom-commands
         '(("h" tags-todo "-work")
           ("w" tags-todo "-home")
-          ("y" "Done yesterday" ((tags "+TODO=\"STARTED\"")
-                                 (tags gk-closed-yesterday)))))
+          ("c" "Current day" ((tags "+TODO=\"STARTED\"")
+                              (agenda "" ((org-agenda-span 1)
+                                          (org-agenda-show-log t)
+                                          (org-agenda-include-inactive-timestamps t)))))
+          ("y" "Yesterday" ((tags "+TODO=\"STARTED\"")
+                            (agenda "" ((org-agenda-start-day "-1d")
+                                        (org-agenda-span 1)
+                                        (org-agenda-show-log t)
+                                        (org-agenda-include-inactive-timestamps t)))))))
   (setq org-agenda-files (directory-files-recursively (orgdr) "\\.org$" nil))
   (setq org-agenda-include-diary t)
   (setq org-agenda-span 14)
@@ -1028,7 +1028,7 @@ indent whitespace in front of the next line."
         (append frame-title-format
                 '(" - Org clocked in: " org-mode-line-string)))
   ;; refile
-  (setq org-refile-targets '((nil :maxlevel . 2)))
+  (setq org-refile-targets '((nil :level . 1) (nil :todo . "STARTED")))
   (setq org-refile-use-outline-path t)
   (setq org-outline-path-complete-in-steps nil)
   ;; use log drawer
