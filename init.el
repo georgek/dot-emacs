@@ -889,7 +889,6 @@ indent whitespace in front of the next line."
   (("C-c c" . org-capture)
    ("C-c l" . org-store-link)
    ("C-c a" . org-agenda)
-   ("C-~" . (lambda () (interactive) (org-agenda nil "n")))
    ("C-c C-x C-j" . org-clock-goto)
    ("C-c C-x C-o" . org-clock-out)
    ("C-c C-x C-x" . org-clock-in-last)
