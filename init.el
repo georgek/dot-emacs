@@ -165,10 +165,7 @@ indent whitespace in front of the next line."
 
 (use-package autorevert
   :config
-   ;; enable auto revert globally
- (global-auto-revert-mode 1)
- (setq auto-revert-check-vc-info t)
- (setq auto-revert-verbose t)
+ (setq auto-revert-verbose nil)
  (setq auto-revert-remote-files nil))
 
 (use-package avy
@@ -603,7 +600,8 @@ indent whitespace in front of the next line."
   (add-hook 'after-save-hook 'magit-after-save-refresh-status t)
   (add-to-list 'magit-repository-directories (cons "~/.emacs.d/" 0))
   (add-to-list 'magit-repository-directories (cons "~/.emacs.d/lib/" 1))
-  (setq magit-auto-revert-mode nil)     ; using global-auto-revert
+  (setq magit-auto-revert-mode t
+        magit-auto-revert-immediately t)
   ;;
   ;; Window management
   (setq magit-display-buffer-function
