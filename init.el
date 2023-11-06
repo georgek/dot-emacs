@@ -434,11 +434,11 @@ indent whitespace in front of the next line."
   ;; use flake8 by default
   (setq-default
    eglot-workspace-configuration
-   '(:pylsp (:plugins (:pycodestyle (:enabled nil)
-                       :mccabe (:enabled nil)
-                       :pyflakes (:enabled nil)
+   '(:pylsp (:plugins (:pycodestyle (:enabled :json-false)
+                       :mccabe (:enabled :json-false)
+                       :pyflakes (:enabled :json-false)
                        :flake8 (:enabled t)
-                       :rope-autoimport (:enabled t)
+                       :rope_autoimport (:enabled t)
                        :pylsp_mypy (:enabled t))
              :configurationSources ["flake8"]))))
 
