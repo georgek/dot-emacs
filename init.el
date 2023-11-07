@@ -390,7 +390,10 @@ indent whitespace in front of the next line."
         completion-category-overrides '((project-file (styles orderless))
                                         (file (styles basic partial-completion orderless))
                                         (buffer (styles orderless))
-                                        (command (styles orderless)))))
+                                        (command (styles orderless)))
+        read-file-name-completion-ignore-case t
+        read-buffer-completion-ignore-case t
+        completion-ignore-case t))
 
 (use-package vertico
   :demand
