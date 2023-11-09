@@ -342,7 +342,7 @@
 	url = https://github.com/akermu/emacs-libvterm
 [submodule "web-mode"]
 	path = lib/web-mode
-	url = git@github.com:fxbois/web-mode.git
+	url = git@github.com:georgek/web-mode.git
 [submodule "with-editor"]
 	path = lib/with-editor
 	url = git@github.com:magit/with-editor.git
