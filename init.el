@@ -1032,7 +1032,10 @@ indent whitespace in front of the next line."
         (append frame-title-format
                 '(" - Org clocked in: " org-mode-line-string)))
   ;; refile
-  (setq org-refile-targets '((nil :level . 1) (nil :todo . "STARTED")))
+  (setq org-refile-targets
+        '((nil :level . 1)
+          (nil :todo . "STARTED")
+          (nil :tag . "sprint")))
   (setq org-refile-use-outline-path t)
   (setq org-outline-path-complete-in-steps nil)
   ;; use log drawer
