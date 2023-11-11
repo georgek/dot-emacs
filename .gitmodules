@@ -226,6 +226,9 @@
 [submodule "org-contrib"]
 	path = lib/org-contrib
 	url = git@github.com:emacsmirror/org-contrib.git
+[submodule "org-roam"]
+	path = lib/org-roam
+	url = https://github.com/org-roam/org-roam
 [submodule "ox-hugo"]
 	path = lib/ox-hugo
 	url = https://github.com/kaushalmodi/ox-hugo

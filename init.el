@@ -1060,6 +1060,15 @@ RECURRENCES occasions."
   (eval-after-load "org"
     '(setcdr (assoc "\\.pdf\\'" org-file-apps) "evince %s")))
 
+(use-package org-roam
+  :bind (("C-c n l" . org-roam-buffer-toggle)
+         ("C-c n f" . org-roam-node-find)
+         ("C-c n i" . org-roam-node-insert))
+  :config
+  (setq org-roam-directory "~/org-roam"
+        org-roam-completion-everywhere t)
+  (org-roam-db-autosync-mode))
+
 (use-package prog-mode
   :config (global-prettify-symbols-mode)
   (defun indicate-buffer-boundaries-left ()
