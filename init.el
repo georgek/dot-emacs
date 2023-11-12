@@ -965,12 +965,12 @@ indent whitespace in front of the next line."
   (setq org-default-notes-file (orgdr "notes.org"))
   (setq org-capture-templates
         `(("t" "Todo" entry (file+headline ,(orgdr "todo.org") "Misc (Captured)")
-           "* TODO %?\n %U\n %a")
+           "* TODO %?\n%U\n%a")
           ("d" "Diary" entry (file+headline ,(orgdr "diary.org") "Captured"))
           ("j" "Journal" entry (file+olp+datetree ,(orgdr "journal.org"))
-           "* %? %^g\nEntered on %U\n %i")
+           "* %? %^g\nEntered on %U\n%i")
           ("i" "Idea" entry (file ,(orgdr "ideas.org"))
-           "* %?\n %U\n %a")))
+           "* %?\n%U\n%a")))
   ;; agenda
   (setq org-agenda-custom-commands
         '(("h" tags-todo "-work")
