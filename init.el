@@ -999,7 +999,7 @@ indent whitespace in front of the next line."
                                         (org-agenda-skip-scheduled-if-done t)
                                         (org-agenda-include-inactive-timestamps t)))
                             (tags "+TODO=\"STARTED\"")))))
-  (setq org-agenda-files (directory-files-recursively (orgdr) "\\.org$" nil))
+  (setq org-agenda-files (directory-files (orgdr) t "\\.org$" t))
   (setq org-agenda-include-diary t)
   (setq org-agenda-span 14)
   (setq org-agenda-start-on-weekday nil)
@@ -1076,7 +1076,7 @@ RECURRENCES occasions."
          ("C-c n f" . org-roam-node-find)
          ("C-c n i" . org-roam-node-insert))
   :config
-  (setq org-roam-directory "~/org-roam"
+  (setq org-roam-directory "~/org/roam"
         org-roam-completion-everywhere t)
   (org-roam-db-autosync-mode))
 
