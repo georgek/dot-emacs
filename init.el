@@ -278,11 +278,12 @@ indent whitespace in front of the next line."
   :commands shackle-mode
   :config
   (setq shackle-rules
-        '((compilation-mode :noselect t)
-          (treemacs-mode :align left)
-          (("*Help*" helpful-mode) :align t :select t)
+        '(("*org-roam*" :align t :select t)
           ("*xref*" :align t :select t)
-          (magit-revision-mode :noselect t))
+          (("*Help*" helpful-mode) :align t :select t)
+          (compilation-mode :noselect t)
+          (magit-revision-mode :noselect t)
+          (treemacs-mode :align left))
         shackle-default-rule nil
         shackle-default-alignment 'below
         shackle-default-size 0.4
