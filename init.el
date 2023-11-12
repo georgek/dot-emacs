@@ -1003,7 +1003,7 @@ indent whitespace in front of the next line."
                                         (org-agenda-include-inactive-timestamps t)))
                             (tags "+TODO=\"STARTED\"")))))
   (setq org-agenda-files (directory-files (orgdr) t "\\.org$" t))
-  (setq org-agenda-include-diary t)
+  (setq org-agenda-include-diary nil)
   (setq org-agenda-span 14)
   (setq org-agenda-start-on-weekday nil)
   (setq org-agenda-window-setup 'current-window)
@@ -1256,6 +1256,17 @@ RECURRENCES occasions."
 (when load-file-name
   (find-file (concat (file-name-sans-extension load-file-name)
                      ".el")))
+
+;;; Calendar
+(use-package uk-holidays
+  :config
+  (setq holiday-general-holidays nil
+        holiday-christian-holidays nil
+        holiday-hebrew-holidays nil
+        holiday-islamic-holidays nil
+        holiday-bahai-holidays nil
+        holiday-oriental-holidays nil)
+  (setq calendar-holidays holiday-uk-holidays))
 
 ;; Local Variables:
 ;; indent-tabs-mode: nil
