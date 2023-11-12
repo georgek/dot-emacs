@@ -900,7 +900,9 @@ indent whitespace in front of the next line."
    ("M-p" . org-metaup)
    ("M-n" . org-metadown)
    ("C-M->" . org-metaright)
-   ("C-M-<" . org-metaleft))
+   ("C-M-<" . org-metaleft)
+   ("M-." . #'org-open-at-point)
+   ("M-," . #'org-mark-ring-goto))
   :hook ((org-mode . auto-fill-mode)
          (org-mode . org-bullets-mode)
          (org-mode . flyspell-mode)
@@ -911,9 +913,15 @@ indent whitespace in front of the next line."
   (use-package org-tempo)
   (require 'smartparens-org)
   (setq org-startup-indented t
-        org-src-preserve-indentation nil
-        org-edit-src-content-indentation 0)
-  (setq org-return-follows-link t)
+        org-indent-indentation-per-level 1
+        org-src-preserve-indentation t
+        org-edit-src-content-indentation 0
+        org-return-follows-link nil
+        org-link-frame-setup '((vm . vm-visit-folder-other-frame)
+                               (vm-imap . vm-visit-imap-folder-other-frame)
+                               (gnus . org-gnus-no-new-news)
+                               (file . find-file)
+                               (wl . wl-other-frame)))
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((lisp . t)
