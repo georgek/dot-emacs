@@ -996,6 +996,9 @@ indent whitespace in front of the next line."
                                         (org-agenda-include-deadlines nil)
                                         (org-agenda-span 1)
                                         (org-agenda-show-log t)
+                                        (org-agenda-clockreport-mode t)
+                                        (org-agenda-clockreport-parameter-plist
+                                         '(:maxlevel 4 :link t :fileskip0 t))
                                         (org-agenda-skip-scheduled-if-done t)
                                         (org-agenda-include-inactive-timestamps t)))
                             (tags "+TODO=\"STARTED\"")))))
