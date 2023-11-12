@@ -281,8 +281,9 @@ indent whitespace in front of the next line."
         '((compilation-mode :noselect t)
           (treemacs-mode :align left)
           (("*Help*" helpful-mode) :align t :select t)
+          ("*xref*" :align t :select t)
           (magit-revision-mode :noselect t))
-        shackle-default-rule '(:select t)
+        shackle-default-rule nil
         shackle-default-alignment 'below
         shackle-default-size 0.4
         shackle-inhibit-window-quit-on-same-windows t)
