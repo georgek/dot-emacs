@@ -922,7 +922,8 @@ indent whitespace in front of the next line."
                                (vm-imap . vm-visit-imap-folder-other-frame)
                                (gnus . org-gnus-no-new-news)
                                (file . find-file)
-                               (wl . wl-other-frame)))
+                               (wl . wl-other-frame))
+        org-archive-location "~/org/archive/%s::")
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((lisp . t)
