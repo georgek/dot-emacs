@@ -4,8 +4,7 @@
 
 (defvar gk-electrify-return-match
   "[\]}\)]\\|\"\"\"\\|/\\|<"
-  "If this regexp matches the text after the cursor, do an \"electric\"
-  return.")
+  "This regexp must match to do an \"electric\" return.")
 
 (defun gk-electrify-return-if-match (&optional arg)
   "If the text after the cursor matches `electrify-return-match' then
@@ -20,3 +19,4 @@
     (indent-according-to-mode)))
 
 (provide 'gk-electric)
+;;; gk-electric.el ends here

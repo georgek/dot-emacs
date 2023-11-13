@@ -910,6 +910,7 @@ indent whitespace in front of the next line."
          (org-mode . reveal-mode)
          (org-mode . (lambda () (yas-minor-mode -1))))
   :config
+  (use-package gk-org)
   (use-package org-bullets)
   (use-package org-tempo)
   (require 'smartparens-org)
@@ -984,8 +985,8 @@ indent whitespace in front of the next line."
            "* %?\n%U\n%a")))
   ;; agenda
   (setq org-agenda-custom-commands
-        '(("h" tags-todo "-work")
-          ("w" tags-todo "-home")
+        '(("h" tags-todo "-@work")
+          ("w" tags-todo "-@home")
           ("c" "Current day" ((agenda "" ((org-agenda-span 1)
                                           (org-agenda-show-log t)
                                           (org-agenda-skip-scheduled-if-done t)

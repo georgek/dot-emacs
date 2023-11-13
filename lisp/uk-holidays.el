@@ -10,9 +10,11 @@
 ;; Where 1 January falls on a weekend, the following Monday is a bank
 ;; holiday.
 
-(eval-when-compile
-  (require 'calendar)
-  (require 'holidays))
+(require 'calendar)
+(require 'holidays)
+
+(defvar displayed-month)
+(defvar displayed-year)
 
 (defun uk-holidays-new-year-lieu-bank-holiday ()
   "Extra bank holiday if New Year's Day falls on a weekend."
