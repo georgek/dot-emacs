@@ -324,6 +324,10 @@ indent whitespace in front of the next line."
   :defer 2
   :config (volatile-highlights-mode t))
 
+(use-package which-key
+  :config
+  (which-key-mode))
+
 (use-package whitespace
   :config
   (defun nice-whitespace-on ()
