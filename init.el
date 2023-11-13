@@ -1093,6 +1093,7 @@ RECURRENCES occasions."
 (use-package org-roam-dailies
   :bind (("C-c n j" . org-roam-dailies-capture-today)
          ("C-c n t" . org-roam-dailies-goto-today))
+  :bind-keymap ("C-c n d" . org-roam-dailies-map)
   :config
   (setq org-roam-dailies-directory "daily/")
   (setq org-roam-dailies-capture-templates
