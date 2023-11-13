@@ -1086,6 +1086,17 @@ RECURRENCES occasions."
         org-roam-completion-everywhere t)
   (org-roam-db-autosync-mode))
 
+(use-package org-roam-dailies
+  :bind (("C-c n j" . org-roam-dailies-capture-today)
+         ("C-c n t" . org-roam-dailies-goto-today))
+  :config
+  (setq org-roam-dailies-directory "daily/")
+  (setq org-roam-dailies-capture-templates
+        '(("d" "default" entry
+           "* %?\n%U"
+           :target (file+head "%<%Y-%m-%d>.org"
+                              "#+title: %<%Y-%m-%d>\n")))))
+
 (use-package prog-mode
   :config (global-prettify-symbols-mode)
   (defun indicate-buffer-boundaries-left ()

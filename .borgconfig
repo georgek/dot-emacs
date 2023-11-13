@@ -17,6 +17,9 @@
 	build-step = make all
 	load-path = lisp
 	info-path = doc
+[submodule "org-roam"]
+	load-path = .
+	load-path = extensions
 [submodule "slime"]
 	load-path = .
 	load-path = contrib
