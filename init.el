@@ -405,7 +405,8 @@ indent whitespace in front of the next line."
   :demand
   :bind (("C-x C-b" . switch-to-buffer)
          :map vertico-map
-         ("C-<return>" . vertico-exit-input))
+         ("C-<return>" . vertico-exit-input)
+         ("<tab>" . vertico-insert))
   :config
   (vertico-mode)
   ;; Do not allow the cursor in the minibuffer prompt
@@ -417,8 +418,9 @@ indent whitespace in front of the next line."
     (minibuffer-with-setup-hook
         (:append
          (lambda ()
-           (let ((map (make-sparse-keymap (current-local-map))))
-             (define-key map [tab] #'minibuffer-complete)
+           (let ((map (make-sparse-keymap)))
+             (set-keymap-parent map (current-local-map))
+             (keymap-set map "<tab>" #'minibuffer-complete)
              (use-local-map map))
            (setq-local completion-styles (cons 'basic completion-styles)
                        vertico-preselect 'prompt)))
