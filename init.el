@@ -1016,29 +1016,43 @@ indent whitespace in front of the next line."
   (setq org-agenda-start-on-weekday nil)
   (setq org-agenda-window-setup 'current-window)
   (setq org-agenda-restore-windows-after-quit t)
-  (setq org-agenda-prefix-format '((agenda . " %i %-12:c%?-12t% s")
-                                   (todo .   " %i %-12:c")
-                                   (tags .   " %i %-12:c")
-                                   (search . " %i %-12:c")))
+  (setq org-agenda-prefix-format '((agenda . " %-2i %-12:c%?-12t% s")
+                                   (todo .   " %-2i %-12:c")
+                                   (tags .   " %-2i %-12:c")
+                                   (search . " %-2i %-12:c")))
   (setq org-time-stamp-custom-formats
         '("<%A, %e %B %Y>" . "<%A, %e %B %Y %H:%M>"))
   (setq org-log-done 'time)
   (setq org-blank-before-new-entry
         '((heading . t) (plain-list-item . nil)))
-  ;; (defun gk-material-agenda-icons (alist)
-  ;;   "Makes an org agenda alist"
-  ;;   (mapcar (lambda (cons)
-  ;;             `(,(car cons)
-  ;;               (,(nerd-icons-mdicon (concat "nf-md-" (cdr cons)) :height 1.2))
-  ;;               nil nil))
-  ;;           alist))
-  ;; (setq org-agenda-category-icon-alist
-  ;;       (append
-  ;;        (gk-material-agenda-icons
-  ;;         '(("Birthday" . "cake_variant")
-  ;;           ("Diary" . "calendar")))
-  ;;        '(("" '(space . (:width (11)))))))
-  ;; (setq org-agenda-category-icon-alist nil)
+
+  (defun gk-nerd-agenda-icons (fun prefix alist)
+    "Makes an org agenda alist"
+    (mapcar (pcase-lambda (`(,category . ,icon))
+              `(,category
+                (,(funcall fun (concat prefix icon) :height 1.2))))
+            alist))
+
+  (setq org-agenda-category-icon-alist
+        (append
+         (gk-nerd-agenda-icons #'nerd-icons-mdicon "nf-md-"
+                               '(("Birthday" . "cake_variant")
+                                 ("Diary" . "book_clock")
+                                 ("Holiday" . "umbrella_beach")
+                                 ("Chore" . "broom")
+                                 ("Regular" . "autorenew")
+                                 ("Sprint" . "run_fast")
+                                 ("Tyto" . "database")
+                                 ("ELT" . "pipe")
+                                 ("Devops" . "gitlab")
+                                 ("Blog" . "fountain_pen_tip")
+                                 ("FOSS" . "code_braces")
+                                 ("Tool" . "tools")
+                                 ("Todo" . "list_status")))
+         (gk-nerd-agenda-icons #'nerd-icons-sucicon "nf-custom-"
+                               '(("Emacs" . "emacs")
+                                 ("Org" . "orgmode")))
+         '(("" '(space . (:width (11)))))))
 
   ;; todo
   (setq org-todo-keywords '((sequence "TODO" "WAITING" "|" "DONE"))
