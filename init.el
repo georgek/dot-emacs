@@ -419,9 +419,8 @@ indent whitespace in front of the next line."
         (:append
          (lambda ()
            (let ((map (make-sparse-keymap)))
-             (set-keymap-parent map (current-local-map))
              (keymap-set map "<tab>" #'minibuffer-complete)
-             (use-local-map map))
+             (use-local-map (make-composed-keymap (list map) (current-local-map))))
            (setq-local completion-styles (cons 'basic completion-styles)
                        vertico-preselect 'prompt)))
       (apply args)))
