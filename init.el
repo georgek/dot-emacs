@@ -722,6 +722,8 @@ indent whitespace in front of the next line."
   :bind (:map css-mode-map
               ("RET" . gk-electrify-return-if-match)))
 
+(use-package dbt-mode)
+
 (use-package dockerfile-mode
   :mode "Dockerfile")
 

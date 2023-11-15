@@ -49,6 +49,9 @@
 [submodule "dash"]
 	path = lib/dash
 	url = git@github.com:magnars/dash.el.git
+[submodule "dbt-mode"]
+	path = lib/dbt-mode
+	url = https://github.com/CyberShadow/dbt-mode.git
 [submodule "deadgrep"]
 	path = lib/deadgrep
 	url = git@github.com:Wilfred/deadgrep.git
@@ -259,6 +262,9 @@
 [submodule "pkg-info"]
 	path = lib/pkg-info
 	url = git@github.com:lunaryorn/pkg-info.el.git
+[submodule "polymode"]
+	path = lib/polymode
+	url = https://github.com/polymode/polymode
 [submodule "queue"]
 	path = lib/queue
 	url = git@github.com:emacsmirror/queue.git
