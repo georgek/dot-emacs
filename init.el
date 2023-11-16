@@ -149,7 +149,9 @@ indent whitespace in front of the next line."
   (advice-add 'kill-line :before #'kill-line--autoreindent))
 
 (progn ;    `isearch'
-  (setq isearch-allow-scroll t))
+  (setq isearch-allow-scroll t
+        isearch-regexp-lax-whitespace t
+        search-whitespace-regexp "[ \t\r\n]+"))
 
 (use-package auth-source
   :config
