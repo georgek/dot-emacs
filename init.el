@@ -370,6 +370,11 @@ indent whitespace in front of the next line."
   (setq company-tooltip-align-annotations t)
   (setq company-frontends '(company-pseudo-tooltip-frontend
                             company-echo-metadata-frontend))
+  ;; override company completion style
+  (defun company-completion-styles (capf-fn &rest args)
+    (let ((completion-styles '(basic partial-completion)))
+      (apply capf-fn args)))
+  (advice-add 'company-capf :around #'company-completion-styles)
   (global-company-mode))
 
 (use-package flymake
@@ -393,12 +398,10 @@ indent whitespace in front of the next line."
 
 (use-package orderless
   :init
-  (setq completion-styles '(basic partial-completion orderless)
+  (setq completion-styles '(orderless basic)
         completion-category-defaults nil
-        completion-category-overrides '((project-file (styles orderless))
-                                        (file (styles basic partial-completion orderless))
-                                        (buffer (styles orderless))
-                                        (command (styles orderless)))
+        completion-category-overrides '((file (styles basic partial-completion))
+                                        (eglot (styles orderless)))
         read-file-name-completion-ignore-case t
         read-buffer-completion-ignore-case t
         completion-ignore-case t))
