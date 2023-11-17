@@ -288,6 +288,7 @@ indent whitespace in front of the next line."
         '(("*org-roam*" :align t :select t)
           ("*xref*" :align t :select t)
           (("*Help*" helpful-mode) :align t :select t)
+          ("^*SQL" :regexp t :ignore t)
           (compilation-mode :noselect t)
           (magit-revision-mode :noselect t)
           (treemacs-mode :align left))
@@ -1174,6 +1175,8 @@ RECURRENCES occasions."
   (when (>= emacs-major-version 27)
     (set-face-attribute 'smerge-refined-removed nil :extend t)
     (set-face-attribute 'smerge-refined-added   nil :extend t)))
+
+(use-package sql)
 
 (use-package sqlup-mode
   :hook ((sql-mode . sqlup-mode)
