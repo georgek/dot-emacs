@@ -249,6 +249,11 @@ indent whitespace in front of the next line."
                   "*R*"
                   "init.el"))))
 
+(use-package multiple-cursors
+  :bind (("C->" . #'mc/mark-next-like-this)
+         ("C-<" . #'mc/mark-previous-like-this)
+         ("C-c C-<" . #'mc/mark-all-like-this)))
+
 (use-package no-littering
   :config
   (use-package recentf)

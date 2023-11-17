@@ -199,6 +199,9 @@
 [submodule "mic-paren"]
 	path = lib/mic-paren
 	url = git@github.com:emacsattic/mic-paren.git
+[submodule "multiple-cursors"]
+	path = lib/multiple-cursors
+	url = https://github.com/magnars/multiple-cursors.el
 [submodule "nerd-icons"]
 	path = lib/nerd-icons
 	url = https://github.com/rainstormstudio/nerd-icons.el
