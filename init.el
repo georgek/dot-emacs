@@ -282,13 +282,13 @@ indent whitespace in front of the next line."
 
 
 (use-package shackle
-  :commands shackle-mode
+  :commands (shackle-mode shackle-trace-functions shackle-untrace-functions)
   :config
   (setq shackle-rules
         '(("*org-roam*" :align t :select t)
           ("*xref*" :align t :select t)
           (("*Help*" helpful-mode) :align t :select t)
-          ("^*SQL" :regexp t :ignore t)
+          (sql-interactive-mode :ignore t :noselect t)
           (compilation-mode :noselect t)
           (magit-revision-mode :noselect t)
           (treemacs-mode :align left))
