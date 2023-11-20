@@ -271,6 +271,9 @@
 [submodule "pkg-info"]
 	path = lib/pkg-info
 	url = git@github.com:lunaryorn/pkg-info.el.git
+[submodule "plantuml-mode"]
+	path = lib/plantuml-mode
+	url = https://github.com/skuro/plantuml-mode
 [submodule "polymode"]
 	path = lib/polymode
 	url = https://github.com/polymode/polymode

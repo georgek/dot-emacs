@@ -1163,6 +1163,12 @@ RECURRENCES occasions."
            :target (file+head "%<%Y-%m-%d>.org"
                               "#+title: %<%Y-%m-%d>\n")))))
 
+(use-package plantuml-mode
+  :mode ("\\.plantuml\\'" . plantuml-mode)
+  :config
+  (setq plantuml-executable-path "plantuml"
+        plantuml-default-exec-mode 'executable))
+
 (use-package prog-mode
   :config (global-prettify-symbols-mode)
   (defun indicate-buffer-boundaries-left ()
