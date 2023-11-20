@@ -251,7 +251,9 @@ indent whitespace in front of the next line."
 
 (use-package multiple-cursors
   :bind (("C->" . #'mc/mark-next-like-this)
+         ("C-M->" . #'mc/unmark-next-like-this)
          ("C-<" . #'mc/mark-previous-like-this)
+         ("C-M-<" . #'mc/unmark-previous-like-this)
          ("C-c C-<" . #'mc/mark-all-like-this)))
 
 (use-package no-littering
