@@ -479,6 +479,8 @@ indent whitespace in front of the next line."
   (paren-activate))
 
 (use-package paredit
+  :bind (:map paredit-mode-map
+              ("M-?" . nil))
   :config
   (require 'gk-electric)
   (defun paredit-with-electric-return ()
