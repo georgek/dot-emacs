@@ -976,13 +976,16 @@ indent whitespace in front of the next line."
                                (file . find-file)
                                (wl . wl-other-frame))
         org-archive-location "~/org/archive/%s::")
+  (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((lisp . t)
      (sqlite . t)
      (R . t)
      (shell . t)
-     (python . t)))
+     (python . t)
+     (plantuml . t)))
+  (setq org-plantuml-exec-mode 'plantuml)
   ;; exporting
   (use-package htmlize)
   (use-package org-contrib
