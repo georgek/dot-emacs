@@ -407,7 +407,7 @@ indent whitespace in front of the next line."
         corfu-auto-delay 0.2
         corfu-auto-prefix 1
         corfu-min-width 40
-        corfu-preselect 'prompt)
+        corfu-preselect 'valid)
   (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 
 (use-package flymake
@@ -438,7 +438,8 @@ indent whitespace in front of the next line."
                                         (command (styles orderless)))
         read-file-name-completion-ignore-case t
         read-buffer-completion-ignore-case t
-        completion-ignore-case t))
+        completion-ignore-case t
+        orderless-smart-case nil))
 
 (use-package vertico
   :demand
