@@ -352,38 +352,63 @@ indent whitespace in front of the next line."
   (setq xref-search-program 'ripgrep))
 
 ;;; Completion
-(use-package company
-  :demand
+;; (use-package company
+;;   :demand
+;;   :init
+;;   (setq tab-always-indent 'complete)
+;;   :config
+;;   (keymap-global-set "TAB" #'company-indent-or-complete-common)
+;;   (keymap-set company-active-map "<return>" nil)
+;;   (keymap-set company-active-map "TAB" #'company-complete-common)
+;;   (keymap-set company-active-map "RET" nil)
+;;   (keymap-set company-active-map "M-n" #'company-select-next-or-abort)
+;;   (keymap-set company-active-map "M-p" #'company-select-previous-or-abort)
+;;   (keymap-set company-active-map "C-SPC" #'company-complete-selection)
+;;   (keymap-set company-active-map "M-SPC" #'company-complete-selection)
+;;   (keymap-unset company-active-map "C-n")
+;;   (keymap-unset company-active-map "C-p")
+;;   (setq company-backends
+;;         '((company-files
+;;            company-keywords
+;;            company-capf
+;;            company-yasnippet)
+;;           (company-abbrev company-dabbrev)))
+;;   (setq company-idle-delay 0.2)
+;;   (setq company-minimum-prefix-length 1)
+;;   (setq company-tooltip-align-annotations t)
+;;   (setq company-frontends '(company-pseudo-tooltip-frontend
+;;                             company-echo-metadata-frontend))
+;;   ;; override company completion style
+;;   (defun company-completion-styles (capf-fn &rest args)
+;;     (let ((completion-styles '(basic partial-completion)))
+;;       (apply capf-fn args)))
+;;   (advice-add 'company-capf :around #'company-completion-styles)
+;;   (global-company-mode))
+
+(use-package corfu
   :init
-  (setq tab-always-indent 'complete)
+  (global-corfu-mode)
+  :bind (:map corfu-map
+              ("RET" . nil)
+              ("TAB" . #'corfu-insert)
+              ("M-SPC" . #'corfu-insert)
+              ("C-SPC" . #'corfu-insert-separator))
   :config
-  (keymap-global-set "TAB" #'company-indent-or-complete-common)
-  (keymap-set company-active-map "<return>" nil)
-  (keymap-set company-active-map "TAB" #'company-complete-common)
-  (keymap-set company-active-map "RET" nil)
-  (keymap-set company-active-map "M-n" #'company-select-next-or-abort)
-  (keymap-set company-active-map "M-p" #'company-select-previous-or-abort)
-  (keymap-set company-active-map "C-SPC" #'company-complete-selection)
-  (keymap-set company-active-map "M-SPC" #'company-complete-selection)
-  (keymap-unset company-active-map "C-n")
-  (keymap-unset company-active-map "C-p")
-  (setq company-backends
-        '((company-files
-           company-keywords
-           company-capf
-           company-yasnippet)
-          (company-abbrev company-dabbrev)))
-  (setq company-idle-delay 0.2)
-  (setq company-minimum-prefix-length 1)
-  (setq company-tooltip-align-annotations t)
-  (setq company-frontends '(company-pseudo-tooltip-frontend
-                            company-echo-metadata-frontend))
-  ;; override company completion style
-  (defun company-completion-styles (capf-fn &rest args)
-    (let ((completion-styles '(basic partial-completion)))
-      (apply capf-fn args)))
-  (advice-add 'company-capf :around #'company-completion-styles)
-  (global-company-mode))
+  (use-package corfu-echo
+    :init
+    (corfu-echo-mode))
+  (use-package corfu-popupinfo
+    :init
+    (corfu-popupinfo-mode))
+  (setq completion-cycle-threshold 3
+        tab-always-indent 'complete
+        corfu-auto t
+        corfu-quit-no-match 'separator
+        corfu-auto-delay 0.2
+        corfu-auto-prefix 1
+        corfu-min-width 40
+        corfu-preselect 'prompt)
+  (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 
 (use-package flymake
   :hook
@@ -406,10 +431,11 @@ indent whitespace in front of the next line."
 
 (use-package orderless
   :init
-  (setq completion-styles '(orderless basic)
+  (setq completion-styles '(basic partial-completion orderless)
         completion-category-defaults nil
-        completion-category-overrides '((file (styles basic partial-completion))
-                                        (eglot (styles orderless)))
+        completion-category-overrides '((project-file (styles orderless))
+                                        (buffer (styles orderless))
+                                        (command (styles orderless)))
         read-file-name-completion-ignore-case t
         read-buffer-completion-ignore-case t
         completion-ignore-case t))
