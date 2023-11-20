@@ -5,6 +5,9 @@
 	build-step = borg-update-autoloads
 	build-step = borg-makeinfo
 	info-path = doc
+[submodule "corfu"]
+	load-path = .
+	load-path = extensions
 [submodule "dash"]
 	no-byte-compile = dash-functional.el
 	no-makeinfo = dash-template.texi

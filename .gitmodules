@@ -43,6 +43,9 @@
 [submodule "copy-as-format"]
 	path = lib/copy-as-format
 	url = git@github.com:sshaw/copy-as-format.git
+[submodule "corfu"]
+	path = lib/corfu
+	url = https://github.com/minad/corfu
 [submodule "ctable"]
 	path = lib/ctable
 	url = git@github.com:kiwanami/emacs-ctable.git
@@ -208,6 +211,9 @@
 [submodule "nerd-icons-completion"]
 	path = lib/nerd-icons-completion
 	url = https://github.com/rainstormstudio/nerd-icons-completion
+[submodule "nerd-icons-corfu"]
+	path = lib/nerd-icons-corfu
+	url = https://github.com/LuigiPiucco/nerd-icons-corfu
 [submodule "nerd-icons-dired"]
 	path = lib/nerd-icons-dired
 	url = https://github.com/rainstormstudio/nerd-icons-dired
