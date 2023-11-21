@@ -118,5 +118,18 @@ frame is killed."
   (interactive)
   (insert (format-time-string "%Y-%m-%d %H:%M:%S")))
 
+;;; https://emacs.stackexchange.com/questions/20574/default-inline-image-background-in-org-mode/37927#37927
+;;;###autoload
+(defun gk-create-image-with-background-color (args)
+  "Specify background color of Org-mode inline image through modify `ARGS'."
+  (let* ((file (car args))
+         (type (cadr args))
+         (data-p (caddr args))
+         (props (cdddr args)))
+    ;; Get this return result style from `create-image'.
+    (append (list file type data-p)
+            (list :background "white")
+            props)))
+
 (provide 'gk-extra)
 ;;; gk-extra.el ends here

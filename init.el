@@ -217,7 +217,10 @@ indent whitespace in front of the next line."
          ("C-x C-c" . gk-kill-client-or-daemon)
          ("C-c d" . gk-insert-date)
          ("C-c t" . gk-insert-time))
-  :mode ("\\.h\\'" . gk-c-c++-header))
+  :mode ("\\.h\\'" . gk-c-c++-header)
+  :config
+  (advice-add 'create-image :filter-args
+              #'gk-create-image-with-background-color))
 
 (use-package gk-other-window-repeat
   :bind (("C-x o" . gk-other-window-repeat)
@@ -964,7 +967,8 @@ indent whitespace in front of the next line."
          (org-mode . org-bullets-mode)
          (org-mode . flyspell-mode)
          (org-mode . reveal-mode)
-         (org-mode . (lambda () (yas-minor-mode -1))))
+         (org-mode . (lambda () (yas-minor-mode -1)))
+         (org-babel-after-execute . org-redisplay-inline-images))
   :config
   (use-package gk-org)
   (use-package org-bullets)
@@ -990,7 +994,8 @@ indent whitespace in front of the next line."
      (shell . t)
      (python . t)
      (plantuml . t)))
-  (setq org-plantuml-exec-mode 'plantuml)
+  (setq org-plantuml-exec-mode 'plantuml
+        org-confirm-babel-evaluate nil)
   ;; exporting
   (use-package htmlize)
   (use-package org-contrib
