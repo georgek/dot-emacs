@@ -953,6 +953,7 @@ indent whitespace in front of the next line."
    ("C-M-<" . org-metaleft)
    ("M-." . #'org-open-at-point)
    ("M-," . #'org-mark-ring-goto)
+   ("C-M-SPC" . #'org-mark-subtree)
    :map org-agenda-mode-map
    ("M-n" . #'org-agenda-forward-block)
    ("M-p" . #'org-agenda-backward-block))
