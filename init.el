@@ -497,10 +497,13 @@ indent whitespace in front of the next line."
   :hook ((text-mode . flyspell-mode)
          (prog-mode . flyspell-prog-mode)))
 
+(use-package highlight-indentation
+  :hook ((python-mode python-ts-mode yaml-mode) . highlight-indentation-mode))
+
 (use-package macrostep
   :bind
   (:map emacs-lisp-mode-map
-   ("C-c e" . macrostep-expand)))
+        ("C-c e" . macrostep-expand)))
 
 (use-package mic-paren
   :config
