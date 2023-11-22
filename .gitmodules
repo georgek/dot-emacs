@@ -376,6 +376,9 @@
 [submodule "yaml-mode"]
 	path = lib/yaml-mode
 	url = git@github.com:yoshiki/yaml-mode.git
+[submodule "yaml-pro"]
+	path = lib/yaml-pro
+	url = https://github.com/zkry/yaml-pro
 [submodule "yasnippet"]
 	path = lib/yasnippet
 	url = git@github.com:joaotavora/yasnippet.git

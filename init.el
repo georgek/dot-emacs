@@ -1265,56 +1265,60 @@ RECURRENCES occasions."
 (use-package yaml-mode
   :mode "\\.\\(ya?\\|m\\)ml\\'")
 
+(use-package yaml-pro
+  :hook ((yaml-mode . yaml-pro-mode)
+         (yaml-ts-mode . yaml-pro-ts-mode)))
+
 (progn                                  ; misc settings
- ;; set some default styles
- (setq c-default-style
-       '((java-mode . "java")
-         (awk-mode . "awk")
-         (c-mode . "k&r")
-         (c++-mode . "stroustrup")
-         (other . "gnu")))
+  ;; set some default styles
+  (setq c-default-style
+        '((java-mode . "java")
+          (awk-mode . "awk")
+          (c-mode . "k&r")
+          (c++-mode . "stroustrup")
+          (other . "gnu")))
 
- ;; column and line number
- (column-number-mode 1)
- (line-number-mode 1)
+  ;; column and line number
+  (column-number-mode 1)
+  (line-number-mode 1)
 
- ;; enable auto fill mode globally
- (setq auto-fill-mode 1)
- ;; default fill length
- (setq-default fill-column 88)
+  ;; enable auto fill mode globally
+  (setq auto-fill-mode 1)
+  ;; default fill length
+  (setq-default fill-column 88)
 
- (defun unfill-paragraph ()
-   "Unfill paragraph at or after point."
-   (interactive "*")
-   (let ((fill-column most-positive-fixnum))
-     (fill-paragraph nil (region-active-p))))
+  (defun unfill-paragraph ()
+    "Unfill paragraph at or after point."
+    (interactive "*")
+    (let ((fill-column most-positive-fixnum))
+      (fill-paragraph nil (region-active-p))))
 
- ;; set some default modes
- ;; lex
- (add-to-list 'auto-mode-alist '("\\.l\\'" . c-mode))
- ;; matlab
- (add-to-list 'auto-mode-alist '("\\.m\\'" . matlab-mode))
- ;; XML
- (add-to-list 'auto-mode-alist '("\\.xml\\'" . sgml-mode))
+  ;; set some default modes
+  ;; lex
+  (add-to-list 'auto-mode-alist '("\\.l\\'" . c-mode))
+  ;; matlab
+  (add-to-list 'auto-mode-alist '("\\.m\\'" . matlab-mode))
+  ;; XML
+  (add-to-list 'auto-mode-alist '("\\.xml\\'" . sgml-mode))
 
- ;; ediff
- (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+  ;; ediff
+  (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 
- (global-set-key (kbd "C-M-'") 'other-frame)
- (global-set-key (kbd "M-SPC")
-                 (lambda ()
-                   (interactive)
-                   (insert " ")
-                   (backward-char)))
+  (global-set-key (kbd "C-M-'") 'other-frame)
+  (global-set-key (kbd "M-SPC")
+                  (lambda ()
+                    (interactive)
+                    (insert " ")
+                    (backward-char)))
 
- ;; keep backup files neatly out of the way in .~/
- (setq backup-directory-alist '(("." . ".~")))
+  ;; keep backup files neatly out of the way in .~/
+  (setq backup-directory-alist '(("." . ".~")))
 
- ;; use character folding in search (a matches á etc)
- (setq search-default-mode 'char-fold-to-regexp)
+  ;; use character folding in search (a matches á etc)
+  (setq search-default-mode 'char-fold-to-regexp)
 
- ;; rat yank doesn't move cursor
- (setq mouse-yank-at-point t))
+  ;; rat yank doesn't move cursor
+  (setq mouse-yank-at-point t))
 
 ;;; Tree-sitter stuff
 
