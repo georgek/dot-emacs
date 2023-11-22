@@ -973,7 +973,13 @@ indent whitespace in front of the next line."
   (use-package gk-org)
   (use-package org-bullets)
   (use-package org-tempo)
+  (use-package org-habit
+    :config
+    (setq org-habit-preceding-days 28
+          org-habit-following-days 10
+          org-habit-graph-column 44))
   (require 'smartparens-org)
+  (add-to-list 'org-modules 'org-habit)
   (setq org-startup-indented t
         org-indent-indentation-per-level 1
         org-src-preserve-indentation t
