@@ -1057,7 +1057,7 @@ indent whitespace in front of the next line."
   (setq org-agenda-custom-commands
         '(("h" tags-todo "-@work")
           ("w" tags-todo "-@home")
-          ("c" "Current day" ((agenda "" ((org-agenda-span 1)
+          ("c" "Current day" ((agenda "" ((org-agenda-span 2)
                                           (org-agenda-show-log t)
                                           (org-agenda-skip-scheduled-if-done t)
                                           (org-agenda-include-inactive-timestamps t)
