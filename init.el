@@ -968,7 +968,8 @@ indent whitespace in front of the next line."
          (org-mode . flyspell-mode)
          (org-mode . reveal-mode)
          (org-mode . (lambda () (yas-minor-mode -1)))
-         (org-babel-after-execute . org-redisplay-inline-images))
+         (org-babel-after-execute . org-redisplay-inline-images)
+         (org-agenda-finalize . (lambda () (setq-local cursor-type nil))))
   :config
   (use-package gk-org)
   (use-package org-bullets)
