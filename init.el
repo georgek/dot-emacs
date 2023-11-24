@@ -1184,7 +1184,7 @@ RECURRENCES occasions."
                               "#+title: %<%Y-%m-%d>\n")))))
 
 (use-package plantuml-mode
-  :mode ("\\.plantuml\\'" . plantuml-mode)
+  :mode ("\\.plantuml\\'" "\\.puml\\'")
   :config
   (setq plantuml-executable-path "plantuml"
         plantuml-default-exec-mode 'executable))
