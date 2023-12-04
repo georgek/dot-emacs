@@ -410,7 +410,7 @@ indent whitespace in front of the next line."
         corfu-auto-delay 0.2
         corfu-auto-prefix 1
         corfu-min-width 40
-        corfu-preselect 'valid)
+        corfu-preselect 'prompt)
   (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 
 (use-package flymake
