@@ -1075,7 +1075,19 @@ indent whitespace in front of the next line."
                                         (org-agenda-skip-scheduled-if-done t)
                                         (org-agenda-include-inactive-timestamps t)))
                             (todo "STARTED")
-                            (todo "WAITING")))))
+                            (todo "WAITING")))
+          ("t" "Timesheet" ((agenda "" ((org-agenda-start-on-weekday 1)
+                                        (org-agenda-include-deadlines nil)
+                                        (org-agenda-span 7)
+                                        (org-agenda-show-log t)
+                                        (org-agenda-clockreport-mode t)
+                                        (org-agenda-clockreport-parameter-plist
+                                         '(:maxlevel 3
+                                           :tcolumns 1
+                                           :link t
+                                           :fileskip0 t
+                                           :formula "$4='(* 37.5 (/ (string-to-number (replace-regexp-in-string \"[\*h]\" \"\" $3)) (string-to-number (replace-regexp-in-string \"[\*h]\" \"\" @2$3))));%.2f"))
+                                        (org-duration-format '(("h" . t) (special . 2)))))))))
   (setq org-agenda-files (directory-files (orgdr) t "\\.org$" t))
   (setq org-agenda-include-diary nil)
   (setq org-agenda-span 14)
