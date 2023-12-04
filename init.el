@@ -1076,7 +1076,7 @@ indent whitespace in front of the next line."
                                         (org-agenda-include-inactive-timestamps t)))
                             (todo "STARTED")
                             (todo "WAITING")))
-          ("t" "Timesheet" ((agenda "" ((org-agenda-start-on-weekday 1)
+          ("T" "Timesheet" ((agenda "" ((org-agenda-start-on-weekday 1)
                                         (org-agenda-include-deadlines nil)
                                         (org-agenda-span 7)
                                         (org-agenda-show-log t)
