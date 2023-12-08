@@ -1098,6 +1098,7 @@ indent whitespace in front of the next line."
                                    (todo .   " %-2i %-12:c")
                                    (tags .   " %-2i %-12:c")
                                    (search . " %-2i %-12:c")))
+  (setq org-agenda-current-time-string "󰳝┄┄┄┄┄┄┄┄┄┄┄┄┄┄ 󰔠 Now")
   (setq org-time-stamp-custom-formats
         '("<%A, %e %B %Y>" . "<%A, %e %B %Y %H:%M>"))
   (setq org-log-done 'time)
