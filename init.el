@@ -319,23 +319,29 @@ indent whitespace in front of the next line."
   :defer t
   :config (cl-pushnew 'tramp-own-remote-path tramp-remote-path))
 
-(use-package undo-tree
+(use-package undo-fu-session
   :config
-  (global-undo-tree-mode)
-  (setq undo-tree-mode-lighter ""))
+  (undo-fu-session-global-mode))
 
 (use-package uniquify
   :demand t
   :config
   (setq uniquify-buffer-name-style 'reverse)
   (setq uniquify-separator "/")
-  (setq uniquify-after-kill-buffer-p t) ; rename after killing uniquified
+  (setq uniquify-after-kill-buffer-p t)    ; rename after killing uniquified
   (setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
   (setq uniquify-min-dir-content 0))
 
 (use-package volatile-highlights
   :defer 2
   :config (volatile-highlights-mode t))
+
+(use-package vundo
+  :bind (("C-x u" . vundo)
+         ("C-/" . undo-only)
+         ("C-?" . undo-redo))
+  :config
+  (setq vundo-glyph-alist vundo-unicode-symbols))
 
 (use-package which-key
   :config

@@ -346,6 +346,9 @@
 [submodule "typescript-mode"]
 	path = lib/typescript-mode
 	url = git@github.com:ananthakumaran/typescript.el.git
+[submodule "undo-fu-session"]
+	path = lib/undo-fu-session
+	url = git@github.com:emacsmirror/undo-fu-session.git
 [submodule "undo-tree"]
 	path = lib/undo-tree
 	url = https://gitlab.com/tsc25/undo-tree
@@ -361,6 +364,9 @@
 [submodule "vterm"]
 	path = lib/vterm
 	url = https://github.com/akermu/emacs-libvterm
+[submodule "vundo"]
+	path = lib/vundo
+	url = https://github.com/casouri/vundo
 [submodule "web-mode"]
 	path = lib/web-mode
 	url = git@github.com:georgek/web-mode.git
