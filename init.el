@@ -497,7 +497,7 @@ indent whitespace in front of the next line."
                        :mccabe (:enabled :json-false)
                        :pyflakes (:enabled :json-false)
                        :flake8 (:enabled t)
-                       :rope_autoimport (:enabled t)
+                       :rope_autoimport (:enabled :json-false)
                        :pylsp_mypy (:enabled t))
              :configurationSources ["flake8"]))))
 
