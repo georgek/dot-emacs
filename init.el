@@ -341,7 +341,7 @@ indent whitespace in front of the next line."
          ("C-/" . undo-only)
          ("C-?" . undo-redo))
   :config
-  (setq vundo-glyph-alist vundo-unicode-symbols))
+  (setq vundo-glyph-alist vundo-ascii-symbols))
 
 (use-package which-key
   :config
