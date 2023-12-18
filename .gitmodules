@@ -244,6 +244,9 @@
 [submodule "ox-hugo"]
 	path = lib/ox-hugo
 	url = https://github.com/kaushalmodi/ox-hugo
+[submodule "ox-jira"]
+	path = lib/ox-jira
+	url = https://github.com/stig/ox-jira.el
 [submodule "ox-reveal"]
 	path = lib/ox-reveal
 	url = git@github.com:yjwen/org-reveal.git

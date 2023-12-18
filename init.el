@@ -1020,6 +1020,7 @@ indent whitespace in front of the next line."
   (use-package ox-md)
   (use-package ox-reveal)
   (use-package ox-twbs)
+  (use-package ox-jira)
   (setq org-latex-to-pdf-process '("latexmk -pdf %f"))
   (setq org-export-latex-listings 'minted)
   (defun orgtbl-to-latex-booktabs (table params)
