@@ -1183,6 +1183,9 @@ RECURRENCES occasions."
   (eval-after-load "org"
     '(setcdr (assoc "\\.pdf\\'" org-file-apps) "evince %s")))
 
+(use-package org-download
+  :hook ((dired-mode . org-download-enable)))
+
 (use-package org-roam
   :bind (("C-c n l" . org-roam-buffer-toggle)
          ("C-c n f" . org-roam-node-find)

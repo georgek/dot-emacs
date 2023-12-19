@@ -238,6 +238,9 @@
 [submodule "org-contrib"]
 	path = lib/org-contrib
 	url = git@github.com:emacsmirror/org-contrib.git
+[submodule "org-download"]
+	path = lib/org-download
+	url = https://github.com/abo-abo/org-download
 [submodule "org-roam"]
 	path = lib/org-roam
 	url = https://github.com/org-roam/org-roam
