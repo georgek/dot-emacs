@@ -1259,6 +1259,9 @@ RECURRENCES occasions."
 
 (use-package sql)
 
+(use-package sql-indent
+  :hook ((sql-mode . sqlind-minor-mode)))
+
 (use-package sqlup-mode
   :hook ((sql-mode . sqlup-mode)
          (sql-interactive-mode . sqlup-mode)))

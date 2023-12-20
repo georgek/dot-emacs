@@ -325,6 +325,9 @@
 [submodule "spinner"]
 	path = lib/spinner
 	url = git@github.com:Malabarba/spinner.el.git
+[submodule "sql-indent"]
+	path = lib/sql-indent
+	url = https://github.com/alex-hhh/emacs-sql-indent.git
 [submodule "sqlite3"]
 	path = lib/sqlite3
 	url = git@github.com:pekingduck/emacs-sqlite3-api.git
