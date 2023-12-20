@@ -1067,6 +1067,7 @@ indent whitespace in front of the next line."
           ("w" tags-todo "-@home")
           ("c" "Today" ((agenda "" ((org-agenda-span 3)
                                     (org-agenda-show-log t)
+                                    (org-agenda-skip-deadline-if-done t)
                                     (org-agenda-skip-scheduled-if-done t)
                                     (org-agenda-include-inactive-timestamps t)
                                     (org-agenda-skip-deadline-prewarning-if-scheduled t)))
