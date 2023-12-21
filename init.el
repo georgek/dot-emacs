@@ -1100,7 +1100,7 @@ indent whitespace in front of the next line."
   (setq org-agenda-files (directory-files (orgdr) t "\\.org$" t))
   (setq org-agenda-include-diary nil)
   (setq org-agenda-span 14)
-  (setq org-agenda-start-on-weekday nil)
+  (setq org-agenda-start-on-weekday 1)
   (setq org-agenda-window-setup 'current-window)
   (setq org-agenda-restore-windows-after-quit t)
   (setq org-agenda-prefix-format '((agenda . " %-2i %-12:c%?-12t% s")
