@@ -358,9 +358,6 @@
 [submodule "undo-fu-session"]
 	path = lib/undo-fu-session
 	url = git@github.com:emacsmirror/undo-fu-session.git
-[submodule "undo-tree"]
-	path = lib/undo-tree
-	url = https://gitlab.com/tsc25/undo-tree
 [submodule "use-package"]
 	path = lib/use-package
 	url = git@github.com:jwiegley/use-package.git
