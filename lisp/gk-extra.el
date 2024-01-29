@@ -131,5 +131,10 @@ frame is killed."
             (list :background "white")
             props)))
 
+(defun gk-insert-si-measurement (measurement unit)
+  "Insert a formatted SI MEASUREMENT with UNIT in the buffer."
+  (interactive "sMeasurement: \nsUnit: ")
+  (insert (format "%s %s" measurement unit)))
+
 (provide 'gk-extra)
 ;;; gk-extra.el ends here
