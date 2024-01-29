@@ -246,7 +246,7 @@
 	url = https://github.com/org-roam/org-roam
 [submodule "ox-hugo"]
 	path = lib/ox-hugo
-	url = https://github.com/kaushalmodi/ox-hugo
+	url = https://github.com/georgek/ox-hugo
 [submodule "ox-jira"]
 	path = lib/ox-jira
 	url = https://github.com/stig/ox-jira.el
