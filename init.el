@@ -711,6 +711,10 @@ indent whitespace in front of the next line."
   (setq magit-list-refs-sortby "-creatordate")
   (setq magit-refs-pad-commit-counts t))
 
+(use-package magit-todos
+  :after magit
+  :config (magit-todos-mode 1))
+
 (use-package magit-wip
   :after magit
   :config (magit-wip-mode))

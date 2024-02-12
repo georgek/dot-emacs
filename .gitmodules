@@ -190,6 +190,9 @@
 [submodule "magit"]
 	path = lib/magit
 	url = git@github.com:magit/magit.git
+[submodule "magit-todos"]
+	path = lib/magit-todos
+	url = https://github.com/alphapapa/magit-todos
 [submodule "marginalia"]
 	path = lib/marginalia
 	url = https://github.com/minad/marginalia
@@ -271,6 +274,9 @@
 [submodule "parseedn"]
 	path = lib/parseedn
 	url = git@github.com:clojure-emacs/parseedn.git
+[submodule "pcre2el"]
+	path = lib/pcre2el
+	url = https://github.com/joddie/pcre2el
 [submodule "pfuture"]
 	path = lib/pfuture
 	url = https://github.com/Alexander-Miller/pfuture
