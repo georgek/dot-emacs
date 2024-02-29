@@ -714,7 +714,9 @@ indent whitespace in front of the next line."
 
 (use-package magit-todos
   :after magit
-  :config (magit-todos-mode 1))
+  :config
+  (magit-todos-mode 1)
+  (add-to-list 'magit-todos-exclude-globs "*.min.js"))
 
 (use-package magit-wip
   :after magit
