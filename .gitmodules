@@ -190,9 +190,6 @@
 [submodule "magit"]
 	path = lib/magit
 	url = git@github.com:magit/magit.git
-[submodule "magit-todos"]
-	path = lib/magit-todos
-	url = https://github.com/alphapapa/magit-todos
 [submodule "marginalia"]
 	path = lib/marginalia
 	url = https://github.com/minad/marginalia
