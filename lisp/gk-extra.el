@@ -114,9 +114,14 @@ frame is killed."
   (insert (format-time-string "%Y-%m-%d")))
 
 (defun gk-insert-time ()
-  "Insert current time."
+  "Insert current timestamp."
   (interactive)
-  (insert (format-time-string "%Y-%m-%d %H:%M:%S")))
+  (insert (format-time-string "%Y-%m-%d %H:%M:%S %Z")))
+
+(defun gk-insert-time-iso ()
+  "Insert current timestamp in ISO format."
+  (interactive)
+  (insert (format-time-string "%Y-%m-%dT%H:%M:%S%z")))
 
 ;;; https://emacs.stackexchange.com/questions/20574/default-inline-image-background-in-org-mode/37927#37927
 ;;;###autoload

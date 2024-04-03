@@ -216,7 +216,8 @@ indent whitespace in front of the next line."
          ("C-M-;" . gk-comment-current-line)
          ("C-x C-c" . gk-kill-client-or-daemon)
          ("C-c d" . gk-insert-date)
-         ("C-c t" . gk-insert-time))
+         ("C-c t" . gk-insert-time)
+         ("C-c T" . gk-insert-time-iso))
   :mode ("\\.h\\'" . gk-c-c++-header)
   :config
   (advice-add 'create-image :filter-args
