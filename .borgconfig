@@ -17,7 +17,7 @@
 	no-byte-compile = lisp/magit-libgit.el
 [submodule "org"]
 	build-step = touch local.mk
-	build-step = make all
+	build-step = make -j8 all
 	load-path = lisp
 	info-path = doc
 [submodule "org-roam"]
