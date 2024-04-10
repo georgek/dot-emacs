@@ -1073,6 +1073,7 @@ indent whitespace in front of the next line."
                                     (org-agenda-skip-scheduled-if-done t)
                                     (org-agenda-include-inactive-timestamps t)
                                     (org-agenda-skip-deadline-prewarning-if-scheduled t)))
+                        (tags-todo "+PRIORITY=\"A\"")
                         (todo "STARTED" ((org-agenda-todo-list-sublevels t)))
                         (todo "NEXT" ((org-agenda-todo-list-sublevels t)))
                         (todo "WAITING" ((org-agenda-todo-list-sublevels t)))
