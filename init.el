@@ -344,6 +344,21 @@ indent whitespace in front of the next line."
   :config
   (setq vundo-glyph-alist vundo-ascii-symbols))
 
+(use-package which-func
+  :config
+  (setq which-func-modes
+        '(python-mode
+          python-ts-mode
+          elisp-mode
+          org-mode))
+  (which-function-mode)
+  (setq-default header-line-format
+              '((which-func-mode ("" which-func-format " "))))
+  (setq mode-line-misc-info
+        ;; We remove Which Function Mode from the mode line, because it's mostly
+        ;; invisible here anyway.
+        (assq-delete-all 'which-func-mode mode-line-misc-info)))
+
 (use-package which-key
   :config
   (which-key-mode))
