@@ -1084,6 +1084,7 @@ indent whitespace in front of the next line."
           ("w" tags-todo "-@home")
           ("c" "Today" ((agenda "" ((org-agenda-span 3)
                                     (org-agenda-show-log t)
+                                    (org-agenda-log-mode-items '(clock state))
                                     (org-agenda-skip-deadline-if-done t)
                                     (org-agenda-skip-scheduled-if-done t)
                                     (org-agenda-include-inactive-timestamps t)
@@ -1097,6 +1098,7 @@ indent whitespace in front of the next line."
                                         (org-agenda-include-deadlines nil)
                                         (org-agenda-span 1)
                                         (org-agenda-show-log t)
+                                        (org-agenda-log-mode-items '(closed state))
                                         (org-agenda-clockreport-mode t)
                                         (org-agenda-clockreport-parameter-plist
                                          '(:maxlevel 4 :link t :fileskip0 t :formula %))
@@ -1108,6 +1110,7 @@ indent whitespace in front of the next line."
                                         (org-agenda-include-deadlines nil)
                                         (org-agenda-span 7)
                                         (org-agenda-show-log t)
+                                        (org-agenda-log-mode-items '(clock))
                                         (org-agenda-clockreport-mode t)
                                         (org-agenda-clockreport-parameter-plist
                                          '(:maxlevel 3
