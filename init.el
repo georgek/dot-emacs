@@ -115,6 +115,7 @@
   (dired-mode . nerd-icons-dired-mode))
 
 (use-package solaire-mode
+  :hook (magit-blob-mode . turn-on-solaire-mode)
   :config
   (solaire-global-mode +1)
   ;; treemacs fix: https://github.com/hlissner/emacs-solaire-mode/issues/51
