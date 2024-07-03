@@ -399,7 +399,7 @@
 	url = git@github.com:joaotavora/yasnippet.git
 [submodule "yasnippet-snippets"]
 	path = lib/yasnippet-snippets
-	url = git@github.com:AndreaCrotti/yasnippet-snippets.git
+	url = git@github.com:georgek/yasnippet-snippets.git
 [submodule "zenburn-theme"]
 	path = lib/zenburn-theme
 	url = git@github.com:georgek/zenburn-emacs.git
