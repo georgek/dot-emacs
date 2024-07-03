@@ -502,6 +502,7 @@ indent whitespace in front of the next line."
 (use-package eglot
   :hook ((dockerfile-mode js2-mode typescript-mode python-ts-mode sh-mode yaml-mode)
          . eglot-ensure)
+  :bind (("C-c r" . #'eglot-rename))
   :config
   (setq eglot-autoshutdown t
         eglot-send-changes-idle-time 0.1
