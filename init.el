@@ -688,7 +688,7 @@ indent whitespace in front of the next line."
   ;;
   ;; Window management
   (setq magit-display-buffer-function
-        'magit-display-buffer-traditional
+        'magit-display-buffer-fullframe-status-v1
         magit-save-repository-buffers 'dontask)
   (add-hook 'magit-section-movement-hook 'magit-status-maybe-update-revision-buffer)
   (add-hook 'magit-section-movement-hook 'magit-status-maybe-update-blob-buffer)
