@@ -1275,7 +1275,9 @@ RECURRENCES occasions."
               ("RET" . gk-electrify-return-if-match)))
 
 (use-package rust-mode
-  :mode "\\.rs\\'")
+  :mode "\\.rs\\'"
+  :bind (:map rust-mode-map
+         ("RET" . gk-electrify-return-if-match)))
 
 (use-package scheme
   :config
