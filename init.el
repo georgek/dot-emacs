@@ -425,7 +425,9 @@ indent whitespace in front of the next line."
     (corfu-echo-mode))
   (use-package corfu-popupinfo
     :init
-    (corfu-popupinfo-mode))
+    (corfu-popupinfo-mode)
+    :config
+    (setq corfu-popupinfo-delay '(0.5 . 0.25)))
   (setq completion-cycle-threshold 3
         tab-always-indent 'complete
         corfu-auto t
@@ -500,7 +502,13 @@ indent whitespace in front of the next line."
 
 ;;; General editing
 (use-package eglot
-  :hook ((dockerfile-mode js2-mode typescript-mode python-ts-mode sh-mode yaml-mode)
+  :hook ((dockerfile-mode
+          js2-mode
+          typescript-mode
+          python-ts-mode
+          rust-mode
+          sh-mode
+          yaml-mode)
          . eglot-ensure)
   :bind (("C-c r" . #'eglot-rename))
   :config
