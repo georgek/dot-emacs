@@ -1277,7 +1277,10 @@ RECURRENCES occasions."
 (use-package rust-mode
   :mode "\\.rs\\'"
   :bind (:map rust-mode-map
-         ("RET" . gk-electrify-return-if-match)))
+         ("RET" . gk-electrify-return-if-match))
+  :config
+  (require 'smartparens-rust)
+  (setq rust-mode-tree-sitter-derive t))
 
 (use-package scheme
   :config
@@ -1409,6 +1412,7 @@ RECURRENCES occasions."
      (make "https://github.com/alemuller/tree-sitter-make")
      (markdown "https://github.com/ikatyang/tree-sitter-markdown")
      (python "https://github.com/tree-sitter/tree-sitter-python")
+     (rust "https://github.com/tree-sitter/tree-sitter-rust")
      (toml "https://github.com/tree-sitter/tree-sitter-toml")
      (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
      (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
