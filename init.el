@@ -511,6 +511,7 @@ indent whitespace in front of the next line."
           yaml-mode)
          . eglot-ensure)
   :bind (("C-c C-r" . #'eglot-rename)
+         ("C-c r" . #'eglot-rename)
          ("C-c C-a" . #'eglot-code-actions)
          ("C-c C-q" . #'eglot-code-action-quickfix))
   :config
