@@ -259,7 +259,10 @@ indent whitespace in front of the next line."
          ("C-M->" . #'mc/unmark-next-like-this)
          ("C-<" . #'mc/mark-previous-like-this)
          ("C-M-<" . #'mc/unmark-previous-like-this)
-         ("C-c C-<" . #'mc/mark-all-like-this)))
+         ("C-c C-<" . #'mc/mark-all-like-this))
+  :config
+  (global-unset-key (kbd "M-<down-mouse-1>"))
+  (global-set-key (kbd "M-<mouse-1>") 'mc/add-cursor-on-click))
 
 (use-package no-littering
   :config
