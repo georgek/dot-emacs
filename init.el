@@ -1132,8 +1132,9 @@ indent whitespace in front of the next line."
                                          '(:maxlevel 3
                                            :tcolumns 1
                                            :link t
+                                           :tags t
                                            :fileskip0 t
-                                           :formula "$4='(* 37.5 (/ (string-to-number (replace-regexp-in-string \"[\*h]\" \"\" $3)) (string-to-number (replace-regexp-in-string \"[\*h]\" \"\" @2$3))));%.2f"))
+                                           :formula "$5='(* 37.5 (/ (string-to-number (replace-regexp-in-string \"[\*h]\" \"\" $4)) (string-to-number (replace-regexp-in-string \"[\*h]\" \"\" @2$4))));%.2f"))
                                         (org-duration-format '(("h" . t) (special . 2)))))))))
   (setq org-agenda-files (directory-files (orgdr) t "\\.org$" t))
   (setq org-agenda-include-diary nil)
