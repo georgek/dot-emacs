@@ -1096,8 +1096,8 @@ indent whitespace in front of the next line."
            "* %?\n%U\n%a")))
   ;; agenda
   (setq org-agenda-custom-commands
-        '(("h" tags-todo "-@work")
-          ("w" tags-todo "-@home")
+        '(("h" "Home" tags-todo "-@work")
+          ("w" "Work" tags-todo "-@home")
           ("c" "Today" ((agenda "" ((org-agenda-span 3)
                                     (org-agenda-show-log t)
                                     (org-agenda-log-mode-items '(clock state))
