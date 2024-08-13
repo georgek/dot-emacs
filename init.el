@@ -1402,6 +1402,9 @@ RECURRENCES occasions."
                     (insert " ")
                     (backward-char)))
 
+  ;; don't make lockfiles (.#)
+  (setq create-lockfiles nil)
+
   ;; keep backup files neatly out of the way in .~/
   (setq backup-directory-alist '(("." . ".~")))
 
