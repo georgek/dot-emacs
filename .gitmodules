@@ -109,6 +109,9 @@
 [submodule "f"]
 	path = lib/f
 	url = git@github.com:rejeep/f.el.git
+[submodule "fancy-compilation"]
+	path = lib/fancy-compilation
+	url = https://codeberg.org/ideasman42/emacs-fancy-compilation
 [submodule "forge"]
 	path = lib/forge
 	url = git@github.com:magit/forge.git

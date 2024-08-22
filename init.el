@@ -630,6 +630,12 @@ indent whitespace in front of the next line."
 (use-package eshell
   :bind (("C-c s" . eshell)))
 
+(use-package fancy-compilation
+  :after compile
+  :commands (fancy-compilation-mode)
+  :config
+  (fancy-compilation-mode))
+
 (use-package forge
   :after magit)
 
