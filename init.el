@@ -731,6 +731,8 @@ indent whitespace in front of the next line."
         '(magit-insert-modules-overview
           magit-insert-modules-unpulled-from-upstream
           magit-insert-modules-unpushed-to-upstream))
+  (transient-replace-suffix 'magit-commit 'magit-commit-autofixup
+    '("x" "Absorb changes" magit-commit-absorb))
   ;;
   ;; Branch settings
   (setq magit-branch-prefer-remote-upstream '("main" "master" "develop"))
