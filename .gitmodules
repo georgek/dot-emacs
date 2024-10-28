@@ -106,6 +106,9 @@
 [submodule "evil"]
 	path = lib/evil
 	url = https://github.com/emacs-evil/evil
+[submodule "expand-region"]
+	path = lib/expand-region
+	url = https://github.com/magnars/expand-region.el
 [submodule "f"]
 	path = lib/f
 	url = git@github.com:rejeep/f.el.git
