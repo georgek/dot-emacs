@@ -1,6 +1,4 @@
 [submodule "auctex"]
-	build-step = ./autogen.sh
-	build-step = ./configure --without-texmf-dir
 	build-step = make
 	build-step = borg-update-autoloads
 	build-step = borg-makeinfo
