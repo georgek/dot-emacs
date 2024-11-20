@@ -121,6 +121,9 @@
 [submodule "geiser"]
 	path = lib/geiser
 	url = git@gitlab.com:jaor/geiser.git
+[submodule "geiser-racket"]
+	path = lib/geiser-racket
+	url = https://gitlab.com/emacs-geiser/racket
 [submodule "ghub"]
 	path = lib/ghub
 	url = https://github.com/magit/ghub

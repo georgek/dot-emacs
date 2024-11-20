@@ -854,7 +854,9 @@ indent whitespace in front of the next line."
   :commands (geiser-mode)
   :load-path "lib/geiser/elisp"
   :init
-  (setq geiser-active-implementations '(racket guile)))
+  (setq geiser-active-implementations '(racket guile))
+  :config
+  (use-package geiser-racket))
 
 (use-package go-mode
   :mode "\\.go\\'"
@@ -869,10 +871,10 @@ indent whitespace in front of the next line."
     (interactive)
     (compile "go test -v && go vet && golint"))
   :bind (:map go-mode-map
-         ("C-c C-c" . go-mode-compile)
-         ("C-c C-t" . go-mode-test)
-         ("M-." . godef-jump)
-         ("RET" . gk-electrify-return-if-match)))
+              ("C-c C-c" . go-mode-compile)
+              ("C-c C-t" . go-mode-test)
+              ("M-." . godef-jump)
+              ("RET" . gk-electrify-return-if-match)))
 
 (use-package jinja2-mode
   :mode ("\\.j2\\'"))
