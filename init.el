@@ -1300,6 +1300,9 @@ RECURRENCES occasions."
   :bind (:map rjsx-mode-map
               ("RET" . gk-electrify-return-if-match)))
 
+(use-package tsx-ts-mode
+  :mode "\\.tsx\\'")
+
 (use-package rust-mode
   :mode "\\.rs\\'"
   :bind (:map rust-mode-map
