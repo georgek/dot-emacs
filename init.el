@@ -510,6 +510,7 @@ indent whitespace in front of the next line."
 (use-package eglot
   :hook ((dockerfile-mode
           js2-mode
+          tsx-ts-mode
           typescript-mode
           python-ts-mode
           rust-mode
