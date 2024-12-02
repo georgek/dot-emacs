@@ -631,6 +631,14 @@ indent whitespace in front of the next line."
   :defer t
   :config (setq dired-listing-switches "-alh"))
 
+(use-package epkg
+  :defer t
+  :init
+  (setq epkg-repository
+        (expand-file-name "var/epkgs/" user-emacs-directory))
+  (setq epkg-database-connector
+        (if (>= emacs-major-version 29) 'sqlite-builtin 'sqlite-module)))
+
 (use-package eshell
   :bind (("C-c s" . eshell)))
 
@@ -684,13 +692,6 @@ indent whitespace in front of the next line."
         ("C-c z" . ielm-switch-to-buffer)
         :map ielm-map
         ("C-<return>" . ielm-send-input)))
-(use-package epkg
-  :defer t
-  :init
-  (setq epkg-repository
-        (expand-file-name "var/epkgs/" user-emacs-directory))
-  (setq epkg-database-connector
-        (if (>= emacs-major-version 29) 'sqlite-builtin 'sqlite-module)))
 
 (use-package magit
   :defer t

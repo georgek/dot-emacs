@@ -178,9 +178,15 @@
 [submodule "json-snatcher"]
 	path = lib/json-snatcher
 	url = git@github.com:Sterlingg/json-snatcher.git
+[submodule "jtsx"]
+	path = lib/jtsx
+	url = https://github.com/llemaitre19/jtsx
 [submodule "julia-mode"]
 	path = lib/julia-mode
 	url = git@github.com:JuliaEditorSupport/julia-emacs.git
+[submodule "kubed"]
+	path = lib/kubed
+	url = https://git.sr.ht/~eshel/kubed
 [submodule "ledger-mode"]
 	path = lib/ledger-mode
 	url = git@github.com:ledger/ledger-mode.git
