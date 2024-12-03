@@ -772,7 +772,9 @@ indent whitespace in front of the next line."
   :config
   (setq treemacs-is-never-other-window t
         treemacs-follow-after-init t
-        treemacs-default-visit-action #'treemacs-visit-node-close-treemacs)
+        treemacs-default-visit-action #'treemacs-visit-node-close-treemacs
+        treemacs-git-mode 'deferred
+        treemacs-hide-gitignored-files-mode t)
   (treemacs-fringe-indicator-mode 'only-when-focused))
 
 (use-package treemacs-magit
