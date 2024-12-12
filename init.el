@@ -693,6 +693,9 @@ indent whitespace in front of the next line."
         :map ielm-map
         ("C-<return>" . ielm-send-input)))
 
+(use-package kubernetes
+  :bind (("C-c k" . kubernetes-overview)))
+
 (use-package magit
   :defer t
   :commands (magit-add-section-hook)

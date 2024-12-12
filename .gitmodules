@@ -187,6 +187,9 @@
 [submodule "kubed"]
 	path = lib/kubed
 	url = https://git.sr.ht/~eshel/kubed
+[submodule "kubernetes"]
+	path = lib/kubernetes
+	url = https://github.com/kubernetes-el/kubernetes-el
 [submodule "ledger-mode"]
 	path = lib/ledger-mode
 	url = git@github.com:ledger/ledger-mode.git
@@ -205,6 +208,9 @@
 [submodule "magit"]
 	path = lib/magit
 	url = git@github.com:magit/magit.git
+[submodule "magit-popup"]
+	path = lib/magit-popup
+	url = https://github.com/magit/magit-popup
 [submodule "marginalia"]
 	path = lib/marginalia
 	url = https://github.com/minad/marginalia
@@ -304,6 +310,9 @@
 [submodule "queue"]
 	path = lib/queue
 	url = git@github.com:emacsmirror/queue.git
+[submodule "request"]
+	path = lib/request
+	url = https://github.com/tkf/emacs-request
 [submodule "rjsx-mode"]
 	path = lib/rjsx-mode
 	url = git@github.com:felipeochoa/rjsx-mode.git
