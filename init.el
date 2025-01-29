@@ -1224,7 +1224,7 @@ indent whitespace in front of the next line."
                 '(" - Org clocked in: " org-mode-line-string)))
   ;; refile
   (setq org-refile-targets
-        '((nil :level . 1)
+        '((nil :level . 2)
           (nil :todo . "STARTED")
           (nil :tag . "sprint")))
   (setq org-refile-use-outline-path t)
