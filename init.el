@@ -537,7 +537,10 @@ indent whitespace in front of the next line."
                        :ruff (:enable t)
                        :rope_autoimport (:enabled :json-false)
                        :pylsp_mypy (:enabled t))
-             :configurationSources ["flake8"]))))
+             :configurationSources ["flake8"])))
+  (add-to-list 'eglot-server-programs
+             '((python-mode python-ts-mode)
+               "basedpyright-langserver" "--stdio")))
 
 (use-package flyspell
   :config (setq flyspell-issue-message-flag -1)
