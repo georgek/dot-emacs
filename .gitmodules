@@ -139,6 +139,9 @@
 [submodule "graphql"]
 	path = lib/graphql
 	url = git@github.com:vermiculus/graphql.el.git
+[submodule "hcl-mode"]
+	path = lib/hcl-mode
+	url = https://github.com/hcl-emacs/hcl-mode
 [submodule "helpful"]
 	path = lib/helpful
 	url = git@github.com:Wilfred/helpful.git
@@ -364,6 +367,9 @@
 [submodule "sway"]
 	path = lib/sway
 	url = https://github.com/thblt/sway.el
+[submodule "terraform-mode"]
+	path = lib/terraform-mode
+	url = https://github.com/hcl-emacs/terraform-mode
 [submodule "tomelr"]
 	path = lib/tomelr
 	url = https://github.com/kaushalmodi/tomelr
