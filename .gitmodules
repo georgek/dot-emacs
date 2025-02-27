@@ -187,6 +187,9 @@
 [submodule "julia-mode"]
 	path = lib/julia-mode
 	url = git@github.com:JuliaEditorSupport/julia-emacs.git
+[submodule "k8s-mode"]
+	path = lib/k8s-mode
+	url = https://github.com/TxGVNN/emacs-k8s-mode
 [submodule "kubed"]
 	path = lib/kubed
 	url = https://git.sr.ht/~eshel/kubed
