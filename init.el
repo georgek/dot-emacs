@@ -1227,9 +1227,9 @@ indent whitespace in front of the next line."
                 '(" - Org clocked in: " org-mode-line-string)))
   ;; refile
   (setq org-refile-targets
-        '((nil :level . 2)
-          (nil :todo . "STARTED")
-          (nil :tag . "sprint")))
+        '((org-agenda-files :level . 2)
+          (org-agenda-files :todo . "STARTED")
+          (org-agenda-files :tag . "sprint")))
   (setq org-refile-use-outline-path t)
   (setq org-outline-path-complete-in-steps nil)
   ;; use log drawer
