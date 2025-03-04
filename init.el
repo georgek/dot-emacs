@@ -539,8 +539,13 @@ indent whitespace in front of the next line."
                        :pylsp_mypy (:enabled t))
              :configurationSources ["flake8"])))
   (add-to-list 'eglot-server-programs
-             '((python-mode python-ts-mode)
-               "basedpyright-langserver" "--stdio")))
+               `((python-mode python-ts-mode)
+                 . ,(eglot-alternatives
+                     '(("basedpyright-langserver" "--stdio")
+                       "pylsp"
+                       "pyls"
+                       ("pyright-langserver" "--stdio")
+                       "jedi-language-server")))))
 
 (use-package flyspell
   :config (setq flyspell-issue-message-flag -1)
