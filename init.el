@@ -1232,7 +1232,7 @@ indent whitespace in front of the next line."
                 '(" - Org clocked in: " org-mode-line-string)))
   ;; refile
   (setq org-refile-targets
-        '((org-agenda-files :level . 2)
+        '((org-agenda-files :maxlevel . 2)
           (org-agenda-files :todo . "STARTED")
           (org-agenda-files :tag . "sprint")))
   (setq org-refile-use-outline-path t)
