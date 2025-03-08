@@ -1,7 +1,11 @@
 [submodule "auctex"]
+	load-path = .
+	build-step = ./configure --with-lispdir=~/.emacs.d/lib/auctex
 	build-step = make
-	build-step = borg-update-autoloads
+	build-step = make doc
+	build-step = borg-maketexi
 	build-step = borg-makeinfo
+	build-step = borg-update-autoloads
 	info-path = doc
 [submodule "corfu"]
 	load-path = .

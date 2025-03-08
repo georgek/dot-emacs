@@ -1356,8 +1356,9 @@ RECURRENCES occasions."
                        (auto-fill-mode)
                        (setq tab-stop-list (number-sequence 3 45 3))))))
 
-(use-package tex-site                   ; auctex
-  :mode ("\\.tex\\'" . TeX-latex-mode)
+(use-package latex                   ; auctex
+  :load-path "lib/auctex"
+  :mode ("\\.tex\\'" . LaTeX-mode)
   :init
   (setq reftex-plug-into-AUCTeX t)
   :config
