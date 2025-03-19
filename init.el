@@ -1118,6 +1118,10 @@ indent whitespace in front of the next line."
   (setq org-capture-templates
         `(("t" "Todo" entry (file+headline ,(orgdr "todo.org") "Misc (Captured)")
            "* TODO %?\n%U\n%a")
+          ("c" "Current clocked task" entry (clock)
+           "* TODO %?\n%U\n%a" :prepend t :empty-lines 1)
+          ("f" "Current clocked task FIXME" checkitem (clock)
+           "- [ ] FIXME %a %U" :immediate-finish t)
           ("d" "Diary" entry (file+headline ,(orgdr "diary.org") "Captured"))
           ("j" "Journal" entry (file+olp+datetree ,(orgdr "journal.org"))
            "* %? %^g\nEntered on %U\n%i")
