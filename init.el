@@ -1246,6 +1246,8 @@ indent whitespace in front of the next line."
           (org-agenda-files :tag . "sprint")))
   (setq org-refile-use-outline-path t)
   (setq org-outline-path-complete-in-steps nil)
+  ;; structure templates
+  (add-to-list 'org-structure-template-alist '("n" . "notes"))
   ;; use log drawer
   (setq org-log-into-drawer t)
   (defun diary-limited-cyclic (recurrences interval y m d)
