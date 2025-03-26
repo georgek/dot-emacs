@@ -33,7 +33,11 @@
   (setq focus-follows-mouse t)
   (setq mouse-autoselect-window t)
   (fset 'yes-or-no-p 'y-or-n-p)
+  ;; highlight current line
   (global-hl-line-mode +1)
+  ;; but not in repl-style buffers
+  (add-hook 'comint-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
+  (add-hook 'vterm-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
   ;; tab completion
   (setq-default indent-tabs-mode nil)
   (when (fboundp 'scroll-bar-mode)
