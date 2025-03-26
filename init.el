@@ -1068,9 +1068,11 @@ indent whitespace in front of the next line."
      (R . t)
      (shell . t)
      (python . t)
-     (plantuml . t)))
+     (plantuml . t)
+     (mermaid . t)))
   (setq org-plantuml-exec-mode 'plantuml
         org-confirm-babel-evaluate nil)
+  (setq ob-mermaid-cli-path "mmdc")
   ;; exporting
   (use-package htmlize)
   (use-package org-contrib
