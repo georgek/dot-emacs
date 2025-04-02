@@ -1125,11 +1125,16 @@ indent whitespace in front of the next line."
         `(("t" "Todo" entry (file+headline ,(orgdr "todo.org") "Misc (Captured)")
            "* TODO %?\n%U\n%a")
 
-          ("c" "Current clocked task" entry (clock)
+          ("c" "Current task subitem")
+
+          ("ct" "Current clocked task" entry (clock)
            "* TODO %?\n%U\n%a" :prepend t :empty-lines 1)
 
-          ("f" "Current clocked task FIXME" checkitem (clock)
+          ("cf" "Current clocked task FIXME" checkitem (clock)
            "- [ ] FIXME %a %U" :immediate-finish t)
+
+          ("cm" "Current clocked task meeting" entry (clock)
+           "* Meeting: %^{Title}\nTime:   %^{Time}T\nPlace:  %^{Place}\nBooked: %U\n\n** People\n- %?\n\n** Agenda\n- [ ] \n** Notes\n- " :empty-lines 1 :jump-to-captured t)
 
           ("d" "Diary" entry (file+headline ,(orgdr "diary.org") "Captured"))
 
