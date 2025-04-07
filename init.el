@@ -1331,6 +1331,8 @@ RECURRENCES occasions."
   (:map python-ts-mode-map
         ("RET" . gk-electrify-return-if-match)))
 
+(use-package python-pytest)
+
 (use-package rjsx-mode
   :mode "\\.jsx\\'"
   :init

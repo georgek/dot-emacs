@@ -319,6 +319,9 @@
 [submodule "polymode"]
 	path = lib/polymode
 	url = https://github.com/polymode/polymode
+[submodule "python-pytest"]
+	path = lib/python-pytest
+	url = https://github.com/wbolster/emacs-python-pytest
 [submodule "queue"]
 	path = lib/queue
 	url = git@github.com:emacsmirror/queue.git
