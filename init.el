@@ -105,6 +105,7 @@
   :config
   (setq doom-modeline-height 16)
   (setq doom-modeline-time nil)
+  (setq mode-line-right-align-edge 'right-margin)
   ;; this simple function works better while using direnv
   (setq doom-modeline-env-python-command (lambda () '("python" "--version"))))
 
