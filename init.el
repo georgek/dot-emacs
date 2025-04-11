@@ -1121,8 +1121,20 @@ indent whitespace in front of the next line."
   (setq org-twbs-htmlize-font-prefix "org-")
   ;; capture
   (setq org-default-notes-file (orgdr "notes.org"))
+
+  ;; NOTE doct package helps with organising these
   (setq org-capture-templates
         `(("t" "Todo" entry (file+headline ,(orgdr "todo.org") "Misc (Captured)")
+           "* TODO %?\n%U\n%a")
+
+          ("p" "Project Todo"
+           entry
+           (file+function
+            ,(orgdr "projects.org")
+            (lambda ()
+              (let ((org-goto-interface 'outline-path-completion)
+                    (org-goto-max-level 1))
+                (org-goto))))
            "* TODO %?\n%U\n%a")
 
           ("c" "Current task subitem")
