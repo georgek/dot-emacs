@@ -40,6 +40,8 @@
   (add-hook 'vterm-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
   ;; tab completion
   (setq-default indent-tabs-mode nil)
+  ;; hide commands in M-x which do not apply to the current mode
+  (setq read-extended-command-predicate #'command-completion-default-include-p)
   (when (fboundp 'scroll-bar-mode)
     (scroll-bar-mode 0))
   (when (fboundp 'tool-bar-mode)
@@ -426,7 +428,7 @@ indent whitespace in front of the next line."
   (global-corfu-mode)
   :bind (:map corfu-map
               ("RET" . nil)
-              ("TAB" . #'corfu-insert)
+              ("TAB" . #'indent-for-tab-command)
               ("M-SPC" . #'corfu-insert)
               ("C-SPC" . #'corfu-insert-separator))
   :config
@@ -440,6 +442,7 @@ indent whitespace in front of the next line."
     (setq corfu-popupinfo-delay '(0.5 . 0.25)))
   (setq completion-cycle-threshold 3
         tab-always-indent 'complete
+        text-mode-ispell-word-completion nil
         corfu-auto t
         corfu-quit-no-match 'separator
         corfu-auto-delay 0.2
