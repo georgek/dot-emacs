@@ -1150,7 +1150,7 @@ indent whitespace in front of the next line."
            "- [ ] FIXME %a %U" :immediate-finish t)
 
           ("cm" "Current clocked task meeting" entry (clock)
-           "* Meeting: %^{Title}\nTime:   %^{Time}T\nPlace:  %^{Place}\nBooked: %U\n\n** People\n- %?\n\n** Agenda\n- [ ] \n** Notes\n- " :empty-lines 1 :jump-to-captured t)
+           "* Meeting: %^{Title}\nTime:   %^{Time}T\nPlace:  %^{Place}\nBooked: %U\n\n** People\n- %?\n\n** Agenda\n- [ ] \n\n** Notes\n- " :empty-lines 1 :jump-to-captured t)
 
           ("d" "Diary" entry (file+headline ,(orgdr "diary.org") "Captured"))
 
