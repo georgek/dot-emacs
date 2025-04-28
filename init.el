@@ -489,8 +489,9 @@ indent whitespace in front of the next line."
          :map vertico-map
          ("C-<return>" . vertico-exit-input)
          ("<tab>" . vertico-insert))
-  :config
+  :init
   (vertico-mode)
+  :config
   ;; Do not allow the cursor in the minibuffer prompt
   (setq minibuffer-prompt-properties
         '(read-only t cursor-intangible t face minibuffer-prompt))
