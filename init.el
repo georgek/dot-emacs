@@ -1247,7 +1247,8 @@ indent whitespace in front of the next line."
                                  ("Blog" . "fountain_pen_tip")
                                  ("FOSS" . "code_braces")
                                  ("Tool" . "toolbox")
-                                 ("Todo" . "list_status")))
+                                 ("Todo" . "list_status")
+                                 ("House" . "home")))
          (gk-nerd-agenda-icons #'nerd-icons-sucicon "nf-custom-"
                                '(("Project" . "folder_git_branch")
                                  ("Emacs" . "emacs")
