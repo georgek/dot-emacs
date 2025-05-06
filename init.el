@@ -1132,7 +1132,8 @@ indent whitespace in front of the next line."
         `(("t" "Todo" entry (file+headline ,(orgdr "todo.org") "Misc (Captured)")
            "* TODO %?\n%U\n%a")
 
-          ("p" "Project Todo"
+          ("p" "Project subitem")
+          ("pt" "Project Todo"
            entry
            (file+function
             ,(orgdr "projects.org")
@@ -1141,6 +1142,14 @@ indent whitespace in front of the next line."
                     (org-goto-max-level 1))
                 (org-goto))))
            "* TODO %?\n%U\n%a")
+          ("pm" "Project meeting" entry
+           (file+function
+            ,(orgdr "projects.org")
+            (lambda ()
+              (let ((org-goto-interface 'outline-path-completion)
+                    (org-goto-max-level 1))
+                (org-goto))))
+           "* Meeting: %^{Title}\nTime:   %^{Time}T\nPlace:  %^{Place}\nBooked: %U\n\n** People\n- %?\n\n** Agenda\n- [ ] \n\n** Notes\n- " :empty-lines 1 :jump-to-captured t)
 
           ("c" "Current task subitem")
 
