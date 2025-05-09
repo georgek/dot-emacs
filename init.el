@@ -1142,6 +1142,15 @@ indent whitespace in front of the next line."
                     (org-goto-max-level 1))
                 (org-goto))))
            "* TODO %?\n%U\n%a")
+          ("pi" "Project Immediate Task"
+           entry
+           (file+function
+            ,(orgdr "projects.org")
+            (lambda ()
+              (let ((org-goto-interface 'outline-path-completion)
+                    (org-goto-max-level 1))
+                (org-goto))))
+           "* STARTED %?\n%U\n%a" :clock-in t)
           ("pm" "Project meeting" entry
            (file+function
             ,(orgdr "projects.org")
