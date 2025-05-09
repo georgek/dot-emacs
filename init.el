@@ -1171,8 +1171,8 @@ indent whitespace in front of the next line."
            "* %?\n%U\n%a")))
   ;; agenda
   (setq org-agenda-custom-commands
-        '(("h" "Home" tags-todo "-@work")
-          ("w" "Work" tags-todo "-@home")
+        '(("h" "Home" tags-todo "-@work" ((org-tags-match-list-sublevels nil)))
+          ("w" "Work" tags-todo "-@home" ((org-tags-match-list-sublevels nil)))
           ("u" "Untagged" tags-todo "-{.*}")
           ("c" "Today" ((agenda "" ((org-agenda-span 3)
                                     (org-agenda-show-log t)
