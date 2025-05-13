@@ -1150,7 +1150,7 @@ indent whitespace in front of the next line."
               (let ((org-goto-interface 'outline-path-completion)
                     (org-goto-max-level 1))
                 (org-goto))))
-           "* STARTED %?\n%U\n%a" :clock-in t)
+           "* STARTED %?\n%U\n%a" :clock-in t :clock-keep t)
           ("pm" "Project meeting" entry
            (file+function
             ,(orgdr "projects.org")
