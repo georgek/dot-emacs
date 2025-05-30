@@ -769,7 +769,7 @@ indent whitespace in front of the next line."
   ;; Tag settings
   (setq magit-release-tag-regexp "\\`\
 \\(?1:\\(?:v\\(?:ersion\\)?\\|r\\(?:elease\\)?\\)?[-_]?\\)?\
-\\(?2:[0-9]+\\(?:\\.[0-9]+\\)*\\)\\(\\(a\\|b\\|rc\\)[0-9]+\\)?\\'")
+\\(?2:[0-9]+\\(?:\\.[0-9]+\\)*\\)\\(\\(a\\|b\\|rc\\|.post\\)[0-9]+\\)?\\'")
   ;;
   ;; Diff settings
   (setq magit-diff-refine-hunk 'all)
