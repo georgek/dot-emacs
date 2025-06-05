@@ -510,6 +510,13 @@ indent whitespace in front of the next line."
   (advice-add #'org-make-tags-matcher :around #'org-enforce-basic-completion)
   (advice-add #'org-agenda-filter :around #'org-enforce-basic-completion))
 
+(use-package vertico-sort
+  :after vertico
+  :demand
+  :config
+  (setq vertico-sort-function #'vertico-sort-history-alpha
+        vertico-sort-history-duplicate 0))
+
 (use-package yasnippet
   :config
   (use-package yasnippet-snippets)

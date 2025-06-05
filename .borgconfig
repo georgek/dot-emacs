@@ -42,6 +42,9 @@
 	no-byte-compile = src/extra/treemacs-persp.el
 	no-byte-compile = src/extra/treemacs-perspective.el
 	no-byte-compile = src/extra/treemacs-projectile.el
+[submodule "vertico"]
+	load-path = .
+	load-path = extensions
 [submodule "vterm"]
 	build-step = mkdir -p build
 	build-step = cd build && cmake .. && make
