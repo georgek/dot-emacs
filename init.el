@@ -526,6 +526,7 @@ indent whitespace in front of the next line."
 (use-package eglot
   :hook ((dockerfile-mode
           js2-mode
+          go-mode
           tsx-ts-mode
           typescript-mode
           python-ts-mode
@@ -902,6 +903,17 @@ indent whitespace in front of the next line."
   (defun go-mode-test ()
     (interactive)
     (compile "go test -v && go vet && golint"))
+
+  ;; project support for go modules
+  (defun project-find-go-module (dir)
+    (when-let ((root (locate-dominating-file dir "go.mod")))
+      (cons 'go-module root)))
+
+  (cl-defmethod project-root ((project (head go-module)))
+    (cdr project))
+
+  (add-hook 'project-find-functions #'project-find-go-module)
+
   :bind (:map go-mode-map
               ("C-c C-c" . go-mode-compile)
               ("C-c C-t" . go-mode-test)
