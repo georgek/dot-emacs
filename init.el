@@ -42,12 +42,16 @@
   (setq-default indent-tabs-mode nil)
   ;; hide commands in M-x which do not apply to the current mode
   (setq read-extended-command-predicate #'command-completion-default-include-p)
+  ;; disable GUI stuff
   (when (fboundp 'scroll-bar-mode)
     (scroll-bar-mode 0))
   (when (fboundp 'tool-bar-mode)
     (tool-bar-mode 0))
   (menu-bar-mode 0)
+  ;; better scrolling
   (pixel-scroll-precision-mode)
+  ;; use which-key builtin
+  (when (fboundp 'which-key-mode) (which-key-mode))
   (setq native-comp-async-report-warnings-errors 'silent)
   (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
   (defmacro orgdr (&optional filename)
@@ -372,10 +376,6 @@ indent whitespace in front of the next line."
         ;; We remove Which Function Mode from the mode line, because it's mostly
         ;; invisible here anyway.
         (assq-delete-all 'which-function-mode mode-line-misc-info)))
-
-(use-package which-key
-  :config
-  (which-key-mode))
 
 (use-package whitespace
   :config

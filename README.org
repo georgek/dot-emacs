@@ -2,6 +2,8 @@
 
 My config is now based on [[https://github.com/emacscollective/emacs.g][emacs.g]] and uses [[https://github.com/emacscollective/borg][borg]].
 
+I always target the latest version of Emacs.
+
 * Usage
 
 #+BEGIN_SRC shell
