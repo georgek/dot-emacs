@@ -1146,6 +1146,16 @@ indent whitespace in front of the next line."
   ;; capture
   (setq org-default-notes-file (orgdr "notes.org"))
 
+  (defun gk-org-find-subtree-create (subtree-name)
+    "Find a subtree under current tree, creating if it doesn't exist. Returns marker"
+    (condition-case nil (org-find-olp
+                         `(,@(org-get-outline-path :with-self) ,subtree-name) :this-buffer)
+      (t (save-excursion
+           (org-insert-heading-after-current)
+           (org-demote)
+           (insert subtree-name)
+           (point)))))
+
   ;; NOTE doct package helps with organising these
   (setq org-capture-templates
         `(("t" "Todo" entry (file+headline ,(orgdr "todo.org") "Misc (Captured)")
@@ -1181,13 +1191,21 @@ indent whitespace in front of the next line."
 
           ("c" "Current task subitem")
 
-          ("ct" "Current clocked task" entry (clock)
+          ("ct" "Current task todo" entry (clock)
            "* TODO %?\n%U\n%a" :prepend t :empty-lines 1)
 
-          ("cf" "Current clocked task FIXME" checkitem (clock)
+          ("cj" "Current task journal" entry
+           (function
+            (lambda ()
+              (org-clock-goto)
+              (goto-char (gk-org-find-subtree-create "Journal"))
+              (org-datetree-find-date-create (calendar-current-date) 'subtree-at-point)))
+           "* %?\n%U\n%a" :prepend t :empty-lines 1)
+
+          ("cf" "Current task FIXME" checkitem (clock)
            "- [ ] FIXME %a %U" :immediate-finish t)
 
-          ("cm" "Current clocked task meeting" entry (clock)
+          ("cm" "Current task meeting" entry (clock)
            "* Meeting: %^{Title}\nTime:   %^{Time}T\nPlace:  %^{Place}\nBooked: %U\n\n** People\n- %?\n\n** Agenda\n- [ ] \n\n** Notes\n- " :empty-lines 1 :jump-to-captured t)
 
           ("d" "Diary" entry (file+headline ,(orgdr "diary.org") "Captured"))
