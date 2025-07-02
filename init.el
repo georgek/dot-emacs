@@ -917,8 +917,7 @@ indent whitespace in front of the next line."
   :bind (:map go-mode-map
               ("C-c C-c" . go-mode-compile)
               ("C-c C-t" . go-mode-test)
-              ("M-." . godef-jump)
-              ("RET" . gk-electrify-return-if-match)))
+              ("M-." . godef-jump)))
 
 (use-package jinja2-mode
   :mode ("\\.j2\\'"))
