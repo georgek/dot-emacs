@@ -911,6 +911,7 @@ indent whitespace in front of the next line."
     :args '("/dev/stdin"))
 
   (use-package go-tag)
+  (use-package godoctor)
 
   :bind (:map go-ts-mode-map
               ("RET" . #'gk-electrify-return-if-match)
