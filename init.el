@@ -293,6 +293,8 @@ indent whitespace in front of the next line."
   :demand t
   :config (add-to-list 'recentf-exclude "^/\\(?:ssh\\|su\\|sudo\\)?x?:"))
 
+(use-package reformatter)
+
 (use-package savehist
   :config (savehist-mode))
 

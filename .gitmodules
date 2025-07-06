@@ -325,6 +325,9 @@
 [submodule "queue"]
 	path = lib/queue
 	url = git@github.com:emacsmirror/queue.git
+[submodule "reformatter"]
+	path = lib/reformatter
+	url = https://github.com/purcell/emacs-reformatter
 [submodule "request"]
 	path = lib/request
 	url = https://github.com/tkf/emacs-request
