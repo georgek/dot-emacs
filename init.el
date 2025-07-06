@@ -529,6 +529,7 @@ indent whitespace in front of the next line."
   :hook ((dockerfile-mode
           js2-mode
           go-mode
+          go-ts-mode
           tsx-ts-mode
           typescript-mode
           python-ts-mode
@@ -630,6 +631,7 @@ indent whitespace in front of the next line."
           python-ts-mode
           yaml-mode
           go-mode
+          go-ts-mode
           clojure-mode
           cider-repl-mode
           js2-mode
@@ -893,33 +895,24 @@ indent whitespace in front of the next line."
   :config
   (use-package geiser-racket))
 
-(use-package go-mode
-  :mode "\\.go\\'"
-  :hook (go-mode . (lambda () (setq tab-width 4)))
+(use-package go-ts-mode
+  :mode ("\\.go\\'"
+         ("/go\\.mode\\'" . go-mod-ts-mode))
+  :hook
+  (go-ts-mode . (lambda () (setq tab-width 4)))
+  (go-ts-mode . go-format-on-save-mode)
+
+  :custom
+  (go-ts-mode-indent-offset 4)
+
   :config
-  (require 'go-eldoc)
-  (add-hook 'go-mode-hook 'go-eldoc-setup)
-  (defun go-mode-compile ()
-    (interactive)
-    (compile "go install"))
-  (defun go-mode-test ()
-    (interactive)
-    (compile "go test -v && go vet && golint"))
+  (reformatter-define go-format
+    :program "goimports"
+    :args '("/dev/stdin"))
 
-  ;; project support for go modules
-  (defun project-find-go-module (dir)
-    (when-let ((root (locate-dominating-file dir "go.mod")))
-      (cons 'go-module root)))
-
-  (cl-defmethod project-root ((project (head go-module)))
-    (cdr project))
-
-  (add-hook 'project-find-functions #'project-find-go-module)
-
-  :bind (:map go-mode-map
-              ("C-c C-c" . go-mode-compile)
-              ("C-c C-t" . go-mode-test)
-              ("M-." . godef-jump)))
+  :bind (:map go-ts-mode-map
+              ("RET" . #'gk-electrify-return-if-match)
+              ("C-c C-c" . #'compile)))
 
 (use-package jinja2-mode
   :mode ("\\.j2\\'"))
