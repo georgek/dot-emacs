@@ -133,6 +133,9 @@
 [submodule "go-eldoc"]
 	path = lib/go-eldoc
 	url = git@github.com:syohex/emacs-go-eldoc.git
+[submodule "go-tag"]
+	path = lib/go-tag
+	url = git@github.com:georgek/emacs-go-tag.git
 [submodule "graphql"]
 	path = lib/graphql
 	url = git@github.com:vermiculus/graphql.el.git

@@ -910,6 +910,8 @@ indent whitespace in front of the next line."
     :program "goimports"
     :args '("/dev/stdin"))
 
+  (use-package go-tag)
+
   :bind (:map go-ts-mode-map
               ("RET" . #'gk-electrify-return-if-match)
               ("C-c C-c" . #'compile)))
