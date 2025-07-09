@@ -910,8 +910,10 @@ indent whitespace in front of the next line."
     :program "goimports"
     :args '("/dev/stdin"))
 
-  (use-package go-tag)
-  (use-package godoctor)
+  (use-package go-tag
+    :config
+    (setq go-tag-args '("-transform" "camelcase")))
+;  (use-package godoctor)
 
   :bind (:map go-ts-mode-map
               ("RET" . #'gk-electrify-return-if-match)
