@@ -543,6 +543,7 @@ indent whitespace in front of the next line."
          ("C-c C-q" . #'eglot-code-action-quickfix))
   :config
   (setq eglot-autoshutdown t
+        eglot-extend-to-xref t
         eglot-send-changes-idle-time 0.1
         eglot-events-buffer-size 0
         eglot-report-progress nil
