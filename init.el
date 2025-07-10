@@ -1036,6 +1036,9 @@ indent whitespace in front of the next line."
   (require 'smartparens-markdown)
   (setq markdown-asymmetric-header t))
 
+(use-package mermaid-mode
+  :mode "\\.mmd\\'")
+
 (use-package nginx-mode
   :mode "nginx-mode")
 
