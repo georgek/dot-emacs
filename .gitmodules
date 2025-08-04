@@ -61,6 +61,9 @@
 [submodule "deferred"]
 	path = lib/deferred
 	url = git@github.com:kiwanami/emacs-deferred.git
+[submodule "deflate"]
+	path = lib/deflate
+	url = https://github.com/skuro/deflate
 [submodule "diff-hl"]
 	path = lib/diff-hl
 	url = git@github.com:dgutov/diff-hl.git
