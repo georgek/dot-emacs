@@ -558,7 +558,8 @@ indent whitespace in front of the next line."
                        :ruff (:enable t)
                        :rope_autoimport (:enabled :json-false)
                        :pylsp_mypy (:enabled t))
-             :configurationSources ["flake8"])))
+             :configurationSources ["flake8"])
+     :gopls (:usePlaceholders t)))
   (add-to-list 'eglot-server-programs
                `((python-mode python-ts-mode)
                  . ,(eglot-alternatives
