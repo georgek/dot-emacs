@@ -560,7 +560,8 @@ indent whitespace in front of the next line."
                        :pylsp_mypy (:enabled t
                                     :live_mode :json-false
                                     :dmypy t))
-             :configurationSources ["flake8"])))
+             :configurationSources ["flake8"])
+     :gopls (:usePlaceholders t)))
   (add-to-list 'eglot-server-programs
                `((python-mode python-ts-mode)
                  . ,(eglot-alternatives
