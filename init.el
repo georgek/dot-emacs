@@ -551,16 +551,24 @@ indent whitespace in front of the next line."
   ;; use flake8 by default
   (setq-default
    eglot-workspace-configuration
-   '(:pylsp (:plugins (:pycodestyle (:enabled :json-false)
+   '(:pylsp (:plugins (:autopep8 (:enabled :json-false)
+                       :pycodestyle (:enabled :json-false)
                        :mccabe (:enabled :json-false)
                        :pyflakes (:enabled :json-false)
                        :flake8 (:enabled :json-false)
+                       :yapf (:enabled :json-false)
                        :ruff (:enable t)
                        :rope_autoimport (:enabled :json-false)
+                       :pylsp_rope (:rename :json-false)  ; rename is really slow and
+                                                          ; doesn't work for renaming
+                                                          ; modules
+                       :jedi_rename (:enabled t)
+                       :jedi_completion (:enabled t)
                        :pylsp_mypy (:enabled t
                                     :live_mode :json-false
                                     :dmypy t))
-             :configurationSources ["flake8"])
+             :configurationSources ["flake8"]
+             :signature (:formatter "ruff"))
      :gopls (:usePlaceholders t)))
   (add-to-list 'eglot-server-programs
                `((python-mode python-ts-mode)
