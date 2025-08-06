@@ -1182,7 +1182,7 @@ indent whitespace in front of the next line."
             ,(orgdr "projects.org")
             (lambda ()
               (let ((org-goto-interface 'outline-path-completion)
-                    (org-goto-max-level 1))
+                    (org-goto-max-level 2))
                 (org-goto))))
            "* TODO %?\n%U\n%a")
           ("pi" "Project Immediate Task"
@@ -1191,7 +1191,7 @@ indent whitespace in front of the next line."
             ,(orgdr "projects.org")
             (lambda ()
               (let ((org-goto-interface 'outline-path-completion)
-                    (org-goto-max-level 1))
+                    (org-goto-max-level 2))
                 (org-goto))))
            "* STARTED %?\n%U\n%a" :clock-in t :clock-keep t)
           ("pm" "Project meeting" entry
@@ -1199,7 +1199,7 @@ indent whitespace in front of the next line."
             ,(orgdr "projects.org")
             (lambda ()
               (let ((org-goto-interface 'outline-path-completion)
-                    (org-goto-max-level 1))
+                    (org-goto-max-level 2))
                 (org-goto))))
            "* Meeting: %^{Title}\nTime:   %^{Time}T\nPlace:  %^{Place}\nBooked: %U\n\n** People\n- %?\n\n** Agenda\n- [ ] \n\n** Notes\n- " :empty-lines 1 :jump-to-captured t)
 
