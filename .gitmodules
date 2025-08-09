@@ -25,6 +25,9 @@
 [submodule "cider"]
 	path = lib/cider
 	url = git@github.com:clojure-emacs/cider.git
+[submodule "claude-code-ide"]
+	path = lib/claude-code-ide
+	url = https://github.com/manzaltu/claude-code-ide.el.git
 [submodule "clojure-mode"]
 	path = lib/clojure-mode
 	url = git@github.com:clojure-emacs/clojure-mode.git

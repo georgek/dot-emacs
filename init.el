@@ -654,6 +654,13 @@ indent whitespace in front of the next line."
 
 ;;; Special modes
 
+(use-package claude-code-ide
+  :bind ("C-c C-'" . claude-code-ide-menu)
+  :custom
+  (claude-code-ide-cli-path "run-claude")
+  :config
+  (claude-code-ide-emacs-tools-setup))
+
 (use-package compile
   :config
   (setq compilation-scroll-output 'first-error))
