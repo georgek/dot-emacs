@@ -430,6 +430,9 @@
 [submodule "web-mode"]
 	path = lib/web-mode
 	url = git@github.com:georgek/web-mode.git
+[submodule "websocket"]
+	path = lib/websocket
+	url = https://github.com/ahyatt/emacs-websocket
 [submodule "with-editor"]
 	path = lib/with-editor
 	url = git@github.com:magit/with-editor.git

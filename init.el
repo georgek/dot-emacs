@@ -364,6 +364,7 @@ indent whitespace in front of the next line."
   :config
   (setq vundo-glyph-alist vundo-ascii-symbols))
 
+(use-package websocket)
 (use-package which-func
   :config
   (setq which-func-modes
