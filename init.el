@@ -364,6 +364,7 @@ indent whitespace in front of the next line."
   :config
   (setq vundo-glyph-alist vundo-ascii-symbols))
 
+(use-package web-server)
 (use-package websocket)
 (use-package which-func
   :config
@@ -658,6 +659,7 @@ indent whitespace in front of the next line."
   :bind ("C-c C-'" . claude-code-ide-menu)
   :custom
   (claude-code-ide-cli-path "run-claude")
+  (claude-code-ide-use-side-window nil)
   :config
   (claude-code-ide-emacs-tools-setup))
 
