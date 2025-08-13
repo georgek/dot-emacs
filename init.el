@@ -544,6 +544,9 @@ indent whitespace in front of the next line."
          ("C-c C-a" . #'eglot-code-actions)
          ("C-c C-q" . #'eglot-code-action-quickfix))
   :config
+  (add-hook 'eglot-managed-mode-hook
+            (lambda ()
+              (add-hook 'before-save-hook #'eglot-format nil t)))
   (setq eglot-autoshutdown t
         eglot-extend-to-xref t
         eglot-send-changes-idle-time 0.1
