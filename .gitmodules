@@ -241,6 +241,9 @@
 [submodule "mic-paren"]
 	path = lib/mic-paren
 	url = git@github.com:emacsattic/mic-paren.git
+[submodule "multi-vterm"]
+	path = lib/multi-vterm
+	url = https://github.com/suonlight/multi-vterm
 [submodule "multiple-cursors"]
 	path = lib/multiple-cursors
 	url = https://github.com/magnars/multiple-cursors.el

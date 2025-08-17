@@ -823,6 +823,10 @@ indent whitespace in front of the next line."
   :defer t
   :config (setq Man-width 80))
 
+(use-package multi-vterm
+  :after project
+  :bind (("C-x p s" . #'multi-vterm-project)))
+
 (use-package transient
   :config
   (setq transient-display-buffer-action '(display-buffer-below-selected)))
