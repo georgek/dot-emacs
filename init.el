@@ -95,14 +95,13 @@
 
 ;;; Theme
 (progn                                  ;     fonts
-  (defconst my-font "UbuntuMono Nerd Font-9")
-  (set-frame-font my-font nil t)
-  (add-to-list 'default-frame-alist `(font . ,my-font))
+  (defconst my-fixed-width-font "UbuntuMono Nerd Font")
+  (defconst my-variable-width-font "Ubuntu")
   ;; for modes that set the face explicitly
   (dolist (face '(default fixed-pitch fixed-pitch-serif))
-    (set-face-attribute face nil :height 90 :family "UbuntuMono Nerd Font"))
+    (set-face-attribute face nil :height 90 :family my-fixed-width-font))
   (dolist (face '(variable-pitch))
-    (set-face-attribute face nil :height 90 :family "Ubuntu")))
+    (set-face-attribute face nil :height 90 :family my-variable-width-font)))
 
 (use-package doom-modeline
   :init (doom-modeline-mode +1)
