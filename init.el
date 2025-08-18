@@ -604,7 +604,8 @@ indent whitespace in front of the next line."
 
 (use-package paredit
   :bind (:map paredit-mode-map
-              ("M-?" . nil))
+              ("M-?" . nil)
+              ("M-_" . #'paredit-split-sexp))
   :config
   (require 'gk-electric)
   (defun paredit-with-electric-return ()
@@ -641,7 +642,8 @@ indent whitespace in front of the next line."
   (smartparens-global-mode)
   :bind (:map smartparens-mode-map
               ("C-)" . sp-forward-slurp-sexp)
-              ("C-(" . sp-backward-slurp-sexp)))
+              ("C-(" . sp-backward-slurp-sexp)
+              ("C-_" . sp-split-sexp)))
 
 (use-package subword
   :hook ((python-mode
