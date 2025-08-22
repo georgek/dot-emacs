@@ -365,6 +365,13 @@ indent whitespace in front of the next line."
 
 (use-package web-server)
 (use-package websocket)
+
+(use-package with-editor
+  :hook ((shell-mode . with-editor-export-editor)
+         (eshell-mode . with-editor-export-editor)
+         (term-exec . with-editor-export-editor)
+         (vterm-mode . with-editor-export-editor)))
+
 (use-package which-func
   :config
   (setq which-func-modes
@@ -374,7 +381,7 @@ indent whitespace in front of the next line."
           org-mode))
   (which-function-mode)
   (setq-default header-line-format
-              '((which-func-mode ("" which-func-format " "))))
+                '((which-func-mode ("" which-func-format " "))))
   (setq mode-line-misc-info
         ;; We remove Which Function Mode from the mode line, because it's mostly
         ;; invisible here anyway.
