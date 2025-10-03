@@ -49,6 +49,7 @@
     (tool-bar-mode 0))
   (menu-bar-mode 0)
   ;; better scrolling
+  (setq scroll-margin 2)
   (pixel-scroll-precision-mode)
   ;; use which-key builtin
   (when (fboundp 'which-key-mode) (which-key-mode))
