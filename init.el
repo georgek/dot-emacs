@@ -1240,7 +1240,7 @@ indent whitespace in front of the next line."
               (org-clock-goto)
               (goto-char (gk-org-find-subtree-create "Journal"))
               (org-datetree-find-date-create (calendar-current-date) 'subtree-at-point)))
-           "* %?\n%U\n%a" :prepend t :empty-lines 1)
+           "* %?\n%U\n%a" :prepend nil :empty-lines 1)
 
           ("cf" "Current task FIXME" checkitem (clock)
            "- [ ] FIXME %a %U" :immediate-finish t)
