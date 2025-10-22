@@ -260,7 +260,8 @@ indent whitespace in front of the next line."
 (use-package midnight
   :demand t
   :config
-  (setq midnight-mode t)
+  (setq midnight-mode t
+        midnight-delay "12:30")
   ;; some buffers that shouldn't be killed
   (setq clean-buffer-list-kill-never-buffer-names
         (append clean-buffer-list-kill-never-buffer-names
