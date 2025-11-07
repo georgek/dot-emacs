@@ -1228,7 +1228,7 @@ indent whitespace in front of the next line."
               (let ((org-goto-interface 'outline-path-completion)
                     (org-goto-max-level 2))
                 (org-goto))))
-           "* Meeting: %^{Title}\n- Time:   %^{Time}T\n- Place:  %^{Place}\n- Booked: %U\n\n** People\n- %?\n\n** Agenda\n- [ ] \n\n** Notes\n- \n** Actions\n- " :empty-lines 1 :jump-to-captured t)
+           "* Meeting: %^{Title}\n- Time:   %^{Time}T\n- Place:  %^{Place}\n- Booked: %U\n\n** People\n- %?\n\n** Agenda\n- [ ] \n\n** Notes\n- \n\n** Actions\n- " :empty-lines 1 :jump-to-captured t)
 
           ("c" "Current task subitem")
 
