@@ -35,8 +35,8 @@ Otherwise, just copies the file path with line number."
          (location (if context
                        (format "%s:%s" file-path context)
                      (format "%s:%d" file-path (line-number-at-pos)))))
-    ;; (kill-new location)
-    ;; (message "Copied: %s" location)
+    (kill-new location)
+    (message "Copied: %s" location)
     location
     ))
 
