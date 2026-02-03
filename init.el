@@ -763,6 +763,7 @@ indent whitespace in front of the next line."
 
 (use-package magit
   :defer t
+  :after nerd-icons
   :commands (magit-add-section-hook)
   ;;
   ;; Key bindings
@@ -788,7 +789,8 @@ indent whitespace in front of the next line."
   (add-hook 'magit-section-movement-hook 'magit-log-maybe-update-blob-buffer)
   ;;
   ;; Status buffer settings
-  (setq magit-section-visibility-indicator nil)
+  (setq magit-section-visibility-indicators nil
+        magit-format-file-function #'magit-format-file-nerd-icons)
   (magit-add-section-hook 'magit-status-sections-hook
                           'magit-insert-unpushed-to-upstream
                           'magit-insert-unpushed-to-upstream-or-recent
