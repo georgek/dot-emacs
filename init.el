@@ -856,7 +856,10 @@ indent whitespace in front of the next line."
 (use-package treemacs-magit
   :after (treemacs magit))
 
-(use-package vterm)
+(use-package vterm
+  :bind (:map vterm-mode-map
+         ("M-p" . vterm-send-prior)
+         ("M-n" . vterm-send-next)))
 
 ;;; Editing modes
 (progn ;    `text-mode'
