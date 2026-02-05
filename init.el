@@ -965,13 +965,18 @@ indent whitespace in front of the next line."
 
 (use-package js2-mode
   :mode "\\.js\\'"
-  :init
-  (setq-default js2-basic-offset 2)
+  :hook (js2-mode . js2-mode-setup)
   :config
   (require 'smartparens-javascript)
   :bind (:map js2-mode-map
               ("RET" . gk-electrify-return-if-match)
-              ("M-." . xref-find-definitions)))
+              ("M-." . xref-find-definitions))
+  :config
+  (defun js2-mode-setup ()
+    (setq-local js2-basic-offset 2)
+
+    (setq-local tab-width 2
+                indent-tabs-mode nil)))
 
 (use-package latex
   :defer t
