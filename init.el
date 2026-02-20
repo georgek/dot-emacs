@@ -536,8 +536,10 @@ indent whitespace in front of the next line."
 
 ;;; General editing
 (use-package eglot
-  :hook ((dockerfile-mode
+  :hook ((css-mode
+          dockerfile-mode
           js2-mode
+          json-mode
           go-mode
           go-ts-mode
           tsx-ts-mode
@@ -587,6 +589,7 @@ indent whitespace in front of the next line."
                `((python-mode python-ts-mode)
                  . ,(eglot-alternatives
                      '(("basedpyright-langserver" "--stdio")
+                       ("uv" "run" "pylsp")
                        "pylsp"
                        "pyls"
                        ("pyright-langserver" "--stdio")
