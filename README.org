@@ -24,6 +24,20 @@ of these (and don't want to set them up) then do the following before doing
   git config --global url.https://code.orgmode.org/.insteadOf git@code.orgmode.org:
 #+END_SRC
 
+** LSP
+
+The following language servers are used:
+
+- https://github.com/hrsh7th/vscode-langservers-extracted (CSS, JSON)
+- https://github.com/rcjsuen/dockerfile-language-server (Dockerfile)
+- https://github.com/typescript-language-server/typescript-language-server (JS, TS)
+- https://github.com/golang/tools/tree/master/gopls (Go)
+- https://github.com/python-lsp/python-lsp-server (Python)
+- https://github.com/microsoft/pyright (Python)
+- https://github.com/rust-analyzer/rust-analyzer (Rust)
+- https://github.com/mads-hartmann/bash-language-server (Bash)
+- https://github.com/redhat-developer/yaml-language-server (YAML)
+
 ** Tree-Sitter
 
 Since tree-sitter grammars are platform dependent, they might need to be rebuilt with
