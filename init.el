@@ -981,6 +981,11 @@ indent whitespace in front of the next line."
     (setq-local tab-width 2
                 indent-tabs-mode nil)))
 
+(use-package json-mode
+  :mode ("\\.json\\'")
+  :custom
+  (json-reformat:indent-width 2))
+
 (use-package latex
   :defer t
   :config
