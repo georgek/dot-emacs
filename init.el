@@ -211,6 +211,8 @@ indent whitespace in front of the next line."
   :config (diff-hl-flydiff-mode))
 
 (use-package direnv
+  :custom
+  (direnv-always-show-summary nil)
   :config
   (direnv-mode))
 
