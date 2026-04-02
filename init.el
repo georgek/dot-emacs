@@ -842,7 +842,24 @@ indent whitespace in front of the next line."
 
 (use-package multi-vterm
   :after project
-  :bind (("C-x p s" . #'multi-vterm-project)))
+  :bind (("C-x p s" . #'multi-vterm-project))
+  :config
+  (defun gk-multi-vterm-project-close-duplicate-windows (&rest _)
+    "Keep only one window showing the current project vterm buffer."
+    (let* ((buffer-name (ignore-errors (multi-vterm-project-get-buffer-name)))
+           (buffer (and buffer-name (get-buffer buffer-name))))
+      (when buffer
+        (let* ((windows (get-buffer-window-list buffer nil t))
+               (keep (or (and (eq (window-buffer (selected-window)) buffer)
+                              (selected-window))
+                         (car windows))))
+          (dolist (window windows)
+            (when (and (window-live-p window)
+                       (not (eq window keep))
+                       (not (window-minibuffer-p window)))
+              (ignore-errors (delete-window window))))))))
+  (advice-add #'multi-vterm-project
+              :after #'gk-multi-vterm-project-close-duplicate-windows))
 
 (use-package transient
   :config
