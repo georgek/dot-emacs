@@ -418,6 +418,9 @@
 [submodule "typescript-mode"]
 	path = lib/typescript-mode
 	url = git@github.com:ananthakumaran/typescript.el.git
+[submodule "typst-ts-mode"]
+	path = lib/typst-ts-mode
+	url = https://codeberg.org/meow_king/typst-ts-mode
 [submodule "undo-fu-session"]
 	path = lib/undo-fu-session
 	url = git@github.com:emacsmirror/undo-fu-session.git
