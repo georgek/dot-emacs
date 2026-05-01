@@ -111,7 +111,8 @@
   (setq doom-modeline-time nil)
   (setq mode-line-right-align-edge 'right-margin)
   ;; this simple function works better while using direnv
-  (setq doom-modeline-env-python-command (lambda () '("python" "--version"))))
+  (setq doom-modeline-env-python-command
+        (lambda () '("uv" "-q" "run" "python" "--version"))))
 
 (use-package nerd-icons)
 
@@ -591,7 +592,7 @@ indent whitespace in front of the next line."
                `((python-mode python-ts-mode)
                  . ,(eglot-alternatives
                      '(("basedpyright-langserver" "--stdio")
-                       ("uv" "run" "pylsp")
+                       ("uv" "-q" "run" "pylsp")
                        "pylsp"
                        "pyls"
                        ("pyright-langserver" "--stdio")
