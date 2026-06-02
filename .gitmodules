@@ -322,6 +322,9 @@
 [submodule "pcre2el"]
 	path = lib/pcre2el
 	url = https://github.com/joddie/pcre2el
+[submodule "pet"]
+	path = lib/pet
+	url = https://github.com/wyuenho/emacs-pet
 [submodule "pfuture"]
 	path = lib/pfuture
 	url = https://github.com/Alexander-Miller/pfuture

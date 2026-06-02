@@ -1483,6 +1483,10 @@ RECURRENCES occasions."
   (:map python-ts-mode-map
         ("RET" . gk-electrify-return-if-match)))
 
+(use-package pet
+  :config
+  (add-hook 'python-base-mode-hook 'pet-mode -10))
+
 (use-package python-pytest)
 
 (use-package rjsx-mode
