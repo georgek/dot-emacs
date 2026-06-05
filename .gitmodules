@@ -292,6 +292,9 @@
 [submodule "org-roam"]
 	path = lib/org-roam
 	url = https://github.com/org-roam/org-roam
+[submodule "org-sticky-header"]
+	path = lib/org-sticky-header
+	url = https://github.com/alphapapa/org-sticky-header
 [submodule "ox-hugo"]
 	path = lib/ox-hugo
 	url = https://github.com/georgek/ox-hugo

@@ -377,21 +377,6 @@ indent whitespace in front of the next line."
          (term-exec . with-editor-export-editor)
          (vterm-mode . with-editor-export-editor)))
 
-(use-package which-func
-  :config
-  (setq which-func-modes
-        '(python-mode
-          python-ts-mode
-          elisp-mode
-          org-mode))
-  (which-function-mode)
-  (setq-default header-line-format
-                '((which-func-mode ("" which-func-format " "))))
-  (setq mode-line-misc-info
-        ;; We remove Which Function Mode from the mode line, because it's mostly
-        ;; invisible here anyway.
-        (assq-delete-all 'which-function-mode mode-line-misc-info)))
-
 (use-package whitespace
   :config
   (defun nice-whitespace-on ()
@@ -1142,6 +1127,7 @@ indent whitespace in front of the next line."
          (org-mode . org-bullets-mode)
          (org-mode . flyspell-mode)
          (org-mode . reveal-mode)
+         (org-mode . org-sticky-header-mode)
          (org-mode . (lambda () (yas-minor-mode -1)))
          (org-babel-after-execute . org-redisplay-inline-images)
          (org-agenda-finalize . (lambda () (setq-local cursor-type nil))))
@@ -1154,6 +1140,10 @@ indent whitespace in front of the next line."
     (setq org-habit-preceding-days 28
           org-habit-following-days 10
           org-habit-graph-column 44))
+  (use-package org-sticky-header
+    :custom
+    (org-sticky-header-full-path 'full)
+    (org-sticky-header-outline-path-separator "/"))
   (require 'smartparens-org)
   (add-to-list 'org-modules 'org-habit)
   (setq org-startup-indented t
