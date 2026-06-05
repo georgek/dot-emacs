@@ -409,6 +409,9 @@
 [submodule "tomelr"]
 	path = lib/tomelr
 	url = https://github.com/kaushalmodi/tomelr
+[submodule "topsy"]
+	path = lib/topsy
+	url = https://github.com/alphapapa/topsy.el
 [submodule "transient"]
 	path = lib/transient
 	url = git@github.com:magit/transient.git

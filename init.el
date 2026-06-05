@@ -328,6 +328,11 @@ indent whitespace in front of the next line."
         shackle-inhibit-window-quit-on-same-windows t)
   (shackle-mode 1))
 
+(use-package topsy
+  :hook
+  (prog-mode . topsy-mode)
+  (magit-section-mode . topsy-mode))
+
 (use-package tramp
   :defer t
   :config
