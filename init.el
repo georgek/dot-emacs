@@ -574,9 +574,7 @@ indent whitespace in front of the next line."
                        :jedi_completion (:enabled t)
                        :pylsp_mypy (:enabled t
                                     :live_mode :json-false
-                                    :dmypy t
-                                    :mypy_command: '("uv" "-q" "run" "mypy")
-                                    :dmypy_command: '("uv" "-q" "run" "dmypy")))
+                                    :dmypy t))
              :configurationSources ["flake8"]
              :signature (:formatter "ruff"))
      :gopls (:usePlaceholders t)))
