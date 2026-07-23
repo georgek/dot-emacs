@@ -575,8 +575,8 @@ indent whitespace in front of the next line."
                        :pylsp_mypy (:enabled t
                                     :live_mode :json-false
                                     :dmypy t
-                                    :mypy_command: '("uv" "-q" "run" "mypy")
-                                    :dmypy_command: '("uv" "-q" "run" "dmypy")))
+                                    :mypy_command: ["uv" "-q" "run" "mypy"]
+                                    :dmypy_command: ["uv" "-q" "run" "dmypy"]))
              :configurationSources ["flake8"]
              :signature (:formatter "ruff"))
      :gopls (:usePlaceholders t)))
