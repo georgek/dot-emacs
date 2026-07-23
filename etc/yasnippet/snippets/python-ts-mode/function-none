@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: function-none
+# key: fn
+# group: definitions
+# --
+def ${1:fun}(${2:args}) -> None:
+    $0
