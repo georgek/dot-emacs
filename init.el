@@ -583,7 +583,8 @@ indent whitespace in front of the next line."
   (add-to-list 'eglot-server-programs
                `((python-mode python-ts-mode)
                  . ,(eglot-alternatives
-                     '(("basedpyright-langserver" "--stdio")
+                     '(("rass" "python")
+                       ("basedpyright-langserver" "--stdio")
                        ("uv" "-q" "run" "pylsp")
                        "pylsp"
                        "pyls"
