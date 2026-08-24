@@ -668,8 +668,19 @@ indent whitespace in front of the next line."
 ;;; Special modes
 
 (use-package agent-shell
+  :bind (("C-c s" . agent-shell)
+         :map agent-shell-mode-map
+         ("RET" . newline)
+         ("C-<return>" . agent-shell-submit)
+         ("C-c C-c" . agent-shell-submit)
+         ("C-c C-k" . agent-shell-interrupt)
+         ("<tab>" . agent-shell-cycle-session-mode)
+         ("C-c C-p" . agent-shell-previous-item)
+         ("C-c C-n" . agent-shell-next-item))
   :config
-  (setq agent-shell-opencode-acp-command '("run-opencode" "acp")))
+  (setq agent-shell-opencode-acp-command '("run-opencode" "acp")
+        agent-shell-preferred-agent-config 'opencode
+        agent-shell-opencode-default-model-id "openai/gpt-5.6-sol"))
 
 (use-package claude-code-ide
   :bind ("C-c C-'" . claude-code-ide-menu)
@@ -706,9 +717,6 @@ indent whitespace in front of the next line."
         (expand-file-name "var/epkgs/" user-emacs-directory))
   (setq epkg-database-connector
         (if (>= emacs-major-version 29) 'sqlite-builtin 'sqlite-module)))
-
-(use-package eshell
-  :bind (("C-c s" . eshell)))
 
 (use-package fancy-compilation
   :after compile
