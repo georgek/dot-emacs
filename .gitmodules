@@ -4,6 +4,12 @@
 [submodule "a"]
 	path = lib/a
 	url = git@github.com:plexus/a.el.git
+[submodule "acp"]
+	path = lib/acp
+	url = https://github.com/xenodium/acp.el
+[submodule "agent-shell"]
+	path = lib/agent-shell
+	url = https://github.com/xenodium/agent-shell
 [submodule "async"]
 	path = lib/async
 	url = git@github.com:jwiegley/emacs-async.git
@@ -367,6 +373,9 @@
 [submodule "shackle"]
 	path = lib/shackle
 	url = https://depp.brause.cc/shackle.git
+[submodule "shell-maker"]
+	path = lib/shell-maker
+	url = https://github.com/xenodium/shell-maker
 [submodule "shrink-path"]
 	path = lib/shrink-path
 	url = https://gitlab.com/bennya/shrink-path.el

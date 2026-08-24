@@ -667,6 +667,10 @@ indent whitespace in front of the next line."
 
 ;;; Special modes
 
+(use-package agent-shell
+  :config
+  (setq agent-shell-opencode-acp-command '("run-opencode" "acp")))
+
 (use-package claude-code-ide
   :bind ("C-c C-'" . claude-code-ide-menu)
   :custom
