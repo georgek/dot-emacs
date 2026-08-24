@@ -555,7 +555,7 @@ indent whitespace in front of the next line."
         eglot-send-changes-idle-time 0.1
         eglot-events-buffer-size 0
         eglot-report-progress nil
-        eglot-ignored-server-capabilities '(:documentHighlightProvider))
+        eglot-ignored-server-capabilities nil)
   ;; use flake8 by default
   (setq-default
    eglot-workspace-configuration
