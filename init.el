@@ -55,18 +55,14 @@
   (when (fboundp 'which-key-mode) (which-key-mode))
   (setq native-comp-async-report-warnings-errors 'silent)
   (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
-  (defmacro orgdr (&optional filename)
-    (if filename
-        `(concat (file-name-as-directory org-directory) ,filename)
-      org-directory))
   (defmacro makehookedfun (hook &rest body)
-  "Defines a function using BODY that is hooked to HOOK."
-  (declare (indent 1))
-  (let ((function (intern (concat (symbol-name hook) "-function"))))
-    `(progn
-       (defun ,function ()
-         ,@body)
-       (add-hook ',hook #',function)))))
+    "Defines a function using BODY that is hooked to HOOK."
+    (declare (indent 1))
+    (let ((function (intern (concat (symbol-name hook) "-function"))))
+      `(progn
+         (defun ,function ()
+           ,@body)
+         (add-hook ',hook ',function)))))
 
 (eval-and-compile ; `borg'
   (add-to-list 'load-path (expand-file-name "lib/borg" user-emacs-directory))
@@ -77,6 +73,162 @@
 (eval-and-compile ; `use-package'
   (require  'use-package)
   (setq use-package-verbose t))
+
+;;; Helper functions
+(defmacro orgdr (&optional filename)
+  "FILENAME relative to org directory"
+  (if filename
+      `(concat (file-name-as-directory org-directory) ,filename)
+    org-directory))
+
+(defun sway-visible-frame-list ()
+  "List of visible frames according to sway."
+  (mapcar #'car (sway-list-frames (sway-tree) t)))
+
+(defun nice-whitespace-on ()
+  (setq whitespace-style '(face tabs tab-mark trailing lines-tail))
+  ;; highlight lines with more than `fill-column' characters
+  (setq whitespace-line-column nil)
+  (whitespace-mode 1))
+
+(defun org-enforce-basic-completion (&rest args)
+  (minibuffer-with-setup-hook
+      (:append
+       (lambda ()
+         (let ((map (make-sparse-keymap)))
+           (keymap-set map "<tab>" #'minibuffer-complete)
+           (use-local-map (make-composed-keymap (list map) (current-local-map))))
+         (setq-local completion-styles (cons 'basic completion-styles)
+                     vertico-preselect 'prompt)))
+    (apply args)))
+
+(defun paredit-with-electric-return ()
+  (paredit-mode +1)
+  (local-set-key (kbd "RET") 'gk-electrify-return-if-match))
+
+(defun nice-paredit-on ()
+  (turn-off-smartparens-mode)
+  (paredit-mode t)
+  (turn-on-eldoc-mode)
+  (eldoc-add-command
+   'paredit-backward-delete
+   'paredit-close-round)
+  (local-set-key (kbd "RET") 'gk-electrify-return-if-match)
+  (eldoc-add-command 'gk-electrify-return-if-match)
+  (show-paren-mode t))
+
+(defun ielm-switch-to-buffer ()
+  (interactive)
+  (let ((ielm-buffer (get-buffer "*ielm*")))
+    (if ielm-buffer
+        (pop-to-buffer ielm-buffer)
+      (ielm))))
+
+(defun gk-multi-vterm-project-close-duplicate-windows (&rest _)
+  "Keep only one window showing the current project vterm buffer."
+  (let* ((buffer-name (ignore-errors (multi-vterm-project-get-buffer-name)))
+         (buffer (and buffer-name (get-buffer buffer-name))))
+    (when buffer
+      (let* ((windows (get-buffer-window-list buffer nil t))
+             (keep (or (and (eq (window-buffer (selected-window)) buffer)
+                            (selected-window))
+                       (car windows))))
+        (dolist (window windows)
+          (when (and (window-live-p window)
+                     (not (eq window keep))
+                     (not (window-minibuffer-p window)))
+            (ignore-errors (delete-window window))))))))
+
+(defun ess-eval-defun-key ()
+  (interactive)
+  (ess-eval-function-or-paragraph t))
+
+(defun clear-shell ()
+  (interactive)
+  (let ((old-max comint-buffer-maximum-size))
+    (setq comint-buffer-maximum-size 0)
+    (comint-truncate-buffer)
+    (setq comint-buffer-maximum-size old-max)))
+
+(defun js2-mode-setup ()
+  (setq-local js2-basic-offset 2)
+  (setq-local tab-width 2
+              indent-tabs-mode nil))
+
+(defun eval-buffer-key ()
+  (interactive)
+  (message "Evaluating buffer...")
+  (eval-buffer)
+  (message "Buffer evaluated."))
+
+(defun eval-defun-key (edebug-it)
+  (interactive "P")
+  (let (beg ol)
+    (save-excursion
+      (end-of-defun)
+      (beginning-of-defun)
+      (setq beg (point))
+      (end-of-defun)
+      (setq ol (make-overlay beg (point))))
+    (overlay-put ol 'face 'highlight)
+    (unwind-protect
+        (progn
+          (eval-defun edebug-it)
+          (sit-for 0.1))
+      (delete-overlay ol))))
+
+(defun indent-spaces-mode ()
+  (setq indent-tabs-mode nil))
+
+(defun orgtbl-to-latex-booktabs (table params)
+  "Convert the Orgtbl mode TABLE to LaTeX using booktabs package."
+  (let* ((alignment (mapconcat (lambda (x) (if x "r" "l"))
+                               org-table-last-alignment ""))
+         (params2
+          (list
+           :tstart "\\toprule"
+           :tend "\\bottomrule\n"
+           :lstart "" :lend " \\\\" :sep " & "
+           :efmt "%s\\,(%s)" :hline "\\midrule")))
+    (orgtbl-to-generic table (org-combine-plists params2 params))))
+
+(defun gk-org-find-subtree-create (subtree-name)
+  "Find a subtree under current tree, creating if it doesn't exist. Returns marker"
+  (condition-case nil (org-find-olp
+                       `(,@(org-get-outline-path :with-self) ,subtree-name) :this-buffer)
+    (t (save-excursion
+         (org-insert-heading-after-current)
+         (org-demote)
+         (insert subtree-name)
+         (point)))))
+
+(defun gk-nerd-agenda-icons (fun prefix alist)
+  "Makes an org agenda alist"
+  (mapcar (pcase-lambda (`(,category . ,icon))
+            `(,category
+              (,(funcall fun (concat prefix icon) :height 1.2))))
+          alist))
+
+(defun diary-limited-cyclic (recurrences interval y m d)
+  "For use in emacs diary. Cyclic item with limited number of recurrences.
+Occurs every INTERVAL days, starting on YYYY-MM-DD, for a total of
+RECURRENCES occasions."
+  (let ((startdate (calendar-absolute-from-gregorian (list m d y)))
+        (today (calendar-absolute-from-gregorian date)))
+    (and (not (minusp (- today startdate)))
+         (zerop (% (- today startdate) interval))
+         (< (floor (- today startdate) interval) recurrences))))
+
+(defun org-time-to-minutes (time)
+  "Convert an HHMM time to minutes"
+  (+ (* (/ time 100) 60) (% time 100)))
+
+(defun org-time-from-minutes (minutes)
+  "Convert a number of minutes to an HHMM time"
+  (+ (* (/ minutes 60) 100) (% minutes 60)))
+
+(defun indicate-buffer-boundaries-left ()
+  (setq indicate-buffer-boundaries 'left))
 
 ;;; WM integration
 (use-package i3
@@ -89,9 +241,6 @@
 (use-package sway
   :unless (string-empty-p (shell-command-to-string "pgrep -x sway"))
   :config
-  (defun sway-visible-frame-list ()
-    "List of visible frames according to sway."
-    (mapcar #'car (sway-list-frames (sway-tree) t)))
   (setq avy-frame-list-function #'sway-visible-frame-list))
 
 ;;; Theme
@@ -384,11 +533,6 @@ indent whitespace in front of the next line."
 
 (use-package whitespace
   :config
-  (defun nice-whitespace-on ()
-    (setq whitespace-style '(face tabs tab-mark trailing lines-tail))
-    ;; highlight lines with more than `fill-column' characters
-    (setq whitespace-line-column nil)
-    (whitespace-mode 1))
   :hook (prog-mode . nice-whitespace-on))
 
 (use-package xref
@@ -502,16 +646,6 @@ indent whitespace in front of the next line."
         '(read-only t cursor-intangible t face minibuffer-prompt))
   (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
   ;; org-mode fixes
-  (defun org-enforce-basic-completion (&rest args)
-    (minibuffer-with-setup-hook
-        (:append
-         (lambda ()
-           (let ((map (make-sparse-keymap)))
-             (keymap-set map "<tab>" #'minibuffer-complete)
-             (use-local-map (make-composed-keymap (list map) (current-local-map))))
-           (setq-local completion-styles (cons 'basic completion-styles)
-                       vertico-preselect 'prompt)))
-      (apply args)))
   (advice-add #'org-make-tags-matcher :around #'org-enforce-basic-completion)
   (advice-add #'org-agenda-filter :around #'org-enforce-basic-completion))
 
@@ -615,23 +749,10 @@ indent whitespace in front of the next line."
               ("M-_" . #'paredit-split-sexp))
   :config
   (require 'gk-electric)
-  (defun paredit-with-electric-return ()
-    (paredit-mode +1)
-    (local-set-key (kbd "RET") 'gk-electrify-return-if-match))
   ;; use with eldoc
   (eldoc-add-command
    'paredit-backward-delete
-   'paredit-close-round)
-  (defun nice-paredit-on ()
-    (turn-off-smartparens-mode)
-    (paredit-mode t)
-    (turn-on-eldoc-mode)
-    (eldoc-add-command
-     'paredit-backward-delete
-     'paredit-close-round)
-    (local-set-key (kbd "RET") 'gk-electrify-return-if-match)
-    (eldoc-add-command 'gk-electrify-return-if-match)
-    (show-paren-mode t)))
+   'paredit-close-round))
 
 (use-package paren-face
   :config
@@ -752,12 +873,6 @@ indent whitespace in front of the next line."
 
 (use-package ielm
   :init
-  (defun ielm-switch-to-buffer ()
-    (interactive)
-    (let ((ielm-buffer (get-buffer "*ielm*")))
-      (if ielm-buffer
-          (pop-to-buffer ielm-buffer)
-        (ielm))))
   (defalias 'p #'princ)
   :config
   (makehookedfun ielm-mode-hook
@@ -850,20 +965,6 @@ indent whitespace in front of the next line."
   :after project
   :bind (("C-x p s" . #'multi-vterm-project))
   :config
-  (defun gk-multi-vterm-project-close-duplicate-windows (&rest _)
-    "Keep only one window showing the current project vterm buffer."
-    (let* ((buffer-name (ignore-errors (multi-vterm-project-get-buffer-name)))
-           (buffer (and buffer-name (get-buffer buffer-name))))
-      (when buffer
-        (let* ((windows (get-buffer-window-list buffer nil t))
-               (keep (or (and (eq (window-buffer (selected-window)) buffer)
-                              (selected-window))
-                         (car windows))))
-          (dolist (window windows)
-            (when (and (window-live-p window)
-                       (not (eq window keep))
-                       (not (window-minibuffer-p window)))
-              (ignore-errors (delete-window window))))))))
   (advice-add #'multi-vterm-project
               :after #'gk-multi-vterm-project-close-duplicate-windows))
 
@@ -942,15 +1043,6 @@ indent whitespace in front of the next line."
   :init (require 'ess-site)
   :config
   (setq ess-r-package-auto-activate nil)
-  (defun ess-eval-defun-key ()
-    (interactive)
-    (ess-eval-function-or-paragraph t))
-  (defun clear-shell ()
-   (interactive)
-   (let ((old-max comint-buffer-maximum-size))
-     (setq comint-buffer-maximum-size 0)
-     (comint-truncate-buffer)
-     (setq comint-buffer-maximum-size old-max)))
   :bind (:map ess-mode-map
          ("C-c z" . ess-switch-to-inferior-or-script-buffer)
          ("C-c C-c" . ess-eval-defun-key)
@@ -1001,13 +1093,7 @@ indent whitespace in front of the next line."
   (require 'smartparens-javascript)
   :bind (:map js2-mode-map
               ("RET" . gk-electrify-return-if-match)
-              ("M-." . xref-find-definitions))
-  :config
-  (defun js2-mode-setup ()
-    (setq-local js2-basic-offset 2)
-
-    (setq-local tab-width 2
-                indent-tabs-mode nil)))
+              ("M-." . xref-find-definitions)))
 
 (use-package json-mode
   :mode ("\\.json\\'")
@@ -1060,26 +1146,6 @@ indent whitespace in front of the next line."
 
 (use-package lisp-mode                  ; emacs-lisp-mode
   :config
-  (defun eval-buffer-key ()
-    (interactive)
-    (message "Evaluating buffer...")
-    (eval-buffer)
-    (message "Buffer evaluated."))
-  (defun eval-defun-key (edebug-it)
-    (interactive "P")
-    (let (beg ol)
-      (save-excursion
-        (end-of-defun)
-        (beginning-of-defun)
-        (setq beg (point))
-        (end-of-defun)
-        (setq ol (make-overlay beg (point))))
-      (overlay-put ol 'face 'highlight)
-      (unwind-protect
-          (progn
-            (eval-defun edebug-it)
-            (sit-for 0.1))
-        (delete-overlay ol))))
   (makehookedfun emacs-lisp-mode-hook
     (outline-minor-mode)
     (reveal-mode)
@@ -1088,8 +1154,6 @@ indent whitespace in front of the next line."
     (outline-minor-mode)
     (reveal-mode)
     (nice-paredit-on))
-  (defun indent-spaces-mode ()
-    (setq indent-tabs-mode nil))
   (makehookedfun lisp-interaction-mode-hook
     (indent-spaces-mode))
   :bind
@@ -1204,17 +1268,6 @@ indent whitespace in front of the next line."
   (use-package ox-jira)
   (setq org-latex-to-pdf-process '("latexmk -pdf %f"))
   (setq org-export-latex-listings 'minted)
-  (defun orgtbl-to-latex-booktabs (table params)
-    "Convert the Orgtbl mode TABLE to LaTeX using booktabs package."
-    (let* ((alignment (mapconcat (lambda (x) (if x "r" "l"))
-                                 org-table-last-alignment ""))
-           (params2
-            (list
-             :tstart "\\toprule"
-             :tend "\\bottomrule\n"
-             :lstart "" :lend " \\\\" :sep " & "
-             :efmt "%s\\,(%s)" :hline "\\midrule")))
-      (orgtbl-to-generic table (org-combine-plists params2 params))))
   (eval-after-load "org-table"
     '(progn
        (setq orgtbl-radio-table-templates
@@ -1234,16 +1287,6 @@ indent whitespace in front of the next line."
   (setq org-twbs-htmlize-font-prefix "org-")
   ;; capture
   (setq org-default-notes-file (orgdr "notes.org"))
-
-  (defun gk-org-find-subtree-create (subtree-name)
-    "Find a subtree under current tree, creating if it doesn't exist. Returns marker"
-    (condition-case nil (org-find-olp
-                         `(,@(org-get-outline-path :with-self) ,subtree-name) :this-buffer)
-      (t (save-excursion
-           (org-insert-heading-after-current)
-           (org-demote)
-           (insert subtree-name)
-           (point)))))
 
   ;; NOTE doct package helps with organising these
   (setq org-capture-templates
@@ -1369,13 +1412,6 @@ indent whitespace in front of the next line."
   (setq org-blank-before-new-entry
         '((heading . t) (plain-list-item . nil)))
 
-  (defun gk-nerd-agenda-icons (fun prefix alist)
-    "Makes an org agenda alist"
-    (mapcar (pcase-lambda (`(,category . ,icon))
-              `(,category
-                (,(funcall fun (concat prefix icon) :height 1.2))))
-            alist))
-
   (setq org-agenda-category-icon-alist
         (append
          (gk-nerd-agenda-icons #'nerd-icons-mdicon "nf-md-"
@@ -1423,22 +1459,7 @@ indent whitespace in front of the next line."
   (add-to-list 'org-structure-template-alist '("n" . "notes"))
   ;; use log drawer
   (setq org-log-into-drawer t)
-  (defun diary-limited-cyclic (recurrences interval y m d)
-    "For use in emacs diary. Cyclic item with limited number of recurrences.
-Occurs every INTERVAL days, starting on YYYY-MM-DD, for a total of
-RECURRENCES occasions."
-    (let ((startdate (calendar-absolute-from-gregorian (list m d y)))
-          (today (calendar-absolute-from-gregorian date)))
-      (and (not (minusp (- today startdate)))
-           (zerop (% (- today startdate) interval))
-           (< (floor (- today startdate) interval) recurrences))))
   ;; this code removes time grid lines that are within an appointment
-  (defun org-time-to-minutes (time)
-    "Convert an HHMM time to minutes"
-    (+ (* (/ time 100) 60) (% time 100)))
-  (defun org-time-from-minutes (minutes)
-    "Convert a number of minutes to an HHMM time"
-    (+ (* (/ minutes 60) 100) (% minutes 60)))
   ;; setup default file readers
   (eval-after-load "org"
     '(setcdr (assoc "\\.pdf\\'" org-file-apps) "evince %s")))
@@ -1475,8 +1496,6 @@ RECURRENCES occasions."
 
 (use-package prog-mode
   :config (global-prettify-symbols-mode)
-  (defun indicate-buffer-boundaries-left ()
-    (setq indicate-buffer-boundaries 'left))
   (add-hook 'prog-mode-hook #'indicate-buffer-boundaries-left))
 
 (use-package python
