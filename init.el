@@ -1425,7 +1425,7 @@ indent whitespace in front of the next line."
                                '(("Project" . "folder_git_branch")
                                  ("Emacs" . "emacs")
                                  ("Org" . "orgmode")))
-         '(("" '(space . (:width (11)))))))
+         '(("" '(space . (:width (14)))))))
 
   ;; todo
   (setq org-todo-keywords '((sequence "TODO" "WAITING" "|" "DONE"))
