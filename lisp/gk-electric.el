@@ -1,4 +1,4 @@
-;;; gk-electric.el - electric return stuff
+;;; gk-electric.el - electric return stuff  -*- lexical-binding: t; -*-
 
 ;;; Code:
 

@@ -1,4 +1,4 @@
-;;; gk-extra.el --- misc stuff I use
+;;; gk-extra.el --- misc stuff I use  -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;; Just some miscallenous stuff I've found from around the place
 ;;; Code:

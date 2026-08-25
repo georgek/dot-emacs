@@ -1,4 +1,4 @@
-;;; uk-holidays --- Summary
+;;; uk-holidays --- Summary  -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;; UK public holidays, and other UK notable dates.
 ;;; Code:
