@@ -48,5 +48,5 @@
 [submodule "vterm"]
 	build-step = mkdir -p build
 	build-step = cd build && cmake .. && make
-	build-step = borg-byte-compile
+	build-step = borg-compile
 	build-step = borg-update-autoloads
