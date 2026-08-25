@@ -803,14 +803,6 @@ indent whitespace in front of the next line."
         agent-shell-preferred-agent-config 'opencode
         agent-shell-opencode-default-model-id "openai/gpt-5.6-sol"))
 
-(use-package claude-code-ide
-  :bind ("C-c C-'" . claude-code-ide-menu)
-  :custom
-  (claude-code-ide-cli-path "run-claude")
-  (claude-code-ide-use-side-window nil)
-  :config
-  (claude-code-ide-emacs-tools-setup))
-
 (use-package compile
   :config
   (setq compilation-scroll-output 'first-error))
