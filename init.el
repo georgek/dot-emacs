@@ -799,7 +799,8 @@ indent whitespace in front of the next line."
          ("C-c C-p" . agent-shell-previous-item)
          ("C-c C-n" . agent-shell-next-item))
   :config
-  (setq agent-shell-opencode-acp-command '("run-opencode" "acp")
+  (setq agent-shell-header-style 'text
+        agent-shell-opencode-acp-command '("run-opencode" "acp")
         agent-shell-preferred-agent-config 'opencode
         agent-shell-opencode-default-model-id "openai/gpt-5.6-sol"))
 
