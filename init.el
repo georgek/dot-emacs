@@ -32,6 +32,7 @@
   (setq mouse-wheel-progressive-speed nil)
   (setq focus-follows-mouse t)
   (setq mouse-autoselect-window t)
+  (setq exchange-point-and-mark-highlight-region nil)
   (fset 'yes-or-no-p 'y-or-n-p)
   ;; highlight current line
   (global-hl-line-mode +1)
