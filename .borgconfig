@@ -1,7 +1,7 @@
 [submodule "auctex"]
 	load-path = .
 	build-step = ./configure --with-lispdir=~/.emacs.d/lib/auctex
-	build-step = make
+	build-step = make -j8
 	build-step = make doc
 	build-step = borg-maketexi
 	build-step = borg-makeinfo
@@ -29,10 +29,10 @@
 	load-path = .
 	load-path = contrib
 	info-path = doc
-	build-step = make compile contrib-compile
+	build-step = make -j8 compile contrib-compile
 	build-step = borg-makeinfo
 [submodule "sqlite3"]
-	build-step = make
+	build-step = make -j8
 [submodule "treemacs"]
 	load-path = src/elisp
 	load-path = src/extra
@@ -47,6 +47,6 @@
 	load-path = extensions
 [submodule "vterm"]
 	build-step = mkdir -p build
-	build-step = cd build && cmake .. && make
+	build-step = cd build && cmake .. && make -j8
 	build-step = borg-compile
 	build-step = borg-update-autoloads
