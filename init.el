@@ -790,6 +790,7 @@ indent whitespace in front of the next line."
 ;;; Special modes
 
 (use-package agent-shell
+  :defer t
   :bind (("C-c s" . agent-shell)
          :map agent-shell-mode-map
          ("RET" . newline)
