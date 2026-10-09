@@ -343,6 +343,9 @@
 [submodule "polymode"]
 	path = lib/polymode
 	url = https://github.com/polymode/polymode
+[submodule "posframe"]
+	path = lib/posframe
+	url = https://github.com/tumashu/posframe
 [submodule "python-pytest"]
 	path = lib/python-pytest
 	url = https://github.com/wbolster/emacs-python-pytest
