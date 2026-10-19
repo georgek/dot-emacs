@@ -675,6 +675,7 @@ indent whitespace in front of the next line."
           python-ts-mode
           rust-mode
           sh-mode
+          terraform-mode
           yaml-mode)
          . eglot-ensure)
   :bind (("C-c C-r" . #'eglot-rename)
@@ -1549,6 +1550,8 @@ indent whitespace in front of the next line."
 (use-package sqlup-mode
   :hook ((sql-mode . sqlup-mode)
          (sql-interactive-mode . sqlup-mode)))
+
+(use-package terraform-mode)
 
 (use-package tex
   :defer t
