@@ -1212,6 +1212,10 @@ indent whitespace in front of the next line."
          (org-babel-after-execute . org-redisplay-inline-images)
          (org-agenda-finalize . (lambda () (setq-local cursor-type nil))))
   :config
+  (defun gk-org-clock-in-mark-started ()
+    (when (equal (org-get-todo-state) "TODO")
+      (org-todo "STARTED")))
+  (add-hook 'org-clock-in-hook #'gk-org-clock-in-mark-started)
   (use-package gk-org)
   (use-package org-bullets)
   (use-package org-tempo)
