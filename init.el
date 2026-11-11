@@ -1370,7 +1370,7 @@ indent whitespace in front of the next line."
                                          (org-agenda-todo-list-sublevels t)))))
           ("y" "Yesterday" ((agenda "" ((org-agenda-start-day "-1d")
                                         (org-agenda-include-deadlines nil)
-                                        (org-agenda-span 1)
+                                        (org-agenda-span 2)
                                         (org-agenda-show-log t)
                                         (org-agenda-log-mode-items '(closed state))
                                         (org-agenda-clockreport-mode t)
